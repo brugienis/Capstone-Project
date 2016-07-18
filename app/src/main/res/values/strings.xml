@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">MelbournePublicTransport</string>
+    <string name="title_activity_favorite_stops">FavoriteStopsActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_stops_nearby">Nearby stops</string>
+    <string name="action_disruptions">Disruptions</string>
+    <string name="action_station_on_map">Station location</string>
+    <string name="title_activity_next_departures">NextDeparturesActivity</string>
+    <string name="title_activity_disruptions">DisruptionsActivity</string>
 </resources>
