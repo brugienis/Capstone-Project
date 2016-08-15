@@ -40,6 +40,7 @@ public class FavoriteStopsFragment extends Fragment {
     private FolderArrayAdapter<FolderItem> stopsArrayAdapter;
     private static List<FolderItem> mFolderItemList = new ArrayList<>();
     private static List<String> favoriteStations = new ArrayList<>();
+    private TextView mEmptyView;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -88,12 +89,11 @@ public class FavoriteStopsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_favorite_stops_list_view, container, false);
-        mListView = (ListView) inflater.inflate(R.layout.fragment_favorite_stops_list_view, container, false);
-//        adapter = new ArrayAdapter<String>(this,
-//                android.R.layout.simple_list_item_1, android.R.id.text1, favoriteStationsArray);
+        View rootView = inflater.inflate(R.layout.fragment_favorite_stops_list_view, container, false);
+
+        mListView = (ListView) rootView.findViewById(R.id.favoriteStopsListView);
         stopsArrayAdapter = new FolderArrayAdapter<>(getActivity(), mFolderItemList);
-        Log.v(TAG, "onCreate - stopsArrayAdapter/mListView: " + stopsArrayAdapter + "/" + mListView);
+        Log.v(TAG, "onCreateView - stopsArrayAdapter/mListView: " + stopsArrayAdapter + "/" + mListView);
         mListView.setAdapter(stopsArrayAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -102,7 +102,13 @@ public class FavoriteStopsFragment extends Fragment {
                 handleRowClicked(position);
             }
         });
-        return mListView;
+
+        mEmptyView = (TextView) rootView.findViewById(R.id.emptyView);
+        Log.v(TAG, "onCreateView - mEmptyView: " + mEmptyView);
+        mEmptyView.setText(getActivity().getResources()
+                .getString(R.string.no_favorite_stops_selected));
+        Log.v(TAG, "onCreateView - showing empty list");
+        return rootView;
     }
 
     private void handleRowClicked(int position) {
