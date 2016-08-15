@@ -12,6 +12,8 @@ import android.view.View;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 
+// git push -u origin
+
 public class FavoriteStopsActivity extends AppCompatActivity {
 
     @Override
