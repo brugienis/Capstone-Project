@@ -10,7 +10,7 @@ import android.util.Log;
 import android.view.View;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
-import au.com.kbrsolutions.melbournepublictransport.activities.fragments.FavoriteStopsFragment;
+import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragment;
 
 // git push -u origin
 

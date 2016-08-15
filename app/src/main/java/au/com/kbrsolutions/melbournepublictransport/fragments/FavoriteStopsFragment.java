@@ -1,4 +1,4 @@
-package au.com.kbrsolutions.melbournepublictransport.activities.fragments;
+package au.com.kbrsolutions.melbournepublictransport.fragments;
 
 import android.app.Activity;
 import android.content.Context;
