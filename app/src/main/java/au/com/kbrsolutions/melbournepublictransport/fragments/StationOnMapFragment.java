@@ -11,11 +11,9 @@ import android.view.ViewGroup;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -96,23 +94,25 @@ public class StationOnMapFragment extends Fragment implements OnMapReadyCallback
             e.printStackTrace();
         }
 
-        mMapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap mMap) {
-                googleMap = mMap;
-
-                // For showing a move to my location button
-                googleMap.setMyLocationEnabled(true);
-
-                // For dropping a marker at a point on the Map
-                LatLng sydney = new LatLng(-34, 151);
-                googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
-
-                // For zooming automatically to the location of the marker
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-            }
-        });
+        needsInit = true;
+        mMapView.getMapAsync(this);
+//        mMapView.getMapAsync(new OnMapReadyCallback() {
+//            @Override
+//            public void onMapReady(GoogleMap mMap) {
+//                googleMap = mMap;
+//
+//                // For showing a move to my location button
+//                googleMap.setMyLocationEnabled(true);
+//
+//                // For dropping a marker at a point on the Map
+//                LatLng sydney = new LatLng(-34, 151);
+//                googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
+//
+//                // For zooming automatically to the location of the marker
+//                CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
+//                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+//            }
+//        });
 
         return rootView;
     }
@@ -138,9 +138,10 @@ public class StationOnMapFragment extends Fragment implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         Log.v(TAG, "onMapReady called");
         if (needsInit) {
-            CameraUpdate center=
-                    CameraUpdateFactory.newLatLng(new LatLng(40.76793169992044,
-                            -73.98180484771729));
+            CameraUpdate center =
+//                    CameraUpdateFactory.newLatLng(new LatLng(40.76793169992044,
+//                            -73.98180484771729));
+                    CameraUpdateFactory.newLatLng(new LatLng(40.748963847316034, -73.96807193756104));
             CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
 
             googleMap.moveCamera(center);
