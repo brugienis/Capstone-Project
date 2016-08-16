@@ -127,6 +127,10 @@ public class FavoriteStopsFragment extends Fragment {
 //        }
 //    }
 
+    public void showFavoriteStops() {
+
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

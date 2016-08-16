@@ -33,9 +33,11 @@ public class MainActivity extends AppCompatActivity
 
     private FavoriteStopsFragment mFavoriteStopsFragment;
     private StationOnMapFragment mStationOnMapFragment;
+    private CharSequence mActivityTitle;
     private final String FAVORITE_STOPS = "favorite_stops";
     private static final String STATION_ON_MAP = "station_on_map";
     static final String TAG_ERROR_DIALOG_FRAGMENT="errorDialog";
+    private static final String STATION_ON_MAP_TAG = "station_on_map_tag";
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
@@ -45,6 +47,19 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        getSupportFragmentManager().addOnBackStackChangedListener(
+                new FragmentManager.OnBackStackChangedListener() {
+                    public void onBackStackChanged() {
+                        int cnt = getSupportFragmentManager().getBackStackEntryCount();
+                        if (cnt == 0) {      /* we came back from artist's tracks to artists list */
+                            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                            showArtistsData();
+                        } else {
+                            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                        }
+                    }
+                });
 
         mFavoriteStopsFragment =
                 (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS);
@@ -66,6 +81,24 @@ public class MainActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
+    }
+
+    /**
+     * Up button was pressed - remove to top entry Back Stack
+     */
+    @Override
+    public boolean onSupportNavigateUp() {
+        getSupportFragmentManager().popBackStack();
+        return true;
+    }
+
+    /**
+     * Show recent artists data after user pressed Back or Up button.
+     */
+    private void showArtistsData() {
+        mActivityTitle = getResources().getString(R.string.title_activity_artists);
+        getSupportActionBar().setTitle(mActivityTitle);
+        mFavoriteStopsFragment.showFavoriteStops();
     }
 
     @Override
@@ -102,6 +135,7 @@ public class MainActivity extends AppCompatActivity
                 getSupportFragmentManager()
                         .beginTransaction()
                         .add(R.id.left_dynamic_fragments_frame, mStationOnMapFragment, STATION_ON_MAP)
+                        .addToBackStack(STATION_ON_MAP_TAG)     // it will also show 'Up' button in the action bar
                         .commit();
             }
             return true;
