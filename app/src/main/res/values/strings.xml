@@ -13,4 +13,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="no_maps">Google Maps V2 not available!</string>
+    <string name="un">UN</string>
+    <string name="united_nations">United Nations</string>
 </resources>
