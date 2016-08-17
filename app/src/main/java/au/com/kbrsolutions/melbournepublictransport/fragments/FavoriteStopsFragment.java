@@ -2,7 +2,6 @@ package au.com.kbrsolutions.melbournepublictransport.fragments;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -18,27 +17,35 @@ import android.widget.TextView;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
+import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 
 /**
  *
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link FavoriteStopsFragment.OnFragmentInteractionListener} interface
+ * {@link FavoriteStopsFragment.FavoriteStopsFragmentCallbacks} interface
  * to handle interaction events.
  * Use the {@link FavoriteStopsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class FavoriteStopsFragment extends Fragment {
 
+    /**
+     * Declares callback methods that have to be implemented by parent Activity
+     */
+    public interface FavoriteStopsFragmentCallbacks {
+        void handleSelectedStop(StopDetails stopDetails);
+    }
+
+    private FavoriteStopsFragmentCallbacks mCallbacks;
     private ListView mListView;
     //    private ArrayAdapter<String> adapter;
-    private FolderArrayAdapter<FolderItem> stopsArrayAdapter;
-    private static List<FolderItem> mFolderItemList = new ArrayList<>();
+    private FolderArrayAdapter<StopDetails> stopsArrayAdapter;
+    private static List<StopDetails> mFolderItemList = new ArrayList<>();
     private static List<String> favoriteStations = new ArrayList<>();
     private TextView mEmptyView;
     // TODO: Rename parameter arguments, choose names that match
@@ -49,8 +56,6 @@ public class FavoriteStopsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
@@ -112,20 +117,9 @@ public class FavoriteStopsFragment extends Fragment {
     }
 
     private void handleRowClicked(int position) {
-//        FolderItem folderItem = stopsArrayAdapter.getItem(position);
-//        String stopName = folderItem.fileName;
-//        Log.v(TAG, "handleRowClicked - stopName: " + stopName);
-//        Intent intent = new Intent(this, NextDeparturesActivity.class);
-//        intent.putExtra(STOP_NAME, stopName);
-//        startActivity(intent);
+        StopDetails stopDetails = stopsArrayAdapter.getItem(position);
+        mCallbacks.handleSelectedStop(stopDetails);
     }
-
-    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteractionListener(uri);
-//        }
-//    }
 
     public void showFavoriteStops() {
 
@@ -134,8 +128,8 @@ public class FavoriteStopsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof FavoriteStopsFragmentCallbacks) {
+            mCallbacks = (FavoriteStopsFragmentCallbacks) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -145,52 +139,36 @@ public class FavoriteStopsFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteractionListener(Uri uri);
-    }
-
-
-}
-
-class FolderItem {
-
-    public final String fileName;
-    public final Date fileUpdateTime;
-    public final String mimeType;
-    public final boolean isTrashed;
-    public final int itemIdxInList;
-
-    public FolderItem(String fileName, Date fileUpdateTime, String mimeType, boolean isTrashed, int itemIdxInList) {
-        this.fileName = fileName;
-        this.fileUpdateTime = fileUpdateTime;
-        this.mimeType = mimeType;
-        this.isTrashed = isTrashed;
-        this.itemIdxInList = itemIdxInList;
+        mCallbacks = null;
     }
 
 }
 
-class FolderArrayAdapter<T> extends ArrayAdapter<FolderItem> {
+//class StopDetails {
+//
+//    public final String fileName;
+//    public final Date fileUpdateTime;
+//    public final String mimeType;
+//    public final boolean isTrashed;
+//    public final int itemIdxInList;
+//
+//    public StopDetails(String fileName, Date fileUpdateTime, String mimeType, boolean isTrashed, int itemIdxInList) {
+//        this.fileName = fileName;
+//        this.fileUpdateTime = fileUpdateTime;
+//        this.mimeType = mimeType;
+//        this.isTrashed = isTrashed;
+//        this.itemIdxInList = itemIdxInList;
+//    }
+//
+//}
+
+class FolderArrayAdapter<T> extends ArrayAdapter<StopDetails> {
 
     private TextView fileNameTv;
     private TextView fileUpdateTsTv;
     //        private ImageView fileImage;
     private ImageView infoImage;
-    private List<FolderItem> objects;
+    private List<StopDetails> objects;
     //        private HomeActivity mActivity;
     private View.OnClickListener folderOnClickListener;
     //	@SuppressLint("SimpleDateFormat")
@@ -198,7 +176,7 @@ class FolderArrayAdapter<T> extends ArrayAdapter<FolderItem> {
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MMM.d hh:mm:ss", Locale.getDefault());
     private final static String LOC_CAT_TAG = "FolderArrayAdapter";
 
-    public FolderArrayAdapter(Activity activity, List<FolderItem> objects) {
+    public FolderArrayAdapter(Activity activity, List<StopDetails> objects) {
         super(activity.getApplicationContext(), -1, objects);
         this.objects = objects;
     }
@@ -219,8 +197,8 @@ class FolderArrayAdapter<T> extends ArrayAdapter<FolderItem> {
         fileNameTv = (TextView) v.findViewById(R.id.fileNameId);
 //        fileUpdateTsTv = (TextView) v.findViewById(R.id.fileUpdateTsId);
 
-        FolderItem folderItem = objects.get(position);
-        fileNameTv.setText(folderItem.fileName);
+        StopDetails folderItem = objects.get(position);
+        fileNameTv.setText(folderItem.stopName);
 //		Log.i(LOC_CAT_TAG, "getView - name/mIsTrashed: " + folderItem.fileName + "/" + folderItem.mIsTrashed);
         return v;
     }

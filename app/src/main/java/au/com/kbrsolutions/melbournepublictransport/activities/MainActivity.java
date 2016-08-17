@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.FeatureInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -23,13 +22,16 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
+import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
+import au.com.kbrsolutions.melbournepublictransport.fragments.AddStopFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StationOnMapFragment;
 
 // git push -u origin
 
 public class MainActivity extends AppCompatActivity
-        implements FavoriteStopsFragment.OnFragmentInteractionListener {
+        implements FavoriteStopsFragment.FavoriteStopsFragmentCallbacks,
+        AddStopFragment.AddStopFragmentCallbacks {
 
     private FavoriteStopsFragment mFavoriteStopsFragment;
     private StationOnMapFragment mStationOnMapFragment;
@@ -78,10 +80,21 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                handleFabClicked();
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
+    }
+
+    // FIXME: 17/08/2016 
+    private void handleFabClicked() {
+        int cnt = getSupportFragmentManager().getBackStackEntryCount();
+        if (cnt == 0) {      /* current fragment is FavoriteStopsFragment */
+            if (mFavoriteStopsFragment == null) {
+                mFavoriteStopsFragment = new FavoriteStopsFragment();
+            }
+        }
     }
 
     /**
@@ -104,8 +117,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFragmentInteractionListener(Uri uri) {
-        Log.v(TAG, "onFragmentInteractionListener called");
+    public void handleSelectedStop(StopDetails stopDetails) {
+        Log.v(TAG, "handleSelectedStop called");
+    }
+
+    public void addStop(StopDetails stopDetails) {
+        Log.v(TAG, "addStop - stopDetails: " + stopDetails);
     }
 
     @Override
