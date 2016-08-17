@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity
     private static final String STATION_ON_MAP = "station_on_map";
     static final String TAG_ERROR_DIALOG_FRAGMENT="errorDialog";
     private static final String STATION_ON_MAP_TAG = "station_on_map_tag";
+    private FloatingActionButton fab;
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity
                         int cnt = getSupportFragmentManager().getBackStackEntryCount();
                         if (cnt == 0) {      /* we came back from artist's tracks to artists list */
                             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                            showArtistsData();
+                            showFavoriteStops();
                         } else {
                             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                         }
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity
                     .commit();
         }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,12 +94,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Show recent artists data after user pressed Back or Up button.
+     * Show favorite stops after user pressed Back or Up button.
      */
-    private void showArtistsData() {
+    private void showFavoriteStops() {
         mActivityTitle = getResources().getString(R.string.title_activity_artists);
         getSupportActionBar().setTitle(mActivityTitle);
         mFavoriteStopsFragment.showFavoriteStops();
+        fab.show();
     }
 
     @Override
@@ -137,6 +139,7 @@ public class MainActivity extends AppCompatActivity
                         .add(R.id.left_dynamic_fragments_frame, mStationOnMapFragment, STATION_ON_MAP)
                         .addToBackStack(STATION_ON_MAP_TAG)     // it will also show 'Up' button in the action bar
                         .commit();
+                fab.hide();
             }
             return true;
         } else if (id == R.id.action_settings) {
