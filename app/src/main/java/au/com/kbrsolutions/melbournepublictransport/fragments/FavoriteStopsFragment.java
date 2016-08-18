@@ -81,6 +81,16 @@ public class FavoriteStopsFragment extends Fragment {
         return fragment;
     }
 
+    public void hideView() {
+        Log.v(TAG, "hideView");
+        rootView.setVisibility(View.INVISIBLE);
+    }
+
+    public void showView() {
+        Log.v(TAG, "showView");
+        rootView.setVisibility(View.VISIBLE);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,11 +100,12 @@ public class FavoriteStopsFragment extends Fragment {
         }
     }
 
+    private View rootView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_favorite_stops_list_view, container, false);
+        rootView = inflater.inflate(R.layout.fragment_favorite_stops_list_view, container, false);
 
         mListView = (ListView) rootView.findViewById(R.id.favoriteStopsListView);
         stopsArrayAdapter = new FolderArrayAdapter<>(getActivity(), mFolderItemList);
@@ -122,7 +133,8 @@ public class FavoriteStopsFragment extends Fragment {
     }
 
     public void showFavoriteStops() {
-
+        // FIXME: 18/08/2016 add code
+         showView();
     }
 
     @Override

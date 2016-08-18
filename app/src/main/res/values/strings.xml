@@ -10,6 +10,7 @@
     <string name="title_activity_main">MainActivity</string>
 
     <string name="no_favorite_stops_selected">No favorite stops selected</string>
+    <string name="no_stops_to_add">There are no stops to add</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

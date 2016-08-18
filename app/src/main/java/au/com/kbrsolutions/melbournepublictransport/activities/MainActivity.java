@@ -37,12 +37,14 @@ public class MainActivity extends AppCompatActivity
     private StationOnMapFragment mStationOnMapFragment;
     private CharSequence mActivityTitle;
     private final String FAVORITE_STOPS = "favorite_stops";
-    private static final String STATION_ON_MAP = "station_on_map";
     static final String TAG_ERROR_DIALOG_FRAGMENT="errorDialog";
+//    private static final String STATION_ON_MAP = "station_on_map";
     private static final String STATION_ON_MAP_TAG = "station_on_map_tag";
+    private static final String ADD_STOP_TAG = "add_stop_tag";
     private FloatingActionButton fab;
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
+    private AddStopFragment mAddStopFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,9 +93,16 @@ public class MainActivity extends AppCompatActivity
     private void handleFabClicked() {
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         if (cnt == 0) {      /* current fragment is FavoriteStopsFragment */
-            if (mFavoriteStopsFragment == null) {
-                mFavoriteStopsFragment = new FavoriteStopsFragment();
+            if (mAddStopFragment == null) {
+                mAddStopFragment = new AddStopFragment();
             }
+            mFavoriteStopsFragment.hideView();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.left_dynamic_fragments_frame, mAddStopFragment, ADD_STOP_TAG)
+                    .addToBackStack(ADD_STOP_TAG)     // it will also show 'Up' button in the action bar
+                    .commit();
+            fab.hide();
         }
     }
 
@@ -122,7 +131,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void addStop(StopDetails stopDetails) {
-        Log.v(TAG, "addStop - stopDetails: " + stopDetails);
+        Log.v(TAG, "addStop - stopDetails/mFavoriteStopsFragment: " + stopDetails + "/" + mFavoriteStopsFragment);
+        if (mFavoriteStopsFragment != null) {
+            mFavoriteStopsFragment.showView();
+        }
+        fab.show();
     }
 
     @Override
@@ -153,7 +166,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .add(R.id.left_dynamic_fragments_frame, mStationOnMapFragment, STATION_ON_MAP)
+                        .add(R.id.left_dynamic_fragments_frame, mStationOnMapFragment, STATION_ON_MAP_TAG)
                         .addToBackStack(STATION_ON_MAP_TAG)     // it will also show 'Up' button in the action bar
                         .commit();
                 fab.hide();
