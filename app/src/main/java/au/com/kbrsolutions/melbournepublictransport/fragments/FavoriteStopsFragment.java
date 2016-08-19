@@ -44,9 +44,9 @@ public class FavoriteStopsFragment extends Fragment {
     private FavoriteStopsFragmentCallbacks mCallbacks;
     private ListView mListView;
     //    private ArrayAdapter<String> adapter;
-    private FolderArrayAdapter<StopDetails> stopsArrayAdapter;
-    private static List<StopDetails> mFolderItemList = new ArrayList<>();
-    private static List<String> favoriteStations = new ArrayList<>();
+    private FolderArrayAdapter<StopDetails> mStopDetailsArrayAdapter;
+    private List<StopDetails> mStopDetailsList;
+//    private static List<String> favoriteStations = new ArrayList<>();
     private TextView mEmptyView;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -107,10 +107,13 @@ public class FavoriteStopsFragment extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_favorite_stops_list_view, container, false);
 
+        if (mStopDetailsList == null) {
+            mStopDetailsList = new ArrayList<>();
+        }
         mListView = (ListView) rootView.findViewById(R.id.favoriteStopsListView);
-        stopsArrayAdapter = new FolderArrayAdapter<>(getActivity(), mFolderItemList);
-        Log.v(TAG, "onCreateView - stopsArrayAdapter/mListView: " + stopsArrayAdapter + "/" + mListView);
-        mListView.setAdapter(stopsArrayAdapter);
+        mStopDetailsArrayAdapter = new FolderArrayAdapter<>(getActivity(), mStopDetailsList);
+        Log.v(TAG, "onCreateView - mStopDetailsArrayAdapter/mListView: " + mStopDetailsArrayAdapter + "/" + mListView);
+        mListView.setAdapter(mStopDetailsArrayAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -127,8 +130,27 @@ public class FavoriteStopsFragment extends Fragment {
         return rootView;
     }
 
+    public void addStop(StopDetails stopDetails) {
+        Log.v(TAG, "addStop - stopDetails: " + stopDetails.stopName);
+        Log.v(TAG, "addStop - mStopDetailsList after : " + mStopDetailsList.size());
+        if (mStopDetailsList != null) {
+            mStopDetailsArrayAdapter.addAll(stopDetails);
+            Log.v(TAG, "addStop - mStopDetailsList: " + mStopDetailsList.size() + "/" + mStopDetailsArrayAdapter.isEmpty());
+            mListView.clearChoices();    /* will clear previously selected artist row */
+            mStopDetailsArrayAdapter.notifyDataSetChanged(); /* call after clearChoices above */
+            // FIXME: 18/08/2016 handle the line below
+//            mListView.setSelection(mArtistsListViewFirstVisiblePosition);
+            if (mStopDetailsArrayAdapter.isEmpty()) {
+                mEmptyView.setVisibility(View.VISIBLE);
+//                mEmptyView.setText();
+            } else {
+                mEmptyView.setVisibility(View.GONE);
+            }
+        }
+    }
+
     private void handleRowClicked(int position) {
-        StopDetails stopDetails = stopsArrayAdapter.getItem(position);
+        StopDetails stopDetails = mStopDetailsArrayAdapter.getItem(position);
         mCallbacks.handleSelectedStop(stopDetails);
     }
 
@@ -206,7 +228,7 @@ class FolderArrayAdapter<T> extends ArrayAdapter<StopDetails> {
         infoImage = (ImageView) v.findViewById(R.id.infoImageId);
         infoImage.setOnClickListener(folderOnClickListener);
 
-        fileNameTv = (TextView) v.findViewById(R.id.fileNameId);
+        fileNameTv = (TextView) v.findViewById(R.id.stopNameId);
 //        fileUpdateTsTv = (TextView) v.findViewById(R.id.fileUpdateTsId);
 
         StopDetails folderItem = objects.get(position);

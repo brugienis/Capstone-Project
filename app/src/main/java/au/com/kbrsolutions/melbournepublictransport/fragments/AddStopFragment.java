@@ -44,7 +44,7 @@ public class AddStopFragment extends Fragment {
     AddStopFragmentCallbacks mCallbacks;
     private ListView mListView;
     //    private ArrayAdapter<String> adapter;
-    private StopsDetailsArrayAdapter<StopDetails> stopsDetailsArrayAdapter;
+    private AvailableStopsDetailsArrayAdapter<StopDetails> availableStopsDetailsArrayAdapter;
     private static List<StopDetails> mFolderItemList = new ArrayList<>();
     private static List<String> favoriteStations = new ArrayList<>();
     private TextView mEmptyView;
@@ -96,9 +96,10 @@ public class AddStopFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_add_stop, container, false);
 
         mListView = (ListView) rootView.findViewById(R.id.addStopsListView);
-        stopsDetailsArrayAdapter = new StopsDetailsArrayAdapter<>(getActivity(), mFolderItemList);
-        Log.v(TAG, "onCreateView - stopsArrayAdapter/mListView: " + stopsDetailsArrayAdapter + "/" + mListView);
-        mListView.setAdapter(stopsDetailsArrayAdapter);
+        getAvailableStopsList();
+        availableStopsDetailsArrayAdapter = new AvailableStopsDetailsArrayAdapter<>(getActivity(), mFolderItemList);
+        Log.v(TAG, "onCreateView - stopsArrayAdapter/mListView: " + availableStopsDetailsArrayAdapter + "/" + mListView);
+        mListView.setAdapter(availableStopsDetailsArrayAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -107,16 +108,25 @@ public class AddStopFragment extends Fragment {
             }
         });
 
-        mEmptyView = (TextView) rootView.findViewById(R.id.emptyView);
-        Log.v(TAG, "onCreateView - mEmptyView: " + mEmptyView);
-        mEmptyView.setText(getActivity().getResources()
-                .getString(R.string.no_stops_to_add));
-        Log.v(TAG, "onCreateView - showing empty list");
+        if (mFolderItemList.size() == 0) {
+            mEmptyView = (TextView) rootView.findViewById(R.id.emptyView);
+            Log.v(TAG, "onCreateView - mEmptyView: " + mEmptyView);
+            mEmptyView.setText(getActivity().getResources()
+                    .getString(R.string.no_stops_to_add));
+            Log.v(TAG, "onCreateView - showing empty list");
+        }
         return rootView;
     }
 
+    private void getAvailableStopsList() {
+        StopDetails stopDetails = new StopDetails("BlaBla");
+        mFolderItemList = new ArrayList<>();
+        mFolderItemList.add(stopDetails);
+        return;
+    }
+
     private void handleRowClicked(int position) {
-        StopDetails stopDetails = stopsDetailsArrayAdapter.getItem(position);
+        StopDetails stopDetails = availableStopsDetailsArrayAdapter.getItem(position);
         mCallbacks.addStop(stopDetails);
     }
 
@@ -138,9 +148,9 @@ public class AddStopFragment extends Fragment {
     }
 }
 
-class StopsDetailsArrayAdapter<T> extends ArrayAdapter<StopDetails> {
+class AvailableStopsDetailsArrayAdapter<T> extends ArrayAdapter<StopDetails> {
 
-    private TextView fileNameTv;
+    private TextView stopNameTv;
     private TextView fileUpdateTsTv;
     //        private ImageView fileImage;
     private ImageView infoImage;
@@ -152,7 +162,7 @@ class StopsDetailsArrayAdapter<T> extends ArrayAdapter<StopDetails> {
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MMM.d hh:mm:ss", Locale.getDefault());
     private final static String LOC_CAT_TAG = "FolderArrayAdapter";
 
-    public StopsDetailsArrayAdapter(Activity activity, List<StopDetails> objects) {
+    public AvailableStopsDetailsArrayAdapter(Activity activity, List<StopDetails> objects) {
         super(activity.getApplicationContext(), -1, objects);
         this.objects = objects;
     }
@@ -163,18 +173,18 @@ class StopsDetailsArrayAdapter<T> extends ArrayAdapter<StopDetails> {
         View v = convertView;
         if (v == null) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inflater.inflate(R.layout.favorite_stops_list_view, parent, false);
+            v = inflater.inflate(R.layout.fragment_add_stops_list_view, parent, false);
         }
 //            fileImage = (ImageView) v.findViewById(R.id.folderFileImageId);
 
-        infoImage = (ImageView) v.findViewById(R.id.infoImageId);
-        infoImage.setOnClickListener(folderOnClickListener);
+//        infoImage = (ImageView) v.findViewById(R.id.infoImageId);
+//        infoImage.setOnClickListener(folderOnClickListener);
 
-        fileNameTv = (TextView) v.findViewById(R.id.fileNameId);
+        stopNameTv = (TextView) v.findViewById(R.id.stopNameId);
 //        fileUpdateTsTv = (TextView) v.findViewById(R.id.fileUpdateTsId);
 
         StopDetails folderItem = objects.get(position);
-        fileNameTv.setText(folderItem.stopName);
+        stopNameTv.setText(folderItem.stopName);
 //		Log.i(LOC_CAT_TAG, "getView - name/mIsTrashed: " + folderItem.fileName + "/" + folderItem.mIsTrashed);
         return v;
     }

@@ -4,7 +4,7 @@
                 android:layout_height="match_parent"
                 android:paddingLeft="4dp"
                 android:paddingRight="4dp"
-                android:id="@+id/folderFragmentLayoutId" >
+                android:id="@+id/addStopFragmentLayoutId" >
 
     <ImageView
         android:id="@+id/folderFileImageId"
@@ -33,35 +33,5 @@
         android:background="@color/view_not_in_focus"
         android:paddingTop="5dp"
         android:textSize="14sp" />
-    <!--
-        android:layout_marginTop="5dp" -->
-
-    <ImageView
-        android:id="@+id/mapImageId"
-        android:layout_width="@dimen/touchable_size"
-        android:layout_height="@dimen/touchable_size"
-        android:layout_toLeftOf="@+id/infoImageId"
-        android:layout_centerInParent="true"
-        android:adjustViewBounds="true"
-        android:background="@color/view_not_in_focus"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:src="@drawable/ic_action_map" />
-
-    <ImageView
-        android:id="@+id/infoImageId"
-        android:layout_width="@dimen/touchable_size"
-        android:layout_height="@dimen/touchable_size"
-        android:layout_alignParentRight="true"
-        android:layout_centerInParent="true"
-        android:adjustViewBounds="true"
-        android:background="@color/view_not_in_focus"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:src="@drawable/ic_delete_black_48dp" />
 
 </RelativeLayout>

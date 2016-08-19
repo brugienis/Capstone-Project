@@ -135,6 +135,13 @@ public class MainActivity extends AppCompatActivity
         if (mFavoriteStopsFragment != null) {
             mFavoriteStopsFragment.showView();
         }
+        getSupportFragmentManager()
+                .beginTransaction()
+                .remove(mAddStopFragment)
+                .commit();
+
+        getSupportFragmentManager().popBackStack();
+        mFavoriteStopsFragment.addStop(stopDetails);
         fab.show();
     }
 
