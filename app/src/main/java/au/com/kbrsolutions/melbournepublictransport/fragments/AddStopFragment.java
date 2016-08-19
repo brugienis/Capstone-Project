@@ -119,9 +119,12 @@ public class AddStopFragment extends Fragment {
     }
 
     private void getAvailableStopsList() {
-        StopDetails stopDetails = new StopDetails("BlaBla");
         mFolderItemList = new ArrayList<>();
-        mFolderItemList.add(stopDetails);
+        StopDetails stopDetails;
+        for (String stopName : stopNames) {
+            stopDetails = new StopDetails(stopName);
+            mFolderItemList.add(stopDetails);
+        }
         return;
     }
 
@@ -146,6 +149,39 @@ public class AddStopFragment extends Fragment {
         super.onDetach();
         mCallbacks = null;
     }
+
+    String[] stopNames = new String[] { "Armadale",
+            "Aspendale",
+            "Bentleigh",
+            "Bonbeach",
+            "Carrum",
+            "Caulfield",
+            "Chelsea",
+            "Cheltenham",
+            "Edithvale",
+            "Flagstaff",
+            "Flinders Street",
+            "Frankston",
+            "Glenhuntly",
+            "Hawksburn",
+            "Highett",
+            "Kananook",
+            "Malvern",
+            "McKinnon",
+            "Melbourne Central",
+            "Mentone",
+            "Moorabbin",
+            "Mordialloc",
+            "Ormond",
+            "Parkdale",
+            "Parliament",
+            "Patterson",
+            "Richmond",
+            "Seaford",
+            "South Yarra",
+            "Southern Cross",
+            "Toorak"
+    };
 }
 
 class AvailableStopsDetailsArrayAdapter<T> extends ArrayAdapter<StopDetails> {
@@ -188,4 +224,37 @@ class AvailableStopsDetailsArrayAdapter<T> extends ArrayAdapter<StopDetails> {
 //		Log.i(LOC_CAT_TAG, "getView - name/mIsTrashed: " + folderItem.fileName + "/" + folderItem.mIsTrashed);
         return v;
     }
+
+    String[] stopNames = new String[] { "Armadale",
+            "Aspendale",
+            "Bentleigh",
+            "Bonbeach",
+            "Carrum",
+            "Caulfield",
+            "Chelsea",
+            "Cheltenham",
+            "Edithvale",
+            "Flagstaff",
+            "Flinders Street",
+            "Frankston",
+            "Glenhuntly",
+            "Hawksburn",
+            "Highett",
+            "Kananook",
+            "Malvern",
+            "McKinnon",
+            "Melbourne Central",
+            "Mentone",
+            "Moorabbin",
+            "Mordialloc",
+            "Ormond",
+            "Parkdale",
+            "Parliament",
+            "Patterson",
+            "Richmond",
+            "Seaford",
+            "South Yarra",
+            "Southern Cross",
+            "Toorak"
+    };
 }

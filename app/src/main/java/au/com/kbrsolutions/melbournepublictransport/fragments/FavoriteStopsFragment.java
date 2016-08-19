@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
+import au.com.kbrsolutions.melbournepublictransport.activities.MainActivity;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 
 /**
@@ -129,7 +130,7 @@ public class FavoriteStopsFragment extends Fragment {
 
     public void addStop(StopDetails stopDetails) {
         if (mStopDetailsList != null) {
-            mStopDetailsArrayAdapter.addAll(stopDetails);
+            mStopDetailsArrayAdapter.add(stopDetails);
             mListView.clearChoices();    /* will clear previously selected artist row */
             mStopDetailsArrayAdapter.notifyDataSetChanged(); /* call after clearChoices above */
             // FIXME: 18/08/2016 handle the line below
@@ -169,16 +170,21 @@ public class FavoriteStopsFragment extends Fragment {
         mCallbacks = null;
     }
 
-    private void processSelectedStop() {
-        Log.v(TAG, "processSelectedStop");
+    private void processSelectedStop(int position) {
+        Log.v(TAG, "processSelectedStop - position: " + position);
     }
 
-    private void showSelectedRowOnMap() {
-        Log.v(TAG, "showSelectedRowOnMap");
+    private void showSelectedRowOnMap(int position) {
+        Log.v(TAG, "showSelectedRowOnMap - position: " + position);
     }
 
-    private void removeSelectedRow() {
-        Log.v(TAG, "removeSelectedRow");
+    public void removeSelectedStop(int position) {
+        Log.v(TAG, "removeSelectedStop - position: " + position);
+        mStopDetailsArrayAdapter.remove(mStopDetailsArrayAdapter.getItem(position));
+        mStopDetailsArrayAdapter.notifyDataSetChanged();
+        if (mStopDetailsArrayAdapter.isEmpty()) {
+            mEmptyView.setVisibility(View.VISIBLE);
+        }
     }
 
     class StopDetailsArrayAdapter<T> extends ArrayAdapter<StopDetails> {
@@ -194,7 +200,7 @@ public class FavoriteStopsFragment extends Fragment {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             //		Log.i(LOC_CAT_TAG, "getView - start");
             View v = convertView;
             if (v == null) {
@@ -208,7 +214,7 @@ public class FavoriteStopsFragment extends Fragment {
             stopNameTv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    processSelectedStop();
+                    processSelectedStop(position);
                 }
             });
 
@@ -216,7 +222,7 @@ public class FavoriteStopsFragment extends Fragment {
             mapImageId.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    removeSelectedRow();
+                    removeSelectedRow(position);
                 }
             });
 
@@ -224,23 +230,24 @@ public class FavoriteStopsFragment extends Fragment {
             garbageInfoImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    showSelectedRowOnMap();
+                    showSelectedRowOnMap(position);
                 }
             });
 
             return v;
         }
 
-        private void processSelectedStop() {
-            FavoriteStopsFragment.this.processSelectedStop();
+        private void processSelectedStop(int position) {
+            FavoriteStopsFragment.this.processSelectedStop(position);
         }
 
-        private void removeSelectedRow() {
-            FavoriteStopsFragment.this.removeSelectedRow();
+        private void removeSelectedRow(int position) {
+//            FavoriteStopsFragment.this.removeSelectedStop(position);
+            ((MainActivity)getActivity()).removeSelectedRow(position);
         }
 
-        private void showSelectedRowOnMap() {
-            FavoriteStopsFragment.this.showSelectedRowOnMap();
+        private void showSelectedRowOnMap(int position) {
+            FavoriteStopsFragment.this.showSelectedRowOnMap(position);
         }
 
     }
