@@ -14,11 +14,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
@@ -44,7 +41,7 @@ public class FavoriteStopsFragment extends Fragment {
     private FavoriteStopsFragmentCallbacks mCallbacks;
     private ListView mListView;
     //    private ArrayAdapter<String> adapter;
-    private FolderArrayAdapter<StopDetails> mStopDetailsArrayAdapter;
+    private StopDetailsArrayAdapter<StopDetails> mStopDetailsArrayAdapter;
     private List<StopDetails> mStopDetailsList;
 //    private static List<String> favoriteStations = new ArrayList<>();
     private TextView mEmptyView;
@@ -111,7 +108,7 @@ public class FavoriteStopsFragment extends Fragment {
             mStopDetailsList = new ArrayList<>();
         }
         mListView = (ListView) rootView.findViewById(R.id.favoriteStopsListView);
-        mStopDetailsArrayAdapter = new FolderArrayAdapter<>(getActivity(), mStopDetailsList);
+        mStopDetailsArrayAdapter = new StopDetailsArrayAdapter<>(getActivity(), mStopDetailsList);
         Log.v(TAG, "onCreateView - mStopDetailsArrayAdapter/mListView: " + mStopDetailsArrayAdapter + "/" + mListView);
         mListView.setAdapter(mStopDetailsArrayAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -131,18 +128,14 @@ public class FavoriteStopsFragment extends Fragment {
     }
 
     public void addStop(StopDetails stopDetails) {
-        Log.v(TAG, "addStop - stopDetails: " + stopDetails.stopName);
-        Log.v(TAG, "addStop - mStopDetailsList after : " + mStopDetailsList.size());
         if (mStopDetailsList != null) {
             mStopDetailsArrayAdapter.addAll(stopDetails);
-            Log.v(TAG, "addStop - mStopDetailsList: " + mStopDetailsList.size() + "/" + mStopDetailsArrayAdapter.isEmpty());
             mListView.clearChoices();    /* will clear previously selected artist row */
             mStopDetailsArrayAdapter.notifyDataSetChanged(); /* call after clearChoices above */
             // FIXME: 18/08/2016 handle the line below
 //            mListView.setSelection(mArtistsListViewFirstVisiblePosition);
             if (mStopDetailsArrayAdapter.isEmpty()) {
                 mEmptyView.setVisibility(View.VISIBLE);
-//                mEmptyView.setText();
             } else {
                 mEmptyView.setVisibility(View.GONE);
             }
@@ -176,64 +169,79 @@ public class FavoriteStopsFragment extends Fragment {
         mCallbacks = null;
     }
 
-}
-
-//class StopDetails {
-//
-//    public final String fileName;
-//    public final Date fileUpdateTime;
-//    public final String mimeType;
-//    public final boolean isTrashed;
-//    public final int itemIdxInList;
-//
-//    public StopDetails(String fileName, Date fileUpdateTime, String mimeType, boolean isTrashed, int itemIdxInList) {
-//        this.fileName = fileName;
-//        this.fileUpdateTime = fileUpdateTime;
-//        this.mimeType = mimeType;
-//        this.isTrashed = isTrashed;
-//        this.itemIdxInList = itemIdxInList;
-//    }
-//
-//}
-
-class FolderArrayAdapter<T> extends ArrayAdapter<StopDetails> {
-
-    private TextView fileNameTv;
-    private TextView fileUpdateTsTv;
-    //        private ImageView fileImage;
-    private ImageView infoImage;
-    private List<StopDetails> objects;
-    //        private HomeActivity mActivity;
-    private View.OnClickListener folderOnClickListener;
-    //	@SuppressLint("SimpleDateFormat")
-//	private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
-    private DateFormat dateFormat = new SimpleDateFormat("yyyy-MMM.d hh:mm:ss", Locale.getDefault());
-    private final static String LOC_CAT_TAG = "FolderArrayAdapter";
-
-    public FolderArrayAdapter(Activity activity, List<StopDetails> objects) {
-        super(activity.getApplicationContext(), -1, objects);
-        this.objects = objects;
+    private void processSelectedStop() {
+        Log.v(TAG, "processSelectedStop");
     }
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        //		Log.i(LOC_CAT_TAG, "getView - start");
-        View v = convertView;
-        if (v == null) {
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inflater.inflate(R.layout.favorite_stops_list_view, parent, false);
+    private void showSelectedRowOnMap() {
+        Log.v(TAG, "showSelectedRowOnMap");
+    }
+
+    private void removeSelectedRow() {
+        Log.v(TAG, "removeSelectedRow");
+    }
+
+    class StopDetailsArrayAdapter<T> extends ArrayAdapter<StopDetails> {
+
+        private TextView stopNameTv;
+        private List<StopDetails> objects;
+
+        private final String TAG = ((Object) this).getClass().getSimpleName();
+
+        public StopDetailsArrayAdapter(Activity activity, List<StopDetails> objects) {
+            super(activity.getApplicationContext(), -1, objects);
+            this.objects = objects;
         }
-//            fileImage = (ImageView) v.findViewById(R.id.folderFileImageId);
 
-        infoImage = (ImageView) v.findViewById(R.id.infoImageId);
-        infoImage.setOnClickListener(folderOnClickListener);
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            //		Log.i(LOC_CAT_TAG, "getView - start");
+            View v = convertView;
+            if (v == null) {
+                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                v = inflater.inflate(R.layout.favorite_stops_list_view, parent, false);
+            }
 
-        fileNameTv = (TextView) v.findViewById(R.id.stopNameId);
-//        fileUpdateTsTv = (TextView) v.findViewById(R.id.fileUpdateTsId);
+            stopNameTv = (TextView) v.findViewById(R.id.stopNameId);
+            StopDetails folderItem = objects.get(position);
+            stopNameTv.setText(folderItem.stopName);
+            stopNameTv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    processSelectedStop();
+                }
+            });
 
-        StopDetails folderItem = objects.get(position);
-        fileNameTv.setText(folderItem.stopName);
-//		Log.i(LOC_CAT_TAG, "getView - name/mIsTrashed: " + folderItem.fileName + "/" + folderItem.mIsTrashed);
-        return v;
+            ImageView mapImageId = (ImageView) v.findViewById(R.id.garbageImageId);
+            mapImageId.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    removeSelectedRow();
+                }
+            });
+
+            ImageView garbageInfoImage = (ImageView) v.findViewById(R.id.mapImageId);
+            garbageInfoImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showSelectedRowOnMap();
+                }
+            });
+
+            return v;
+        }
+
+        private void processSelectedStop() {
+            FavoriteStopsFragment.this.processSelectedStop();
+        }
+
+        private void removeSelectedRow() {
+            FavoriteStopsFragment.this.removeSelectedRow();
+        }
+
+        private void showSelectedRowOnMap() {
+            FavoriteStopsFragment.this.showSelectedRowOnMap();
+        }
+
     }
 }

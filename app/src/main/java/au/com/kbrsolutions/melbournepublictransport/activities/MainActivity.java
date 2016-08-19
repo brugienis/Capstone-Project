@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity
 
     private FavoriteStopsFragment mFavoriteStopsFragment;
     private StationOnMapFragment mStationOnMapFragment;
+    private AddStopFragment mAddStopFragment;
     private CharSequence mActivityTitle;
     private final String FAVORITE_STOPS = "favorite_stops";
     static final String TAG_ERROR_DIALOG_FRAGMENT="errorDialog";
@@ -44,7 +45,6 @@ public class MainActivity extends AppCompatActivity
     private FloatingActionButton fab;
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
-    private AddStopFragment mAddStopFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity
                 new FragmentManager.OnBackStackChangedListener() {
                     public void onBackStackChanged() {
                         int cnt = getSupportFragmentManager().getBackStackEntryCount();
-                        if (cnt == 0) {      /* we came back from artist's tracks to artists list */
+                        if (cnt == 0) {      /* we came back to Favorite Stops */
                             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                             showFavoriteStops();
                         } else {
