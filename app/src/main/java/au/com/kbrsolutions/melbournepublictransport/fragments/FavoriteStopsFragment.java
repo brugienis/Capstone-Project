@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
-import au.com.kbrsolutions.melbournepublictransport.activities.MainActivity;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 
 /**
@@ -27,8 +26,6 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
  * Activities that contain this fragment must implement the
  * {@link FavoriteStopsFragment.FavoriteStopsFragmentCallbacks} interface
  * to handle interaction events.
- * Use the {@link FavoriteStopsFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class FavoriteStopsFragment extends Fragment {
 
@@ -41,19 +38,10 @@ public class FavoriteStopsFragment extends Fragment {
 
     private FavoriteStopsFragmentCallbacks mCallbacks;
     private ListView mListView;
-    //    private ArrayAdapter<String> adapter;
     private StopDetailsArrayAdapter<StopDetails> mStopDetailsArrayAdapter;
     private List<StopDetails> mStopDetailsList;
-//    private static List<String> favoriteStations = new ArrayList<>();
     private TextView mEmptyView;
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private View rootView;
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
@@ -61,44 +49,22 @@ public class FavoriteStopsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FavoriteStopsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FavoriteStopsFragment newInstance(String param1, String param2) {
-        FavoriteStopsFragment fragment = new FavoriteStopsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     public void hideView() {
-        Log.v(TAG, "hideView");
+//        Log.v(TAG, "hideView");
         rootView.setVisibility(View.INVISIBLE);
     }
 
     public void showView() {
-        Log.v(TAG, "showView");
+//        Log.v(TAG, "showView");
         rootView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
-    private View rootView;
+    // FIXME: 19/08/2016 use Holder pattern
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -179,7 +145,7 @@ public class FavoriteStopsFragment extends Fragment {
     }
 
     public void removeSelectedStop(int position) {
-        Log.v(TAG, "removeSelectedStop - position: " + position);
+//        Log.v(TAG, "removeSelectedStop - position: " + position);
         mStopDetailsArrayAdapter.remove(mStopDetailsArrayAdapter.getItem(position));
         mStopDetailsArrayAdapter.notifyDataSetChanged();
         if (mStopDetailsArrayAdapter.isEmpty()) {
@@ -242,8 +208,7 @@ public class FavoriteStopsFragment extends Fragment {
         }
 
         private void removeSelectedRow(int position) {
-//            FavoriteStopsFragment.this.removeSelectedStop(position);
-            ((MainActivity)getActivity()).removeSelectedRow(position);
+            FavoriteStopsFragment.this.removeSelectedStop(position);
         }
 
         private void showSelectedRowOnMap(int position) {

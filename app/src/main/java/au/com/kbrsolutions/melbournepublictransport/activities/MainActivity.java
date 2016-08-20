@@ -187,10 +187,6 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    public void removeSelectedRow(int position) {
-        mFavoriteStopsFragment.removeSelectedStop(position);
-    }
-
     public static class ErrorDialogFragment extends DialogFragment {
         static final String ARG_ERROR_CODE="errorCode";
 
