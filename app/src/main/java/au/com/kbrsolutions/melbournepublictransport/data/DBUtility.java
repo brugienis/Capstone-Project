@@ -33,11 +33,12 @@ public class DBUtility extends SQLiteOpenHelper {
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
-    private static Context context;
+//    private static Context context;
     private static DBUtility _INSTANCE = null;
 
     // FIXME: 20/08/2016 use enum?
-    public static DBUtility getDBUtility() {
+//    public static DBUtility getDBUtility() {
+    public static DBUtility getDBUtility(Context context) {
         if (_INSTANCE == null) {
             synchronized (DBUtility.class) {
                 if (_INSTANCE == null) {
@@ -58,10 +59,10 @@ public class DBUtility extends SQLiteOpenHelper {
 //        sUriMatcher.addURI(AUTHORITY, TraceTable.TABLE_NAME, TRACE);
     }
 
-    public static void init(Context context) {
-//		Log.i(LOC_CAT_TAG, "init - context: " + context);
-        DBUtility.context = context;
-    }
+//    public static void init(Context context) {
+////		Log.i(LOC_CAT_TAG, "init - context: " + context);
+//        DBUtility.context = context;
+//    }
 
     private DBUtility(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
