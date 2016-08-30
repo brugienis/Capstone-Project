@@ -2,8 +2,12 @@ package au.com.kbrsolutions.melbournepublictransport.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +36,8 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
  * create an instance of this fragment.
  */
 public class AddStopFragment extends Fragment {
+
+    // FIXME: 25/08/2016 check Running a Query with a CursorLoader - https://developer.android.com/training/load-data-background/setup-loader.html
 
     /**
      * Declares callback methods that have to be implemented by parent Activity
@@ -126,6 +132,31 @@ public class AddStopFragment extends Fragment {
             mFolderItemList.add(stopDetails);
         }
         return;
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        // This is called when a new Loader needs to be created.  This
+        // fragment only uses one loader, so we don't care about checking the id.
+
+        // To only show current and future dates, filter the query to return weather only for
+        // dates after or including today.
+
+        // Sort order:  Ascending, by date.
+        String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
+
+        String locationSetting = Utility.getPreferredLocation(getActivity());
+        Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(
+                locationSetting, System.currentTimeMillis());
+
+        Log.v(LOG_TAG, "onCreateLoader - weatherForLocationUri: " + weatherForLocationUri);
+
+        return new CursorLoader(getActivity(),
+                weatherForLocationUri,
+                FORECAST_COLUMNS,
+                null,
+                null,
+                sortOrder);
     }
 
     private void handleRowClicked(int position) {

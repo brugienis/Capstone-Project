@@ -41,9 +41,6 @@ public class AvailableStopsTable {
     // MIME TYPE FOR SINGLE AVAILABLE_STOPS - for a single row
     public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.kbrsolutions.available_stops";
 
-//    // RELATIVE POSITION OF CITIZEN SSID IN URI
-//    public static final int SSID_PATH_POSITION = 1;
-
     public static final String[] availableStopsColumnsArray = new String[] {LINE_NAME, STOP_NAME, LATITUDE, LONGITUDE, FAVORITE};
     static {
         projectionMap = new HashMap<String, String>();
