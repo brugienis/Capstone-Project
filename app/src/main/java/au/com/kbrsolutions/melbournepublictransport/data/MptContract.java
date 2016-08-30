@@ -46,19 +46,20 @@ public class MptContract {
         public static final String TABLE_NAME = "available_stops";
 
         // column names
-        public static final String LINE_NAME = "line_name";
+        public static final String COLUMN_LINE_NAME = "line_name";
 
-        public static final String STOP_NAME = "stop_name";
+        public static final String COLUMN_STOP_NAME = "stop_name";
 
-        public static final String LATITUDE = "latitude";
+        public static final String COLUMN_LATITUDE = "latitude";
 
-        public static final String LONGITUDE = "longitude";
+        public static final String COLUMN_LONGITUDE = "longitude";
 
-        public static final String FAVORITE = "favorite";
+        public static final String COLUMN_FAVORITE = "favorite";
 
-        // column names
-
-        // FIXME: 26/08/2016 add columns names
+        public static Uri buildFavoriteStopsUri(boolean favorite) {
+            return CONTENT_URI.buildUpon().appendQueryParameter
+                    (COLUMN_FAVORITE, favorite == true ? "y" : "n").build();
+        }
     }
 
 }

@@ -23,6 +23,10 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyAp65r76t5HbQlRGKB20bjekip3QU0dsjE"/>
+        <provider
+            android:name=".data.MptProvider"
+            android:authorities="au.com.kbrsolutions.melbournepublictransport"
+            android:exported="false"/>
 
         <activity android:name=".activities.StationOnMapActivity">
         </activity>

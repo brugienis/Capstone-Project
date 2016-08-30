@@ -26,11 +26,11 @@ public class MptDbHelper extends SQLiteOpenHelper {
             final String CREATE_STOPS_DETAILS_TABLE = "CREATE TABLE " +
                     StopDetailsEntry.TABLE_NAME + " ("
                     + StopDetailsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + StopDetailsEntry.LINE_NAME + " STRING,"
-                    + StopDetailsEntry.STOP_NAME + " STRING,"
-                    + StopDetailsEntry.LATITUDE + " REAL,"
-                    + StopDetailsEntry.LONGITUDE + " REAL,"
-                    + StopDetailsEntry.FAVORITE + " INTEGER,"
+                    + StopDetailsEntry.COLUMN_LINE_NAME + " STRING,"
+                    + StopDetailsEntry.COLUMN_STOP_NAME + " STRING,"
+                    + StopDetailsEntry.COLUMN_LATITUDE + " REAL,"
+                    + StopDetailsEntry.COLUMN_LONGITUDE + " REAL,"
+                    + StopDetailsEntry.COLUMN_FAVORITE + " INTEGER,"
                     + ");";
         }
 

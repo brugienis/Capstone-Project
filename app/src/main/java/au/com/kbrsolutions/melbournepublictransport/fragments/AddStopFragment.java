@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
+import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 
 /**
@@ -35,7 +37,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
  * Use the {@link AddStopFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddStopFragment extends Fragment {
+public class AddStopFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     // FIXME: 25/08/2016 check Running a Query with a CursorLoader - https://developer.android.com/training/load-data-background/setup-loader.html
 
@@ -62,6 +64,24 @@ public class AddStopFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private static final int STOP_DETAILS_LOADER = 0;
+    // For the forecast view we're showing only a small subset of the stored data.
+    // Specify the columns we need.
+    private static final String[] STOP_DETAILS_COLUMNS = {
+            // FIXME: 30/08/2016 - make sure comments below are correct
+            // In this case the id needs to be fully qualified with a table name, since
+            // the content provider joins the location & weather tables in the background
+            // (both have an _id column)
+            // On the one hand, that's annoying.  On the other, you can search the weather table
+            // using the location set by the user, which is only in the Location table.
+            // So the convenience is worth it.
+            MptContract.StopDetailsEntry.TABLE_NAME + "." + MptContract.StopDetailsEntry._ID,
+            MptContract.StopDetailsEntry.COLUMN_STOP_NAME,
+            MptContract.StopDetailsEntry.COLUMN_FAVORITE,
+            MptContract.StopDetailsEntry.COLUMN_LATITUDE,
+            MptContract.StopDetailsEntry.COLUMN_LONGITUDE
+    };
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
@@ -135,6 +155,12 @@ public class AddStopFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        getLoaderManager().initLoader(STOP_DETAILS_LOADER, null, this);
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         // This is called when a new Loader needs to be created.  This
         // fragment only uses one loader, so we don't care about checking the id.
@@ -143,20 +169,38 @@ public class AddStopFragment extends Fragment {
         // dates after or including today.
 
         // Sort order:  Ascending, by date.
-        String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
+        String sortOrder = MptContract.StopDetailsEntry.COLUMN_STOP_NAME + " ASC";
 
-        String locationSetting = Utility.getPreferredLocation(getActivity());
-        Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(
-                locationSetting, System.currentTimeMillis());
+//        String locationSetting = Utility.getPreferredLocation(getActivity());
+        Uri weatherForLocationUri = MptContract.StopDetailsEntry.buildFavoriteStopsUri(false);
 
-        Log.v(LOG_TAG, "onCreateLoader - weatherForLocationUri: " + weatherForLocationUri);
+        Log.v(TAG, "onCreateLoader - weatherForLocationUri: " + weatherForLocationUri);
 
         return new CursorLoader(getActivity(),
                 weatherForLocationUri,
-                FORECAST_COLUMNS,
+                STOP_DETAILS_COLUMNS,
                 null,
                 null,
                 sortOrder);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.v(TAG, "onLoadFinished -start");
+        // FIXME: 30/08/2016 below add correct code
+//        mForecastAdapter.swapCursor(data);
+//        if (mPosition != ListView.INVALID_POSITION) {
+//            // If we don't need to restart the loader, and there's a desired position to restore
+//            // to, do so now.
+//            mListView.smoothScrollToPosition(mPosition);
+//        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        Log.v(TAG, "onLoadFinished -start");
+        // FIXME: 30/08/2016 below add correct code
+//        mForecastAdapter.swapCursor(null);
     }
 
     private void handleRowClicked(int position) {
