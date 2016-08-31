@@ -16,10 +16,10 @@ public class MptProvider extends ContentProvider {
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private MptDbHelper mOpenHelper;
 
-    static final int ALL_NOT_FAVORITE_STOPS = 100;
+    static final int STOPS_DETAILS = 100;
     static final int ALL_FAVORITE_STOPS = 102;
     static final int STOP_LAT_LON = 101;
-    static final int WEATHER_WITH_LOCATION_AND_DATE = 103;
+//    static final int WEATHER_WITH_LOCATION_AND_DATE = 103;
 
     @Override
     public int delete(Uri uri, String s, String[] strings) {
@@ -27,8 +27,8 @@ public class MptProvider extends ContentProvider {
     }
 
     /*
-        Creating the the UriMatcher. This UriMatcher will match each URI to the ALL_NOT_FAVORITE_STOPS,
-        ALL_FAVORITE_STOPS and ONE_AVAILABLE_STOP integer constants defined above.
+        Creating the the UriMatcher. This UriMatcher will match each URI to the STOPS_DETAILS
+        integer constants defined above.
     */
     static UriMatcher buildUriMatcher() {
         // I know what you're thinking.  Why create a UriMatcher when you can use regular
@@ -41,9 +41,9 @@ public class MptProvider extends ContentProvider {
         final String authority = MptContract.CONTENT_AUTHORITY;
 
         // For each type of URI you want to add, create a corresponding code.
-        matcher.addURI(authority, MptContract.PATH_STOPS_DETAILS, ALL_NOT_FAVORITE_STOPS);
-        matcher.addURI(authority, MptContract.PATH_STOPS_DETAILS + "/*", ALL_FAVORITE_STOPS);
-        matcher.addURI(authority, MptContract.PATH_STOPS_DETAILS + "/*/#", WEATHER_WITH_LOCATION_AND_DATE);
+        matcher.addURI(authority, MptContract.PATH_STOPS_DETAILS, STOPS_DETAILS);
+//        matcher.addURI(authority, MptContract.PATH_STOPS_DETAILS + "/*", ALL_FAVORITE_STOPS);
+//        matcher.addURI(authority, MptContract.PATH_STOPS_DETAILS + "/*/#", WEATHER_WITH_LOCATION_AND_DATE);
         return matcher;
     }
 
@@ -62,7 +62,19 @@ public class MptProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(Uri uri) {
-        return null;
+
+        // Use the Uri Matcher to determine what kind of URI this is.
+        final int match = sUriMatcher.match(uri);
+
+        switch (match) {
+//            case STOPS_DETAILS:
+//                return WeatherContract.WeatherEntry.CONTENT_ITEM_TYPE;
+            case STOPS_DETAILS:
+                return MptContract.StopDetailsEntry.CONTENT_TYPE;
+
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
     }
 
     @Nullable

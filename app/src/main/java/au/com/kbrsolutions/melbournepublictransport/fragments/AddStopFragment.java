@@ -199,7 +199,7 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         Log.v(TAG, "onLoadFinished -start");
-        // FIXME: 30/08/2016 below add correct code
+        // FIXME: 30/08/onLoaderReset below add correct code
 //        mForecastAdapter.swapCursor(null);
     }
 

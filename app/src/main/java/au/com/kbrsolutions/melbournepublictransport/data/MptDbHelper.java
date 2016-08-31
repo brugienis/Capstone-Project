@@ -30,8 +30,10 @@ public class MptDbHelper extends SQLiteOpenHelper {
                     + StopDetailsEntry.COLUMN_STOP_NAME + " STRING,"
                     + StopDetailsEntry.COLUMN_LATITUDE + " REAL,"
                     + StopDetailsEntry.COLUMN_LONGITUDE + " REAL,"
-                    + StopDetailsEntry.COLUMN_FAVORITE + " INTEGER,"
+                    + StopDetailsEntry.COLUMN_FAVORITE + " INTEGER"
                     + ");";
+
+            sqLiteDatabase.execSQL(CREATE_STOPS_DETAILS_TABLE);
         }
 
         @Override
