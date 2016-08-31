@@ -75,15 +75,43 @@ public class MptDbHelperTest {
             tableNameHashSet.remove(c.getString(0));
         } while( c.moveToNext() );
 
-        // if this fails, it means that your database doesn't contain both the location entry
-        // and weather entry tables
-        Assert.assertTrue("Error: Your database was created without both the location entry and weather entry tables",
+        // if this fails, it means that your database doesn't contain stop_details entry
+        Assert.assertTrue("Error: Your database was created without the stop_details table",
                 tableNameHashSet.isEmpty());
+
+        // now, do our tables contain the correct columns?
+        c = db.rawQuery("PRAGMA table_info(" + MptContract.StopDetailsEntry.TABLE_NAME + ")",
+                null);
+
+        Assert.assertTrue("Error: This means that we were unable to query the database for table information.",
+                c.moveToFirst());
+
+        // Build a HashSet of all of the column names we want to look for
+        final HashSet<String> stopDetailsColumnHashSet = new HashSet<String>();
+        stopDetailsColumnHashSet.add(MptContract.StopDetailsEntry._ID);
+        stopDetailsColumnHashSet.add(MptContract.StopDetailsEntry.COLUMN_LINE_NAME);
+        stopDetailsColumnHashSet.add(MptContract.StopDetailsEntry.COLUMN_STOP_NAME);
+        stopDetailsColumnHashSet.add(MptContract.StopDetailsEntry.COLUMN_LATITUDE);
+        stopDetailsColumnHashSet.add(MptContract.StopDetailsEntry.COLUMN_LONGITUDE);
+        stopDetailsColumnHashSet.add(MptContract.StopDetailsEntry.COLUMN_FAVORITE);
+
+        int columnNameIndex = c.getColumnIndex("name");
+        do {
+            String columnName = c.getString(columnNameIndex);
+            stopDetailsColumnHashSet.remove(columnName);
+        } while(c.moveToNext());
+
+        // if this fails, it means that your database doesn't contain all of the required location
+        // entry columns
+        Assert.assertTrue("Error: The database doesn't contain all of the required location entry columns",
+                stopDetailsColumnHashSet.isEmpty());
+        db.close();
+        Assert.assertNotEquals("DB should be closed", true, db.isOpen());
     }
 
-    @Test
-    public void silyTest() {
-        Log.v(TAG, "running Unit Test");
-        Assert.assertTrue("Should be true", false);
-    }
+//    @Test
+//    public void silyTest() {
+//        Log.v(TAG, "running Unit Test");
+//        Assert.assertTrue("Should be true", false);
+//    }
 }
