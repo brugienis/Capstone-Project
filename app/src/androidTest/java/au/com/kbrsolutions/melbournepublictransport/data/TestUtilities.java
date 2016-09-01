@@ -71,11 +71,10 @@ public class TestUtilities {
     }
 
     /*
-        Students: The functions we provide inside of TestProvider use this utility class to test
-        the ContentObserver callbacks using the PollingCheck class that we grabbed from the Android
-        CTS tests.
+        The functions inside of TestProvider use this utility class to test the ContentObserver
+        callbacks using the PollingCheck class taken from the Android CTS tests.
 
-        Note that this only tests that the onChange function is called; it does not test that the
+        This only tests that the onChange function is called; it does not test that the
         correct Uri is returned.
      */
     static class TestContentObserver extends ContentObserver {

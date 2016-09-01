@@ -150,7 +150,7 @@ public class MptProvider extends ContentProvider {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         int rowsDeleted;
-        // this makes delete all rows return the number of rows deleted
+        // this makes delete all rows and return the number of rows deleted
         if ( null == selection ) selection = "1";
         switch (match) {
             case ALL_STOPS_DETAILS:
@@ -178,9 +178,6 @@ public class MptProvider extends ContentProvider {
         integer constants defined above.
     */
     static UriMatcher buildUriMatcher() {
-        // I know what you're thinking.  Why create a UriMatcher when you can use regular
-        // expressions instead?  Because you're not crazy, that's why.
-
         // All paths added to the UriMatcher have a corresponding code to return when a match is
         // found.  The code passed into the constructor represents the code to return for the root
         // URI.  It's common to use NO_MATCH as the code for this case.
@@ -189,7 +186,7 @@ public class MptProvider extends ContentProvider {
 
         // For each type of URI you want to add, create a corresponding code.
         matcher.addURI(authority, MptContract.PATH_STOPS_DETAILS, ALL_STOPS_DETAILS);
-        matcher.addURI(authority, MptContract.StopDetailsEntry.MATCHER_KEY_STOPS_DEATILS_WITH_FAVORITE_FLAG, STOPS_DETAILS_WITH_FAVORITE_FLAG);
+//        matcher.addURI(authority, MptContract.StopDetailsEntry.MATCHER_KEY_STOPS_DEATILS_WITH_FAVORITE_FLAG, STOPS_DETAILS_WITH_FAVORITE_FLAG);
         return matcher;
     }
 }

@@ -43,9 +43,6 @@ public class MptContract {
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_STOPS_DETAILS;
 
-        public static final String MATCHER_KEY_STOPS_DEATILS_WITH_FAVORITE_FLAG =
-                PATH_STOPS_DETAILS + "_with_favorite_flag";
-
         public static final String ANY_FAVORITE_FLAG = "a";
         public static final String NON_FAVORITE_FLAG = "n";
         public static final String FAVORITE_FLAG = "y";

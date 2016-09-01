@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.util.Log;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -97,20 +96,17 @@ public class MptProviderTest {
     @Test
     public void testInsert() throws Exception {
         ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.NON_FAVORITE_FLAG);
-//        long locationRowId = TestUtilities.insertFrankstonLineStopDetailsValues(mContext);
 
         Uri resultUri = mContext.getContentResolver().insert(
         StopDetailsEntry.CONTENT_URI,
                 testValues
         );
 
-        Log.v(TAG, "testInsert - resultUri: " + resultUri);
+//        Log.v(TAG, "testInsert - resultUri: " + resultUri);
 
         // Test the basic content provider query
-//        Uri uri = MptContract.StopDetailsEntry.buildFavoriteStopsUri(StopDetailsEntry.ANY_FAVORITE_FLAG);
         Uri uri = MptContract.StopDetailsEntry.buildFavoriteStopsUri(StopDetailsEntry.NON_FAVORITE_FLAG);
         Cursor cursor = mContext.getContentResolver().query(
-//                StopDetailsEntry.CONTENT_URI,
                 uri,
                 null,
                 null,
@@ -123,20 +119,17 @@ public class MptProviderTest {
         // Make sure we get the correct cursor out of the database
         TestUtilities.validateCursor("testInsert, location query", cursor, testValues);
         testValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.FAVORITE_FLAG);
-//        long locationRowId = TestUtilities.insertFrankstonLineStopDetailsValues(mContext);
 
         resultUri = mContext.getContentResolver().insert(
         StopDetailsEntry.CONTENT_URI,
                 testValues
         );
 
-        Log.v(TAG, "testInsert - resultUri: " + resultUri);
+//        Log.v(TAG, "testInsert - resultUri: " + resultUri);
 
         // Test the basic content provider query
-//        Uri uri = MptContract.StopDetailsEntry.buildFavoriteStopsUri(StopDetailsEntry.ANY_FAVORITE_FLAG);
         uri = MptContract.StopDetailsEntry.buildFavoriteStopsUri(StopDetailsEntry.FAVORITE_FLAG);
         cursor = mContext.getContentResolver().query(
-//                StopDetailsEntry.CONTENT_URI,
                 uri,
                 null,
                 null,
@@ -149,9 +142,9 @@ public class MptProviderTest {
         // Make sure we get the correct cursor out of the database
         TestUtilities.validateCursor("testInsert, location query", cursor, testValues);
 
+        // Verify there are 2 rows in the DB
         uri = MptContract.StopDetailsEntry.buildFavoriteStopsUri(StopDetailsEntry.ANY_FAVORITE_FLAG);
         cursor = mContext.getContentResolver().query(
-//                StopDetailsEntry.CONTENT_URI,
                 uri,
                 null,
                 null,
@@ -163,39 +156,33 @@ public class MptProviderTest {
         Assert.assertNotEquals("Error: there must be 2 rows", 0, cursor.getCount());
     }
 
-    // FIXME: 1/09/2016 - clarify comments below
-    // Make sure we can still delete after adding/updating stuff
-    //
-    // Student: Uncomment this test after you have completed writing the insert functionality
-    // in your provider.  It relies on insertions with testInsertReadProvider, so insert and
-    // query functionality must also be complete before this test can be used.
-
     @Test
     public void testInsertReadProvider() {
-        ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.NON_FAVORITE_FLAG);
-
         // Register a content observer for our insert.  This time, directly with the content resolver
         TestUtilities.TestContentObserver tco = TestUtilities.getTestContentObserver();
         mContext.getContentResolver().registerContentObserver(StopDetailsEntry.CONTENT_URI, true, tco);
-        Uri locationUri = mContext.getContentResolver().insert(StopDetailsEntry.CONTENT_URI, testValues);
 
-        // Did our content observer get called?  Students:  If this fails, your insert location
+        // Insert a row
+        String favoriteFlag = StopDetailsEntry.NON_FAVORITE_FLAG;
+        ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(favoriteFlag);
+        Uri stopDetailsUri = mContext.getContentResolver().insert(StopDetailsEntry.CONTENT_URI, testValues);
+
+        // Did our content observer get called?  If this fails, your insert location
         // isn't calling getContext().getContentResolver().notifyChange(uri, null);
         tco.waitForNotificationOrFail();
         mContext.getContentResolver().unregisterContentObserver(tco);
 
-        long locationRowId = ContentUris.parseId(locationUri);
+        long stopDetailsRowId = ContentUris.parseId(stopDetailsUri);
 
         // Verify we got a row back.
-        Assert.assertTrue(locationRowId != -1);
+        Assert.assertTrue(stopDetailsRowId != -1);
 
         // Data's inserted.  IN THEORY.  Now pull some out to stare at it and verify it made
         // the round trip.
 
-        // A cursor is your primary interface to the query results.
-        Uri uri = StopDetailsEntry.buildFavoriteStopsUri(StopDetailsEntry.NON_FAVORITE_FLAG);
+        // A cursor is a primary interface to the query results.
+        Uri uri = StopDetailsEntry.buildFavoriteStopsUri(favoriteFlag);
         Cursor cursor = mContext.getContentResolver().query(
-//                StopDetailsEntry.CONTENT_URI,
                 uri,
                 null, // leaving "columns" null just returns all the columns.
                 null, // cols for "where" clause
@@ -218,12 +205,14 @@ public class MptProviderTest {
      */
     @Test
     public void testBasicStopDetailsQueries() {
-        ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.NON_FAVORITE_FLAG);
-        long locationRowId = TestUtilities.insertFrankstonLineStopDetailsValues(mContext);
+        String favoriteFlags = StopDetailsEntry.NON_FAVORITE_FLAG;
+        ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(favoriteFlags);
+        TestUtilities.insertFrankstonLineStopDetailsValues(mContext);
 
         // Test the basic content provider query
+        Uri uri = MptContract.StopDetailsEntry.buildFavoriteStopsUri(favoriteFlags);
         Cursor cursor = mContext.getContentResolver().query(
-                StopDetailsEntry.CONTENT_URI,
+                uri,
                 null,
                 null,
                 null,
@@ -244,16 +233,15 @@ public class MptProviderTest {
     }
 
     public void deleteAllRecordsFromProvider() {
-        Uri uri = MptContract.StopDetailsEntry.buildFavoriteStopsUri(StopDetailsEntry.ANY_FAVORITE_FLAG);
-        int deletedRowsCnt = mContext.getContentResolver().delete(
+        // Delete all rows
+        mContext.getContentResolver().delete(
                 StopDetailsEntry.CONTENT_URI,
                 null,
                 null
         );
 
-        uri = MptContract.StopDetailsEntry.buildFavoriteStopsUri(StopDetailsEntry.ANY_FAVORITE_FLAG);
+        Uri uri = MptContract.StopDetailsEntry.buildFavoriteStopsUri(StopDetailsEntry.ANY_FAVORITE_FLAG);
         Cursor cursor = mContext.getContentResolver().query(
-//                StopDetailsEntry.CONTENT_URI,
                 uri,
                 null,
                 null,
