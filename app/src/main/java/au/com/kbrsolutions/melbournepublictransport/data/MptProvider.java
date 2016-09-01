@@ -83,8 +83,7 @@ public class MptProvider extends ContentProvider {
                         String sortOrder) {
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
-            // stop_details?favorite_stops=value   // value is 'y' or 'n'
-//            case STOPS_DETAILS_WITH_FAVORITE_FLAG: {
+            // stop_details?favorite_stops=value   // value is 'y', 'n' or 'a'
             case ALL_STOPS_DETAILS: {
                 retCursor = getStopDetailsCursorForFavoriteFlagCursor(uri, projection, sortOrder);
                 break;
@@ -107,8 +106,6 @@ public class MptProvider extends ContentProvider {
             Log.v(TAG, "getStopDetailsCursorForFavoriteFlagCursor - sStopDetailsForTwoFavoriteFlagSelection: " + sStopDetailsForTwoFavoriteFlagSelection);
             selectionClause = sStopDetailsForTwoFavoriteFlagSelection;
             selectionArgs = new String[]{StopDetailsEntry.NON_FAVORITE_FLAG, StopDetailsEntry.FAVORITE_FLAG};
-//            selectionClause = null;
-//            selectionArgs = null;
         } else {
             selectionClause = sStopDetailsForOneFavoriteFlagSelection;
             selectionArgs = new String[]{favoriteFlag};

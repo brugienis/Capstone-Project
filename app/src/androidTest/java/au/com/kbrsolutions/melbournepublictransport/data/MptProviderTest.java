@@ -38,26 +38,40 @@ public class MptProviderTest {
 
     @Test
     public void testDelete() throws Exception {
-        int deletedRowsCnt = mContext.getContentResolver().delete(
+        // insert 2 rows
+        ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.NON_FAVORITE_FLAG);
+
+        mContext.getContentResolver().insert(
                 StopDetailsEntry.CONTENT_URI,
+                testValues
+        );
+
+        testValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.FAVORITE_FLAG);
+
+        mContext.getContentResolver().insert(
+                StopDetailsEntry.CONTENT_URI,
+                testValues
+        );
+
+        // delete all (2) rows
+        Uri uri = StopDetailsEntry.buildFavoriteStopsUri(StopDetailsEntry.ANY_FAVORITE_FLAG);
+        int deletedRowsCnt = mContext.getContentResolver().delete(
+                uri,
                 null,
                 null
         );
-//        Assert.assertEquals("Error: should delete 0 rows", 0, deletedRowsCnt);
+        Assert.assertEquals("Error: should delete 2 rows", 2, deletedRowsCnt);
 
-        Uri uri = StopDetailsEntry.buildFavoriteStopsUri(StopDetailsEntry.ANY_FAVORITE_FLAG);
+        // verify both rows deleted
         Cursor cursor = mContext.getContentResolver().query(
-//                StopDetailsEntry.CONTENT_URI,
                 uri,
                 null,
                 null,
                 null,
                 null
         );
-//        if (cursor != null) {
         Assert.assertEquals("Error: Records not deleted from stop_details table during delete", 0, cursor.getCount());
         cursor.close();
-//        }
     }
 
     @Test
