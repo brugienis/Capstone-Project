@@ -1,6 +1,7 @@
 package au.com.kbrsolutions.melbournepublictransport.data;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -42,6 +43,13 @@ public class MptContract {
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_STOPS_DETAILS;
 
+        public static final String MATCHER_KEY_STOPS_DEATILS_WITH_FAVORITE_FLAG =
+                PATH_STOPS_DETAILS + "_with_favorite_flag";
+
+        public static final String ANY_FAVORITE_FLAG = "a";
+        public static final String NON_FAVORITE_FLAG = "n";
+        public static final String FAVORITE_FLAG = "y";
+
         // Table name
         public static final String TABLE_NAME = "available_stops";
 
@@ -56,9 +64,21 @@ public class MptContract {
 
         public static final String COLUMN_FAVORITE = "favorite";
 
-        public static Uri buildFavoriteStopsUri(boolean favorite) {
+        public static Uri buildFavoriteStopsUri(String favoriteFlag) {
+            if (favoriteFlag != ANY_FAVORITE_FLAG && favoriteFlag != NON_FAVORITE_FLAG && favoriteFlag != FAVORITE_FLAG) {
+                throw new RuntimeException("MptContract.StopDetailsEntry - incorrect value of favoriteFlag: " + favoriteFlag);
+            }
             return CONTENT_URI.buildUpon().appendQueryParameter
-                    (COLUMN_FAVORITE, favorite == true ? "y" : "n").build();
+                    (COLUMN_FAVORITE, favoriteFlag).build();
+        }
+
+        public static Uri buildLocationUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static String getFavoriteFlagFromUri(Uri uri) {
+            String favoriteFlag = uri.getQueryParameter(COLUMN_FAVORITE);
+            return favoriteFlag;
         }
     }
 

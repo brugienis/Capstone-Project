@@ -172,7 +172,7 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
         String sortOrder = MptContract.StopDetailsEntry.COLUMN_STOP_NAME + " ASC";
 
 //        String locationSetting = Utility.getPreferredLocation(getActivity());
-        Uri weatherForLocationUri = MptContract.StopDetailsEntry.buildFavoriteStopsUri(false);
+        Uri weatherForLocationUri = MptContract.StopDetailsEntry.buildFavoriteStopsUri(MptContract.StopDetailsEntry.NON_FAVORITE_FLAG);
 
         Log.v(TAG, "onCreateLoader - weatherForLocationUri: " + weatherForLocationUri);
 

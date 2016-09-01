@@ -116,7 +116,7 @@ public class MptDbHelperTest {
 //        mContext.deleteDatabase(MptDbHelper.DATABASE_NAME);
         deleteTheDatabase();
         SQLiteDatabase db = new MptDbHelper(this.mContext).getWritableDatabase();
-        ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues();
+        ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(MptContract.StopDetailsEntry.NON_FAVORITE_FLAG);
         long locationRowId;
         locationRowId = db.insert(MptContract.StopDetailsEntry.TABLE_NAME, null, testValues);
 
