@@ -103,9 +103,9 @@ public class MptDbHelperTest {
             stopDetailsColumnHashSet.remove(columnName);
         } while(c.moveToNext());
 
-        // if this fails, it means that your database doesn't contain all of the required location
+        // if this fails, it means that your database doesn't contain all of the required stop_details
         // entry columns
-        Assert.assertTrue("Error: The database doesn't contain all of the required location entry columns",
+        Assert.assertTrue("Error: The database doesn't contain all of the required stop_details entry columns",
                 stopDetailsColumnHashSet.isEmpty());
         db.close();
         Assert.assertNotEquals("DB should be closed", true, db.isOpen());
@@ -117,11 +117,11 @@ public class MptDbHelperTest {
         deleteTheDatabase();
         SQLiteDatabase db = new MptDbHelper(this.mContext).getWritableDatabase();
         ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(MptContract.StopDetailsEntry.NON_FAVORITE_FLAG);
-        long locationRowId;
-        locationRowId = db.insert(MptContract.StopDetailsEntry.TABLE_NAME, null, testValues);
+        long stop_detailsRowId;
+        stop_detailsRowId = db.insert(MptContract.StopDetailsEntry.TABLE_NAME, null, testValues);
 
         // Verify we got a row back.
-        Assert.assertTrue(locationRowId != -1);
+        Assert.assertTrue(stop_detailsRowId != -1);
         // Data's inserted.  IN THEORY.  Now pull some out to stare at it and verify it made
         // the round trip.
 
@@ -139,7 +139,7 @@ public class MptDbHelperTest {
 
         // Move the cursor to a valid database row and check to see if we got any records back
         // from the query
-        Assert.assertTrue( "Error: No Records returned from location query", cursor.moveToFirst() );
+        Assert.assertTrue( "Error: No Records returned from stop_details query", cursor.moveToFirst() );
 
         // Fifth Step: Validate data in resulting Cursor with the original ContentValues
         // (you can use the validateCurrentRecord function in TestUtilities to validate the
@@ -148,7 +148,7 @@ public class MptDbHelperTest {
                 cursor, testValues);
 
         // Move the cursor to demonstrate that there is only one record in the database
-        Assert.assertFalse( "Error: More than one record returned from location query",
+        Assert.assertFalse( "Error: More than one record returned from stop_details query",
                 cursor.moveToNext() );
 
         // Sixth Step: Close Cursor and Database

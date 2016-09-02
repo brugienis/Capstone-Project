@@ -39,23 +39,23 @@ public class MptProviderTest {
     @Test
     public void testDelete() throws Exception {
         // insert 2 rows
-        ContentValues weatherValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.NON_FAVORITE_FLAG);
+        ContentValues stop_detailsValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.NON_FAVORITE_FLAG);
 
         mContext.getContentResolver().insert(
                 StopDetailsEntry.CONTENT_URI,
-                weatherValues
+                stop_detailsValues
         );
 
-        weatherValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.FAVORITE_FLAG);
+        stop_detailsValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.FAVORITE_FLAG);
 
         mContext.getContentResolver().insert(
                 StopDetailsEntry.CONTENT_URI,
-                weatherValues
+                stop_detailsValues
         );
 
         // delete all (2) rows
 
-        // Register a content observer for our location delete.
+        // Register a content observer for our stop_details delete.
         TestUtilities.TestContentObserver stopDetails = TestUtilities.getTestContentObserver();
         mContext.getContentResolver().registerContentObserver(StopDetailsEntry.CONTENT_URI, true, stopDetails);
 
@@ -112,14 +112,14 @@ public class MptProviderTest {
         TestUtilities.TestContentObserver tco = TestUtilities.getTestContentObserver();
         mContext.getContentResolver().registerContentObserver(StopDetailsEntry.CONTENT_URI, true, tco);
         
-        ContentValues weatherValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.NON_FAVORITE_FLAG);
+        ContentValues stop_detailsValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.NON_FAVORITE_FLAG);
 
         Uri resultUri = mContext.getContentResolver().insert(
         StopDetailsEntry.CONTENT_URI,
-                weatherValues
+                stop_detailsValues
         );
 
-        // Did our content observer get called?  If this fails, your insert location
+        // Did our content observer get called?  If this fails, your insert stop_details
         // isn't calling getContext().getContentResolver().notifyChange(uri, null);
         tco.waitForNotificationOrFail();
         mContext.getContentResolver().unregisterContentObserver(tco);
@@ -139,12 +139,12 @@ public class MptProviderTest {
         Assert.assertNotNull("Error: cursor can not be null", cursor);
         Assert.assertNotEquals("Error: cursor can not be empty", 0, cursor.getCount());
         // Make sure we get the correct cursor out of the database
-        TestUtilities.validateCursor("testInsert, location query", cursor, weatherValues);
-        weatherValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.FAVORITE_FLAG);
+        TestUtilities.validateCursor("testInsert, stop_details query", cursor, stop_detailsValues);
+        stop_detailsValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.FAVORITE_FLAG);
 
         resultUri = mContext.getContentResolver().insert(
         StopDetailsEntry.CONTENT_URI,
-                weatherValues
+                stop_detailsValues
         );
 
 //        Log.v(TAG, "testInsert - resultUri: " + resultUri);
@@ -162,7 +162,7 @@ public class MptProviderTest {
         Assert.assertNotNull("Error: cursor can not be null", cursor);
         Assert.assertNotEquals("Error: cursor can not be empty", 0, cursor.getCount());
         // Make sure we get the correct cursor out of the database
-        TestUtilities.validateCursor("testInsert, location query", cursor, weatherValues);
+        TestUtilities.validateCursor("testInsert, stop_details query", cursor, stop_detailsValues);
 
         // Verify there are 2 rows in the DB
         uri = MptContract.StopDetailsEntry.buildFavoriteStopsUri(StopDetailsEntry.ANY_FAVORITE_FLAG);
@@ -186,10 +186,10 @@ public class MptProviderTest {
 
         // Insert a row
         String favoriteFlag = StopDetailsEntry.NON_FAVORITE_FLAG;
-        ContentValues weatherValues = TestUtilities.createFrankstonLineStopDetailsValues(favoriteFlag);
-        Uri stopDetailsUri = mContext.getContentResolver().insert(StopDetailsEntry.CONTENT_URI, weatherValues);
+        ContentValues stop_detailsValues = TestUtilities.createFrankstonLineStopDetailsValues(favoriteFlag);
+        Uri stopDetailsUri = mContext.getContentResolver().insert(StopDetailsEntry.CONTENT_URI, stop_detailsValues);
 
-        // Did our content observer get called?  If this fails, your insert location
+        // Did our content observer get called?  If this fails, your insert stop_details
         // isn't calling getContext().getContentResolver().notifyChange(uri, null);
         tco.waitForNotificationOrFail();
         mContext.getContentResolver().unregisterContentObserver(tco);
@@ -213,7 +213,7 @@ public class MptProviderTest {
         );
 
         TestUtilities.validateCursor("testInsertReadProvider. Error validating StopDetailsEntry.",
-                cursor, weatherValues);
+                cursor, stop_detailsValues);
     }
 
     @Test
@@ -266,7 +266,7 @@ public class MptProviderTest {
                 null    // sort order
         );
 
-        TestUtilities.validateCursor("testUpdateLocation.  Error validating location entry update.",
+        TestUtilities.validateCursor("testUpdateLocation.  Error validating stop_details entry update.",
                 cursor, updatedValues);
 
         cursor.close();
@@ -278,13 +278,13 @@ public class MptProviderTest {
         ContentValues[] returnContentValues = new ContentValues[BULK_INSERT_RECORDS_TO_INSERT];
 
         for ( int i = 0; i < BULK_INSERT_RECORDS_TO_INSERT; i++) {
-            ContentValues weatherValues = new ContentValues();            
-            weatherValues.put(StopDetailsEntry.COLUMN_LINE_NAME, "Frankston");
-            weatherValues.put(StopDetailsEntry.COLUMN_STOP_NAME, "Carrum" + " - " + i);
-            weatherValues.put(StopDetailsEntry.COLUMN_LATITUDE, 64.7488);
-            weatherValues.put(StopDetailsEntry.COLUMN_LONGITUDE, -147.353);
-            weatherValues.put(StopDetailsEntry.COLUMN_FAVORITE, favoriteFlag);
-            returnContentValues[i] = weatherValues;
+            ContentValues stop_detailsValues = new ContentValues();            
+            stop_detailsValues.put(StopDetailsEntry.COLUMN_LINE_NAME, "Frankston");
+            stop_detailsValues.put(StopDetailsEntry.COLUMN_STOP_NAME, "Carrum" + " - " + i);
+            stop_detailsValues.put(StopDetailsEntry.COLUMN_LATITUDE, 64.7488);
+            stop_detailsValues.put(StopDetailsEntry.COLUMN_LONGITUDE, -147.353);
+            stop_detailsValues.put(StopDetailsEntry.COLUMN_FAVORITE, favoriteFlag);
+            returnContentValues[i] = stop_detailsValues;
         }
         return returnContentValues;
     }
@@ -342,7 +342,7 @@ public class MptProviderTest {
     @Test
     public void testBasicStopDetailsQueries() {
         String favoriteFlags = StopDetailsEntry.NON_FAVORITE_FLAG;
-        ContentValues weatherValues = TestUtilities.createFrankstonLineStopDetailsValues(favoriteFlags);
+        ContentValues stop_detailsValues = TestUtilities.createFrankstonLineStopDetailsValues(favoriteFlags);
         TestUtilities.insertFrankstonLineStopDetailsValues(mContext);
 
         // Test the basic content provider query
@@ -358,7 +358,7 @@ public class MptProviderTest {
         Assert.assertNotNull("Error: cursor can not be null", cursor);
         Assert.assertNotEquals("Error: cursor can not be empty", 0, cursor.getCount());
         // Make sure we get the correct cursor out of the database
-        TestUtilities.validateCursor("testBasicStopDetailsQueries, location query", cursor, weatherValues);
+        TestUtilities.validateCursor("testBasicStopDetailsQueries, stop_details query", cursor, stop_detailsValues);
 
         // Has the NotificationUri been set correctly? --- we can only test this easily against API
         // level 19 or greater because getNotificationUri was added in API level 19.

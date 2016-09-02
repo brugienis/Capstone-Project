@@ -20,7 +20,6 @@ import au.com.kbrsolutions.melbournepublictransport.utils.PollingCheck;
 
 
 @RunWith(AndroidJUnit4.class)
-//public class TestUtilities extends AndroidTestCase {
 public class TestUtilities {
 
     static void validateCurrentRecord(String error, Cursor valueCursor, ContentValues expectedValues) {
@@ -53,15 +52,15 @@ public class TestUtilities {
         SQLiteDatabase db = new MptDbHelper(context).getWritableDatabase();
         ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(MptContract.StopDetailsEntry.NON_FAVORITE_FLAG);
 
-        long locationRowId;
-        locationRowId = db.insert(MptContract.StopDetailsEntry.TABLE_NAME, null, testValues);
+        long stop_detailsRowId;
+        stop_detailsRowId = db.insert(MptContract.StopDetailsEntry.TABLE_NAME, null, testValues);
 
         // Verify we got a row back.
-        Assert.assertTrue("Error: Failure to insert Frankston StopDetails Values", locationRowId != -1);
+        Assert.assertTrue("Error: Failure to insert Frankston StopDetails Values", stop_detailsRowId != -1);
 
         db.close();
 
-        return locationRowId;
+        return stop_detailsRowId;
     }
 
     static void validateCursor(String error, Cursor valueCursor, ContentValues expectedValues) {
