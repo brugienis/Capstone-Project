@@ -1,5 +1,6 @@
 package au.com.kbrsolutions.melbournepublictransport.data;
 
+import android.annotation.TargetApi;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -169,8 +170,50 @@ public class MptProvider extends ContentProvider {
     }
 
     @Override
-    public int update(Uri uri, ContentValues contentValues, String s, String[] strings) {
-        return 0;
+    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+        int rowsUpdated;
+
+        switch (match) {
+            case ALL_STOPS_DETAILS:
+                rowsUpdated = db.update(MptContract.StopDetailsEntry.TABLE_NAME, values, selection,
+                        selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsUpdated;
+    }
+
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case STOPS_DETAILS_WITH_FAVORITE_FLAG:
+                db.beginTransaction();
+                int returnCount = 0;
+                try {
+                    for (ContentValues value : values) {
+//                        normalizeDate(value);
+//                        long _id = db.insert(WeatherContract.WeatherEntry.TABLE_NAME, null, value);
+//                        if (_id != -1) {
+//                            returnCount++;
+//                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
+            default:
+                return super.bulkInsert(uri, values);
+        }
     }
 
     /*
@@ -188,5 +231,15 @@ public class MptProvider extends ContentProvider {
         matcher.addURI(authority, MptContract.PATH_STOPS_DETAILS, ALL_STOPS_DETAILS);
 //        matcher.addURI(authority, MptContract.StopDetailsEntry.MATCHER_KEY_STOPS_DEATILS_WITH_FAVORITE_FLAG, STOPS_DETAILS_WITH_FAVORITE_FLAG);
         return matcher;
+    }
+
+    // You do not need to call this method. This is a method specifically to assist the testing
+    // framework in running smoothly. You can read more at:
+    // http://developer.android.com/reference/android/content/ContentProvider.html#shutdown()
+    @Override
+    @TargetApi(11)
+    public void shutdown() {
+        mOpenHelper.close();
+        super.shutdown();
     }
 }

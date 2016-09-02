@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
+import android.util.Log;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -53,6 +54,11 @@ public class MptProviderTest {
         );
 
         // delete all (2) rows
+
+        // Register a content observer for our location delete.
+        TestUtilities.TestContentObserver stopDetails = TestUtilities.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(StopDetailsEntry.CONTENT_URI, true, stopDetails);
+
         Uri uri = StopDetailsEntry.buildFavoriteStopsUri(StopDetailsEntry.ANY_FAVORITE_FLAG);
         int deletedRowsCnt = mContext.getContentResolver().delete(
                 uri,
@@ -60,6 +66,13 @@ public class MptProviderTest {
                 null
         );
         Assert.assertEquals("Error: should delete 2 rows", 2, deletedRowsCnt);
+
+        // If either of these fail, most-likely are not calling the
+        // getContext().getContentResolver().notifyChange(uri, null); in the ContentProvider
+        // delete.  (only if the insertReadProvider is succeeding)
+        stopDetails.waitForNotificationOrFail();
+
+        mContext.getContentResolver().unregisterContentObserver(stopDetails);
 
         // verify both rows deleted
         Cursor cursor = mContext.getContentResolver().query(
@@ -95,12 +108,21 @@ public class MptProviderTest {
 
     @Test
     public void testInsert() throws Exception {
+        // Register a content observer for our insert.  This time, directly with the content resolver
+        TestUtilities.TestContentObserver tco = TestUtilities.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(StopDetailsEntry.CONTENT_URI, true, tco);
+        
         ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.NON_FAVORITE_FLAG);
 
         Uri resultUri = mContext.getContentResolver().insert(
         StopDetailsEntry.CONTENT_URI,
                 testValues
         );
+
+        // Did our content observer get called?  If this fails, your insert location
+        // isn't calling getContext().getContentResolver().notifyChange(uri, null);
+        tco.waitForNotificationOrFail();
+        mContext.getContentResolver().unregisterContentObserver(tco);
 
 //        Log.v(TAG, "testInsert - resultUri: " + resultUri);
 
@@ -190,13 +212,69 @@ public class MptProviderTest {
                 null  // sort order
         );
 
-        TestUtilities.validateCursor("testInsertReadProvider. Error validating LocationEntry.",
+        TestUtilities.validateCursor("testInsertReadProvider. Error validating StopDetailsEntry.",
                 cursor, testValues);
     }
 
     @Test
     public void testUpdate() throws Exception {
+        String favoriteFlag = StopDetailsEntry.FAVORITE_FLAG;
+        // Create a new map of values, where column names are the keys
+        ContentValues values = TestUtilities.createFrankstonLineStopDetailsValues(favoriteFlag);
 
+        Uri locationUri = mContext.getContentResolver().
+                insert(StopDetailsEntry.CONTENT_URI, values);
+        long locationRowId = ContentUris.parseId(locationUri);
+
+        // Verify we got a row back.
+        Assert.assertTrue("Error: row was not inserted", locationRowId != -1);
+        Log.d(TAG, "New row id: " + locationRowId);
+
+        ContentValues updatedValues = new ContentValues(values);
+        updatedValues.put(StopDetailsEntry._ID, locationRowId);
+        updatedValues.put(StopDetailsEntry.COLUMN_STOP_NAME, "Carrum");
+
+        // Create a cursor with observer to make sure that the content provider is notifying
+        // the observers as expected
+        Uri uri = MptContract.StopDetailsEntry.buildFavoriteStopsUri(favoriteFlag);
+        Cursor stopDetailsCursor = mContext.getContentResolver().query(uri, null, null, null, null);
+
+        TestUtilities.TestContentObserver tco = TestUtilities.getTestContentObserver();
+        stopDetailsCursor.registerContentObserver(tco);
+
+        int count = mContext.getContentResolver().update(
+                StopDetailsEntry.CONTENT_URI, updatedValues, StopDetailsEntry._ID + "= ?",
+                new String[] { Long.toString(locationRowId)});
+        Assert.assertEquals("Error: no row was updated", 1, count);
+
+        // Test to make sure our observer is called.  If not, we throw an assertion.
+        //
+        // Students: If your code is failing here, it means that your content provider
+        // isn't calling getContext().getContentResolver().notifyChange(uri, null);
+        tco.waitForNotificationOrFail();
+
+        stopDetailsCursor.unregisterContentObserver(tco);
+        stopDetailsCursor.close();
+
+        // A cursor is your primary interface to the query results.
+        uri = StopDetailsEntry.buildFavoriteStopsUri(favoriteFlag);
+        Cursor cursor = mContext.getContentResolver().query(
+                uri,
+                null,   // projection
+                StopDetailsEntry._ID + " = " + locationRowId,
+                null,   // Values for the "where" clause
+                null    // sort order
+        );
+
+        TestUtilities.validateCursor("testUpdateLocation.  Error validating location entry update.",
+                cursor, updatedValues);
+
+        cursor.close();
+    }
+
+    @Test
+    public void testBulkInsert() throws Exception {
+        // FIXME: 2/09/2016 - write code
     }
 
     /*
