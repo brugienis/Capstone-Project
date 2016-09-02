@@ -38,11 +38,11 @@ public class TestUtilities {
     static ContentValues createFrankstonLineStopDetailsValues(String favoriteFlag) {
         // Create a new map of values, where column names are the keys
         ContentValues testValues = new ContentValues();
-        testValues.put(MptContract.StopDetailsEntry.COLUMN_LINE_NAME, "Frankston");
-        testValues.put(MptContract.StopDetailsEntry.COLUMN_STOP_NAME, "Carrum");
-        testValues.put(MptContract.StopDetailsEntry.COLUMN_LATITUDE, 64.7488);
-        testValues.put(MptContract.StopDetailsEntry.COLUMN_LONGITUDE, -147.353);
-        testValues.put(MptContract.StopDetailsEntry.COLUMN_FAVORITE, favoriteFlag);
+        testValues.put(MptContract.StopDetailEntry.COLUMN_LINE_NAME, "Frankston");
+        testValues.put(MptContract.StopDetailEntry.COLUMN_STOP_NAME, "Carrum");
+        testValues.put(MptContract.StopDetailEntry.COLUMN_LATITUDE, 64.7488);
+        testValues.put(MptContract.StopDetailEntry.COLUMN_LONGITUDE, -147.353);
+        testValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, favoriteFlag);
 
         return testValues;
     }
@@ -50,17 +50,17 @@ public class TestUtilities {
     static long insertFrankstonLineStopDetailsValues(Context context) {
         // insert our test records into the database
         SQLiteDatabase db = new MptDbHelper(context).getWritableDatabase();
-        ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(MptContract.StopDetailsEntry.NON_FAVORITE_FLAG);
+        ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(MptContract.StopDetailEntry.NON_FAVORITE_FLAG);
 
-        long stop_detailsRowId;
-        stop_detailsRowId = db.insert(MptContract.StopDetailsEntry.TABLE_NAME, null, testValues);
+        long stop_detailRowId;
+        stop_detailRowId = db.insert(MptContract.StopDetailEntry.TABLE_NAME, null, testValues);
 
         // Verify we got a row back.
-        Assert.assertTrue("Error: Failure to insert Frankston StopDetails Values", stop_detailsRowId != -1);
+        Assert.assertTrue("Error: Failure to insert Frankston StopDetails Values", stop_detailRowId != -1);
 
         db.close();
 
-        return stop_detailsRowId;
+        return stop_detailRowId;
     }
 
     static void validateCursor(String error, Cursor valueCursor, ContentValues expectedValues) {

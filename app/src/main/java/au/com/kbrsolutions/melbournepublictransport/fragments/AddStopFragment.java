@@ -76,11 +76,11 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
             // On the one hand, that's annoying.  On the other, you can search the weather table
             // using the location set by the user, which is only in the Location table.
             // So the convenience is worth it.
-            MptContract.StopDetailsEntry.TABLE_NAME + "." + MptContract.StopDetailsEntry._ID,
-            MptContract.StopDetailsEntry.COLUMN_STOP_NAME,
-            MptContract.StopDetailsEntry.COLUMN_FAVORITE,
-            MptContract.StopDetailsEntry.COLUMN_LATITUDE,
-            MptContract.StopDetailsEntry.COLUMN_LONGITUDE
+            MptContract.StopDetailEntry.TABLE_NAME + "." + MptContract.StopDetailEntry._ID,
+            MptContract.StopDetailEntry.COLUMN_STOP_NAME,
+            MptContract.StopDetailEntry.COLUMN_FAVORITE,
+            MptContract.StopDetailEntry.COLUMN_LATITUDE,
+            MptContract.StopDetailEntry.COLUMN_LONGITUDE
     };
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
@@ -169,10 +169,10 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
         // dates after or including today.
 
         // Sort order:  Ascending, by date.
-        String sortOrder = MptContract.StopDetailsEntry.COLUMN_STOP_NAME + " ASC";
+        String sortOrder = MptContract.StopDetailEntry.COLUMN_STOP_NAME + " ASC";
 
 //        String locationSetting = Utility.getPreferredLocation(getActivity());
-        Uri weatherForLocationUri = MptContract.StopDetailsEntry.buildFavoriteStopsUri(MptContract.StopDetailsEntry.NON_FAVORITE_FLAG);
+        Uri weatherForLocationUri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.NON_FAVORITE_FLAG);
 
         Log.v(TAG, "onCreateLoader - weatherForLocationUri: " + weatherForLocationUri);
 

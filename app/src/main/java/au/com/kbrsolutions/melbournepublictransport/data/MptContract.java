@@ -22,33 +22,62 @@ public class MptContract {
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     // Possible paths (appended to base content URI for possible URI's)
-    // For instance, content://com.example.android.sunshine.app/weather/ is a valid path for
-    // looking at weather data. content://com.example.android.sunshine.app/givemeroot/ will fail,
-    // as the ContentProvider hasn't been given any information on what to do with "givemeroot".
-    // At least, let's hope not.  Don't be that dev, reader.  Don't be that dev.
-    public static final String PATH_STOPS_DETAILS = "stops_details";
+    public static final String PATH_STOP_DETAIL = "stops_detail";
+    public static final String PATH_LINE_DETAIL = "stops_detail";
 
     /* Inner class that defines the table contents of the AvailableStopsEntry table */
-    public static final class StopDetailsEntry implements BaseColumns {
+    public static final class LineDetailEntry implements BaseColumns {
 
-        // CONTENT_URI points to a table available_stops
+        // CONTENT_URI points to a table line_detail
         public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_STOPS_DETAILS).build();
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_STOP_DETAIL).build();
 
         // CONTENT_TYPE - indicates that the content is a collection of URIs. Used in Provider.getType(...).
         public static final String CONTENT_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_STOPS_DETAILS;
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_LINE_DETAIL;
 
         // CONTENT_TYPE - indicates that the content is an instance of URI. Used in Provider.getType(...).
         public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_STOPS_DETAILS;
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_LINE_DETAIL;
+
+        // Table name
+        public static final String TABLE_NAME = "line_detail";
+
+        // column names
+        // route_type - Integer. 0 Train, etc.
+        public static final String COLUMN_ROUTE_TYPE = "route_type";
+
+        // line_id - numeric string
+        public static final String COLUMN_LINE_ID = "line_id";
+
+        // line_name - string
+        public static final String COLUMN_LINE_NAME = "line_name";
+
+        // line_name - string
+        public static final String COLUMN_LINE_NAME_SHORT = "line_name_short";
+    }
+
+    /* Inner class that defines the table contents of the AvailableStopsEntry table */
+    public static final class StopDetailEntry implements BaseColumns {
+
+        // CONTENT_URI points to a table stop_detail
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_STOP_DETAIL).build();
+
+        // CONTENT_TYPE - indicates that the content is a collection of URIs. Used in Provider.getType(...).
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_STOP_DETAIL;
+
+        // CONTENT_TYPE - indicates that the content is an instance of URI. Used in Provider.getType(...).
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_STOP_DETAIL;
 
         public static final String ANY_FAVORITE_FLAG = "a";
         public static final String NON_FAVORITE_FLAG = "n";
         public static final String FAVORITE_FLAG = "y";
 
         // Table name
-        public static final String TABLE_NAME = "available_stops";
+        public static final String TABLE_NAME = "stop_detail";
 
         // column names
         public static final String COLUMN_LINE_NAME = "line_name";

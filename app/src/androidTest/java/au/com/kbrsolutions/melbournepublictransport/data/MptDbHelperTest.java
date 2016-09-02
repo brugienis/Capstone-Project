@@ -58,7 +58,7 @@ public class MptDbHelperTest {
         // Note that there will be another table in the DB that stores the
         // Android metadata (db version information)
         final HashSet<String> tableNameHashSet = new HashSet<String>();
-        tableNameHashSet.add(MptContract.StopDetailsEntry.TABLE_NAME);
+        tableNameHashSet.add(MptContract.StopDetailEntry.TABLE_NAME);
 
 //        mContext.deleteDatabase(MptDbHelper.DATABASE_NAME);
         deleteTheDatabase();
@@ -82,7 +82,7 @@ public class MptDbHelperTest {
                 tableNameHashSet.isEmpty());
 
         // now, do our tables contain the correct columns?
-        c = db.rawQuery("PRAGMA table_info(" + MptContract.StopDetailsEntry.TABLE_NAME + ")",
+        c = db.rawQuery("PRAGMA table_info(" + MptContract.StopDetailEntry.TABLE_NAME + ")",
                 null);
 
         Assert.assertTrue("Error: This means that we were unable to query the database for table information.",
@@ -90,12 +90,12 @@ public class MptDbHelperTest {
 
         // Build a HashSet of all of the column names we want to look for
         final HashSet<String> stopDetailsColumnHashSet = new HashSet<String>();
-        stopDetailsColumnHashSet.add(MptContract.StopDetailsEntry._ID);
-        stopDetailsColumnHashSet.add(MptContract.StopDetailsEntry.COLUMN_LINE_NAME);
-        stopDetailsColumnHashSet.add(MptContract.StopDetailsEntry.COLUMN_STOP_NAME);
-        stopDetailsColumnHashSet.add(MptContract.StopDetailsEntry.COLUMN_LATITUDE);
-        stopDetailsColumnHashSet.add(MptContract.StopDetailsEntry.COLUMN_LONGITUDE);
-        stopDetailsColumnHashSet.add(MptContract.StopDetailsEntry.COLUMN_FAVORITE);
+        stopDetailsColumnHashSet.add(MptContract.StopDetailEntry._ID);
+        stopDetailsColumnHashSet.add(MptContract.StopDetailEntry.COLUMN_LINE_NAME);
+        stopDetailsColumnHashSet.add(MptContract.StopDetailEntry.COLUMN_STOP_NAME);
+        stopDetailsColumnHashSet.add(MptContract.StopDetailEntry.COLUMN_LATITUDE);
+        stopDetailsColumnHashSet.add(MptContract.StopDetailEntry.COLUMN_LONGITUDE);
+        stopDetailsColumnHashSet.add(MptContract.StopDetailEntry.COLUMN_FAVORITE);
 
         int columnNameIndex = c.getColumnIndex("name");
         do {
@@ -116,9 +116,9 @@ public class MptDbHelperTest {
 //        mContext.deleteDatabase(MptDbHelper.DATABASE_NAME);
         deleteTheDatabase();
         SQLiteDatabase db = new MptDbHelper(this.mContext).getWritableDatabase();
-        ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(MptContract.StopDetailsEntry.NON_FAVORITE_FLAG);
+        ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(MptContract.StopDetailEntry.NON_FAVORITE_FLAG);
         long stop_detailsRowId;
-        stop_detailsRowId = db.insert(MptContract.StopDetailsEntry.TABLE_NAME, null, testValues);
+        stop_detailsRowId = db.insert(MptContract.StopDetailEntry.TABLE_NAME, null, testValues);
 
         // Verify we got a row back.
         Assert.assertTrue(stop_detailsRowId != -1);
@@ -128,7 +128,7 @@ public class MptDbHelperTest {
         //Query the database and receive a Cursor back.
         // A cursor is your primary interface to the query results.
         Cursor cursor = db.query(
-                MptContract.StopDetailsEntry.TABLE_NAME,  // Table to Query
+                MptContract.StopDetailEntry.TABLE_NAME,  // Table to Query
                 null, // all columns
                 null, // Columns for the "where" clause
                 null, // Values for the "where" clause

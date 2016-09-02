@@ -11,7 +11,7 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import au.com.kbrsolutions.melbournepublictransport.data.MptContract.StopDetailsEntry;
+import au.com.kbrsolutions.melbournepublictransport.data.MptContract.StopDetailEntry;
 
 
 public class MptProvider extends ContentProvider {
@@ -20,19 +20,19 @@ public class MptProvider extends ContentProvider {
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private MptDbHelper mOpenHelper;
 
-    static final int ALL_STOPS_DETAILS = 100;
+    static final int ALL_STOP_DETAIL = 100;
     static final int STOPS_DETAILS_WITH_FAVORITE_FLAG = 200;
 
-    private static final SQLiteQueryBuilder sStopDetailsForFavoriteFlagQueryBuilder;
+    private static final SQLiteQueryBuilder sStopDetailForFavoriteFlagQueryBuilder;
 
     static{
-        sStopDetailsForFavoriteFlagQueryBuilder = new SQLiteQueryBuilder();
+        sStopDetailForFavoriteFlagQueryBuilder = new SQLiteQueryBuilder();
 
         //This is an inner join which looks like
         //weather INNER JOIN location ON weather.location_id = location._id
-        sStopDetailsForFavoriteFlagQueryBuilder.setTables(MptContract.StopDetailsEntry.TABLE_NAME);
+        sStopDetailForFavoriteFlagQueryBuilder.setTables(StopDetailEntry.TABLE_NAME);
 
-//        sStopDetailsForFavoriteFlagQueryBuilder.setTables(
+//        sStopDetailForFavoriteFlagQueryBuilder.setTables(
 //                WeatherContract.WeatherEntry.TABLE_NAME + " INNER JOIN " +
 //                        WeatherContract.LocationEntry.TABLE_NAME +
 //                        " ON " + WeatherContract.WeatherEntry.TABLE_NAME +
@@ -40,17 +40,17 @@ public class MptProvider extends ContentProvider {
 //                        " = " + WeatherContract.LocationEntry.TABLE_NAME +
 //                        "." + WeatherContract.LocationEntry._ID);
     }
-    // stop_details.favorite = ?
-    private static final String sStopDetailsForOneFavoriteFlagSelection =
-            MptContract.StopDetailsEntry.TABLE_NAME +
-                    "." + MptContract.StopDetailsEntry.COLUMN_FAVORITE + " = ?";
+    // stop_detail.favorite = ?
+    private static final String sStopDetailForOneFavoriteFlagSelection =
+            StopDetailEntry.TABLE_NAME +
+                    "." + StopDetailEntry.COLUMN_FAVORITE + " = ?";
 
-    // stop_details.favorite = ? OR stop_details.favorite = ?
-    private static final String sStopDetailsForTwoFavoriteFlagSelection =
-            MptContract.StopDetailsEntry.TABLE_NAME +
-                    "." + MptContract.StopDetailsEntry.COLUMN_FAVORITE + " = ? OR " +
-            MptContract.StopDetailsEntry.TABLE_NAME +
-                    "." + MptContract.StopDetailsEntry.COLUMN_FAVORITE + " = ?";
+    // stop_detail.favorite = ? OR stop_detail.favorite = ?
+    private static final String sStopDetailForTwoFavoriteFlagSelection =
+            StopDetailEntry.TABLE_NAME +
+                    "." + StopDetailEntry.COLUMN_FAVORITE + " = ? OR " +
+            StopDetailEntry.TABLE_NAME +
+                    "." + StopDetailEntry.COLUMN_FAVORITE + " = ?";
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
@@ -68,10 +68,10 @@ public class MptProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
 
         switch (match) {
-            case ALL_STOPS_DETAILS:
-                return MptContract.StopDetailsEntry.CONTENT_TYPE;
+            case ALL_STOP_DETAIL:
+                return StopDetailEntry.CONTENT_TYPE;
             case STOPS_DETAILS_WITH_FAVORITE_FLAG:
-                return MptContract.StopDetailsEntry.CONTENT_TYPE;
+                return StopDetailEntry.CONTENT_TYPE;
 
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -84,9 +84,9 @@ public class MptProvider extends ContentProvider {
                         String sortOrder) {
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
-            // stop_details?favorite_stops=value   // value is 'y', 'n' or 'a'
-            case ALL_STOPS_DETAILS: {
-                retCursor = getStopDetailsCursorForFavoriteFlagCursor(uri, projection, sortOrder);
+            // stop_detail?favorite_stops=value   // value is 'y', 'n' or 'a'
+            case ALL_STOP_DETAIL: {
+                retCursor = getStopDetailCursorForFavoriteFlagCursor(uri, projection, sortOrder);
                 break;
             }
 
@@ -97,22 +97,22 @@ public class MptProvider extends ContentProvider {
         return retCursor;
     }
 
-    private Cursor getStopDetailsCursorForFavoriteFlagCursor(
+    private Cursor getStopDetailCursorForFavoriteFlagCursor(
             Uri uri, String[] projection, String sortOrder) {
-        String favoriteFlag = MptContract.StopDetailsEntry.getFavoriteFlagFromUri(uri);
-        Log.v(TAG, "getStopDetailsCursorForFavoriteFlagCursor - favoriteFlag: " + favoriteFlag);
+        String favoriteFlag = StopDetailEntry.getFavoriteFlagFromUri(uri);
+        Log.v(TAG, "getStopDetailCursorForFavoriteFlagCursor - favoriteFlag: " + favoriteFlag);
         String selectionClause;
         String[] selectionArgs;
-        if (favoriteFlag.equals(StopDetailsEntry.ANY_FAVORITE_FLAG)) {
-            Log.v(TAG, "getStopDetailsCursorForFavoriteFlagCursor - sStopDetailsForTwoFavoriteFlagSelection: " + sStopDetailsForTwoFavoriteFlagSelection);
-            selectionClause = sStopDetailsForTwoFavoriteFlagSelection;
-            selectionArgs = new String[]{StopDetailsEntry.NON_FAVORITE_FLAG, StopDetailsEntry.FAVORITE_FLAG};
+        if (favoriteFlag.equals(StopDetailEntry.ANY_FAVORITE_FLAG)) {
+            Log.v(TAG, "getStopDetailCursorForFavoriteFlagCursor - sStopDetailForTwoFavoriteFlagSelection: " + sStopDetailForTwoFavoriteFlagSelection);
+            selectionClause = sStopDetailForTwoFavoriteFlagSelection;
+            selectionArgs = new String[]{StopDetailEntry.NON_FAVORITE_FLAG, StopDetailEntry.FAVORITE_FLAG};
         } else {
-            selectionClause = sStopDetailsForOneFavoriteFlagSelection;
+            selectionClause = sStopDetailForOneFavoriteFlagSelection;
             selectionArgs = new String[]{favoriteFlag};
         }
 
-        return sStopDetailsForFavoriteFlagQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+        return sStopDetailForFavoriteFlagQueryBuilder.query(mOpenHelper.getReadableDatabase(),
                 projection,
                 selectionClause,
                 selectionArgs,
@@ -131,10 +131,10 @@ public class MptProvider extends ContentProvider {
         Uri returnUri;
 
         switch (match) {
-            case ALL_STOPS_DETAILS: {
-                long _id = db.insert(MptContract.StopDetailsEntry.TABLE_NAME, null, contentValues);
+            case ALL_STOP_DETAIL: {
+                long _id = db.insert(StopDetailEntry.TABLE_NAME, null, contentValues);
                 if ( _id > 0 )
-                    returnUri = MptContract.StopDetailsEntry.buildLocationUri(_id);
+                    returnUri = StopDetailEntry.buildLocationUri(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
@@ -154,9 +154,9 @@ public class MptProvider extends ContentProvider {
         // this makes delete all rows and return the number of rows deleted
         if ( null == selection ) selection = "1";
         switch (match) {
-            case ALL_STOPS_DETAILS:
+            case ALL_STOP_DETAIL:
                 rowsDeleted = db.delete(
-                        MptContract.StopDetailsEntry.TABLE_NAME, selection, selectionArgs);
+                        StopDetailEntry.TABLE_NAME, selection, selectionArgs);
                 break;
 
             default:
@@ -176,8 +176,8 @@ public class MptProvider extends ContentProvider {
         int rowsUpdated;
 
         switch (match) {
-            case ALL_STOPS_DETAILS:
-                rowsUpdated = db.update(MptContract.StopDetailsEntry.TABLE_NAME, values, selection,
+            case ALL_STOP_DETAIL:
+                rowsUpdated = db.update(StopDetailEntry.TABLE_NAME, values, selection,
                         selectionArgs);
                 break;
             default:
@@ -194,12 +194,12 @@ public class MptProvider extends ContentProvider {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         switch (match) {
-            case ALL_STOPS_DETAILS:
+            case ALL_STOP_DETAIL:
                 db.beginTransaction();
                 int returnCount = 0;
                 try {
                     for (ContentValues value : values) {
-                        long _id = db.insert(StopDetailsEntry.TABLE_NAME, null, value);
+                        long _id = db.insert(StopDetailEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             returnCount++;
                         }
@@ -229,8 +229,8 @@ public class MptProvider extends ContentProvider {
         final String authority = MptContract.CONTENT_AUTHORITY;
 
         // For each type of URI you want to add, create a corresponding code.
-        matcher.addURI(authority, MptContract.PATH_STOPS_DETAILS, ALL_STOPS_DETAILS);
-//        matcher.addURI(authority, MptContract.StopDetailsEntry.MATCHER_KEY_STOPS_DEATILS_WITH_FAVORITE_FLAG, STOPS_DETAILS_WITH_FAVORITE_FLAG);
+        matcher.addURI(authority, MptContract.PATH_STOP_DETAIL, ALL_STOP_DETAIL);
+//        matcher.addURI(authority, MptContract.StopDetailEntry.MATCHER_KEY_STOPS_DEATILS_WITH_FAVORITE_FLAG, STOPS_DETAILS_WITH_FAVORITE_FLAG);
         return matcher;
     }
 
