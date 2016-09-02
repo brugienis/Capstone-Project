@@ -194,16 +194,15 @@ public class MptProvider extends ContentProvider {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         switch (match) {
-            case STOPS_DETAILS_WITH_FAVORITE_FLAG:
+            case ALL_STOPS_DETAILS:
                 db.beginTransaction();
                 int returnCount = 0;
                 try {
                     for (ContentValues value : values) {
-//                        normalizeDate(value);
-//                        long _id = db.insert(WeatherContract.WeatherEntry.TABLE_NAME, null, value);
-//                        if (_id != -1) {
-//                            returnCount++;
-//                        }
+                        long _id = db.insert(StopDetailsEntry.TABLE_NAME, null, value);
+                        if (_id != -1) {
+                            returnCount++;
+                        }
                     }
                     db.setTransactionSuccessful();
                 } finally {
@@ -211,6 +210,8 @@ public class MptProvider extends ContentProvider {
                 }
                 getContext().getContentResolver().notifyChange(uri, null);
                 return returnCount;
+
+            // FIXME: 2/09/2016 - investigate if we should throw exception or call super
             default:
                 return super.bulkInsert(uri, values);
         }

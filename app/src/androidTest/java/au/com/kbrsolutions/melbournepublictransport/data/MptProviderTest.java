@@ -39,18 +39,18 @@ public class MptProviderTest {
     @Test
     public void testDelete() throws Exception {
         // insert 2 rows
-        ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.NON_FAVORITE_FLAG);
+        ContentValues weatherValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.NON_FAVORITE_FLAG);
 
         mContext.getContentResolver().insert(
                 StopDetailsEntry.CONTENT_URI,
-                testValues
+                weatherValues
         );
 
-        testValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.FAVORITE_FLAG);
+        weatherValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.FAVORITE_FLAG);
 
         mContext.getContentResolver().insert(
                 StopDetailsEntry.CONTENT_URI,
-                testValues
+                weatherValues
         );
 
         // delete all (2) rows
@@ -112,11 +112,11 @@ public class MptProviderTest {
         TestUtilities.TestContentObserver tco = TestUtilities.getTestContentObserver();
         mContext.getContentResolver().registerContentObserver(StopDetailsEntry.CONTENT_URI, true, tco);
         
-        ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.NON_FAVORITE_FLAG);
+        ContentValues weatherValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.NON_FAVORITE_FLAG);
 
         Uri resultUri = mContext.getContentResolver().insert(
         StopDetailsEntry.CONTENT_URI,
-                testValues
+                weatherValues
         );
 
         // Did our content observer get called?  If this fails, your insert location
@@ -139,12 +139,12 @@ public class MptProviderTest {
         Assert.assertNotNull("Error: cursor can not be null", cursor);
         Assert.assertNotEquals("Error: cursor can not be empty", 0, cursor.getCount());
         // Make sure we get the correct cursor out of the database
-        TestUtilities.validateCursor("testInsert, location query", cursor, testValues);
-        testValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.FAVORITE_FLAG);
+        TestUtilities.validateCursor("testInsert, location query", cursor, weatherValues);
+        weatherValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailsEntry.FAVORITE_FLAG);
 
         resultUri = mContext.getContentResolver().insert(
         StopDetailsEntry.CONTENT_URI,
-                testValues
+                weatherValues
         );
 
 //        Log.v(TAG, "testInsert - resultUri: " + resultUri);
@@ -162,7 +162,7 @@ public class MptProviderTest {
         Assert.assertNotNull("Error: cursor can not be null", cursor);
         Assert.assertNotEquals("Error: cursor can not be empty", 0, cursor.getCount());
         // Make sure we get the correct cursor out of the database
-        TestUtilities.validateCursor("testInsert, location query", cursor, testValues);
+        TestUtilities.validateCursor("testInsert, location query", cursor, weatherValues);
 
         // Verify there are 2 rows in the DB
         uri = MptContract.StopDetailsEntry.buildFavoriteStopsUri(StopDetailsEntry.ANY_FAVORITE_FLAG);
@@ -186,8 +186,8 @@ public class MptProviderTest {
 
         // Insert a row
         String favoriteFlag = StopDetailsEntry.NON_FAVORITE_FLAG;
-        ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(favoriteFlag);
-        Uri stopDetailsUri = mContext.getContentResolver().insert(StopDetailsEntry.CONTENT_URI, testValues);
+        ContentValues weatherValues = TestUtilities.createFrankstonLineStopDetailsValues(favoriteFlag);
+        Uri stopDetailsUri = mContext.getContentResolver().insert(StopDetailsEntry.CONTENT_URI, weatherValues);
 
         // Did our content observer get called?  If this fails, your insert location
         // isn't calling getContext().getContentResolver().notifyChange(uri, null);
@@ -213,7 +213,7 @@ public class MptProviderTest {
         );
 
         TestUtilities.validateCursor("testInsertReadProvider. Error validating StopDetailsEntry.",
-                cursor, testValues);
+                cursor, weatherValues);
     }
 
     @Test
@@ -249,7 +249,7 @@ public class MptProviderTest {
 
         // Test to make sure our observer is called.  If not, we throw an assertion.
         //
-        // Students: If your code is failing here, it means that your content provider
+        // If the code is failing here, it means that your content provider
         // isn't calling getContext().getContentResolver().notifyChange(uri, null);
         tco.waitForNotificationOrFail();
 
@@ -271,10 +271,68 @@ public class MptProviderTest {
 
         cursor.close();
     }
+    
+    static private final int BULK_INSERT_RECORDS_TO_INSERT = 10;
 
+    static ContentValues[] createBulkInsertStopDetailsValues(String favoriteFlag) {
+        ContentValues[] returnContentValues = new ContentValues[BULK_INSERT_RECORDS_TO_INSERT];
+
+        for ( int i = 0; i < BULK_INSERT_RECORDS_TO_INSERT; i++) {
+            ContentValues weatherValues = new ContentValues();            
+            weatherValues.put(StopDetailsEntry.COLUMN_LINE_NAME, "Frankston");
+            weatherValues.put(StopDetailsEntry.COLUMN_STOP_NAME, "Carrum" + " - " + i);
+            weatherValues.put(StopDetailsEntry.COLUMN_LATITUDE, 64.7488);
+            weatherValues.put(StopDetailsEntry.COLUMN_LONGITUDE, -147.353);
+            weatherValues.put(StopDetailsEntry.COLUMN_FAVORITE, favoriteFlag);
+            returnContentValues[i] = weatherValues;
+        }
+        return returnContentValues;
+    }
+
+    // This test will work with the built-in (default) provider
+    // implementation, which just inserts records one-at-a-time, so really do implement the
+    // BulkInsert ContentProvider function.
     @Test
-    public void testBulkInsert() throws Exception {
-        // FIXME: 2/09/2016 - write code
+    public void testBulkInsert() {
+        Log.v(TAG, "testBulkInsert - start");
+        String favoriteFlag = StopDetailsEntry.NON_FAVORITE_FLAG;
+        ContentValues[] bulkInsertContentValues = createBulkInsertStopDetailsValues(favoriteFlag);
+
+        // Register a content observer for our bulk insert.
+        TestUtilities.TestContentObserver stopDetailsObserver = TestUtilities.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(StopDetailsEntry.CONTENT_URI, true, stopDetailsObserver);
+
+        int insertCount = mContext.getContentResolver().bulkInsert(StopDetailsEntry.CONTENT_URI, bulkInsertContentValues);
+
+        Log.v(TAG, "testBulkInsert - insertCount: " + insertCount);
+        // If this fails, it means that you most-likely are not calling the
+        // getContext().getContentResolver().notifyChange(uri, null); in your BulkInsert
+        // ContentProvider method.
+        stopDetailsObserver.waitForNotificationOrFail();
+        mContext.getContentResolver().unregisterContentObserver(stopDetailsObserver);
+
+        Assert.assertEquals(insertCount, BULK_INSERT_RECORDS_TO_INSERT);
+
+        // A cursor is your primary interface to the query results.
+        Uri uri = StopDetailsEntry.buildFavoriteStopsUri(favoriteFlag);
+        Cursor cursor = mContext.getContentResolver().query(
+                uri,
+                null, // leaving "columns" null just returns all the columns.
+                null, // cols for "where" clause
+                null, // values for "where" clause
+                StopDetailsEntry.COLUMN_STOP_NAME + " ASC"  // sort order == by COLUMN_STOP_NAME ASCENDING
+        );
+
+        // we should have as many records in the database as we've inserted
+        Assert.assertEquals(cursor.getCount(), BULK_INSERT_RECORDS_TO_INSERT);
+
+        // and let's make sure they match the ones we created
+        cursor.moveToFirst();
+        for ( int i = 0; i < BULK_INSERT_RECORDS_TO_INSERT; i++, cursor.moveToNext() ) {
+            TestUtilities.validateCurrentRecord("testBulkInsert.  Error validating StopDetailsEntry " + i,
+                    cursor, bulkInsertContentValues[i]);
+        }
+        cursor.close();
     }
 
     /*
@@ -284,7 +342,7 @@ public class MptProviderTest {
     @Test
     public void testBasicStopDetailsQueries() {
         String favoriteFlags = StopDetailsEntry.NON_FAVORITE_FLAG;
-        ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(favoriteFlags);
+        ContentValues weatherValues = TestUtilities.createFrankstonLineStopDetailsValues(favoriteFlags);
         TestUtilities.insertFrankstonLineStopDetailsValues(mContext);
 
         // Test the basic content provider query
@@ -300,7 +358,7 @@ public class MptProviderTest {
         Assert.assertNotNull("Error: cursor can not be null", cursor);
         Assert.assertNotEquals("Error: cursor can not be empty", 0, cursor.getCount());
         // Make sure we get the correct cursor out of the database
-        TestUtilities.validateCursor("testBasicStopDetailsQueries, location query", cursor, testValues);
+        TestUtilities.validateCursor("testBasicStopDetailsQueries, location query", cursor, weatherValues);
 
         // Has the NotificationUri been set correctly? --- we can only test this easily against API
         // level 19 or greater because getNotificationUri was added in API level 19.
