@@ -22,10 +22,10 @@ public class MptContract {
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     // Possible paths (appended to base content URI for possible URI's)
-    public static final String PATH_STOP_DETAIL = "stops_detail";
-    public static final String PATH_LINE_DETAIL = "stops_detail";
+    public static final String PATH_LINE_DETAIL = "line_detail";
+    public static final String PATH_STOP_DETAIL = "stop_detail";
 
-    /* Inner class that defines the table contents of the AvailableStopsEntry table */
+    /* Inner class that defines the table contents of the line_detail table */
     public static final class LineDetailEntry implements BaseColumns {
 
         // CONTENT_URI points to a table line_detail
@@ -55,9 +55,13 @@ public class MptContract {
 
         // line_name - string
         public static final String COLUMN_LINE_NAME_SHORT = "line_name_short";
+
+        public static Uri buildLocationUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
     }
 
-    /* Inner class that defines the table contents of the AvailableStopsEntry table */
+    /* Inner class that defines the table contents of the stop_detail table */
     public static final class StopDetailEntry implements BaseColumns {
 
         // CONTENT_URI points to a table stop_detail
@@ -80,7 +84,7 @@ public class MptContract {
         public static final String TABLE_NAME = "stop_detail";
 
         // column names
-        public static final String COLUMN_LINE_NAME = "line_name";
+        public static final String COLUMN_LINE_KEY = "line_name";
 
         public static final String COLUMN_STOP_NAME = "stop_name";
 

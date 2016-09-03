@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import au.com.kbrsolutions.melbournepublictransport.data.MptContract.LineDetailEntry;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract.StopDetailEntry;
 
 
@@ -21,7 +22,8 @@ public class MptProvider extends ContentProvider {
     private MptDbHelper mOpenHelper;
 
     static final int ALL_STOP_DETAIL = 100;
-    static final int STOPS_DETAILS_WITH_FAVORITE_FLAG = 200;
+    static final int ALL_LINE_DETAIL = 200;
+//    static final int STOPS_DETAILS_WITH_FAVORITE_FLAG = 200;
 
     private static final SQLiteQueryBuilder sStopDetailForFavoriteFlagQueryBuilder;
 
@@ -70,8 +72,8 @@ public class MptProvider extends ContentProvider {
         switch (match) {
             case ALL_STOP_DETAIL:
                 return StopDetailEntry.CONTENT_TYPE;
-            case STOPS_DETAILS_WITH_FAVORITE_FLAG:
-                return StopDetailEntry.CONTENT_TYPE;
+//            case STOPS_DETAILS_WITH_FAVORITE_FLAG:
+//                return StopDetailEntry.CONTENT_TYPE;
 
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -129,16 +131,25 @@ public class MptProvider extends ContentProvider {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         Uri returnUri;
+        long _id;
 
         switch (match) {
-            case ALL_STOP_DETAIL: {
-                long _id = db.insert(StopDetailEntry.TABLE_NAME, null, contentValues);
+            case ALL_LINE_DETAIL:
+                _id = db.insert(LineDetailEntry.TABLE_NAME, null, contentValues);
+                if ( _id > 0 )
+                    returnUri = LineDetailEntry.buildLocationUri(_id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+
+            case ALL_STOP_DETAIL:
+                _id = db.insert(StopDetailEntry.TABLE_NAME, null, contentValues);
                 if ( _id > 0 )
                     returnUri = StopDetailEntry.buildLocationUri(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
-            }
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -154,6 +165,11 @@ public class MptProvider extends ContentProvider {
         // this makes delete all rows and return the number of rows deleted
         if ( null == selection ) selection = "1";
         switch (match) {
+            case ALL_LINE_DETAIL:
+                rowsDeleted = db.delete(
+                        LineDetailEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+
             case ALL_STOP_DETAIL:
                 rowsDeleted = db.delete(
                         StopDetailEntry.TABLE_NAME, selection, selectionArgs);
@@ -229,6 +245,7 @@ public class MptProvider extends ContentProvider {
         final String authority = MptContract.CONTENT_AUTHORITY;
 
         // For each type of URI you want to add, create a corresponding code.
+        matcher.addURI(authority, MptContract.PATH_LINE_DETAIL, ALL_LINE_DETAIL);
         matcher.addURI(authority, MptContract.PATH_STOP_DETAIL, ALL_STOP_DETAIL);
 //        matcher.addURI(authority, MptContract.StopDetailEntry.MATCHER_KEY_STOPS_DEATILS_WITH_FAVORITE_FLAG, STOPS_DETAILS_WITH_FAVORITE_FLAG);
         return matcher;

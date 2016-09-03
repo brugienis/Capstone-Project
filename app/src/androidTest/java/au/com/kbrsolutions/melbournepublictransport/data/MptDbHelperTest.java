@@ -77,8 +77,8 @@ public class MptDbHelperTest {
             tableNameHashSet.remove(c.getString(0));
         } while( c.moveToNext() );
 
-        // if this fails, it means that your database doesn't contain stop_details entry
-        Assert.assertTrue("Error: Your database was created without the stop_details table",
+        // if this fails, it means that your database doesn't contain stop_detail entry
+        Assert.assertTrue("Error: Your database was created without the stop_detail table",
                 tableNameHashSet.isEmpty());
 
         // now, do our tables contain the correct columns?
@@ -91,7 +91,7 @@ public class MptDbHelperTest {
         // Build a HashSet of all of the column names we want to look for
         final HashSet<String> stopDetailsColumnHashSet = new HashSet<String>();
         stopDetailsColumnHashSet.add(MptContract.StopDetailEntry._ID);
-        stopDetailsColumnHashSet.add(MptContract.StopDetailEntry.COLUMN_LINE_NAME);
+        stopDetailsColumnHashSet.add(MptContract.StopDetailEntry.COLUMN_LINE_KEY);
         stopDetailsColumnHashSet.add(MptContract.StopDetailEntry.COLUMN_STOP_NAME);
         stopDetailsColumnHashSet.add(MptContract.StopDetailEntry.COLUMN_LATITUDE);
         stopDetailsColumnHashSet.add(MptContract.StopDetailEntry.COLUMN_LONGITUDE);
@@ -103,9 +103,9 @@ public class MptDbHelperTest {
             stopDetailsColumnHashSet.remove(columnName);
         } while(c.moveToNext());
 
-        // if this fails, it means that your database doesn't contain all of the required stop_details
+        // if this fails, it means that your database doesn't contain all of the required stop_detail
         // entry columns
-        Assert.assertTrue("Error: The database doesn't contain all of the required stop_details entry columns",
+        Assert.assertTrue("Error: The database doesn't contain all of the required stop_detail entry columns",
                 stopDetailsColumnHashSet.isEmpty());
         db.close();
         Assert.assertNotEquals("DB should be closed", true, db.isOpen());
@@ -117,11 +117,11 @@ public class MptDbHelperTest {
         deleteTheDatabase();
         SQLiteDatabase db = new MptDbHelper(this.mContext).getWritableDatabase();
         ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(MptContract.StopDetailEntry.NON_FAVORITE_FLAG);
-        long stop_detailsRowId;
-        stop_detailsRowId = db.insert(MptContract.StopDetailEntry.TABLE_NAME, null, testValues);
+        long stop_detailRowId;
+        stop_detailRowId = db.insert(MptContract.StopDetailEntry.TABLE_NAME, null, testValues);
 
         // Verify we got a row back.
-        Assert.assertTrue(stop_detailsRowId != -1);
+        Assert.assertTrue(stop_detailRowId != -1);
         // Data's inserted.  IN THEORY.  Now pull some out to stare at it and verify it made
         // the round trip.
 
@@ -139,7 +139,7 @@ public class MptDbHelperTest {
 
         // Move the cursor to a valid database row and check to see if we got any records back
         // from the query
-        Assert.assertTrue( "Error: No Records returned from stop_details query", cursor.moveToFirst() );
+        Assert.assertTrue( "Error: No Records returned from stop_detail query", cursor.moveToFirst() );
 
         // Fifth Step: Validate data in resulting Cursor with the original ContentValues
         // (you can use the validateCurrentRecord function in TestUtilities to validate the
@@ -148,7 +148,7 @@ public class MptDbHelperTest {
                 cursor, testValues);
 
         // Move the cursor to demonstrate that there is only one record in the database
-        Assert.assertFalse( "Error: More than one record returned from stop_details query",
+        Assert.assertFalse( "Error: More than one record returned from stop_detail query",
                 cursor.moveToNext() );
 
         // Sixth Step: Close Cursor and Database

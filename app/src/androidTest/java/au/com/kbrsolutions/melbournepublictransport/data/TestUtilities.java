@@ -35,15 +35,21 @@ public class TestUtilities {
         }
     }
 
+    private static double latitude = 64.7488;
+    private static double longitude = -147.353;
+    private static double increase = 0.0001;
+
     static ContentValues createFrankstonLineStopDetailsValues(String favoriteFlag) {
         // Create a new map of values, where column names are the keys
         ContentValues testValues = new ContentValues();
-        testValues.put(MptContract.StopDetailEntry.COLUMN_LINE_NAME, "Frankston");
+        testValues.put(MptContract.StopDetailEntry.COLUMN_LINE_KEY, "Frankston");
         testValues.put(MptContract.StopDetailEntry.COLUMN_STOP_NAME, "Carrum");
-        testValues.put(MptContract.StopDetailEntry.COLUMN_LATITUDE, 64.7488);
-        testValues.put(MptContract.StopDetailEntry.COLUMN_LONGITUDE, -147.353);
+        testValues.put(MptContract.StopDetailEntry.COLUMN_LATITUDE, latitude);
+        testValues.put(MptContract.StopDetailEntry.COLUMN_LONGITUDE, longitude);
         testValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, favoriteFlag);
 
+        latitude =+ increase;
+        longitude =+ increase;
         return testValues;
     }
     

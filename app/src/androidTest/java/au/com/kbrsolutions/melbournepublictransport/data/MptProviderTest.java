@@ -279,7 +279,7 @@ public class MptProviderTest {
 
         for ( int i = 0; i < BULK_INSERT_RECORDS_TO_INSERT; i++) {
             ContentValues stop_detailValues = new ContentValues();            
-            stop_detailValues.put(StopDetailEntry.COLUMN_LINE_NAME, "Frankston");
+            stop_detailValues.put(StopDetailEntry.COLUMN_LINE_KEY, "Frankston");
             stop_detailValues.put(StopDetailEntry.COLUMN_STOP_NAME, "Carrum" + " - " + i);
             stop_detailValues.put(StopDetailEntry.COLUMN_LATITUDE, 64.7488);
             stop_detailValues.put(StopDetailEntry.COLUMN_LONGITUDE, -147.353);
@@ -311,7 +311,7 @@ public class MptProviderTest {
         stopDetailsObserver.waitForNotificationOrFail();
         mContext.getContentResolver().unregisterContentObserver(stopDetailsObserver);
 
-        Assert.assertEquals(insertCount, BULK_INSERT_RECORDS_TO_INSERT);
+        Assert.assertEquals(BULK_INSERT_RECORDS_TO_INSERT, insertCount);
 
         // A cursor is your primary interface to the query results.
         Uri uri = StopDetailEntry.buildFavoriteStopsUri(favoriteFlag);
