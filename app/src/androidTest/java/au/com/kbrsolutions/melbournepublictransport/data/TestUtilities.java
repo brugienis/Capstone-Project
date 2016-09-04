@@ -29,37 +29,59 @@ public class TestUtilities {
             int idx = valueCursor.getColumnIndex(columnName);
             Assert.assertFalse("Column '" + columnName + "' not found. " + error, idx == -1);
             String expectedValue = entry.getValue().toString();
-            Assert.assertEquals("Value '" + entry.getValue().toString() +
-                    "' did not match the expected value '" +
-                    expectedValue + "'. " + error, expectedValue, valueCursor.getString(idx));
+            if (columnName.equals(MptContract.StopDetailEntry.COLUMN_LATITUDE) || columnName.equals(MptContract.StopDetailEntry.COLUMN_LONGITUDE)) {
+                validateDoubleValues(expectedValue, valueCursor.getString(idx));
+            } else {
+                Assert.assertEquals("Value '" + entry.getValue().toString() +
+                        "' did not match the expected value '" +
+                        expectedValue + "'. " + error, expectedValue, valueCursor.getString(idx));
+            }
         }
     }
 
-    private static double latitude = 64.7488;
-    private static double longitude = -147.353;
-    private static double increase = 0.0001;
+    private static void validateDoubleValues(String  expected, String actual) {
+        double expDouble = Double.parseDouble(expected);
+        double actDouble = Double.parseDouble(actual);
+        Assert.assertEquals("doubles not equal" ,expDouble, actDouble, 0.01);
+    }
 
-    static ContentValues createFrankstonLineStopDetailsValues(String favoriteFlag) {
+    private static double latitude = 1.0;    //64.7488;
+    private static double longitude = 10.0;  //-147.353;
+    private static double increase = 1.0;
+
+    static ContentValues createFrankstonLineDetailsValues() {
         // Create a new map of values, where column names are the keys
         ContentValues testValues = new ContentValues();
-        testValues.put(MptContract.StopDetailEntry.COLUMN_LINE_KEY, "Frankston");
+        testValues.put(MptContract.LineDetailEntry.COLUMN_ROUTE_TYPE, 0);
+        testValues.put(MptContract.LineDetailEntry.COLUMN_LINE_ID, 101);
+        testValues.put(MptContract.LineDetailEntry.COLUMN_LINE_NAME, "Frankston");
+        testValues.put(MptContract.LineDetailEntry.COLUMN_LINE_NAME_SHORT, "Fr");
+        return testValues;
+    }
+
+    static ContentValues createFrankstonLineStopDetailsValues(long line_detailRowId, String favoriteFlag) {
+        // Create a new map of values, where column names are the keys
+        ContentValues testValues = new ContentValues();
+        testValues.put(MptContract.StopDetailEntry.COLUMN_LINE_KEY, line_detailRowId);
         testValues.put(MptContract.StopDetailEntry.COLUMN_STOP_NAME, "Carrum");
         testValues.put(MptContract.StopDetailEntry.COLUMN_LATITUDE, latitude);
         testValues.put(MptContract.StopDetailEntry.COLUMN_LONGITUDE, longitude);
         testValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, favoriteFlag);
 
-        latitude =+ increase;
-        longitude =+ increase;
+        latitude += increase;
+        longitude += increase;
+
         return testValues;
     }
     
-    static long insertFrankstonLineStopDetailsValues(Context context) {
+    static long insertFrankstonLineStopDetailsValues(long lineDetailRowId, Context context, ContentValues stoDetailValues) {
         // insert our test records into the database
         SQLiteDatabase db = new MptDbHelper(context).getWritableDatabase();
-        ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(MptContract.StopDetailEntry.NON_FAVORITE_FLAG);
+
+//        ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(lineDetailRowId, MptContract.StopDetailEntry.NON_FAVORITE_FLAG);
 
         long stop_detailRowId;
-        stop_detailRowId = db.insert(MptContract.StopDetailEntry.TABLE_NAME, null, testValues);
+        stop_detailRowId = db.insert(MptContract.StopDetailEntry.TABLE_NAME, null, stoDetailValues);
 
         // Verify we got a row back.
         Assert.assertTrue("Error: Failure to insert Frankston StopDetails Values", stop_detailRowId != -1);

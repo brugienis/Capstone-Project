@@ -30,7 +30,7 @@ public class MptContract {
 
         // CONTENT_URI points to a table line_detail
         public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_STOP_DETAIL).build();
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_LINE_DETAIL).build();
 
         // CONTENT_TYPE - indicates that the content is a collection of URIs. Used in Provider.getType(...).
         public static final String CONTENT_TYPE =
@@ -56,7 +56,7 @@ public class MptContract {
         // line_name - string
         public static final String COLUMN_LINE_NAME_SHORT = "line_name_short";
 
-        public static Uri buildLocationUri(long id) {
+        public static Uri buildUriWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }

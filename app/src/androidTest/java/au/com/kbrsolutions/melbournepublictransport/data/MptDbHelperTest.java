@@ -3,6 +3,7 @@ package au.com.kbrsolutions.melbournepublictransport.data;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
@@ -111,14 +112,43 @@ public class MptDbHelperTest {
         Assert.assertNotEquals("DB should be closed", true, db.isOpen());
     }
 
+    @Test(expected= SQLiteConstraintException.class)
+    public void testForeignException() {
+        SQLiteDatabase db = new MptDbHelper(this.mContext).getWritableDatabase();
+
+        // insert row into stop_detail
+        ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(-999, MptContract.StopDetailEntry.NON_FAVORITE_FLAG);
+        long stop_detailRowId = db.insert(MptContract.StopDetailEntry.TABLE_NAME, null, testValues);
+    }
+
     @Test
-    public void testInsertStopDetails() throws Throwable {
-//        mContext.deleteDatabase(MptDbHelper.DATABASE_NAME);
+    public void testInsertLineAndStopDetails() throws Throwable {
         deleteTheDatabase();
         SQLiteDatabase db = new MptDbHelper(this.mContext).getWritableDatabase();
-        ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(MptContract.StopDetailEntry.NON_FAVORITE_FLAG);
-        long stop_detailRowId;
-        stop_detailRowId = db.insert(MptContract.StopDetailEntry.TABLE_NAME, null, testValues);
+
+        // insert row into line_detail
+        ContentValues testValues = TestUtilities.createFrankstonLineDetailsValues();
+        long line_detailRowId = db.insert(MptContract.LineDetailEntry.TABLE_NAME, null, testValues);
+
+        // Verify we got a row back.
+        Assert.assertTrue("row Id cannot be -1", line_detailRowId != -1);
+        Cursor cursor = db.query(
+                MptContract.LineDetailEntry.TABLE_NAME,  // Table to Query
+                null, // all columns
+                null, // Columns for the "where" clause
+                null, // Values for the "where" clause
+                null, // columns to group by
+                null, // columns to filter by row groups
+                null // sort order
+        );
+
+        // Move the cursor to a valid database row and check to see if we got any records back
+        // from the query
+        Assert.assertTrue( "Error: No Records returned from stop_detail query - cnt: " + cursor.getCount(), cursor.moveToFirst() );
+
+        // insert row into stop_detail
+        testValues = TestUtilities.createFrankstonLineStopDetailsValues(line_detailRowId, MptContract.StopDetailEntry.NON_FAVORITE_FLAG);
+        long stop_detailRowId = db.insert(MptContract.StopDetailEntry.TABLE_NAME, null, testValues);
 
         // Verify we got a row back.
         Assert.assertTrue(stop_detailRowId != -1);
@@ -127,7 +157,7 @@ public class MptDbHelperTest {
 
         //Query the database and receive a Cursor back.
         // A cursor is your primary interface to the query results.
-        Cursor cursor = db.query(
+        cursor = db.query(
                 MptContract.StopDetailEntry.TABLE_NAME,  // Table to Query
                 null, // all columns
                 null, // Columns for the "where" clause

@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import au.com.kbrsolutions.melbournepublictransport.data.MptContract.LineDetailEntry;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract.StopDetailEntry;
 
 
@@ -38,15 +39,25 @@ public class MptProviderTest {
 
     @Test
     public void testDelete() throws Exception {
+        // insert a row into line_detail table
+        ContentValues lineDetailetailValues = TestUtilities.createFrankstonLineDetailsValues();
+
+        Uri resultUri = mContext.getContentResolver().insert(
+                LineDetailEntry.CONTENT_URI,
+                lineDetailetailValues
+        );
+
+        long lineDetailRowId = ContentUris.parseId(resultUri);
+
         // insert 2 rows
-        ContentValues stop_detailValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailEntry.NON_FAVORITE_FLAG);
+        ContentValues stop_detailValues = TestUtilities.createFrankstonLineStopDetailsValues(lineDetailRowId, StopDetailEntry.NON_FAVORITE_FLAG);
 
         mContext.getContentResolver().insert(
                 StopDetailEntry.CONTENT_URI,
                 stop_detailValues
         );
 
-        stop_detailValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailEntry.FAVORITE_FLAG);
+        stop_detailValues = TestUtilities.createFrankstonLineStopDetailsValues(lineDetailRowId, StopDetailEntry.FAVORITE_FLAG);
 
         mContext.getContentResolver().insert(
                 StopDetailEntry.CONTENT_URI,
@@ -111,10 +122,26 @@ public class MptProviderTest {
         // Register a content observer for our insert.  This time, directly with the content resolver
         TestUtilities.TestContentObserver tco = TestUtilities.getTestContentObserver();
         mContext.getContentResolver().registerContentObserver(StopDetailEntry.CONTENT_URI, true, tco);
-        
-        ContentValues stop_detailValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailEntry.NON_FAVORITE_FLAG);
+
+        // insert a row into line_detail table
+        ContentValues lineDetailValues = TestUtilities.createFrankstonLineDetailsValues();
 
         Uri resultUri = mContext.getContentResolver().insert(
+                LineDetailEntry.CONTENT_URI,
+                lineDetailValues
+        );
+
+        long locationRowId = ContentUris.parseId(resultUri);
+
+        // Did our content observer get called?  If this fails, your insert stop_detail
+        // isn't calling getContext().getContentResolver().notifyChange(uri, null);
+//        tco.waitForNotificationOrFail();
+//        mContext.getContentResolver().unregisterContentObserver(tco);
+
+        // insert the first row into stop_detail table
+        ContentValues stop_detailValues = TestUtilities.createFrankstonLineStopDetailsValues(locationRowId, StopDetailEntry.NON_FAVORITE_FLAG);
+
+        resultUri = mContext.getContentResolver().insert(
         StopDetailEntry.CONTENT_URI,
                 stop_detailValues
         );
@@ -140,7 +167,9 @@ public class MptProviderTest {
         Assert.assertNotEquals("Error: cursor can not be empty", 0, cursor.getCount());
         // Make sure we get the correct cursor out of the database
         TestUtilities.validateCursor("testInsert, stop_detail query", cursor, stop_detailValues);
-        stop_detailValues = TestUtilities.createFrankstonLineStopDetailsValues(StopDetailEntry.FAVORITE_FLAG);
+
+        // insert the second row into stop_detail table
+        stop_detailValues = TestUtilities.createFrankstonLineStopDetailsValues(locationRowId, StopDetailEntry.FAVORITE_FLAG);
 
         resultUri = mContext.getContentResolver().insert(
         StopDetailEntry.CONTENT_URI,
@@ -180,13 +209,23 @@ public class MptProviderTest {
 
     @Test
     public void testInsertReadProvider() {
+        // insert a row into line_detail table
+        ContentValues lineDetailetailValues = TestUtilities.createFrankstonLineDetailsValues();
+
+        Uri resultUri = mContext.getContentResolver().insert(
+                LineDetailEntry.CONTENT_URI,
+                lineDetailetailValues
+        );
+
+        long lineDetailRowId = ContentUris.parseId(resultUri);
+
         // Register a content observer for our insert.  This time, directly with the content resolver
         TestUtilities.TestContentObserver tco = TestUtilities.getTestContentObserver();
         mContext.getContentResolver().registerContentObserver(StopDetailEntry.CONTENT_URI, true, tco);
 
         // Insert a row
         String favoriteFlag = StopDetailEntry.NON_FAVORITE_FLAG;
-        ContentValues stop_detailValues = TestUtilities.createFrankstonLineStopDetailsValues(favoriteFlag);
+        ContentValues stop_detailValues = TestUtilities.createFrankstonLineStopDetailsValues(lineDetailRowId, favoriteFlag);
         Uri stopDetailsUri = mContext.getContentResolver().insert(StopDetailEntry.CONTENT_URI, stop_detailValues);
 
         // Did our content observer get called?  If this fails, your insert stop_detail
@@ -218,9 +257,19 @@ public class MptProviderTest {
 
     @Test
     public void testUpdate() throws Exception {
+        // insert a row into line_detail table
+        ContentValues lineDetailetailValues = TestUtilities.createFrankstonLineDetailsValues();
+
+        Uri resultUri = mContext.getContentResolver().insert(
+                LineDetailEntry.CONTENT_URI,
+                lineDetailetailValues
+        );
+
+        long lineDetailRowId = ContentUris.parseId(resultUri);
+
         String favoriteFlag = StopDetailEntry.FAVORITE_FLAG;
         // Create a new map of values, where column names are the keys
-        ContentValues values = TestUtilities.createFrankstonLineStopDetailsValues(favoriteFlag);
+        ContentValues values = TestUtilities.createFrankstonLineStopDetailsValues(lineDetailRowId, favoriteFlag);
 
         Uri locationUri = mContext.getContentResolver().
                 insert(StopDetailEntry.CONTENT_URI, values);
@@ -274,17 +323,24 @@ public class MptProviderTest {
     
     static private final int BULK_INSERT_RECORDS_TO_INSERT = 10;
 
-    static ContentValues[] createBulkInsertStopDetailsValues(String favoriteFlag) {
+    private static double latitude = 1.0;    //64.7488;
+    private static double longitude = 10.0;  //-147.353;
+    private static double increase = 1.0;
+
+    static ContentValues[] createBulkInsertStopDetailsValues(long lineDetailRowId, String favoriteFlag) {
         ContentValues[] returnContentValues = new ContentValues[BULK_INSERT_RECORDS_TO_INSERT];
 
         for ( int i = 0; i < BULK_INSERT_RECORDS_TO_INSERT; i++) {
             ContentValues stop_detailValues = new ContentValues();            
-            stop_detailValues.put(StopDetailEntry.COLUMN_LINE_KEY, "Frankston");
+            stop_detailValues.put(StopDetailEntry.COLUMN_LINE_KEY, lineDetailRowId);
             stop_detailValues.put(StopDetailEntry.COLUMN_STOP_NAME, "Carrum" + " - " + i);
-            stop_detailValues.put(StopDetailEntry.COLUMN_LATITUDE, 64.7488);
-            stop_detailValues.put(StopDetailEntry.COLUMN_LONGITUDE, -147.353);
+            stop_detailValues.put(StopDetailEntry.COLUMN_LATITUDE, latitude);
+            stop_detailValues.put(StopDetailEntry.COLUMN_LONGITUDE, longitude);
             stop_detailValues.put(StopDetailEntry.COLUMN_FAVORITE, favoriteFlag);
             returnContentValues[i] = stop_detailValues;
+
+            latitude += increase;
+            longitude += increase;
         }
         return returnContentValues;
     }
@@ -295,8 +351,19 @@ public class MptProviderTest {
     @Test
     public void testBulkInsert() {
         Log.v(TAG, "testBulkInsert - start");
+        // insert a row into line_detail table
+        ContentValues lineDetailetailValues = TestUtilities.createFrankstonLineDetailsValues();
+
+        Uri resultUri = mContext.getContentResolver().insert(
+                LineDetailEntry.CONTENT_URI,
+                lineDetailetailValues
+        );
+
+        long lineDetailRowId = ContentUris.parseId(resultUri);
+
+        // insert into stop_detail
         String favoriteFlag = StopDetailEntry.NON_FAVORITE_FLAG;
-        ContentValues[] bulkInsertContentValues = createBulkInsertStopDetailsValues(favoriteFlag);
+        ContentValues[] bulkInsertContentValues = createBulkInsertStopDetailsValues(lineDetailRowId, favoriteFlag);
 
         // Register a content observer for our bulk insert.
         TestUtilities.TestContentObserver stopDetailsObserver = TestUtilities.getTestContentObserver();
@@ -335,15 +402,26 @@ public class MptProviderTest {
         cursor.close();
     }
 
+    // FIXME: 4/09/2016 comment below is not tgrue - think about it
     /*
         This test uses the database directly to insert and then uses the ContentProvider to
         read out the data.
      */
     @Test
     public void testBasicStopDetailsQueries() {
+        // insert a row into line_detail table
+        ContentValues lineDetailetailValues = TestUtilities.createFrankstonLineDetailsValues();
+
+        Uri resultUri = mContext.getContentResolver().insert(
+                LineDetailEntry.CONTENT_URI,
+                lineDetailetailValues
+        );
+
+        long lineDetailRowId = ContentUris.parseId(resultUri);
+
         String favoriteFlags = StopDetailEntry.NON_FAVORITE_FLAG;
-        ContentValues stop_detailValues = TestUtilities.createFrankstonLineStopDetailsValues(favoriteFlags);
-        TestUtilities.insertFrankstonLineStopDetailsValues(mContext);
+        ContentValues stopDetailValues = TestUtilities.createFrankstonLineStopDetailsValues(lineDetailRowId, favoriteFlags);
+        TestUtilities.insertFrankstonLineStopDetailsValues(lineDetailRowId, mContext, stopDetailValues);
 
         // Test the basic content provider query
         Uri uri = StopDetailEntry.buildFavoriteStopsUri(favoriteFlags);
@@ -358,7 +436,7 @@ public class MptProviderTest {
         Assert.assertNotNull("Error: cursor can not be null", cursor);
         Assert.assertNotEquals("Error: cursor can not be empty", 0, cursor.getCount());
         // Make sure we get the correct cursor out of the database
-        TestUtilities.validateCursor("testBasicStopDetailsQueries, stop_detail query", cursor, stop_detailValues);
+        TestUtilities.validateCursor("testBasicStopDetailsQueries, stop_detail query", cursor, stopDetailValues);
 
         // Has the NotificationUri been set correctly? --- we can only test this easily against API
         // level 19 or greater because getNotificationUri was added in API level 19.
@@ -369,7 +447,7 @@ public class MptProviderTest {
     }
 
     public void deleteAllRecordsFromProvider() {
-        // Delete all rows
+        // Delete all rows from stop_detail
         mContext.getContentResolver().delete(
                 StopDetailEntry.CONTENT_URI,
                 null,
@@ -379,6 +457,23 @@ public class MptProviderTest {
         Uri uri = StopDetailEntry.buildFavoriteStopsUri(StopDetailEntry.ANY_FAVORITE_FLAG);
         Cursor cursor = mContext.getContentResolver().query(
                 uri,
+                null,
+                null,
+                null,
+                null
+        );
+        Assert.assertEquals("Error: Records not deleted from stop_detail table during delete", 0, cursor.getCount());
+        cursor.close();
+
+        // Delete all rows from line_detail
+        mContext.getContentResolver().delete(
+                LineDetailEntry.CONTENT_URI,
+                null,
+                null
+        );
+
+        cursor = mContext.getContentResolver().query(
+                LineDetailEntry.CONTENT_URI,
                 null,
                 null,
                 null,

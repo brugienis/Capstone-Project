@@ -23,7 +23,24 @@ public class MptProvider extends ContentProvider {
 
     static final int ALL_STOP_DETAIL = 100;
     static final int ALL_LINE_DETAIL = 200;
-//    static final int STOPS_DETAILS_WITH_FAVORITE_FLAG = 200;
+
+    private static final SQLiteQueryBuilder sLineDetailQueryBuilder;
+
+    static{
+        sLineDetailQueryBuilder = new SQLiteQueryBuilder();
+
+        //This is an inner join which looks like
+        //weather INNER JOIN location ON weather.location_id = location._id
+        sLineDetailQueryBuilder.setTables(LineDetailEntry.TABLE_NAME);
+
+//        sStopDetailForFavoriteFlagQueryBuilder.setTables(
+//                WeatherContract.WeatherEntry.TABLE_NAME + " INNER JOIN " +
+//                        WeatherContract.LocationEntry.TABLE_NAME +
+//                        " ON " + WeatherContract.WeatherEntry.TABLE_NAME +
+//                        "." + WeatherContract.WeatherEntry.COLUMN_LOC_KEY +
+//                        " = " + WeatherContract.LocationEntry.TABLE_NAME +
+//                        "." + WeatherContract.LocationEntry._ID);
+    }
 
     private static final SQLiteQueryBuilder sStopDetailForFavoriteFlagQueryBuilder;
 
@@ -42,6 +59,7 @@ public class MptProvider extends ContentProvider {
 //                        " = " + WeatherContract.LocationEntry.TABLE_NAME +
 //                        "." + WeatherContract.LocationEntry._ID);
     }
+
     // stop_detail.favorite = ?
     private static final String sStopDetailForOneFavoriteFlagSelection =
             StopDetailEntry.TABLE_NAME +
@@ -86,6 +104,12 @@ public class MptProvider extends ContentProvider {
                         String sortOrder) {
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
+            // line_detail
+            case ALL_LINE_DETAIL: {
+                retCursor = sLineDetailQueryBuilder(uri, projection, sortOrder);
+                break;
+            }
+
             // stop_detail?favorite_stops=value   // value is 'y', 'n' or 'a'
             case ALL_STOP_DETAIL: {
                 retCursor = getStopDetailCursorForFavoriteFlagCursor(uri, projection, sortOrder);
@@ -99,14 +123,24 @@ public class MptProvider extends ContentProvider {
         return retCursor;
     }
 
+    private Cursor sLineDetailQueryBuilder(Uri uri, String[] projection, String sortOrder) {
+        return sLineDetailQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                projection,
+                null,
+                null,
+                null,
+                null,
+                sortOrder
+        );
+    }
+
     private Cursor getStopDetailCursorForFavoriteFlagCursor(
             Uri uri, String[] projection, String sortOrder) {
         String favoriteFlag = StopDetailEntry.getFavoriteFlagFromUri(uri);
-        Log.v(TAG, "getStopDetailCursorForFavoriteFlagCursor - favoriteFlag: " + favoriteFlag);
         String selectionClause;
         String[] selectionArgs;
         if (favoriteFlag.equals(StopDetailEntry.ANY_FAVORITE_FLAG)) {
-            Log.v(TAG, "getStopDetailCursorForFavoriteFlagCursor - sStopDetailForTwoFavoriteFlagSelection: " + sStopDetailForTwoFavoriteFlagSelection);
+//            Log.v(TAG, "getStopDetailCursorForFavoriteFlagCursor - sStopDetailForTwoFavoriteFlagSelection: " + sStopDetailForTwoFavoriteFlagSelection);
             selectionClause = sStopDetailForTwoFavoriteFlagSelection;
             selectionArgs = new String[]{StopDetailEntry.NON_FAVORITE_FLAG, StopDetailEntry.FAVORITE_FLAG};
         } else {
@@ -137,7 +171,7 @@ public class MptProvider extends ContentProvider {
             case ALL_LINE_DETAIL:
                 _id = db.insert(LineDetailEntry.TABLE_NAME, null, contentValues);
                 if ( _id > 0 )
-                    returnUri = LineDetailEntry.buildLocationUri(_id);
+                    returnUri = LineDetailEntry.buildUriWithId(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
@@ -154,6 +188,7 @@ public class MptProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         getContext().getContentResolver().notifyChange(uri, null);
+        Log.v(TAG, "insert - end");
         return returnUri;
     }
 
@@ -211,6 +246,7 @@ public class MptProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case ALL_STOP_DETAIL:
+                Log.v(TAG, "bulkInsert - ALL_STOP_DETAIL");
                 db.beginTransaction();
                 int returnCount = 0;
                 try {
@@ -229,6 +265,7 @@ public class MptProvider extends ContentProvider {
 
             // FIXME: 2/09/2016 - investigate if we should throw exception or call super
             default:
+                Log.v(TAG, "bulkInsert - default");
                 return super.bulkInsert(uri, values);
         }
     }

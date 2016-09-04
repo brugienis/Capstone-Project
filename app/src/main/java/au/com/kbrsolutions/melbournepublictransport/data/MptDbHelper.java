@@ -25,15 +25,25 @@ public class MptDbHelper extends SQLiteOpenHelper {
     }
 
     @Override
+    public void onConfigure(SQLiteDatabase db) {
+        super.onConfigure(db);
+
+        db.setForeignKeyConstraintsEnabled(true);
+    }
+
+    @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         Log.v(TAG, "onCreate - start");
+        /*
+        table line_detail has no column named line_name (code 1): , while compiling: INSERT INTO line_detail(route_type,line_name_short,line_name,line_id) VALUES (?,?,?,?)
+         */
         // Create a table to hold lines details.
         final String CREATE_LINE_DETAIL_TABLE = "CREATE TABLE " +
                   LineDetailEntry.TABLE_NAME + " ("
                 + LineDetailEntry._ID + " INTEGER PRIMARY KEY,"
                 + LineDetailEntry.COLUMN_ROUTE_TYPE + " INTEGER UNIQUE NOT NULL, "
                 + LineDetailEntry.COLUMN_LINE_ID + " STRING UNIQUE NOT NULL, "
-                + LineDetailEntry.TABLE_NAME + " STRING UNIQUE NOT NULL, "
+                + LineDetailEntry.COLUMN_LINE_NAME + " STRING UNIQUE NOT NULL, "
                 + LineDetailEntry.COLUMN_LINE_NAME_SHORT + " STRING UNIQUE NOT NULL "
                 + ");";
 
