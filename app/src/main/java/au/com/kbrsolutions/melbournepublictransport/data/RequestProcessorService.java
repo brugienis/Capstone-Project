@@ -47,23 +47,26 @@ public class RequestProcessorService extends IntentService {
             sendMessageToSpotifyStreamerActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NETWORK_STATUS)
                     .setMsg("NO NETWORK CONNECTION")
                     .build());
-//            sendStickyBroadcast(
-//                    new Intent(BROADCAST_ACTION_STATE_CHANGE).
-//                            putExtra(EXTRA_NETWORK_PROBLEM,
-//                                    R.string.broadcast_no_network_connection));
             return;
         }
 
         Log.v(TAG, "onHandleIntent - action: " + action);
         if (action != null) {
-            switch (action) {
-                case REFRESH_DATA:
-                    DatabaseContentRefresher databaseContentRefresher = new DatabaseContentRefresher();
-                    databaseContentRefresher.refreshDatabase();
-                    break;
+            DatabaseContentRefresher databaseContentRefresher = new DatabaseContentRefresher();
+            boolean databaseOK = databaseContentRefresher.performHealthCheck();
+            if (!databaseOK) {
+                sendMessageToSpotifyStreamerActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NETWORK_STATUS)
+                        .setMsg("CANNOT ACCESS MPT site")
+                        .build());
+            } else {
+                switch (action) {
+                    case REFRESH_DATA:
+                        databaseContentRefresher.refreshDatabase();
+                        break;
 
-                default:
-                    throw new RuntimeException(TAG + ".onHandleIntent - no code to handle action: " + action);
+                    default:
+                        throw new RuntimeException(TAG + ".onHandleIntent - no code to handle action: " + action);
+                }
             }
         }
 //        else {

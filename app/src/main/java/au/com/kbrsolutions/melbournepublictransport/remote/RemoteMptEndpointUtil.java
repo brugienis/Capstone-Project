@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import org.joda.time.DateTime;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,7 +15,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -59,6 +62,36 @@ public class RemoteMptEndpointUtil {
         }//        UrlProcessorTask urlProcessorTask = new UrlProcessorTask("performHealthCheck", PVT_CHECK_HEALTH_ID, uri);
 //        urlProcessorTask.execute();
         return databaseOK;
+    }
+
+    public static List<LineDetails> getLineDetails(int mode) {
+        List<LineDetails> lineDetailsList = new ArrayList<>();
+        final String uri = "/v2/lines/mode/" + mode;
+        String jsonString = processRemoteRequest(uri);
+
+//        JSONObject forecastJson = null;
+        String routeType;
+        String lineId;
+        String lineName;
+        JSONArray lineArray = null;
+        try {
+            lineArray = new JSONArray(jsonString);
+            Log.v(TAG, "processJsonString - lineArray: " + lineArray);
+            Log.v(TAG, "processJsonString - lineArray length: " + lineArray.length());
+            for(int i = 0; i < lineArray.length(); i++) {
+                JSONObject oneLineObject = lineArray.getJSONObject(i);
+                routeType = oneLineObject.getString("route_type");
+                lineId = oneLineObject.getString("line_id");
+                lineName = oneLineObject.getString("line_name");
+                LineDetails lineDetails = new LineDetails(lineName);
+                lineDetailsList.add(lineDetails);
+                Log.v(TAG, "processJsonString - lineName: " + routeType + "/" + lineId + "/" + lineName);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return lineDetailsList;
     }
 
     private static String processRemoteRequest(String uri) {

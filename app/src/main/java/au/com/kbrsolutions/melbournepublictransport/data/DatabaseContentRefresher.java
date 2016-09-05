@@ -5,12 +5,19 @@ import android.net.Uri;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import au.com.kbrsolutions.melbournepublictransport.remote.LineDetails;
 import au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil;
 
 public class DatabaseContentRefresher {
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
+
+    boolean performHealthCheck() {
+        boolean databaseOK = RemoteMptEndpointUtil.performHealthCheck();
+        return databaseOK;
+    }
 
     void refreshDatabase() {
         ArrayList<ContentProviderOperation> cpo = new ArrayList<ContentProviderOperation>();
@@ -19,7 +26,8 @@ public class DatabaseContentRefresher {
 
         // Delete all items
         cpo.add(ContentProviderOperation.newDelete(dirUri).build());
-        boolean databaseOK = RemoteMptEndpointUtil.performHealthCheck();
-        Log.v(TAG, "refreshDatabase - databaseOK: " + databaseOK);
+        int trainMode = 0;
+        List<LineDetails> lineDetailsList = RemoteMptEndpointUtil.getLineDetails(trainMode);
+        Log.v(TAG, "refreshDatabase - performing refresh action");
     }
 }
