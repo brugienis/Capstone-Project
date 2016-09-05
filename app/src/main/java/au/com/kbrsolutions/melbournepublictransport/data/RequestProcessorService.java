@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
@@ -16,6 +17,8 @@ import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 public class RequestProcessorService extends IntentService {
 
     private EventBus eventBus;
+    public final static String  ACTION = "action";
+    public final static String  REFRESH_DATA = "refresh_data";
 
     private static final String TAG = RequestProcessorService.class.getSimpleName();
 
@@ -30,10 +33,16 @@ public class RequestProcessorService extends IntentService {
             eventBus.register(this);
         }
 
+        Bundle extras = intent.getExtras();
+        String action = null;
+        if (extras != null) {
+            action = extras.getString(ACTION);
+        }
+
         ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
         if (ni == null || !ni.isConnected()) {
-            Log.v(TAG, "ni is null: " + ni);
+            Log.v(TAG, "onHandleIntent - ni is null: " + ni);
 
             sendMessageToSpotifyStreamerActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NETWORK_STATUS)
                     .setMsg("NO NETWORK CONNECTION")
@@ -43,12 +52,26 @@ public class RequestProcessorService extends IntentService {
 //                            putExtra(EXTRA_NETWORK_PROBLEM,
 //                                    R.string.broadcast_no_network_connection));
             return;
-        } else {
-            Log.v(TAG, "ni not null: " + ni);
-            sendMessageToSpotifyStreamerActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NETWORK_STATUS)
-                    .setMsg("NETWORK CONNECTION OK")
-                    .build());
         }
+
+        Log.v(TAG, "onHandleIntent - action: " + action);
+        if (action != null) {
+            switch (action) {
+                case REFRESH_DATA:
+                    DatabaseContentRefresher databaseContentRefresher = new DatabaseContentRefresher();
+                    databaseContentRefresher.refreshDatabase();
+                    break;
+
+                default:
+                    throw new RuntimeException(TAG + ".onHandleIntent - no code to handle action: " + action);
+            }
+        }
+//        else {
+//            Log.v(TAG, "ni not null: " + ni);
+//            sendMessageToSpotifyStreamerActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NETWORK_STATUS)
+//                    .setMsg("NETWORK CONNECTION OK")
+//                    .build());
+//        }
     }
 
     private void sendMessageToSpotifyStreamerActivity(MainActivityEvents event) {

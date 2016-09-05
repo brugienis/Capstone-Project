@@ -109,9 +109,9 @@ public class MainActivity extends AppCompatActivity
         });
 
 //        mServiceIntent = new Intent(getActivity(), RSSPullService.class);
-        Intent mServiceIntent = new Intent(this, RequestProcessorService.class);
-//        mServiceIntent.setData(Uri.parse(dataUrl));
-        startService(mServiceIntent);
+        Intent intent = new Intent(this, RequestProcessorService.class);
+        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.REFRESH_DATA);
+        startService(intent);
     }
 
     // FIXME: 17/08/2016 
@@ -211,9 +211,14 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-    // This method will be called when a MainActivityEvents is posted (in the UI thread for Toast)
+
+    /**
+     * Get messages through Event Bus from Green Robot.
+     * This method will be called when a MainActivityEvents is posted (in the UI thread
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MainActivityEvents event) {
+        Log.v(TAG, "onMessageEvent - start");
         MainActivityEvents.MainEvents requestEvent = event.event;
         switch (requestEvent) {
 
@@ -224,22 +229,6 @@ public class MainActivity extends AppCompatActivity
             default:
                 throw new RuntimeException("LOC_CAT_TAG - onEvent - no code to handle requestEvent: " + requestEvent);
 //        Toast.makeText(getActivity(), event.message, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /**
-     * Get messages through Event Bus from Green Robot
-     */
-    public void onEventMainThread(MainActivityEvents event) {
-        MainActivityEvents.MainEvents requestEvent = event.event;
-        switch (requestEvent) {
-
-            case NETWORK_STATUS:
-                showSnackBar(event.msg, true);
-                break;
-
-            default:
-                throw new RuntimeException("LOC_CAT_TAG - onEvent - no code to handle requestEvent: " + requestEvent);
         }
     }
 
