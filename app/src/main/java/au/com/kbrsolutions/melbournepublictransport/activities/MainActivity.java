@@ -3,8 +3,10 @@ package au.com.kbrsolutions.melbournepublictransport.activities;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.FeatureInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -21,8 +23,14 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import au.com.kbrsolutions.melbournepublictransport.R;
+import au.com.kbrsolutions.melbournepublictransport.data.RequestProcessorService;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
+import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 import au.com.kbrsolutions.melbournepublictransport.fragments.AddStopFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StationOnMapFragment;
@@ -39,10 +47,12 @@ public class MainActivity extends AppCompatActivity
     private CharSequence mActivityTitle;
     private final String FAVORITE_STOPS = "favorite_stops";
     static final String TAG_ERROR_DIALOG_FRAGMENT="errorDialog";
+    private View mCoordinatorlayout;
+    private FloatingActionButton fab;
 //    private static final String STATION_ON_MAP = "station_on_map";
+    private EventBus eventBus;
     private static final String STATION_ON_MAP_TAG = "station_on_map_tag";
     private static final String ADD_STOP_TAG = "add_stop_tag";
-    private FloatingActionButton fab;
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
@@ -50,6 +60,16 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (eventBus == null) {
+            eventBus = EventBus.getDefault();
+            eventBus.register(this);
+        }
+        if (!eventBus.isRegistered(this)) {
+            eventBus.register(this);
+        }
+        mCoordinatorlayout = findViewById(R.id.coordinatedLayout);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -87,6 +107,11 @@ public class MainActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
+
+//        mServiceIntent = new Intent(getActivity(), RSSPullService.class);
+        Intent mServiceIntent = new Intent(this, RequestProcessorService.class);
+//        mServiceIntent.setData(Uri.parse(dataUrl));
+        startService(mServiceIntent);
     }
 
     // FIXME: 17/08/2016 
@@ -185,6 +210,51 @@ public class MainActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    // This method will be called when a MainActivityEvents is posted (in the UI thread for Toast)
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MainActivityEvents event) {
+        MainActivityEvents.MainEvents requestEvent = event.event;
+        switch (requestEvent) {
+
+            case NETWORK_STATUS:
+                showSnackBar(event.msg, true);
+                break;
+
+            default:
+                throw new RuntimeException("LOC_CAT_TAG - onEvent - no code to handle requestEvent: " + requestEvent);
+//        Toast.makeText(getActivity(), event.message, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Get messages through Event Bus from Green Robot
+     */
+    public void onEventMainThread(MainActivityEvents event) {
+        MainActivityEvents.MainEvents requestEvent = event.event;
+        switch (requestEvent) {
+
+            case NETWORK_STATUS:
+                showSnackBar(event.msg, true);
+                break;
+
+            default:
+                throw new RuntimeException("LOC_CAT_TAG - onEvent - no code to handle requestEvent: " + requestEvent);
+        }
+    }
+
+    public void showSnackBar(String msg, boolean showIndefinite) {
+        Snackbar
+                .make(mCoordinatorlayout, msg, (showIndefinite ? Snackbar.LENGTH_INDEFINITE : Snackbar.LENGTH_LONG))
+                .setActionTextColor(Color.RED)
+                .show(); // Don’t forget to show!
+    }
+
+    public void showSnackBar(int msg, boolean showIndefinite) {
+        Snackbar
+                .make(mCoordinatorlayout, msg, (showIndefinite ? Snackbar.LENGTH_INDEFINITE : Snackbar.LENGTH_LONG))
+                .setActionTextColor(Color.RED)
+                .show(); // Don’t forget to show!
     }
 
     public static class ErrorDialogFragment extends DialogFragment {
