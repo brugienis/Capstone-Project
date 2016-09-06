@@ -4,10 +4,20 @@ package au.com.kbrsolutions.melbournepublictransport.remote;
  * Created by business on 5/09/2016.
  */
 public class LineDetails {
+    public final int routeType;
+    public final String lineId;
+    public final String lineName;
+    public final String lineNameShort;
 
-    public final String linaName;
+    public LineDetails(int routeType, String lineId, String lineName, String lineNameShort) {
+        this.routeType = routeType;
+        this.lineId = lineId;
+        this.lineName = lineName;
+        this.lineNameShort = lineNameShort;
+    }
 
-    public LineDetails(String linaName) {
-        this.linaName = linaName;
+    @Override
+    public String toString() {
+        return "routeType: " + routeType + "lineId: " + lineId + "lineName: " + lineName + "lineNameShort: " + lineNameShort;
     }
 }

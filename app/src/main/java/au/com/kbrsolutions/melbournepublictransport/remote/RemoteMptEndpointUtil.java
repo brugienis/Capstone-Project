@@ -73,6 +73,7 @@ public class RemoteMptEndpointUtil {
         String routeType;
         String lineId;
         String lineName;
+        String lineNameShort;
         JSONArray lineArray = null;
         try {
             lineArray = new JSONArray(jsonString);
@@ -82,8 +83,9 @@ public class RemoteMptEndpointUtil {
                 JSONObject oneLineObject = lineArray.getJSONObject(i);
                 routeType = oneLineObject.getString("route_type");
                 lineId = oneLineObject.getString("line_id");
-                lineName = oneLineObject.getString("line_name");
-                LineDetails lineDetails = new LineDetails(lineName);
+                lineName = oneLineObject.getString("line_name_short");
+                lineNameShort = oneLineObject.getString("line_name");
+                LineDetails lineDetails = new LineDetails(Integer.parseInt(routeType), lineId, lineName, lineNameShort);
                 lineDetailsList.add(lineDetails);
                 Log.v(TAG, "processJsonString - lineName: " + routeType + "/" + lineId + "/" + lineName);
             }

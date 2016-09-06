@@ -41,7 +41,7 @@ public class MptDbHelper extends SQLiteOpenHelper {
         final String CREATE_LINE_DETAIL_TABLE = "CREATE TABLE " +
                   LineDetailEntry.TABLE_NAME + " ("
                 + LineDetailEntry._ID + " INTEGER PRIMARY KEY,"
-                + LineDetailEntry.COLUMN_ROUTE_TYPE + " INTEGER UNIQUE NOT NULL, "
+                + LineDetailEntry.COLUMN_ROUTE_TYPE + " INTEGER NOT NULL, "
                 + LineDetailEntry.COLUMN_LINE_ID + " STRING UNIQUE NOT NULL, "
                 + LineDetailEntry.COLUMN_LINE_NAME + " STRING UNIQUE NOT NULL, "
                 + LineDetailEntry.COLUMN_LINE_NAME_SHORT + " STRING UNIQUE NOT NULL "

@@ -53,7 +53,7 @@ public class RequestProcessorService extends IntentService {
         Log.v(TAG, "onHandleIntent - action: " + action);
         if (action != null) {
             DatabaseContentRefresher databaseContentRefresher = new DatabaseContentRefresher();
-            boolean databaseOK = databaseContentRefresher.performHealthCheck();
+            boolean databaseOK = DatabaseContentRefresher.performHealthCheck();
             if (!databaseOK) {
                 sendMessageToSpotifyStreamerActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NETWORK_STATUS)
                         .setMsg("CANNOT ACCESS MPT site")
@@ -61,7 +61,7 @@ public class RequestProcessorService extends IntentService {
             } else {
                 switch (action) {
                     case REFRESH_DATA:
-                        databaseContentRefresher.refreshDatabase();
+                        DatabaseContentRefresher.refreshDatabase(getContentResolver());
                         break;
 
                     default:
