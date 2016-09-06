@@ -86,6 +86,7 @@ public class MptProviderTest {
         mContext.getContentResolver().unregisterContentObserver(stopDetails);
 
         // verify both rows deleted
+        // FIXME: 6/09/2016 should not use the StopDetailEntry.CONTENT_URI?
         Cursor cursor = mContext.getContentResolver().query(
                 uri,
                 null,

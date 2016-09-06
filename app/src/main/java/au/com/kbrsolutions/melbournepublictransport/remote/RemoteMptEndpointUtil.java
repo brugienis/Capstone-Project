@@ -1,5 +1,6 @@
 package au.com.kbrsolutions.melbournepublictransport.remote;
 
+import android.content.ContentValues;
 import android.net.Uri;
 import android.util.Log;
 
@@ -22,8 +23,7 @@ import java.util.List;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import au.com.kbrsolutions.melbournepublictransport.data.LineDetails;
-import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.utilities.JodaDateTimeUtility;
 
 /**
@@ -66,8 +66,8 @@ public class RemoteMptEndpointUtil {
         return databaseOK;
     }
 
-    public static List<LineDetails> getLineDetails(int mode) {
-        List<LineDetails> lineDetailsList = new ArrayList<>();
+    public static List<ContentValues> getLineDetails(int mode) {
+        List<ContentValues> lineDetailsContentValuesList = new ArrayList<>();
         final String uri = "/v2/lines/mode/" + mode;
         String jsonString = processRemoteRequest(uri);
 
@@ -87,17 +87,24 @@ public class RemoteMptEndpointUtil {
                 lineId = oneLineObject.getString("line_id");
                 lineName = oneLineObject.getString("line_name_short");
                 lineNameShort = oneLineObject.getString("line_name");
-                lineDetailsList.add(new LineDetails(routeType, lineId, lineName, lineNameShort));
+//                lineDetailsList.add(new LineDetails(routeType, lineId, lineName, lineNameShort));
+
+                ContentValues values = new ContentValues();
+                values.put(MptContract.LineDetailEntry.COLUMN_ROUTE_TYPE, routeType);
+                values.put(MptContract.LineDetailEntry.COLUMN_LINE_ID, lineId);
+                values.put(MptContract.LineDetailEntry.COLUMN_LINE_NAME, lineName);
+                values.put(MptContract.LineDetailEntry.COLUMN_LINE_NAME_SHORT, lineNameShort);
+                lineDetailsContentValuesList.add(values);
 //                Log.v(TAG, "processJsonString - lineName: " + routeType + "/" + lineId + "/" + lineName);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        return lineDetailsList;
+        return lineDetailsContentValuesList;
     }
-    public static List<StopDetails> getStopDetailsForLine(int mode, String  lineId) {
-        List<StopDetails> lineDetailsList = new ArrayList<>();
+    public static List<ContentValues> getStopDetailsForLine(int mode, String  lineId) {
+        List<ContentValues> stopDetailsContentValuesList = new ArrayList<>();
         final String uri = "/v2/mode/" + mode + "/line/" + lineId + "/stops-for-line";
         String jsonString = processRemoteRequest(uri);
 
@@ -108,13 +115,12 @@ public class RemoteMptEndpointUtil {
         double longitude;
         String favorite = "n";  // non favorite stop
         JSONArray lineArray = null;
-        StopDetails lineDetails;
         try {
             JSONArray stopsArray = new JSONArray(jsonString);
 //                    Log.v(TAG, "processJsonString - stopsArray: " + stopsArray);
             Log.v(TAG, "processJsonString - lineArray length: " + stopsArray.length());
-            Log.v(TAG, "processJsonString - lineArray: " + lineArray);
-            Log.v(TAG, "processJsonString - lineArray length: " + lineArray.length());
+            Log.v(TAG, "processJsonString - lineArray: " + stopsArray);
+            Log.v(TAG, "processJsonString - lineArray length: " + stopsArray.length());
             for(int i = 0; i < stopsArray.length(); i++) {
                 JSONObject oneLineObject = stopsArray.getJSONObject(i);
                 routeType = oneLineObject.getInt("route_type");
@@ -122,7 +128,15 @@ public class RemoteMptEndpointUtil {
                 locationName = oneLineObject.getString("location_name");
                 latitude = oneLineObject.getDouble("lat");
                 longitude = oneLineObject.getDouble("lon");
-                lineDetailsList.add(new StopDetails(routeType, stopId, locationName, latitude, longitude, favorite));
+//                lineDetailsList.add(new StopDetails(routeType, stopId, locationName, latitude, longitude, favorite));
+                ContentValues values = new ContentValues();
+                values.put(MptContract.StopDetailEntry.COLUMN_ROUTE_TYPE, routeType);
+                values.put(MptContract.StopDetailEntry.COLUMN_STOP_ID, stopId);
+                values.put(MptContract.StopDetailEntry.COLUMN_LOCATION_NAME, locationName);
+                values.put(MptContract.StopDetailEntry.COLUMN_LATITUDE, latitude);
+                values.put(MptContract.StopDetailEntry.COLUMN_LONGITUDE, longitude);
+                values.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, favorite);
+                stopDetailsContentValuesList.add(values);
 //                Log.v(TAG, "processJsonString - locationName: " + routeType + "/" + lineId + "/" + locationName);
             }
 //            }
@@ -130,7 +144,7 @@ public class RemoteMptEndpointUtil {
             e.printStackTrace();
         }
 
-        return lineDetailsList;
+        return stopDetailsContentValuesList;
     }
 
     private static String processRemoteRequest(String uri) {

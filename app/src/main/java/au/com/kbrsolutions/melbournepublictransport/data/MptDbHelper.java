@@ -55,8 +55,8 @@ public class MptDbHelper extends SQLiteOpenHelper {
                 + StopDetailEntry.COLUMN_ROUTE_TYPE + " INTEGER NOT NULL, "
                 + StopDetailEntry.COLUMN_STOP_ID + " STRING NOT NULL, "
                 + StopDetailEntry.COLUMN_LOCATION_NAME + " STRING NULL, "
-                + StopDetailEntry.COLUMN_LATITUDE + " REAL UNIQUE NOT NULL, "
-                + StopDetailEntry.COLUMN_LONGITUDE + " REAL UNIQUE NOT NULL, "
+                + StopDetailEntry.COLUMN_LATITUDE + " REAL NOT NULL, "
+                + StopDetailEntry.COLUMN_LONGITUDE + " REAL NOT NULL, "
                 + StopDetailEntry.COLUMN_FAVORITE + " STRING, " +
 
                 // Set up the column_line_key column as a foreign key to line_detail table.
