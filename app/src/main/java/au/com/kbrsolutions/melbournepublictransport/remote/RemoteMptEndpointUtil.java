@@ -22,6 +22,8 @@ import java.util.List;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import au.com.kbrsolutions.melbournepublictransport.data.LineDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.utilities.JodaDateTimeUtility;
 
 /**
@@ -70,7 +72,7 @@ public class RemoteMptEndpointUtil {
         String jsonString = processRemoteRequest(uri);
 
 //        JSONObject forecastJson = null;
-        String routeType;
+        int routeType;
         String lineId;
         String lineName;
         String lineNameShort;
@@ -81,14 +83,49 @@ public class RemoteMptEndpointUtil {
             Log.v(TAG, "processJsonString - lineArray length: " + lineArray.length());
             for(int i = 0; i < lineArray.length(); i++) {
                 JSONObject oneLineObject = lineArray.getJSONObject(i);
-                routeType = oneLineObject.getString("route_type");
+                routeType = oneLineObject.getInt("route_type");
                 lineId = oneLineObject.getString("line_id");
                 lineName = oneLineObject.getString("line_name_short");
                 lineNameShort = oneLineObject.getString("line_name");
-                LineDetails lineDetails = new LineDetails(Integer.parseInt(routeType), lineId, lineName, lineNameShort);
-                lineDetailsList.add(lineDetails);
-                Log.v(TAG, "processJsonString - lineName: " + routeType + "/" + lineId + "/" + lineName);
+                lineDetailsList.add(new LineDetails(routeType, lineId, lineName, lineNameShort));
+//                Log.v(TAG, "processJsonString - lineName: " + routeType + "/" + lineId + "/" + lineName);
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return lineDetailsList;
+    }
+    public static List<StopDetails> getStopDetailsForLine(int mode, String  lineId) {
+        List<StopDetails> lineDetailsList = new ArrayList<>();
+        final String uri = "/v2/mode/" + mode + "/line/" + lineId + "/stops-for-line";
+        String jsonString = processRemoteRequest(uri);
+
+        int routeType;
+        String stopId;
+        String locationName;
+        double latitude;
+        double longitude;
+        String favorite = "n";  // non favorite stop
+        JSONArray lineArray = null;
+        StopDetails lineDetails;
+        try {
+            JSONArray stopsArray = new JSONArray(jsonString);
+//                    Log.v(TAG, "processJsonString - stopsArray: " + stopsArray);
+            Log.v(TAG, "processJsonString - lineArray length: " + stopsArray.length());
+            Log.v(TAG, "processJsonString - lineArray: " + lineArray);
+            Log.v(TAG, "processJsonString - lineArray length: " + lineArray.length());
+            for(int i = 0; i < stopsArray.length(); i++) {
+                JSONObject oneLineObject = stopsArray.getJSONObject(i);
+                routeType = oneLineObject.getInt("route_type");
+                stopId = oneLineObject.getString("stop_id");
+                locationName = oneLineObject.getString("location_name");
+                latitude = oneLineObject.getDouble("lat");
+                longitude = oneLineObject.getDouble("lon");
+                lineDetailsList.add(new StopDetails(routeType, stopId, locationName, latitude, longitude, favorite));
+//                Log.v(TAG, "processJsonString - locationName: " + routeType + "/" + lineId + "/" + locationName);
+            }
+//            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -281,7 +281,7 @@ public class MptProviderTest {
 
         ContentValues updatedValues = new ContentValues(values);
         updatedValues.put(StopDetailEntry._ID, locationRowId);
-        updatedValues.put(StopDetailEntry.COLUMN_STOP_NAME, "Carrum");
+        updatedValues.put(StopDetailEntry.COLUMN_LOCATION_NAME, "Carrum");
 
         // Create a cursor with observer to make sure that the content provider is notifying
         // the observers as expected
@@ -329,11 +329,19 @@ public class MptProviderTest {
 
     static ContentValues[] createBulkInsertStopDetailsValues(long lineDetailRowId, String favoriteFlag) {
         ContentValues[] returnContentValues = new ContentValues[BULK_INSERT_RECORDS_TO_INSERT];
+        /*
+
+        testValues.put(MptContract.StopDetailEntry.COLUMN_ROUTE_TYPE, 0);
+        testValues.put(MptContract.StopDetailEntry.COLUMN_STOP_ID, "101");
+        testValues.put(MptContract.StopDetailEntry.COLUMN_LOCATION_NAME, "Carrum");
+         */
 
         for ( int i = 0; i < BULK_INSERT_RECORDS_TO_INSERT; i++) {
             ContentValues stop_detailValues = new ContentValues();            
             stop_detailValues.put(StopDetailEntry.COLUMN_LINE_KEY, lineDetailRowId);
-            stop_detailValues.put(StopDetailEntry.COLUMN_STOP_NAME, "Carrum" + " - " + i);
+            stop_detailValues.put(StopDetailEntry.COLUMN_ROUTE_TYPE, 0);
+            stop_detailValues.put(StopDetailEntry.COLUMN_STOP_ID, "102");
+            stop_detailValues.put(StopDetailEntry.COLUMN_LOCATION_NAME, "Carrum" + " - " + i);
             stop_detailValues.put(StopDetailEntry.COLUMN_LATITUDE, latitude);
             stop_detailValues.put(StopDetailEntry.COLUMN_LONGITUDE, longitude);
             stop_detailValues.put(StopDetailEntry.COLUMN_FAVORITE, favoriteFlag);
@@ -387,7 +395,7 @@ public class MptProviderTest {
                 null, // leaving "columns" null just returns all the columns.
                 null, // cols for "where" clause
                 null, // values for "where" clause
-                StopDetailEntry.COLUMN_STOP_NAME + " ASC"  // sort order == by COLUMN_STOP_NAME ASCENDING
+                StopDetailEntry.COLUMN_LOCATION_NAME + " ASC"  // sort order == by COLUMN_LOCATION_NAME ASCENDING
         );
 
         // we should have as many records in the database as we've inserted
@@ -402,7 +410,7 @@ public class MptProviderTest {
         cursor.close();
     }
 
-    // FIXME: 4/09/2016 comment below is not tgrue - think about it
+    // FIXME: 4/09/2016 comment below is not true - think about it. Really?
     /*
         This test uses the database directly to insert and then uses the ContentProvider to
         read out the data.

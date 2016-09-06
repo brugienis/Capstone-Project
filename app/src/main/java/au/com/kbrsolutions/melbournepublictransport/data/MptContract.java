@@ -47,6 +47,9 @@ public class MptContract {
         // route_type - Integer. 0 Train, etc.
         public static final String COLUMN_ROUTE_TYPE = "route_type";
 
+        // route_type - numeric string
+        public static final String COLUMN_STOP_ID = "stop_id";
+
         // line_id - numeric string
         public static final String COLUMN_LINE_ID = "line_id";
 
@@ -84,9 +87,13 @@ public class MptContract {
         public static final String TABLE_NAME = "stop_detail";
 
         // column names
-        public static final String COLUMN_LINE_KEY = "line_name";
+        public static final String COLUMN_LINE_KEY = "line_key";
 
-        public static final String COLUMN_STOP_NAME = "stop_name";
+        public static final String COLUMN_ROUTE_TYPE = "route_type";
+
+        public static final String COLUMN_STOP_ID = "stop_id";
+
+        public static final String COLUMN_LOCATION_NAME = "location_name";
 
         public static final String COLUMN_LATITUDE = "latitude";
 

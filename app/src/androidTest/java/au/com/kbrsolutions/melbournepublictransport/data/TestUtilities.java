@@ -49,6 +49,15 @@ public class TestUtilities {
     private static double longitude = 10.0;  //-147.353;
     private static double increase = 1.0;
 
+    /*
+
+                + LineDetailEntry. + " INTEGER NOT NULL, "
+                + LineDetailEntry.COLUMN_STOP_ID + " INTEGER UNIQUE NOT NULL, "
+                + StopDetailEntry.COLUMN_LOCATION_NAME + " STRING NULL, "
+                + StopDetailEntry.COLUMN_LATITUDE + " REAL UNIQUE NOT NULL, "
+                + StopDetailEntry.COLUMN_LONGITUDE + " REAL UNIQUE NOT NULL, "
+                + StopDetailEntry.COLUMN_FAVORITE + " STRING, " +
+     */
     static ContentValues createFrankstonLineDetailsValues() {
         // Create a new map of values, where column names are the keys
         ContentValues testValues = new ContentValues();
@@ -63,7 +72,9 @@ public class TestUtilities {
         // Create a new map of values, where column names are the keys
         ContentValues testValues = new ContentValues();
         testValues.put(MptContract.StopDetailEntry.COLUMN_LINE_KEY, line_detailRowId);
-        testValues.put(MptContract.StopDetailEntry.COLUMN_STOP_NAME, "Carrum");
+        testValues.put(MptContract.StopDetailEntry.COLUMN_ROUTE_TYPE, 0);
+        testValues.put(MptContract.StopDetailEntry.COLUMN_STOP_ID, "101");
+        testValues.put(MptContract.StopDetailEntry.COLUMN_LOCATION_NAME, "Carrum");
         testValues.put(MptContract.StopDetailEntry.COLUMN_LATITUDE, latitude);
         testValues.put(MptContract.StopDetailEntry.COLUMN_LONGITUDE, longitude);
         testValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, favoriteFlag);

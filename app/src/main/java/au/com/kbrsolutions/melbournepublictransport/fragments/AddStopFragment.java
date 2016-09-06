@@ -77,7 +77,7 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
             // using the location set by the user, which is only in the Location table.
             // So the convenience is worth it.
             MptContract.StopDetailEntry.TABLE_NAME + "." + MptContract.StopDetailEntry._ID,
-            MptContract.StopDetailEntry.COLUMN_STOP_NAME,
+            MptContract.StopDetailEntry.COLUMN_LOCATION_NAME,
             MptContract.StopDetailEntry.COLUMN_FAVORITE,
             MptContract.StopDetailEntry.COLUMN_LATITUDE,
             MptContract.StopDetailEntry.COLUMN_LONGITUDE
@@ -148,7 +148,7 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
         mFolderItemList = new ArrayList<>();
         StopDetails stopDetails;
         for (String stopName : stopNames) {
-            stopDetails = new StopDetails(stopName);
+            stopDetails = new StopDetails(0, "0", stopName, 0.0, 0.0, "n");
             mFolderItemList.add(stopDetails);
         }
         return;
@@ -169,7 +169,7 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
         // dates after or including today.
 
         // Sort order:  Ascending, by date.
-        String sortOrder = MptContract.StopDetailEntry.COLUMN_STOP_NAME + " ASC";
+        String sortOrder = MptContract.StopDetailEntry.COLUMN_LOCATION_NAME + " ASC";
 
 //        String locationSetting = Utility.getPreferredLocation(getActivity());
         Uri weatherForLocationUri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.NON_FAVORITE_FLAG);
@@ -295,7 +295,7 @@ class AvailableStopsDetailsArrayAdapter<T> extends ArrayAdapter<StopDetails> {
 //        fileUpdateTsTv = (TextView) v.findViewById(R.id.fileUpdateTsId);
 
         StopDetails folderItem = objects.get(position);
-        stopNameTv.setText(folderItem.stopName);
+        stopNameTv.setText(folderItem.locationName);
 //		Log.i(LOC_CAT_TAG, "getView - name/mIsTrashed: " + folderItem.fileName + "/" + folderItem.mIsTrashed);
         return v;
     }

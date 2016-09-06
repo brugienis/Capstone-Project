@@ -176,7 +176,7 @@ public class FavoriteStopsFragment extends Fragment {
 
             stopNameTv = (TextView) v.findViewById(R.id.stopNameId);
             StopDetails folderItem = objects.get(position);
-            stopNameTv.setText(folderItem.stopName);
+            stopNameTv.setText(folderItem.locationName);
             stopNameTv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

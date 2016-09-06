@@ -1,4 +1,4 @@
-package au.com.kbrsolutions.melbournepublictransport.remote;
+package au.com.kbrsolutions.melbournepublictransport.data;
 
 /**
  * Created by business on 5/09/2016.

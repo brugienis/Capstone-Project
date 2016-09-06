@@ -52,10 +52,12 @@ public class MptDbHelper extends SQLiteOpenHelper {
                   StopDetailEntry.TABLE_NAME + " ("
                 + StopDetailEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + StopDetailEntry.COLUMN_LINE_KEY + " INTEGER,"
-                + StopDetailEntry.COLUMN_STOP_NAME + " STRING NULL, "
+                + StopDetailEntry.COLUMN_ROUTE_TYPE + " INTEGER NOT NULL, "
+                + StopDetailEntry.COLUMN_STOP_ID + " STRING NOT NULL, "
+                + StopDetailEntry.COLUMN_LOCATION_NAME + " STRING NULL, "
                 + StopDetailEntry.COLUMN_LATITUDE + " REAL UNIQUE NOT NULL, "
                 + StopDetailEntry.COLUMN_LONGITUDE + " REAL UNIQUE NOT NULL, "
-                + StopDetailEntry.COLUMN_FAVORITE + " INTEGERL, " +
+                + StopDetailEntry.COLUMN_FAVORITE + " STRING, " +
 
                 // Set up the column_line_key column as a foreign key to line_detail table.
                 " FOREIGN KEY (" + StopDetailEntry.COLUMN_LINE_KEY + ") REFERENCES " +

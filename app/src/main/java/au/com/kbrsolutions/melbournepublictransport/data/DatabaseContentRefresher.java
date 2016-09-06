@@ -4,6 +4,7 @@ import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.OperationApplicationException;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.RemoteException;
 import android.util.Log;
@@ -11,7 +12,6 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import au.com.kbrsolutions.melbournepublictransport.remote.LineDetails;
 import au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil;
 
 public class DatabaseContentRefresher {
@@ -46,6 +46,7 @@ public class DatabaseContentRefresher {
 
         try {
             contentResolver.applyBatch(MptContract.CONTENT_AUTHORITY, cpo);
+            printLineDetailContent(contentResolver);
         } catch (RemoteException e) {
             e.printStackTrace();
         } catch (OperationApplicationException e) {
@@ -53,5 +54,20 @@ public class DatabaseContentRefresher {
             e.printStackTrace();
         }
         Log.v(TAG, "refreshDatabase - performing refresh action - inserted: " + cnt);
+    }
+
+    private static void printLineDetailContent(ContentResolver contentResolver) {
+        Cursor cursor = contentResolver.query(
+                MptContract.LineDetailEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+
+        cursor.moveToFirst();
+        for ( int i = 0; i < cursor.getCount(); i++, cursor.moveToNext() ) {
+            Log.v(TAG, "printLineDetailContent - lineId/lineName: " + cursor.getString(0) + "/" + cursor.getString(0));
+        }
+        cursor.close();
     }
 }
