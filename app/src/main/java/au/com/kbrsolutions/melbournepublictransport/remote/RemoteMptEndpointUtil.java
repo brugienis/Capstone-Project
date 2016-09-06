@@ -26,24 +26,20 @@ import javax.crypto.spec.SecretKeySpec;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.utilities.JodaDateTimeUtility;
 
-/**
- * Created by business on 5/09/2016.
- */
 public class RemoteMptEndpointUtil {
 
     private DateTime mSelectedTime;
-    private final static int sDeveloperId = 1000796;
-
-    private final static String privateKey = "8d3c3f43-4244-11e6-a0ce-06f54b901f07";
+    private final static int DEVELOPER_ID = 1000796;
+    private final static String PRIVATE_KEY = "8d3c3f43-4244-11e6-a0ce-06f54b901f07";
     private final static String PTV_BASE_URL = "http://timetableapi.ptv.vic.gov.au";
-    private final static String SECURITY_TOKEN_OK = "securityTokenOK";
-    private final static String CLIENT_CLOCK_OK = "clientClockOK";
-    private final static String MEM_CACHE_OK = "memcacheOK";
-    private final static String DATABASE_OK = "databaseOK";
 
     private final static String TAG = RemoteMptEndpointUtil.class.getSimpleName();
 
     public static boolean performHealthCheck() {
+        final String SECURITY_TOKEN_OK = "securityTokenOK";
+        final String CLIENT_CLOCK_OK = "clientClockOK";
+        final String MEM_CACHE_OK = "memcacheOK";
+        final String DATABASE_OK = "databaseOK";
         DateTime dateTime = getCurrentDateTime();
         final String uri = "/v2/healthcheck?timestamp=" + JodaDateTimeUtility.getUtcTime(dateTime);
         String jsonString = processRemoteRequest(uri);
@@ -56,13 +52,13 @@ public class RemoteMptEndpointUtil {
             boolean clientClockOK = forecastJson.getBoolean(CLIENT_CLOCK_OK);
             boolean memcacheOK = forecastJson.getBoolean(MEM_CACHE_OK);
             databaseOK = forecastJson.getBoolean(DATABASE_OK);
-            Log.v(TAG, "processJsonString - securityTokenOk/clientClockOK/memcacheOK/databaseOK: " + securityTokenOk + "/" + clientClockOK + "/" + memcacheOK + "/" + databaseOK);
+//            Log.v(TAG, "performHealthCheck - securityTokenOk/clientClockOK/memcacheOK/databaseOK: " + securityTokenOk + "/" + clientClockOK + "/" + memcacheOK + "/" + databaseOK);
 
         } catch (JSONException e) {
             // FIXME: 5/09/2016 - handle exception properly
             e.printStackTrace();
-        }//        UrlProcessorTask urlProcessorTask = new UrlProcessorTask("performHealthCheck", PVT_CHECK_HEALTH_ID, uri);
-//        urlProcessorTask.execute();
+        }
+
         return databaseOK;
     }
 
@@ -71,7 +67,6 @@ public class RemoteMptEndpointUtil {
         final String uri = "/v2/lines/mode/" + mode;
         String jsonString = processRemoteRequest(uri);
 
-//        JSONObject forecastJson = null;
         int routeType;
         String lineId;
         String lineName;
@@ -79,15 +74,14 @@ public class RemoteMptEndpointUtil {
         JSONArray lineArray = null;
         try {
             lineArray = new JSONArray(jsonString);
-            Log.v(TAG, "processJsonString - lineArray: " + lineArray);
-            Log.v(TAG, "processJsonString - lineArray length: " + lineArray.length());
+//            Log.v(TAG, "processJsonString - lineArray: " + lineArray);
+//            Log.v(TAG, "processJsonString - lineArray length: " + lineArray.length());
             for(int i = 0; i < lineArray.length(); i++) {
                 JSONObject oneLineObject = lineArray.getJSONObject(i);
                 routeType = oneLineObject.getInt("route_type");
                 lineId = oneLineObject.getString("line_id");
                 lineName = oneLineObject.getString("line_name_short");
                 lineNameShort = oneLineObject.getString("line_name");
-//                lineDetailsList.add(new LineDetails(routeType, lineId, lineName, lineNameShort));
 
                 ContentValues values = new ContentValues();
                 values.put(MptContract.LineDetailEntry.COLUMN_ROUTE_TYPE, routeType);
@@ -95,7 +89,6 @@ public class RemoteMptEndpointUtil {
                 values.put(MptContract.LineDetailEntry.COLUMN_LINE_NAME, lineName);
                 values.put(MptContract.LineDetailEntry.COLUMN_LINE_NAME_SHORT, lineNameShort);
                 lineDetailsContentValuesList.add(values);
-//                Log.v(TAG, "processJsonString - lineName: " + routeType + "/" + lineId + "/" + lineName);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -117,10 +110,9 @@ public class RemoteMptEndpointUtil {
         JSONArray lineArray = null;
         try {
             JSONArray stopsArray = new JSONArray(jsonString);
-//                    Log.v(TAG, "processJsonString - stopsArray: " + stopsArray);
-            Log.v(TAG, "processJsonString - lineArray length: " + stopsArray.length());
-            Log.v(TAG, "processJsonString - lineArray: " + stopsArray);
-            Log.v(TAG, "processJsonString - lineArray length: " + stopsArray.length());
+//            Log.v(TAG, "processJsonString - lineArray length: " + stopsArray.length());
+//            Log.v(TAG, "processJsonString - lineArray: " + stopsArray);
+//            Log.v(TAG, "processJsonString - lineArray length: " + stopsArray.length());
             for(int i = 0; i < stopsArray.length(); i++) {
                 JSONObject oneLineObject = stopsArray.getJSONObject(i);
                 routeType = oneLineObject.getInt("route_type");
@@ -137,7 +129,6 @@ public class RemoteMptEndpointUtil {
                 values.put(MptContract.StopDetailEntry.COLUMN_LONGITUDE, longitude);
                 values.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, favorite);
                 stopDetailsContentValuesList.add(values);
-//                Log.v(TAG, "processJsonString - locationName: " + routeType + "/" + lineId + "/" + locationName);
             }
 //            }
         } catch (JSONException e) {
@@ -151,7 +142,7 @@ public class RemoteMptEndpointUtil {
 
         String urlString = null;
         try {
-            urlString = buildTTAPIURL(PTV_BASE_URL, privateKey, uri, sDeveloperId);
+            urlString = buildTTAPIURL(PTV_BASE_URL, PRIVATE_KEY, uri, DEVELOPER_ID);
 //            Log.v(TAG, "performHealthCheck - urlString: " + urlString);
         } catch (Exception e) {
             e.printStackTrace();
@@ -207,7 +198,7 @@ public class RemoteMptEndpointUtil {
             jsonString = buffer.toString();
 //            processJsonString(mTaskId, jsonString);
         } catch (IOException e) {
-            Log.e(TAG, "Error ", e);
+            Log.e(TAG, "processRemoteRequest - Error ", e);
             // If the code didn't successfully get the weather data, there's no point in attempting
             // to parse it.
 //            setLocationStatus(getContext(), LOCATION_STATUS_SERVER_DOWN);
@@ -225,7 +216,7 @@ public class RemoteMptEndpointUtil {
                 try {
                     reader.close();
                 } catch (final IOException e) {
-                    Log.e(TAG, "Error closing stream", e);
+                    Log.e(TAG, "processRemoteRequest - Error closing stream", e);
                 }
             }
         }

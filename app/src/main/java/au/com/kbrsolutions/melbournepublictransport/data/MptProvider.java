@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract.LineDetailEntry;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract.StopDetailEntry;
@@ -161,7 +160,7 @@ public class MptProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
-        Log.v(TAG, "insert - start");
+//        Log.v(TAG, "insert - start");
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         Uri returnUri;
@@ -188,7 +187,7 @@ public class MptProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         getContext().getContentResolver().notifyChange(uri, null);
-        Log.v(TAG, "insert - end");
+//        Log.v(TAG, "insert - end");
         return returnUri;
     }
 
@@ -246,7 +245,7 @@ public class MptProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case ALL_STOP_DETAIL:
-                Log.v(TAG, "bulkInsert - ALL_STOP_DETAIL");
+//                Log.v(TAG, "bulkInsert - ALL_STOP_DETAIL");
                 db.beginTransaction();
                 int returnCount = 0;
                 try {
@@ -265,7 +264,7 @@ public class MptProvider extends ContentProvider {
 
             // FIXME: 2/09/2016 - investigate if we should throw exception or call super
             default:
-                Log.v(TAG, "bulkInsert - default");
+//                Log.v(TAG, "bulkInsert - default");
                 return super.bulkInsert(uri, values);
         }
     }

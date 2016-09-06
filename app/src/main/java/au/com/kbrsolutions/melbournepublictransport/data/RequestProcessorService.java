@@ -52,7 +52,6 @@ public class RequestProcessorService extends IntentService {
 
         Log.v(TAG, "onHandleIntent - action: " + action);
         if (action != null) {
-            DatabaseContentRefresher databaseContentRefresher = new DatabaseContentRefresher();
             boolean databaseOK = DatabaseContentRefresher.performHealthCheck();
             if (!databaseOK) {
                 sendMessageToSpotifyStreamerActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NETWORK_STATUS)
@@ -69,21 +68,12 @@ public class RequestProcessorService extends IntentService {
                 }
             }
         }
-//        else {
-//            Log.v(TAG, "ni not null: " + ni);
-//            sendMessageToSpotifyStreamerActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NETWORK_STATUS)
-//                    .setMsg("NETWORK CONNECTION OK")
-//                    .build());
-//        }
     }
 
     private void sendMessageToSpotifyStreamerActivity(MainActivityEvents event) {
         EventBus.getDefault().post(event);
-//        if (isRegisterForPlayNowEvents) {
-//            eventBus.post(event);
-//        }
     }
-    // This method will be called when a MainActivityEvents is posted (in the UI thread for Toast)
+
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(MainActivityEvents event) {
         MainActivityEvents.MainEvents requestEvent = event.event;
@@ -95,7 +85,6 @@ public class RequestProcessorService extends IntentService {
 
             default:
                 throw new RuntimeException("LOC_CAT_TAG - onEvent - no code to handle requestEvent: " + requestEvent);
-//        Toast.makeText(getActivity(), event.message, Toast.LENGTH_SHORT).show();
         }
     }
 }

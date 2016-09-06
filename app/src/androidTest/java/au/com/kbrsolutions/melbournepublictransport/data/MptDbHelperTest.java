@@ -113,7 +113,7 @@ public class MptDbHelperTest {
     }
 
     // FIXME: 6/09/2016 test below is not working - exception is thrown but does not go into catch block - even when db.setForeignKeyConstraintsEnabled(false);
-//    @Test(expected= SQLiteConstraintException.class)
+//    @Test(expected = SQLiteConstraintException.class)
     @Test
     public void testForeignException() {
         SQLiteDatabase db = new MptDbHelper(this.mContext).getWritableDatabase();

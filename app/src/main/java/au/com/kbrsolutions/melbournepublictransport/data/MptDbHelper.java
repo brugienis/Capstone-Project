@@ -64,8 +64,7 @@ public class MptDbHelper extends SQLiteOpenHelper {
                 LineDetailEntry.TABLE_NAME + " (" + LineDetailEntry._ID + ") "
                 + ");";
 
-//        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + LineDetailEntry.TABLE_NAME);
-//        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + StopDetailEntry.TABLE_NAME);
+
         sqLiteDatabase.execSQL(CREATE_LINE_DETAIL_TABLE);
         sqLiteDatabase.execSQL(CREATE_STOP_DETAIL_TABLE);
         Log.v(TAG, "onCreate - end");
@@ -80,7 +79,7 @@ public class MptDbHelper extends SQLiteOpenHelper {
         // It does NOT depend on the version number for your application.
         // If you want to update the schema without wiping data, commenting out the next 2 lines
         // should be your top priority before modifying this method.
-//        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + "available_stops");
+
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + LineDetailEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + StopDetailEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);

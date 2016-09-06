@@ -1,16 +1,12 @@
 package au.com.kbrsolutions.melbournepublictransport.data;
 
-import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.RemoteException;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil;
@@ -25,19 +21,8 @@ public class DatabaseContentRefresher {
     }
 
     static void refreshDatabase(ContentResolver contentResolver) {
-        // Delete all rows from stop_detail table
-        contentResolver.delete(
-                MptContract.StopDetailEntry.CONTENT_URI,
-                null,
-                null);
-
-        // Delete all rows from line_detail table
-        contentResolver.delete(
-                MptContract.LineDetailEntry.CONTENT_URI,
-                null,
-                null);
-
-//        Uri dirUri = MptContract.LineDetailEntry.CONTENT_URI;
+        // Delete all rows from stop_detail and line_detail table
+        deleteLineAndStopDetailRows(contentResolver);
 
         int trainMode = 0;
         List<ContentValues> lineDetailsContentValuesList = RemoteMptEndpointUtil.getLineDetails(trainMode);
@@ -49,10 +34,15 @@ public class DatabaseContentRefresher {
             );
             // The resulting URI contains the ID for the row.  Extract the locationId from the Uri.
             locationId = ContentUris.parseId(insertedUri);
-            List<ContentValues> stopDetailsContentValuesList = RemoteMptEndpointUtil.getStopDetailsForLine(trainMode, values.getAsString(MptContract.LineDetailEntry.COLUMN_LINE_ID));
+            List<ContentValues> stopDetailsContentValuesList =
+                    RemoteMptEndpointUtil.getStopDetailsForLine(
+                            trainMode,
+                            values.getAsString(MptContract.LineDetailEntry.COLUMN_LINE_ID));
             ContentValues[] returnContentValues = new ContentValues[stopDetailsContentValuesList.size()];
             int cnt = 0;
             for (ContentValues contentValues : stopDetailsContentValuesList) {
+                // add value of the line_detail._ID to the StopDetailEntry.COLUMN_LINE_KEY
+                // to avoid SQLiteConstraintException
                 contentValues.put(MptContract.StopDetailEntry.COLUMN_LINE_KEY, locationId);
                 returnContentValues[cnt++] = contentValues;
             }
@@ -60,72 +50,45 @@ public class DatabaseContentRefresher {
                 contentResolver.bulkInsert(MptContract.StopDetailEntry.CONTENT_URI, returnContentValues);
             }
 
-            Cursor cursor = contentResolver.query(
+            Cursor lineCursor = contentResolver.query(
                     MptContract.LineDetailEntry.CONTENT_URI,
                     null, // leaving "columns" null just returns all the columns.
                     null, // cols for "where" clause
                     null, // values for "where" clause
-                    null
+                    null  // no sort order
             );
-            Log.v(TAG, "refreshDatabase - line_detail cnt: " + cursor.getCount());
-            cursor.close();
-
+            int lineDetailsRowsCnt = lineCursor.getCount();
+            lineCursor.close();
+//
             Uri uri = MptContract.StopDetailEntry.buildFavoriteStopsUri("a");
-            cursor = contentResolver.query(
+            Cursor stopCursor = contentResolver.query(
                     uri,
                     null, // leaving "columns" null just returns all the columns.
                     null, // cols for "where" clause
                     null, // values for "where" clause
-                    null
+                    null  // no sort order
             );
-            Log.v(TAG, "refreshDatabase - stop_detail cnt: " + cursor.getCount());
-            cursor.close();
+            Log.v(TAG, "refreshDatabase - line_detail/stop_detail cnt: " + lineDetailsRowsCnt + "/" + stopCursor.getCount());
+            stopCursor.close();
         }
-
-//        try {
-//            contentResolver.applyBatch(MptContract.CONTENT_AUTHORITY, cpo);
-            printLineDetailContent(contentResolver);
-//        } catch (RemoteException e) {
-//            e.printStackTrace();
-//        } catch (OperationApplicationException e) {
-//            // FIXME: 6/09/2016 handle exception
-//            e.printStackTrace();
-//        }
+//        printLineDetailContent(contentResolver);
         Log.v(TAG, "refreshDatabase - performing refresh action");
     }
 
-    static void refreshDatabaseNotGoodSolution(ContentResolver contentResolver) {
-//        we need the line_detail key before we can insert related stop_detail rows
-        ArrayList<ContentProviderOperation> cpo = new ArrayList<ContentProviderOperation>();
+    private static void deleteLineAndStopDetailRows(ContentResolver contentResolver) {
+        // First delete all rows from stop_detail table
+        contentResolver.delete(
+                MptContract.StopDetailEntry.CONTENT_URI,
+                null,
+                null);
 
-        Uri dirUri = MptContract.LineDetailEntry.CONTENT_URI;
+        // and then elete all rows from line_detail table. If you do it in a reverse order you will
+        // get Foreign Key problem - SQLiteConstraintException
+        contentResolver.delete(
+                MptContract.LineDetailEntry.CONTENT_URI,
+                null,
+                null);
 
-        // Delete all items
-        cpo.add(ContentProviderOperation.newDelete(dirUri).build());
-        int trainMode = 0;
-//        List<LineDetails> lineDetailsList = RemoteMptEndpointUtil.getLineDetails(trainMode);
-        int cnt = 0;
-//        for (LineDetails lineDetails: lineDetailsList) {
-//            lineDetails.toString();
-//            ContentValues values = new ContentValues();
-//            values.put(MptContract.LineDetailEntry.COLUMN_ROUTE_TYPE, lineDetails.routeType);
-//            values.put(MptContract.LineDetailEntry.COLUMN_LINE_ID, lineDetails.lineId);
-//            values.put(MptContract.LineDetailEntry.COLUMN_LINE_NAME, lineDetails.lineName);
-//            values.put(MptContract.LineDetailEntry.COLUMN_LINE_NAME_SHORT, lineDetails.lineNameShort);
-//            cpo.add(ContentProviderOperation.newInsert(dirUri).withValues(values).build());
-//            cnt++;
-//        }
-
-        try {
-            contentResolver.applyBatch(MptContract.CONTENT_AUTHORITY, cpo);
-            printLineDetailContent(contentResolver);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        } catch (OperationApplicationException e) {
-            // FIXME: 6/09/2016 handle exception
-            e.printStackTrace();
-        }
-        Log.v(TAG, "refreshDatabase - performing refresh action - inserted: " + cnt);
     }
 
     private static void printLineDetailContent(ContentResolver contentResolver) {
@@ -138,7 +101,7 @@ public class DatabaseContentRefresher {
 
         cursor.moveToFirst();
         for ( int i = 0; i < cursor.getCount(); i++, cursor.moveToNext() ) {
-            Log.v(TAG, "printLineDetailContent - lineId/lineName: " + cursor.getString(0) + "/" + cursor.getString(0));
+            Log.v(TAG, "printLineDetailContent - lineId/lineName: " + cursor.getString(0) + "/" + cursor.getString(1));
         }
         cursor.close();
     }
