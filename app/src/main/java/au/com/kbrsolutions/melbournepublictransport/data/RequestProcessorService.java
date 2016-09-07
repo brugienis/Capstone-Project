@@ -19,6 +19,7 @@ public class RequestProcessorService extends IntentService {
     private EventBus eventBus;
     public final static String  ACTION = "action";
     public final static String  REFRESH_DATA = "refresh_data";
+    public final static String  REFRESH_DATA_IF_TABLES_EMPTY = "refresh_data_if_tables_empty";
 
     private static final String TAG = RequestProcessorService.class.getSimpleName();
 
@@ -60,7 +61,11 @@ public class RequestProcessorService extends IntentService {
             } else {
                 switch (action) {
                     case REFRESH_DATA:
-                        DatabaseContentRefresher.refreshDatabase(getContentResolver());
+                        DatabaseContentRefresher.refreshDatabase(getContentResolver(), false);
+                        break;
+
+                    case REFRESH_DATA_IF_TABLES_EMPTY:
+                        DatabaseContentRefresher.refreshDatabase(getContentResolver(), true);
                         break;
 
                     default:

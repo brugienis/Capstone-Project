@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity
 
 //        mServiceIntent = new Intent(getActivity(), RSSPullService.class);
         Intent intent = new Intent(this, RequestProcessorService.class);
-        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.REFRESH_DATA);
+        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.REFRESH_DATA_IF_TABLES_EMPTY);
         startService(intent);
     }
 

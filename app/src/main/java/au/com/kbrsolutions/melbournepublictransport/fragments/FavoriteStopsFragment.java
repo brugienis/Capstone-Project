@@ -174,7 +174,7 @@ public class FavoriteStopsFragment extends Fragment {
                 v = inflater.inflate(R.layout.favorite_stops_list_view, parent, false);
             }
 
-            stopNameTv = (TextView) v.findViewById(R.id.stopNameId);
+            stopNameTv = (TextView) v.findViewById(R.id.locationNameId);
             StopDetails folderItem = objects.get(position);
             stopNameTv.setText(folderItem.locationName);
             stopNameTv.setOnClickListener(new View.OnClickListener() {
