@@ -50,18 +50,21 @@ public class MptProviderTest {
         long lineDetailRowId = ContentUris.parseId(resultUri);
 
         // insert 2 rows
-        ContentValues stop_detailValues = TestUtilities.createFrankstonLineStopDetailsValues(lineDetailRowId, StopDetailEntry.NON_FAVORITE_FLAG);
+        ContentValues stopDetailvalues = TestUtilities.createFrankstonLineStopDetailsValues(lineDetailRowId, StopDetailEntry.NON_FAVORITE_FLAG);
 
         mContext.getContentResolver().insert(
                 StopDetailEntry.CONTENT_URI,
-                stop_detailValues
+                stopDetailvalues
         );
 
-        stop_detailValues = TestUtilities.createFrankstonLineStopDetailsValues(lineDetailRowId, StopDetailEntry.FAVORITE_FLAG);
+        stopDetailvalues = TestUtilities.createFrankstonLineStopDetailsValues(lineDetailRowId, StopDetailEntry.FAVORITE_FLAG);
+        // FIXME: 8/09/2016 - below added because 'UNIQUE' constraint in table definition would replace the row with the same stop_id and Location_name
+        // fix the TestUtilities.createFrankstonLineStopDetailsValues(...) and remove the line below
+        stopDetailvalues.put(StopDetailEntry.COLUMN_STOP_ID, 109);
 
         mContext.getContentResolver().insert(
                 StopDetailEntry.CONTENT_URI,
-                stop_detailValues
+                stopDetailvalues
         );
 
         // delete all (2) rows
@@ -206,6 +209,83 @@ public class MptProviderTest {
 
         Assert.assertNotNull("Error: cursor can not be null", cursor);
         Assert.assertNotEquals("Error: there must be 2 rows", 0, cursor.getCount());
+    }
+
+    @Test
+    public void testInsertDuplicates() throws Exception {
+        // insert a row into line_detail table
+        ContentValues lineDetailValues = TestUtilities.createFrankstonLineDetailsValues();
+
+        Uri resultUri = mContext.getContentResolver().insert(
+                LineDetailEntry.CONTENT_URI,
+                lineDetailValues
+        );
+
+        long locationRowId = ContentUris.parseId(resultUri);
+
+        // insert the first row into stop_detail table
+        ContentValues stopDetailsValues = TestUtilities.createFrankstonLineStopDetailsValues(locationRowId, StopDetailEntry.NON_FAVORITE_FLAG);
+
+        resultUri = mContext.getContentResolver().insert(
+        StopDetailEntry.CONTENT_URI,
+                stopDetailsValues
+        );
+
+        long stopRowId0 = ContentUris.parseId(resultUri);
+        Log.v(TAG, "testInsert - stopRowId0: " + stopRowId0);
+
+        // Test the basic content provider query
+        Uri uri = StopDetailEntry.buildFavoriteStopsUri(StopDetailEntry.NON_FAVORITE_FLAG);
+        Cursor cursor = mContext.getContentResolver().query(
+                uri,
+                null,
+                null,
+                null,
+                null
+        );
+
+        Assert.assertNotNull("Error: cursor can not be null", cursor);
+        Assert.assertEquals("Error: there must be 1 row", 1, cursor.getCount());
+        // Make sure we get the correct cursor out of the database
+        TestUtilities.validateCursor("testInsert, stop_detail query", cursor, stopDetailsValues);
+
+        // try to insert the the same row again
+        resultUri = mContext.getContentResolver().insert(
+        StopDetailEntry.CONTENT_URI,
+                stopDetailsValues
+        );
+
+        long stopRowId1 = ContentUris.parseId(resultUri);
+        Log.v(TAG, "testInsert - stopRowId1: " + stopRowId1);
+
+
+
+        // Test the basic content provider query
+        uri = StopDetailEntry.buildFavoriteStopsUri(StopDetailEntry.NON_FAVORITE_FLAG);
+        cursor = mContext.getContentResolver().query(
+                uri,
+                null,
+                null,
+                null,
+                null
+        );
+
+        Assert.assertNotNull("Error: cursor can not be null", cursor);
+        Assert.assertEquals("Error: there still must be 1 row", 1, cursor.getCount());
+        // Make sure we get the correct cursor out of the database
+
+        // Verify there is 1 rows in the table
+        uri = StopDetailEntry.buildFavoriteStopsUri(StopDetailEntry.NON_FAVORITE_FLAG);
+        cursor = mContext.getContentResolver().query(
+                uri,
+                null,
+                null,
+                null,
+                null
+        );
+
+        Assert.assertNotNull("Error: cursor can not be null", cursor);
+        Assert.assertNotEquals("Error: there must be 1 row", 0, cursor.getCount());
     }
 
     @Test

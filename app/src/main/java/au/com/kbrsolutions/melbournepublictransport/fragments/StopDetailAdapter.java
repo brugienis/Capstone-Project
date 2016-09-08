@@ -15,6 +15,8 @@ import au.com.kbrsolutions.melbournepublictransport.R;
  */
 public class StopDetailAdapter extends CursorAdapter {
 
+    private final String TAG = ((Object) this).getClass().getSimpleName();
+
     /**
      * Cache of the children views for a forecast list item.
      */
@@ -40,13 +42,30 @@ public class StopDetailAdapter extends CursorAdapter {
         return view;
     }
 
+    private String prevCursorLocationName;
+
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
+//        String currCursorLocationName =
+//        cursor.getString(AddStopFragment.COL_STOP_DETAILS_STOP_ID) + " - "
+//                + cursor.getString(AddStopFragment.COL_STOP_DETAILS_LOCATION_NAME);
+//
+//        Log.v(TAG, "bindView - prev/curr: " + prevCursorLocationName + "/" + currCursorLocationName);
+
+//        if (prevCursorLocationName == null || !prevCursorLocationName.equals(currCursorLocationName)) {
+//            prevCursorLocationName = currCursorLocationName;
+//        } else {
+//            Log.v(TAG, "bindView - ignoring curr: " + currCursorLocationName);
+//            return;
+//        }
+//        Log.v(TAG, "bindView - adding curr  : " + currCursorLocationName);
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
-        // Read weather forecast from cursor
-        String locationName = cursor.getString(AddStopFragment.COL_STOP_DETAILS_LOCATION_NAME);
-        // Find TextView and set weather forecast on it
+
+        String locationName = cursor.getString(AddStopFragment.COL_STOP_DETAILS_ID) + " - "
+                + cursor.getString(AddStopFragment.COL_STOP_DETAILS_STOP_ID) + " - "
+                + cursor.getString(AddStopFragment.COL_STOP_DETAILS_LOCATION_NAME);
+
         // FIXME: 7/09/2016 - add description
 //        viewHolder.descriptionView.setText(description);
 

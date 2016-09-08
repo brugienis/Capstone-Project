@@ -57,12 +57,17 @@ public class MptDbHelper extends SQLiteOpenHelper {
                 + StopDetailEntry.COLUMN_LOCATION_NAME + " STRING NULL, "
                 + StopDetailEntry.COLUMN_LATITUDE + " REAL NOT NULL, "
                 + StopDetailEntry.COLUMN_LONGITUDE + " REAL NOT NULL, "
-                + StopDetailEntry.COLUMN_FAVORITE + " STRING, " +
+                + StopDetailEntry.COLUMN_FAVORITE + " STRING, "
 
                 // Set up the column_line_key column as a foreign key to line_detail table.
-                " FOREIGN KEY (" + StopDetailEntry.COLUMN_LINE_KEY + ") REFERENCES " +
-                LineDetailEntry.TABLE_NAME + " (" + LineDetailEntry._ID + ") "
-                + ");";
+                + " FOREIGN KEY (" + StopDetailEntry.COLUMN_LINE_KEY + ") REFERENCES "
+                + LineDetailEntry.TABLE_NAME + " (" + LineDetailEntry._ID + ")"
+
+                // To assure the application have just one stop_detail entry stop_id day
+                // per location_name, it's created a UNIQUE constraint with REPLACE strategy
+                + " UNIQUE (" + StopDetailEntry.COLUMN_STOP_ID + ", "
+//                + StopDetailEntry.COLUMN_LOCATION_NAME + ") ON CONFLICT IGNORE);";
+                + StopDetailEntry.COLUMN_LOCATION_NAME + ") ON CONFLICT REPLACE);";
 
 
         sqLiteDatabase.execSQL(CREATE_LINE_DETAIL_TABLE);

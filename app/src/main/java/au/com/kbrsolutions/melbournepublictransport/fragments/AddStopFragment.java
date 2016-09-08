@@ -61,6 +61,7 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
     // Specify the columns we need.
     public static final String[] STOP_DETAILS_COLUMNS = {
             MptContract.StopDetailEntry.TABLE_NAME + "." + MptContract.StopDetailEntry._ID,
+            MptContract.StopDetailEntry.COLUMN_STOP_ID,
             MptContract.StopDetailEntry.COLUMN_LOCATION_NAME,
             MptContract.StopDetailEntry.COLUMN_LATITUDE,
             MptContract.StopDetailEntry.COLUMN_LONGITUDE,
@@ -70,10 +71,11 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
     // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
     // must change.
     static final int COL_STOP_DETAILS_ID = 0;
-    static final int COL_STOP_DETAILS_LOCATION_NAME = 1;
-    static final int COL_STOP_DETAILS_LATITUDE = 2;
-    static final int COL_STOP_DETAILS_LONGITUDE = 3;
-    static final int COL_STOP_DETAILS_FAVORITE = 4;
+    static final int COL_STOP_DETAILS_STOP_ID = 1;
+    static final int COL_STOP_DETAILS_LOCATION_NAME = 2;
+    static final int COL_STOP_DETAILS_LATITUDE = 3;
+    static final int COL_STOP_DETAILS_LONGITUDE = 4;
+    static final int COL_STOP_DETAILS_FAVORITE = 5;
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
@@ -147,6 +149,8 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
 
         Log.v(TAG, "onCreateLoader - nonFavoriteStopDetailUri: " + nonFavoriteStopDetailUri);
 
+        // FIXME: 8/09/2016 try to get distinct columns to get rid of duplicates - see
+        // http://stackoverflow.com/questions/24877815/distinct-query-for-cursorloader
         return new CursorLoader(getActivity(),
                 nonFavoriteStopDetailUri,
                 STOP_DETAILS_COLUMNS,
@@ -159,6 +163,9 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.v(TAG, "onLoadFinished - start - rows cnt: " + data.getCount());
         mStopDetailAdapter.swapCursor(data);
+        if (data.getCount() > 0) {
+            mEmptyView.setVisibility(View.GONE);
+        }
         // FIXME: 30/08/2016 below add correct code
 //        mForecastAdapter.swapCursor(data);
 //        if (mPosition != ListView.INVALID_POSITION) {

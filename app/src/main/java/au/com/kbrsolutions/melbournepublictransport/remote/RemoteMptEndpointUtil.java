@@ -2,6 +2,8 @@ package au.com.kbrsolutions.melbournepublictransport.remote;
 
 import android.content.ContentValues;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.joda.time.DateTime;
@@ -113,6 +115,9 @@ public class RemoteMptEndpointUtil {
 //            Log.v(TAG, "processJsonString - lineArray length: " + stopsArray.length());
 //            Log.v(TAG, "processJsonString - lineArray: " + stopsArray);
 //            Log.v(TAG, "processJsonString - lineArray length: " + stopsArray.length());
+//            String prevStopIdAndLocationName = null;
+//            String currStopIdAndLocationName;
+//            int ignoredCnt = 0;
             for(int i = 0; i < stopsArray.length(); i++) {
                 JSONObject oneLineObject = stopsArray.getJSONObject(i);
                 routeType = oneLineObject.getInt("route_type");
@@ -130,7 +135,7 @@ public class RemoteMptEndpointUtil {
                 values.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, favorite);
                 stopDetailsContentValuesList.add(values);
             }
-//            }
+//            Log.v(TAG, "getStopDetailsForLine - ignoredCnt: " + ignoredCnt);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -138,6 +143,7 @@ public class RemoteMptEndpointUtil {
         return stopDetailsContentValuesList;
     }
 
+    @Nullable
     private static String processRemoteRequest(String uri) {
 
         String urlString = null;
@@ -258,8 +264,9 @@ public class RemoteMptEndpointUtil {
      * @throws Exception
      *
      */
+    @NonNull
     public static String buildTTAPIURL(final String baseURL, final String privateKey, final String uri,
-                                final int developerId) throws Exception {
+                                       final int developerId) throws Exception {
 
         String HMAC_SHA1_ALGORITHM = "HmacSHA1";
         StringBuffer uriWithDeveloperID = new StringBuffer().append(uri).append(uri.contains("?") ? "&" : "?")
