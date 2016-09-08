@@ -44,15 +44,11 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
     AddStopFragmentCallbacks mCallbacks;
     private ListView mListView;
     private StopDetailAdapter mStopDetailAdapter;
-    //    private ArrayAdapter<String> adapter;
-//    private AvailableStopsDetailsArrayAdapter<StopDetails> availableStopsDetailsArrayAdapter;
     private static List<StopDetails> mFolderItemList = new ArrayList<>();
-    private static List<String> favoriteStations = new ArrayList<>();
     private TextView mEmptyView;
 
     private static final int STOP_DETAILS_LOADER = 0;
-    // For the forecast view we're showing only a small subset of the stored data.
-    // Specify the columns we need.
+
     public static final String[] STOP_DETAILS_COLUMNS = {
             MptContract.StopDetailEntry.TABLE_NAME + "." + MptContract.StopDetailEntry._ID,
             MptContract.StopDetailEntry.COLUMN_ROUTE_TYPE,
@@ -63,8 +59,7 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
             MptContract.StopDetailEntry.COLUMN_FAVORITE
     };
 
-    // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
-    // must change.
+    // These indices are tied to stop_details columns specified above.
     static final int COL_STOP_DETAILS_ID = 0;
     static final int COL_STOP_DETAILS_ROUTE_TYPE = 1;
     static final int COL_STOP_DETAILS_STOP_ID = 2;
@@ -87,18 +82,12 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // The ForecastAdapter will take data from a source and
-        // use it to populate the ListView it's attached to.
         mStopDetailAdapter = new StopDetailAdapter(getActivity(), null, 0);
         View rootView = inflater.inflate(R.layout.fragment_add_stop, container, false);
 
         mListView = (ListView) rootView.findViewById(R.id.addStopsListView);
         mListView.setAdapter(mStopDetailAdapter);
 
-//        getAvailableStopsList();
-//        availableStopsDetailsArrayAdapter = new AvailableStopsDetailsArrayAdapter<>(getActivity(), mFolderItemList);
-//        Log.v(TAG, "onCreateView - stopsArrayAdapter/mListView: " + availableStopsDetailsArrayAdapter + "/" + mListView);
-//        mListView.setAdapter(availableStopsDetailsArrayAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -117,16 +106,6 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
         return rootView;
     }
 
-//    private void getAvailableStopsList() {
-//        mFolderItemList = new ArrayList<>();
-//        StopDetails stopDetails;
-//        for (String stopName : stopNames) {
-//            stopDetails = new StopDetails(0, "0", stopName, 0.0, 0.0, "n");
-//            mFolderItemList.add(stopDetails);
-//        }
-//        return;
-//    }
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(STOP_DETAILS_LOADER, null, this);
@@ -137,10 +116,9 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         // This is called when a new Loader needs to be created.  This
         // fragment only uses one loader, so we don't care about checking the id.
-        // Sort order:  Ascending, by date.
+        // Sort order:  Ascending, by location_name.
         String sortOrder = MptContract.StopDetailEntry.COLUMN_LOCATION_NAME + " ASC";
 
-//        String locationSetting = Utility.getPreferredLocation(getActivity());
         Uri nonFavoriteStopDetailUri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.NON_FAVORITE_FLAG);
 
         Log.v(TAG, "onCreateLoader - nonFavoriteStopDetailUri: " + nonFavoriteStopDetailUri);
@@ -174,8 +152,7 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         Log.v(TAG, "onLoadFinished - start");
-        // FIXME: 30/08/onLoaderReset below add correct code
-//        mForecastAdapter.swapCursor(null);
+        mStopDetailAdapter.swapCursor(null);
     }
 
     private void handleRowClicked(AdapterView<?> adapterView, int position) {
@@ -183,33 +160,15 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
         // if it cannot seek to that position.
         Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
         if (cursor != null) {
-//            String locationSetting = Utility.getPreferredLocation(getActivity());
-            String locationName = cursor.getString(COL_STOP_DETAILS_LOCATION_NAME);
-            Log.v(TAG, "handleRowClicked - locationName: " + locationName);
-//            ((Callback) getActivity())
-//                    .onItemSelected(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
-//                            locationSetting, cursor.getLong(COL_WEATHER_DATE)
-//                    ));
+            mCallbacks.addStop(new StopDetails(
+                    cursor.getInt(COL_STOP_DETAILS_ID),
+                    cursor.getInt(COL_STOP_DETAILS_ROUTE_TYPE),
+                    cursor.getString(COL_STOP_DETAILS_STOP_ID),
+                    cursor.getString(COL_STOP_DETAILS_LOCATION_NAME),
+                    cursor.getDouble(COL_STOP_DETAILS_LATITUDE),
+                    cursor.getDouble(COL_STOP_DETAILS_LONGITUDE),
+                    cursor.getString(COL_STOP_DETAILS_FAVORITE)));
         }
-//        StopDetails stopDetails = availableStopsDetailsArrayAdapter.getItem(position);
-//        StopDetails stopDetails = mStopDetailAdapter.;//  .getItem(position);
-        /*
-
-    public final int routeType;
-    public final String stopId;
-    public final String locationName;
-    public final double latitude;
-    public final double longitude;
-    public final String favorite;
-         */
-        mCallbacks.addStop(new StopDetails(
-                cursor.getInt(COL_STOP_DETAILS_ID),
-                cursor.getInt(COL_STOP_DETAILS_ROUTE_TYPE),
-                cursor.getString(COL_STOP_DETAILS_STOP_ID),
-                cursor.getString(COL_STOP_DETAILS_LOCATION_NAME),
-                cursor.getDouble(COL_STOP_DETAILS_LATITUDE),
-                cursor.getDouble(COL_STOP_DETAILS_LONGITUDE),
-                cursor.getString(COL_STOP_DETAILS_FAVORITE)));
     }
 
     @Override
@@ -228,112 +187,4 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
         super.onDetach();
         mCallbacks = null;
     }
-
-    String[] stopNames = new String[] { "Armadale",
-            "Aspendale",
-            "Bentleigh",
-            "Bonbeach",
-            "Carrum",
-            "Caulfield",
-            "Chelsea",
-            "Cheltenham",
-            "Edithvale",
-            "Flagstaff",
-            "Flinders Street",
-            "Frankston",
-            "Glenhuntly",
-            "Hawksburn",
-            "Highett",
-            "Kananook",
-            "Malvern",
-            "McKinnon",
-            "Melbourne Central",
-            "Mentone",
-            "Moorabbin",
-            "Mordialloc",
-            "Ormond",
-            "Parkdale",
-            "Parliament",
-            "Patterson",
-            "Richmond",
-            "Seaford",
-            "South Yarra",
-            "Southern Cross",
-            "Toorak"
-    };
 }
-
-//class AvailableStopsDetailsArrayAdapter<T> extends ArrayAdapter<StopDetails> {
-//
-//    private TextView stopNameTv;
-//    private TextView fileUpdateTsTv;
-//    //        private ImageView fileImage;
-//    private ImageView infoImage;
-//    private List<StopDetails> objects;
-//    //        private HomeActivity mActivity;
-//    private View.OnClickListener folderOnClickListener;
-//    //	@SuppressLint("SimpleDateFormat")
-////	private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
-//    private DateFormat dateFormat = new SimpleDateFormat("yyyy-MMM.d hh:mm:ss", Locale.getDefault());
-//    private final static String LOC_CAT_TAG = "FolderArrayAdapter";
-//
-//    public AvailableStopsDetailsArrayAdapter(Activity activity, List<StopDetails> objects) {
-//        super(activity.getApplicationContext(), -1, objects);
-//        this.objects = objects;
-//    }
-//
-//    @Override
-//    public View getView(int position, View convertView, ViewGroup parent) {
-//        //		Log.i(LOC_CAT_TAG, "getView - start");
-//        View v = convertView;
-//        if (v == null) {
-//            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//            v = inflater.inflate(R.layout.fragment_add_stops_list_view, parent, false);
-//        }
-////            fileImage = (ImageView) v.findViewById(R.id.folderFileImageId);
-//
-////        infoImage = (ImageView) v.findViewById(R.id.infoImageId);
-////        infoImage.setOnClickListener(folderOnClickListener);
-//
-//        stopNameTv = (TextView) v.findViewById(R.id.locationNameId);
-////        fileUpdateTsTv = (TextView) v.findViewById(R.id.fileUpdateTsId);
-//
-//        StopDetails folderItem = objects.get(position);
-//        stopNameTv.setText(folderItem.locationName);
-////		Log.i(LOC_CAT_TAG, "getView - name/mIsTrashed: " + folderItem.fileName + "/" + folderItem.mIsTrashed);
-//        return v;
-//    }
-//
-//    String[] stopNames = new String[] { "Armadale",
-//            "Aspendale",
-//            "Bentleigh",
-//            "Bonbeach",
-//            "Carrum",
-//            "Caulfield",
-//            "Chelsea",
-//            "Cheltenham",
-//            "Edithvale",
-//            "Flagstaff",
-//            "Flinders Street",
-//            "Frankston",
-//            "Glenhuntly",
-//            "Hawksburn",
-//            "Highett",
-//            "Kananook",
-//            "Malvern",
-//            "McKinnon",
-//            "Melbourne Central",
-//            "Mentone",
-//            "Moorabbin",
-//            "Mordialloc",
-//            "Ormond",
-//            "Parkdale",
-//            "Parliament",
-//            "Patterson",
-//            "Richmond",
-//            "Seaford",
-//            "South Yarra",
-//            "Southern Cross",
-//            "Toorak"
-//    };
-//}
