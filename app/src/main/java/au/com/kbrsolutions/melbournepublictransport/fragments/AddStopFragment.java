@@ -1,6 +1,5 @@
 package au.com.kbrsolutions.melbournepublictransport.fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -14,16 +13,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
@@ -51,7 +45,7 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
     private ListView mListView;
     private StopDetailAdapter mStopDetailAdapter;
     //    private ArrayAdapter<String> adapter;
-    private AvailableStopsDetailsArrayAdapter<StopDetails> availableStopsDetailsArrayAdapter;
+//    private AvailableStopsDetailsArrayAdapter<StopDetails> availableStopsDetailsArrayAdapter;
     private static List<StopDetails> mFolderItemList = new ArrayList<>();
     private static List<String> favoriteStations = new ArrayList<>();
     private TextView mEmptyView;
@@ -61,6 +55,7 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
     // Specify the columns we need.
     public static final String[] STOP_DETAILS_COLUMNS = {
             MptContract.StopDetailEntry.TABLE_NAME + "." + MptContract.StopDetailEntry._ID,
+            MptContract.StopDetailEntry.COLUMN_ROUTE_TYPE,
             MptContract.StopDetailEntry.COLUMN_STOP_ID,
             MptContract.StopDetailEntry.COLUMN_LOCATION_NAME,
             MptContract.StopDetailEntry.COLUMN_LATITUDE,
@@ -71,11 +66,12 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
     // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
     // must change.
     static final int COL_STOP_DETAILS_ID = 0;
-    static final int COL_STOP_DETAILS_STOP_ID = 1;
-    static final int COL_STOP_DETAILS_LOCATION_NAME = 2;
-    static final int COL_STOP_DETAILS_LATITUDE = 3;
-    static final int COL_STOP_DETAILS_LONGITUDE = 4;
-    static final int COL_STOP_DETAILS_FAVORITE = 5;
+    static final int COL_STOP_DETAILS_ROUTE_TYPE = 1;
+    static final int COL_STOP_DETAILS_STOP_ID = 2;
+    static final int COL_STOP_DETAILS_LOCATION_NAME = 3;
+    static final int COL_STOP_DETAILS_LATITUDE = 4;
+    static final int COL_STOP_DETAILS_LONGITUDE = 5;
+    static final int COL_STOP_DETAILS_FAVORITE = 6;
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
@@ -107,7 +103,7 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                handleRowClicked(position);
+                handleRowClicked(adapterView, position);
             }
         });
 
@@ -121,15 +117,15 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
         return rootView;
     }
 
-    private void getAvailableStopsList() {
-        mFolderItemList = new ArrayList<>();
-        StopDetails stopDetails;
-        for (String stopName : stopNames) {
-            stopDetails = new StopDetails(0, "0", stopName, 0.0, 0.0, "n");
-            mFolderItemList.add(stopDetails);
-        }
-        return;
-    }
+//    private void getAvailableStopsList() {
+//        mFolderItemList = new ArrayList<>();
+//        StopDetails stopDetails;
+//        for (String stopName : stopNames) {
+//            stopDetails = new StopDetails(0, "0", stopName, 0.0, 0.0, "n");
+//            mFolderItemList.add(stopDetails);
+//        }
+//        return;
+//    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -177,14 +173,43 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        Log.v(TAG, "onLoadFinished -start");
+        Log.v(TAG, "onLoadFinished - start");
         // FIXME: 30/08/onLoaderReset below add correct code
 //        mForecastAdapter.swapCursor(null);
     }
 
-    private void handleRowClicked(int position) {
-        StopDetails stopDetails = availableStopsDetailsArrayAdapter.getItem(position);
-        mCallbacks.addStop(stopDetails);
+    private void handleRowClicked(AdapterView<?> adapterView, int position) {
+        // CursorAdapter returns a cursor at the correct position for getItem(), or null
+        // if it cannot seek to that position.
+        Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+        if (cursor != null) {
+//            String locationSetting = Utility.getPreferredLocation(getActivity());
+            String locationName = cursor.getString(COL_STOP_DETAILS_LOCATION_NAME);
+            Log.v(TAG, "handleRowClicked - locationName: " + locationName);
+//            ((Callback) getActivity())
+//                    .onItemSelected(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
+//                            locationSetting, cursor.getLong(COL_WEATHER_DATE)
+//                    ));
+        }
+//        StopDetails stopDetails = availableStopsDetailsArrayAdapter.getItem(position);
+//        StopDetails stopDetails = mStopDetailAdapter.;//  .getItem(position);
+        /*
+
+    public final int routeType;
+    public final String stopId;
+    public final String locationName;
+    public final double latitude;
+    public final double longitude;
+    public final String favorite;
+         */
+        mCallbacks.addStop(new StopDetails(
+                cursor.getInt(COL_STOP_DETAILS_ID),
+                cursor.getInt(COL_STOP_DETAILS_ROUTE_TYPE),
+                cursor.getString(COL_STOP_DETAILS_STOP_ID),
+                cursor.getString(COL_STOP_DETAILS_LOCATION_NAME),
+                cursor.getDouble(COL_STOP_DETAILS_LATITUDE),
+                cursor.getDouble(COL_STOP_DETAILS_LONGITUDE),
+                cursor.getString(COL_STOP_DETAILS_FAVORITE)));
     }
 
     @Override
@@ -238,77 +263,77 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
     };
 }
 
-class AvailableStopsDetailsArrayAdapter<T> extends ArrayAdapter<StopDetails> {
-
-    private TextView stopNameTv;
-    private TextView fileUpdateTsTv;
-    //        private ImageView fileImage;
-    private ImageView infoImage;
-    private List<StopDetails> objects;
-    //        private HomeActivity mActivity;
-    private View.OnClickListener folderOnClickListener;
-    //	@SuppressLint("SimpleDateFormat")
-//	private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
-    private DateFormat dateFormat = new SimpleDateFormat("yyyy-MMM.d hh:mm:ss", Locale.getDefault());
-    private final static String LOC_CAT_TAG = "FolderArrayAdapter";
-
-    public AvailableStopsDetailsArrayAdapter(Activity activity, List<StopDetails> objects) {
-        super(activity.getApplicationContext(), -1, objects);
-        this.objects = objects;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        //		Log.i(LOC_CAT_TAG, "getView - start");
-        View v = convertView;
-        if (v == null) {
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inflater.inflate(R.layout.fragment_add_stops_list_view, parent, false);
-        }
-//            fileImage = (ImageView) v.findViewById(R.id.folderFileImageId);
-
-//        infoImage = (ImageView) v.findViewById(R.id.infoImageId);
-//        infoImage.setOnClickListener(folderOnClickListener);
-
-        stopNameTv = (TextView) v.findViewById(R.id.locationNameId);
-//        fileUpdateTsTv = (TextView) v.findViewById(R.id.fileUpdateTsId);
-
-        StopDetails folderItem = objects.get(position);
-        stopNameTv.setText(folderItem.locationName);
-//		Log.i(LOC_CAT_TAG, "getView - name/mIsTrashed: " + folderItem.fileName + "/" + folderItem.mIsTrashed);
-        return v;
-    }
-
-    String[] stopNames = new String[] { "Armadale",
-            "Aspendale",
-            "Bentleigh",
-            "Bonbeach",
-            "Carrum",
-            "Caulfield",
-            "Chelsea",
-            "Cheltenham",
-            "Edithvale",
-            "Flagstaff",
-            "Flinders Street",
-            "Frankston",
-            "Glenhuntly",
-            "Hawksburn",
-            "Highett",
-            "Kananook",
-            "Malvern",
-            "McKinnon",
-            "Melbourne Central",
-            "Mentone",
-            "Moorabbin",
-            "Mordialloc",
-            "Ormond",
-            "Parkdale",
-            "Parliament",
-            "Patterson",
-            "Richmond",
-            "Seaford",
-            "South Yarra",
-            "Southern Cross",
-            "Toorak"
-    };
-}
+//class AvailableStopsDetailsArrayAdapter<T> extends ArrayAdapter<StopDetails> {
+//
+//    private TextView stopNameTv;
+//    private TextView fileUpdateTsTv;
+//    //        private ImageView fileImage;
+//    private ImageView infoImage;
+//    private List<StopDetails> objects;
+//    //        private HomeActivity mActivity;
+//    private View.OnClickListener folderOnClickListener;
+//    //	@SuppressLint("SimpleDateFormat")
+////	private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
+//    private DateFormat dateFormat = new SimpleDateFormat("yyyy-MMM.d hh:mm:ss", Locale.getDefault());
+//    private final static String LOC_CAT_TAG = "FolderArrayAdapter";
+//
+//    public AvailableStopsDetailsArrayAdapter(Activity activity, List<StopDetails> objects) {
+//        super(activity.getApplicationContext(), -1, objects);
+//        this.objects = objects;
+//    }
+//
+//    @Override
+//    public View getView(int position, View convertView, ViewGroup parent) {
+//        //		Log.i(LOC_CAT_TAG, "getView - start");
+//        View v = convertView;
+//        if (v == null) {
+//            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//            v = inflater.inflate(R.layout.fragment_add_stops_list_view, parent, false);
+//        }
+////            fileImage = (ImageView) v.findViewById(R.id.folderFileImageId);
+//
+////        infoImage = (ImageView) v.findViewById(R.id.infoImageId);
+////        infoImage.setOnClickListener(folderOnClickListener);
+//
+//        stopNameTv = (TextView) v.findViewById(R.id.locationNameId);
+////        fileUpdateTsTv = (TextView) v.findViewById(R.id.fileUpdateTsId);
+//
+//        StopDetails folderItem = objects.get(position);
+//        stopNameTv.setText(folderItem.locationName);
+////		Log.i(LOC_CAT_TAG, "getView - name/mIsTrashed: " + folderItem.fileName + "/" + folderItem.mIsTrashed);
+//        return v;
+//    }
+//
+//    String[] stopNames = new String[] { "Armadale",
+//            "Aspendale",
+//            "Bentleigh",
+//            "Bonbeach",
+//            "Carrum",
+//            "Caulfield",
+//            "Chelsea",
+//            "Cheltenham",
+//            "Edithvale",
+//            "Flagstaff",
+//            "Flinders Street",
+//            "Frankston",
+//            "Glenhuntly",
+//            "Hawksburn",
+//            "Highett",
+//            "Kananook",
+//            "Malvern",
+//            "McKinnon",
+//            "Melbourne Central",
+//            "Mentone",
+//            "Moorabbin",
+//            "Mordialloc",
+//            "Ormond",
+//            "Parkdale",
+//            "Parliament",
+//            "Patterson",
+//            "Richmond",
+//            "Seaford",
+//            "South Yarra",
+//            "Southern Cross",
+//            "Toorak"
+//    };
+//}
