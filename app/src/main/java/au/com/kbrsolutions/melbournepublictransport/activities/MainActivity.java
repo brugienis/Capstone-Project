@@ -36,10 +36,12 @@ import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragm
 import au.com.kbrsolutions.melbournepublictransport.fragments.StationOnMapFragment;
 
 // git push -u origin
+// ^((?!GLHudOverlay).)*$
 
 public class MainActivity extends AppCompatActivity
         implements FavoriteStopsFragment.FavoriteStopsFragmentCallbacks,
-        AddStopFragment.AddStopFragmentCallbacks {
+        AddStopFragment.AddStopFragmentCallbacks,
+        StationOnMapFragment.StationOnMapCallbacks {
 
     private FavoriteStopsFragment mFavoriteStopsFragment;
     private StationOnMapFragment mStationOnMapFragment;
@@ -170,6 +172,32 @@ public class MainActivity extends AppCompatActivity
         fab.show();
     }
 
+    // FIXME: 9/09/2016 - just trying
+    public StopDetails currStopDetails;
+
+    @Override
+    public void showSelectedStopOnMap(StopDetails stopDetails) {
+        if (readyToGo()) {
+            currStopDetails = stopDetails;
+            if (mStationOnMapFragment == null) {
+//                mStationOnMapFragment = new StationOnMapFragment();
+                mStationOnMapFragment = StationOnMapFragment.newInstance(
+                        stopDetails.latitude,
+                        stopDetails.longitude);
+            } else {
+                mStationOnMapFragment.setLatLon(
+                        stopDetails.latitude,
+                        stopDetails.longitude);
+            }
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.left_dynamic_fragments_frame, mStationOnMapFragment, STATION_ON_MAP_TAG)
+                    .addToBackStack(STATION_ON_MAP_TAG)     // it will also show 'Up' button in the action bar
+                    .commit();
+            fab.hide();
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -244,6 +272,11 @@ public class MainActivity extends AppCompatActivity
                 .make(mCoordinatorlayout, msg, (showIndefinite ? Snackbar.LENGTH_INDEFINITE : Snackbar.LENGTH_LONG))
                 .setActionTextColor(Color.RED)
                 .show(); // Don’t forget to show!
+    }
+
+    @Override
+    public StopDetails getCurrSelectedStopDetails() {
+        return currStopDetails;
     }
 
     public static class ErrorDialogFragment extends DialogFragment {

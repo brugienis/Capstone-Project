@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
+import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,19 +27,29 @@ import au.com.kbrsolutions.melbournepublictransport.R;
  */
 public class StationOnMapFragment extends Fragment implements OnMapReadyCallback {
 
+    /**
+     * Declares callback methods that have to be implemented by parent Activity
+     */
+    public interface StationOnMapCallbacks {
+        StopDetails getCurrSelectedStopDetails();
+    }
+
+    private StationOnMapCallbacks mCallbacks;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_LATITUDE = "arg_latitude";
+    private static final String ARG_LONGITUDE = "arg_longitude";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private double mLatitude;
+    private double mLongitude;
+
     private boolean needsInit=false;
     private MapView mMapView;
     private GoogleMap googleMap;
 
-    private final String TAG = ((Object) this).getClass().getSimpleName();
+    private static final String TAG = StationOnMapFragment.class.getSimpleName();
 
     /* callback if needed */
 //    private OnFragmentInteractionListener mListener;
@@ -47,30 +58,50 @@ public class StationOnMapFragment extends Fragment implements OnMapReadyCallback
         // Required empty public constructor
     }
 
+    public void setLatLon(double latitude, double longitude) {
+        setLatitude(latitude);
+        setLongitude(longitude);
+        Log.v(TAG, "setLatLon - lat/lon: " + mLatitude + "/" + mLongitude);
+    }
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param latitude Parameter 1.
+     * @param longitude Parameter 2.
      * @return A new instance of fragment StationOnMapFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static StationOnMapFragment newInstance(String param1, String param2) {
+    public static StationOnMapFragment newInstance(double latitude, double longitude) {
+        Log.v(TAG, "newInstance - lat/lon: " + latitude + "/" + longitude);
         StationOnMapFragment fragment = new StationOnMapFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putDouble(ARG_LATITUDE, latitude);
+        args.putDouble(ARG_LONGITUDE, longitude);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof StationOnMapCallbacks) {
+            mCallbacks = (StationOnMapCallbacks) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement StationOnMapFragmentCallbacks");
+        }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+//            mLatitude = getArguments().getDouble(ARG_LATITUDE);
+//            mLongitude = getArguments().getDouble(ARG_LONGITUDE);
+            setLatitude(getArguments().getDouble(ARG_LATITUDE));
+            setLongitude(getArguments().getDouble(ARG_LONGITUDE));
         }
     }
 
@@ -97,67 +128,29 @@ public class StationOnMapFragment extends Fragment implements OnMapReadyCallback
 
         needsInit = true;
         mMapView.getMapAsync(this);
-//        mMapView.getMapAsync(new OnMapReadyCallback() {
-//            @Override
-//            public void onMapReady(GoogleMap mMap) {
-//                googleMap = mMap;
-//
-//                // For showing a move to my location button
-//                googleMap.setMyLocationEnabled(true);
-//
-//                // For dropping a marker at a point on the Map
-//                LatLng sydney = new LatLng(-34, 151);
-//                googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
-//
-//                // For zooming automatically to the location of the marker
-//                CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
-//                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-//            }
-//        });
 
         return rootView;
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-//        mListener = null;
-    }
-
-    @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.v(TAG, "onMapReady called");
-        if (needsInit) {
+//        double latitude = getLatitude();
+//        double longitude = getLongitude();
+        StopDetails stopDetails = mCallbacks.getCurrSelectedStopDetails();
+        double latitude = stopDetails.latitude;
+        double longitude = stopDetails.longitude;
+        Log.v(TAG, "onMapReady called - lat/lon: " + latitude + "/" + longitude);
+//        if (needsInit) {
             CameraUpdate center =
-//                    CameraUpdateFactory.newLatLng(new LatLng(40.76793169992044,
-//                            -73.98180484771729));
-                    CameraUpdateFactory.newLatLng(new LatLng(40.748963847316034, -73.96807193756104));
+                    CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude));
             CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
 
             googleMap.moveCamera(center);
             googleMap.animateCamera(zoom);
-        }
+//        }
 
-        addMarker(googleMap, 40.748963847316034, -73.96807193756104,
+        addMarker(googleMap, latitude, longitude,
                 R.string.un, R.string.united_nations);
-//        addMarker(map, 40.76866299974387, -73.98268461227417,
-//                R.string.lincoln_center,
-//                R.string.lincoln_center_snippet);
-//        addMarker(map, 40.765136435316755, -73.97989511489868,
-//                R.string.carnegie_hall, R.string.practice_x3);
-//        addMarker(map, 40.70686417491799, -74.01572942733765,
-//                R.string.downtown_club, R.string.heisman_trophy);
     }
 
     private void addMarker(GoogleMap map, double lat, double lon,
@@ -165,5 +158,21 @@ public class StationOnMapFragment extends Fragment implements OnMapReadyCallback
         map.addMarker(new MarkerOptions().position(new LatLng(lat, lon))
                 .title(getString(title))
                 .snippet(getString(snippet)));
+    }
+
+    public synchronized double getLongitude() {
+        return mLongitude;
+    }
+
+    public synchronized void setLongitude(double longitude) {
+        mLongitude = longitude;
+    }
+
+    public synchronized double getLatitude() {
+        return mLatitude;
+    }
+
+    public synchronized void setLatitude(double latitude) {
+        mLatitude = latitude;
     }
 }

@@ -92,6 +92,7 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                // FIXME: 8/09/2016 - run update to change 'favorite' flag to 'y'
                 handleRowClicked(adapterView, position);
             }
         });

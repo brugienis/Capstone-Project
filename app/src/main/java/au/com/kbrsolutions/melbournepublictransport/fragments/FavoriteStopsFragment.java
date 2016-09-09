@@ -27,6 +27,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
  * {@link FavoriteStopsFragment.FavoriteStopsFragmentCallbacks} interface
  * to handle interaction events.
  */
+// FIXME: 8/09/2016 - add  implements LoaderManager.LoaderCallbacks<Cursor>
 public class FavoriteStopsFragment extends Fragment {
 
     /**
@@ -34,6 +35,7 @@ public class FavoriteStopsFragment extends Fragment {
      */
     public interface FavoriteStopsFragmentCallbacks {
         void handleSelectedStop(StopDetails stopDetails);
+        void showSelectedStopOnMap(StopDetails stopDetails);
     }
 
     private FavoriteStopsFragmentCallbacks mCallbacks;
@@ -55,6 +57,7 @@ public class FavoriteStopsFragment extends Fragment {
     }
 
     public void showView() {
+        // FIXME: 8/09/2016 - start CursorLoader
 //        Log.v(TAG, "showView");
         rootView.setVisibility(View.VISIBLE);
     }
@@ -140,12 +143,17 @@ public class FavoriteStopsFragment extends Fragment {
         Log.v(TAG, "processSelectedStop - position: " + position);
     }
 
-    private void showSelectedRowOnMap(int position) {
-        Log.v(TAG, "showSelectedRowOnMap - position: " + position);
+    private void showSelectedStopOnMap(int position) {
+        // FIXME: 8/09/2016 - get lt and lon and show on StationOnMapFragment view
+        Log.v(TAG, "showSelectedStopOnMap - position: " + position);
+        StopDetails stopDetails = mStopDetailsArrayAdapter.getItem(position);
+        mCallbacks.showSelectedStopOnMap(stopDetails);
+        Log.v(TAG, "showSelectedStopOnMap - position/lat/lon: " + position + "/" + stopDetails.latitude + "/" + stopDetails.longitude);
     }
 
     public void removeSelectedStop(int position) {
 //        Log.v(TAG, "removeSelectedStop - position: " + position);
+        // FIXME: 8/09/2016 update table - set favorite flag to 'n'
         mStopDetailsArrayAdapter.remove(mStopDetailsArrayAdapter.getItem(position));
         mStopDetailsArrayAdapter.notifyDataSetChanged();
         if (mStopDetailsArrayAdapter.isEmpty()) {
@@ -184,19 +192,19 @@ public class FavoriteStopsFragment extends Fragment {
                 }
             });
 
-            ImageView mapImageId = (ImageView) v.findViewById(R.id.garbageImageId);
+            ImageView mapImageId = (ImageView) v.findViewById(R.id.mapImageId);
             mapImageId.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    removeSelectedRow(position);
+                    showSelectedRowOnMap(position);
                 }
             });
 
-            ImageView garbageInfoImage = (ImageView) v.findViewById(R.id.mapImageId);
+            ImageView garbageInfoImage = (ImageView) v.findViewById(R.id.garbageImageId);
             garbageInfoImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    showSelectedRowOnMap(position);
+                    removeSelectedRow(position);
                 }
             });
 
@@ -204,15 +212,18 @@ public class FavoriteStopsFragment extends Fragment {
         }
 
         private void processSelectedStop(int position) {
+            Log.v(TAG, "processSelectedStop");
             FavoriteStopsFragment.this.processSelectedStop(position);
         }
 
         private void removeSelectedRow(int position) {
+            Log.v(TAG, "removeSelectedRow");
             FavoriteStopsFragment.this.removeSelectedStop(position);
         }
 
         private void showSelectedRowOnMap(int position) {
-            FavoriteStopsFragment.this.showSelectedRowOnMap(position);
+            Log.v(TAG, "showSelectedRowOnMap");
+            FavoriteStopsFragment.this.showSelectedStopOnMap(position);
         }
 
     }
