@@ -18,21 +18,21 @@ public class StopDetailAdapter extends CursorAdapter {
 
     private static final String TAG = StopDetailAdapter.class.getSimpleName();
 
-//    public static class ViewHolder {
-    public class ViewHolder {
+    public static class ViewHolder {
         public final TextView locationNameView;
         public StopDetails mStopDetails;
+        AddStopFragment mAddStopFragment;
 
-        public ViewHolder(View view) {
+        public ViewHolder(View view, AddStopFragment addStopFragment) {
 //            mStopDetails = stopDetails;
+            mAddStopFragment = addStopFragment;
             locationNameView = (TextView) view.findViewById(R.id.locationNameId);
 
             ImageView mapImageId = (ImageView) view.findViewById(R.id.mapImageId);
             mapImageId.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    Log.v(TAG, "ViewHolder - locationName: " + mStopDetails.locationName);
-                    showSelectedRowOnMap(mStopDetails);
+                    mAddStopFragment.handleMapClicked(mStopDetails);
                 }
             });
         }
@@ -46,9 +46,7 @@ public class StopDetailAdapter extends CursorAdapter {
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         View view = LayoutInflater.from(context).inflate(R.layout.fragment_add_stops_list_view, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-//        View v = view.getTag();
-//        v = null;
+        ViewHolder viewHolder = new ViewHolder(view, mAddStopFragment);
         view.setTag(viewHolder);
 
         return view;
@@ -59,9 +57,6 @@ public class StopDetailAdapter extends CursorAdapter {
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-//        String locationName = cursor.getString(AddStopFragment.COL_STOP_DETAILS_ID) + " - "
-//                + cursor.getString(AddStopFragment.COL_STOP_DETAILS_STOP_ID) + " - "
-//                + cursor.getString(AddStopFragment.COL_STOP_DETAILS_LOCATION_NAME);
         String locationName = cursor.getString(AddStopFragment.COL_STOP_DETAILS_LOCATION_NAME);
 
         StopDetails stopDetails = new StopDetails(
@@ -78,10 +73,5 @@ public class StopDetailAdapter extends CursorAdapter {
 
         viewHolder.locationNameView.setText(locationName);
         viewHolder.mStopDetails = stopDetails;
-    }
-
-    private void showSelectedRowOnMap(StopDetails stopDetails) {
-//        Log.v(TAG, "showSelectedRowOnMap - position: " + position);
-        mAddStopFragment.handleMapClicked(stopDetails);
     }
 }
