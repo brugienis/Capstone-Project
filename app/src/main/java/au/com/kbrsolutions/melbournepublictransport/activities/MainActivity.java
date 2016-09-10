@@ -35,24 +35,28 @@ import au.com.kbrsolutions.melbournepublictransport.fragments.AddStopFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StationOnMapFragment;
 
+//import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragmentOld;
+
 // git push -u origin
 // ^((?!GLHudOverlay).)*$
 
 public class MainActivity extends AppCompatActivity
+//        implements FavoriteStopsFragmentOld.FavoriteStopsFragmentCallbacks,
         implements FavoriteStopsFragment.FavoriteStopsFragmentCallbacks,
         AddStopFragment.AddStopFragmentCallbacks,
         StationOnMapFragment.StationOnMapCallbacks {
 
+//    private FavoriteStopsFragmentOld mFavoriteStopsFragment;
     private FavoriteStopsFragment mFavoriteStopsFragment;
     private StationOnMapFragment mStationOnMapFragment;
     private AddStopFragment mAddStopFragment;
+    private StopDetails currStopDetails;
     private CharSequence mActivityTitle;
-    private final String FAVORITE_STOPS = "favorite_stops";
-    static final String TAG_ERROR_DIALOG_FRAGMENT="errorDialog";
     private View mCoordinatorlayout;
     private FloatingActionButton fab;
-//    private static final String STATION_ON_MAP = "station_on_map";
     private EventBus eventBus;
+    private final String FAVORITE_STOPS = "favorite_stops";
+    static final String TAG_ERROR_DIALOG_FRAGMENT="errorDialog";
     private static final String STATION_ON_MAP_TAG = "station_on_map_tag";
     private static final String ADD_STOP_TAG = "add_stop_tag";
 
@@ -89,10 +93,12 @@ public class MainActivity extends AppCompatActivity
                 });
 
         mFavoriteStopsFragment =
+//                (FavoriteStopsFragmentOld) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS);
                 (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS);
 
 
         if (mFavoriteStopsFragment == null) {
+//            mFavoriteStopsFragment = new FavoriteStopsFragmentOld();
             mFavoriteStopsFragment = new FavoriteStopsFragment();
             getSupportFragmentManager()
                     .beginTransaction()
@@ -171,9 +177,6 @@ public class MainActivity extends AppCompatActivity
         mFavoriteStopsFragment.addStop(stopDetails);
         fab.show();
     }
-
-    // FIXME: 9/09/2016 - just trying
-    public StopDetails currStopDetails;
 
     @Override
     public void showSelectedStopOnMap(StopDetails stopDetails) {

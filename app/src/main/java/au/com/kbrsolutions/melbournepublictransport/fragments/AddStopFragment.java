@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,8 +37,8 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
      */
     public interface AddStopFragmentCallbacks {
         void addStop(StopDetails stopDetails);
+        void showSelectedStopOnMap(StopDetails stopDetails);
     }
-
 
     AddStopFragmentCallbacks mCallbacks;
     private ListView mListView;
@@ -82,7 +81,8 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mStopDetailAdapter = new StopDetailAdapter(getActivity(), null, 0);
+//        mStopDetailAdapter = new StopDetailAdapter(getActivity(), null, 0);
+        mStopDetailAdapter = new StopDetailAdapter(this, null, 0);
         View rootView = inflater.inflate(R.layout.fragment_add_stop, container, false);
 
         mListView = (ListView) rootView.findViewById(R.id.addStopsListView);
@@ -99,10 +99,10 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
 
         if (mFolderItemList.size() == 0) {
             mEmptyView = (TextView) rootView.findViewById(R.id.emptyView);
-            Log.v(TAG, "onCreateView - mEmptyView: " + mEmptyView);
+//            Log.v(TAG, "onCreateView - mEmptyView: " + mEmptyView);
             mEmptyView.setText(getActivity().getResources()
                     .getString(R.string.no_stops_to_add));
-            Log.v(TAG, "onCreateView - showing empty list");
+//            Log.v(TAG, "onCreateView - showing empty list");
         }
         return rootView;
     }
@@ -122,7 +122,7 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
 
         Uri nonFavoriteStopDetailUri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.NON_FAVORITE_FLAG);
 
-        Log.v(TAG, "onCreateLoader - nonFavoriteStopDetailUri: " + nonFavoriteStopDetailUri);
+//        Log.v(TAG, "onCreateLoader - nonFavoriteStopDetailUri: " + nonFavoriteStopDetailUri);
 
         // FIXME: 8/09/2016 try to get distinct columns to get rid of duplicates - see
         // http://stackoverflow.com/questions/24877815/distinct-query-for-cursorloader
@@ -136,7 +136,7 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.v(TAG, "onLoadFinished - start - rows cnt: " + data.getCount());
+//        Log.v(TAG, "onLoadFinished - start - rows cnt: " + data.getCount());
         mStopDetailAdapter.swapCursor(data);
         if (data.getCount() > 0) {
             mEmptyView.setVisibility(View.GONE);
@@ -152,7 +152,7 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        Log.v(TAG, "onLoadFinished - start");
+//        Log.v(TAG, "onLoadFinished - start");
         mStopDetailAdapter.swapCursor(null);
     }
 
@@ -170,6 +170,11 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
                     cursor.getDouble(COL_STOP_DETAILS_LONGITUDE),
                     cursor.getString(COL_STOP_DETAILS_FAVORITE)));
         }
+    }
+
+    void handleMapClicked(StopDetails stopDetails) {
+//        Log.v(TAG, "handleMapClicked - locationName: " + stopDetails.locationName);
+        mCallbacks.showSelectedStopOnMap(stopDetails);
     }
 
     @Override

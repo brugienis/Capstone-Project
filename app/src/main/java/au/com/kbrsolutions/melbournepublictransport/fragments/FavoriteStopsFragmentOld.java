@@ -24,11 +24,11 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
  *
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link FavoriteStopsFragment.FavoriteStopsFragmentCallbacks} interface
+ * {@link FavoriteStopsFragmentOld.FavoriteStopsFragmentCallbacks} interface
  * to handle interaction events.
  */
 // FIXME: 8/09/2016 - add  implements LoaderManager.LoaderCallbacks<Cursor>
-public class FavoriteStopsFragment extends Fragment {
+public class FavoriteStopsFragmentOld extends Fragment {
 
     /**
      * Declares callback methods that have to be implemented by parent Activity
@@ -47,7 +47,7 @@ public class FavoriteStopsFragment extends Fragment {
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
-    public FavoriteStopsFragment() {
+    public FavoriteStopsFragmentOld() {
         // Required empty public constructor
     }
 
@@ -119,7 +119,7 @@ public class FavoriteStopsFragment extends Fragment {
 
     public void showFavoriteStops() {
         // FIXME: 18/08/2016 add code
-        showView();
+         showView();
     }
 
     @Override
@@ -213,17 +213,17 @@ public class FavoriteStopsFragment extends Fragment {
 
         private void processSelectedStop(int position) {
             Log.v(TAG, "processSelectedStop");
-            FavoriteStopsFragment.this.processSelectedStop(position);
+            FavoriteStopsFragmentOld.this.processSelectedStop(position);
         }
 
         private void removeSelectedRow(int position) {
             Log.v(TAG, "removeSelectedRow");
-            FavoriteStopsFragment.this.removeSelectedStop(position);
+            FavoriteStopsFragmentOld.this.removeSelectedStop(position);
         }
 
         private void showSelectedRowOnMap(int position) {
             Log.v(TAG, "showSelectedRowOnMap");
-            FavoriteStopsFragment.this.showSelectedStopOnMap(position);
+            FavoriteStopsFragmentOld.this.showSelectedStopOnMap(position);
         }
 
     }
