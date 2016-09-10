@@ -47,6 +47,8 @@ public class StopDetailAdapter extends CursorAdapter {
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         View view = LayoutInflater.from(context).inflate(R.layout.fragment_add_stops_list_view, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
+//        View v = view.getTag();
+//        v = null;
         view.setTag(viewHolder);
 
         return view;
