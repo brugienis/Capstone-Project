@@ -1,5 +1,6 @@
 package au.com.kbrsolutions.melbournepublictransport.fragments;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -36,7 +37,8 @@ public class StopDetailFragment extends Fragment implements LoaderManager.Loader
      * Declares callback methods that have to be implemented by parent Activity
      */
     public interface AddStopFragmentCallbacks {
-        void addStop(StopDetails stopDetails);
+//        void addStop(StopDetails stopDetails);
+        void addStop();
         void showSelectedStopOnMap(StopDetails stopDetails);
     }
 
@@ -93,7 +95,7 @@ public class StopDetailFragment extends Fragment implements LoaderManager.Loader
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 // FIXME: 8/09/2016 - run update to change 'favorite' flag to 'y'
-                handleRowClicked(adapterView, position);
+                handleRowSelected(adapterView, position);
             }
         });
 
@@ -156,19 +158,26 @@ public class StopDetailFragment extends Fragment implements LoaderManager.Loader
         mStopDetailAdapter.swapCursor(null);
     }
 
-    private void handleRowClicked(AdapterView<?> adapterView, int position) {
+    private void handleRowSelected(AdapterView<?> adapterView, int position) {
         // CursorAdapter returns a cursor at the correct position for getItem(), or null
         // if it cannot seek to that position.
         Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
         if (cursor != null) {
-            mCallbacks.addStop(new StopDetails(
-                    cursor.getInt(COL_STOP_DETAILS_ID),
-                    cursor.getInt(COL_STOP_DETAILS_ROUTE_TYPE),
-                    cursor.getString(COL_STOP_DETAILS_STOP_ID),
-                    cursor.getString(COL_STOP_DETAILS_LOCATION_NAME),
-                    cursor.getDouble(COL_STOP_DETAILS_LATITUDE),
-                    cursor.getDouble(COL_STOP_DETAILS_LONGITUDE),
-                    cursor.getString(COL_STOP_DETAILS_FAVORITE)));
+            ContentValues updatedValues = new ContentValues();
+            updatedValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, "y");
+            int count = getActivity().getContentResolver().update(
+                    MptContract.StopDetailEntry.CONTENT_URI, updatedValues, MptContract.StopDetailEntry._ID + "= ?",
+                    new String [] { String.valueOf(cursor.getInt(COL_STOP_DETAILS_ID))});
+            mCallbacks.addStop(
+//                    new StopDetails(
+//                    cursor.getInt(COL_STOP_DETAILS_ID),
+//                    cursor.getInt(COL_STOP_DETAILS_ROUTE_TYPE),
+//                    cursor.getString(COL_STOP_DETAILS_STOP_ID),
+//                    cursor.getString(COL_STOP_DETAILS_LOCATION_NAME),
+//                    cursor.getDouble(COL_STOP_DETAILS_LATITUDE),
+//                    cursor.getDouble(COL_STOP_DETAILS_LONGITUDE),
+//                    cursor.getString(COL_STOP_DETAILS_FAVORITE))
+            );
         }
     }
 

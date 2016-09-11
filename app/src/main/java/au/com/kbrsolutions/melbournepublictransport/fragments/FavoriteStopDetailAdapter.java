@@ -10,38 +10,31 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
+import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 
 /**
  * Created by business on 10/09/2016.
  */
 public class FavoriteStopDetailAdapter extends CursorAdapter {
 
-    private final String TAG = ((Object) this).getClass().getSimpleName();
+    private FavoriteStopsFragment mFavoriteStopsFragment;
 
-    /**
-     * Cache of the children views for a forecast list item.
-     */
+    private static final String TAG = StopDetailAdapter.class.getSimpleName();
+
     public static class ViewHolder {
-//        public final TextView locationNameView;
-        TextView stopNameTv;
+        public final TextView locationNameView;
+        public StopDetails mStopDetails;
+        FavoriteStopsFragment mFavoriteStopsFragment;
 
-        public ViewHolder(View view) {
-//            locationNameView = (TextView) view.findViewById(R.id.locationNameId);
-            stopNameTv = (TextView) view.findViewById(R.id.locationNameId);
-//            StopDetails folderItem = objects.get(position);
-//            stopNameTv.setText(folderItem.locationName);
-            stopNameTv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-//                    processSelectedStop(position);
-                }
-            });
+        public ViewHolder(View view, FavoriteStopsFragment favoriteStopsFragment) {
+            mFavoriteStopsFragment = favoriteStopsFragment;
+            locationNameView = (TextView) view.findViewById(R.id.locationNameId);
 
             ImageView mapImageId = (ImageView) view.findViewById(R.id.mapImageId);
             mapImageId.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    showSelectedRowOnMap(position);
+                    mFavoriteStopsFragment.handleMapClicked(mStopDetails);
                 }
             });
 
@@ -49,21 +42,21 @@ public class FavoriteStopDetailAdapter extends CursorAdapter {
             garbageInfoImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    removeSelectedRow(position);
+                    mFavoriteStopsFragment.removeSelectedStop(mStopDetails);
                 }
             });
         }
     }
 
-    public FavoriteStopDetailAdapter(Context context, Cursor c, int flags) {
-        super(context, c, flags);
+    public FavoriteStopDetailAdapter(FavoriteStopsFragment favoriteStopsFragment, Cursor c, int flags) {
+        super(favoriteStopsFragment.getActivity().getApplicationContext(), c, flags);
+        mFavoriteStopsFragment = favoriteStopsFragment;
     }
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View view = LayoutInflater.from(context).inflate(R.layout.fragment_add_stops_list_view, parent, false);
-
-        ViewHolder viewHolder = new ViewHolder(view);
+        View view = LayoutInflater.from(context).inflate(R.layout.fragment_favorite_stops_list_view, parent, false);
+        ViewHolder viewHolder = new ViewHolder(view, mFavoriteStopsFragment);
         view.setTag(viewHolder);
 
         return view;
@@ -74,14 +67,21 @@ public class FavoriteStopDetailAdapter extends CursorAdapter {
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        String locationName = cursor.getString(StopDetailFragment.COL_STOP_DETAILS_ID) + " - "
-                + cursor.getString(StopDetailFragment.COL_STOP_DETAILS_STOP_ID) + " - "
-                + cursor.getString(StopDetailFragment.COL_STOP_DETAILS_LOCATION_NAME);
+        String locationName = cursor.getString(StopDetailFragment.COL_STOP_DETAILS_LOCATION_NAME);
+
+        StopDetails stopDetails = new StopDetails(
+                cursor.getInt(FavoriteStopsFragment.COL_STOP_DETAILS_ID),
+                cursor.getInt(FavoriteStopsFragment.COL_STOP_DETAILS_ROUTE_TYPE),
+                cursor.getString(FavoriteStopsFragment.COL_STOP_DETAILS_STOP_ID),
+                cursor.getString(FavoriteStopsFragment.COL_STOP_DETAILS_LOCATION_NAME),
+                cursor.getDouble(FavoriteStopsFragment.COL_STOP_DETAILS_LATITUDE),
+                cursor.getDouble(FavoriteStopsFragment.COL_STOP_DETAILS_LONGITUDE),
+                cursor.getString(FavoriteStopsFragment.COL_STOP_DETAILS_FAVORITE));
 
         // FIXME: 7/09/2016 - add description
 //        viewHolder.descriptionView.setText(description);
 
-//        viewHolder.locationNameView.setText(locationName);
-        viewHolder.stopNameTv.setText(cursor.getString(StopDetailFragment.COL_STOP_DETAILS_LOCATION_NAME));
+        viewHolder.locationNameView.setText(locationName);
+        viewHolder.mStopDetails = stopDetails;
     }
 }

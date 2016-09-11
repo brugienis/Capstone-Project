@@ -163,8 +163,9 @@ public class MainActivity extends AppCompatActivity
         Log.v(TAG, "handleSelectedStop called");
     }
 
-    public void addStop(StopDetails stopDetails) {
-        Log.v(TAG, "addStop - stopDetails/mFavoriteStopsFragment: " + stopDetails + "/" + mFavoriteStopsFragment);
+//    public void addStop(StopDetails stopDetails) {
+    public void addStop() {
+//        Log.v(TAG, "addStop - stopDetails/mFavoriteStopsFragment: " + stopDetails + "/" + mFavoriteStopsFragment);
         if (mFavoriteStopsFragment != null) {
             mFavoriteStopsFragment.showView();
         }
@@ -174,7 +175,7 @@ public class MainActivity extends AppCompatActivity
                 .commit();
 
         getSupportFragmentManager().popBackStack();
-        mFavoriteStopsFragment.addStop(stopDetails);
+//        mFavoriteStopsFragment.addStop(stopDetails);
         fab.show();
     }
 

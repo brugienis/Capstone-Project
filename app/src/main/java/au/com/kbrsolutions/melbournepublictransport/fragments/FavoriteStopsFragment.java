@@ -1,9 +1,15 @@
 package au.com.kbrsolutions.melbournepublictransport.fragments;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
+import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 
 /**
@@ -27,8 +34,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
  * {@link FavoriteStopsFragment.FavoriteStopsFragmentCallbacks} interface
  * to handle interaction events.
  */
-// FIXME: 8/09/2016 - add  implements LoaderManager.LoaderCallbacks<Cursor>
-public class FavoriteStopsFragment extends Fragment {
+public class FavoriteStopsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     /**
      * Declares callback methods that have to be implemented by parent Activity
@@ -44,6 +50,28 @@ public class FavoriteStopsFragment extends Fragment {
     private List<StopDetails> mStopDetailsList;
     private TextView mEmptyView;
     private View rootView;
+    private FavoriteStopDetailAdapter mFavoriteStopDetailAdapter;
+
+    private static final int STOP_DETAILS_LOADER = 0;
+
+    public static final String[] STOP_DETAILS_COLUMNS = {
+            MptContract.StopDetailEntry.TABLE_NAME + "." + MptContract.StopDetailEntry._ID,
+            MptContract.StopDetailEntry.COLUMN_ROUTE_TYPE,
+            MptContract.StopDetailEntry.COLUMN_STOP_ID,
+            MptContract.StopDetailEntry.COLUMN_LOCATION_NAME,
+            MptContract.StopDetailEntry.COLUMN_LATITUDE,
+            MptContract.StopDetailEntry.COLUMN_LONGITUDE,
+            MptContract.StopDetailEntry.COLUMN_FAVORITE
+    };
+
+    // These indices are tied to stop_details columns specified above.
+    static final int COL_STOP_DETAILS_ID = 0;
+    static final int COL_STOP_DETAILS_ROUTE_TYPE = 1;
+    static final int COL_STOP_DETAILS_STOP_ID = 2;
+    static final int COL_STOP_DETAILS_LOCATION_NAME = 3;
+    static final int COL_STOP_DETAILS_LATITUDE = 4;
+    static final int COL_STOP_DETAILS_LONGITUDE = 5;
+    static final int COL_STOP_DETAILS_FAVORITE = 6;
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
@@ -71,6 +99,7 @@ public class FavoriteStopsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mFavoriteStopDetailAdapter = new FavoriteStopDetailAdapter(this, null, 0);
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_favorite_stops, container, false);
 
@@ -78,9 +107,10 @@ public class FavoriteStopsFragment extends Fragment {
             mStopDetailsList = new ArrayList<>();
         }
         mListView = (ListView) rootView.findViewById(R.id.favoriteStopsListView);
+        mListView.setAdapter(mFavoriteStopDetailAdapter);
         mStopDetailsArrayAdapter = new StopDetailsArrayAdapter<>(getActivity(), mStopDetailsList);
-        Log.v(TAG, "onCreateView - mStopDetailsArrayAdapter/mListView: " + mStopDetailsArrayAdapter + "/" + mListView);
-        mListView.setAdapter(mStopDetailsArrayAdapter);
+//        Log.v(TAG, "onCreateView - mStopDetailsArrayAdapter/mListView: " + mStopDetailsArrayAdapter + "/" + mListView);
+//        mListView.setAdapter(mStopDetailsArrayAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -96,6 +126,55 @@ public class FavoriteStopsFragment extends Fragment {
         Log.v(TAG, "onCreateView - showing empty list");
         return rootView;
     }
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            getLoaderManager().initLoader(STOP_DETAILS_LOADER, null, this);
+            super.onActivityCreated(savedInstanceState);
+        }
+
+        @Override
+        public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+            // This is called when a new Loader needs to be created.  This
+            // fragment only uses one loader, so we don't care about checking the id.
+            // Sort order:  Ascending, by location_name.
+            String sortOrder = MptContract.StopDetailEntry.COLUMN_LOCATION_NAME + " ASC";
+
+            Uri nonFavoriteStopDetailUri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.FAVORITE_FLAG);
+
+//        Log.v(TAG, "onCreateLoader - nonFavoriteStopDetailUri: " + nonFavoriteStopDetailUri);
+
+            // FIXME: 8/09/2016 try to get distinct columns to get rid of duplicates - see
+            // http://stackoverflow.com/questions/24877815/distinct-query-for-cursorloader
+            return new CursorLoader(getActivity(),
+                    nonFavoriteStopDetailUri,
+                    STOP_DETAILS_COLUMNS,
+                    null,
+                    null,
+                    sortOrder);
+        }
+
+        @Override
+        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+//        Log.v(TAG, "onLoadFinished - start - rows cnt: " + data.getCount());
+            mFavoriteStopDetailAdapter.swapCursor(data);
+            if (data.getCount() > 0) {
+                mEmptyView.setVisibility(View.GONE);
+            }
+            // FIXME: 30/08/2016 below add correct code
+//        mForecastAdapter.swapCursor(data);
+//        if (mPosition != ListView.INVALID_POSITION) {
+//            // If we don't need to restart the loader, and there's a desired position to restore
+//            // to, do so now.
+//            mListView.smoothScrollToPosition(mPosition);
+//        }
+        }
+
+        @Override
+        public void onLoaderReset(Loader<Cursor> loader) {
+//        Log.v(TAG, "onLoadFinished - start");
+            mFavoriteStopDetailAdapter.swapCursor(null);
+        }
 
     public void addStop(StopDetails stopDetails) {
         if (mStopDetailsList != null) {
@@ -115,6 +194,11 @@ public class FavoriteStopsFragment extends Fragment {
     private void handleRowClicked(int position) {
         StopDetails stopDetails = mStopDetailsArrayAdapter.getItem(position);
         mCallbacks.handleSelectedStop(stopDetails);
+    }
+
+    void handleMapClicked(StopDetails stopDetails) {
+//        Log.v(TAG, "handleMapClicked - locationName: " + stopDetails.locationName);
+        mCallbacks.showSelectedStopOnMap(stopDetails);
     }
 
     public void showFavoriteStops() {
@@ -152,13 +236,23 @@ public class FavoriteStopsFragment extends Fragment {
     }
 
     public void removeSelectedStop(int position) {
-//        Log.v(TAG, "removeSelectedStop - position: " + position);
+        Log.v(TAG, "removeSelectedStop - position: " + position);
         // FIXME: 8/09/2016 update table - set favorite flag to 'n'
         mStopDetailsArrayAdapter.remove(mStopDetailsArrayAdapter.getItem(position));
         mStopDetailsArrayAdapter.notifyDataSetChanged();
         if (mStopDetailsArrayAdapter.isEmpty()) {
             mEmptyView.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void removeSelectedStop(StopDetails stopDetails) {
+        Log.v(TAG, "removeSelectedStop - stopDetails: " + stopDetails);
+        // FIXME: 8/09/2016 update table - set favorite flag to 'n'
+        ContentValues updatedValues = new ContentValues();
+        updatedValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, "n");
+        int count = getActivity().getContentResolver().update(
+                MptContract.StopDetailEntry.CONTENT_URI, updatedValues, MptContract.StopDetailEntry._ID + "= ?",
+                new String [] { String.valueOf(stopDetails.id)});
     }
 
     class StopDetailsArrayAdapter<T> extends ArrayAdapter<StopDetails> {
