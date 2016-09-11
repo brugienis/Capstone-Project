@@ -74,14 +74,14 @@ public class FavoriteStopDetailAdapter extends CursorAdapter {
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        String locationName = cursor.getString(AddStopFragment.COL_STOP_DETAILS_ID) + " - "
-                + cursor.getString(AddStopFragment.COL_STOP_DETAILS_STOP_ID) + " - "
-                + cursor.getString(AddStopFragment.COL_STOP_DETAILS_LOCATION_NAME);
+        String locationName = cursor.getString(StopDetailFragment.COL_STOP_DETAILS_ID) + " - "
+                + cursor.getString(StopDetailFragment.COL_STOP_DETAILS_STOP_ID) + " - "
+                + cursor.getString(StopDetailFragment.COL_STOP_DETAILS_LOCATION_NAME);
 
         // FIXME: 7/09/2016 - add description
 //        viewHolder.descriptionView.setText(description);
 
 //        viewHolder.locationNameView.setText(locationName);
-        viewHolder.stopNameTv.setText(cursor.getString(AddStopFragment.COL_STOP_DETAILS_LOCATION_NAME));
+        viewHolder.stopNameTv.setText(cursor.getString(StopDetailFragment.COL_STOP_DETAILS_LOCATION_NAME));
     }
 }

@@ -25,10 +25,10 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link AddStopFragment.AddStopFragmentCallbacks} interface
+ * {@link StopDetailFragment.AddStopFragmentCallbacks} interface
  * to handle interaction events.
  */
-public class AddStopFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class StopDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     // FIXME: 25/08/2016 check Running a Query with a CursorLoader - https://developer.android.com/training/load-data-background/setup-loader.html
 
@@ -69,7 +69,7 @@ public class AddStopFragment extends Fragment implements LoaderManager.LoaderCal
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
-    public AddStopFragment() {
+    public StopDetailFragment() {
         // Required empty public constructor
     }
 

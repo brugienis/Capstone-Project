@@ -31,7 +31,7 @@ import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.RequestProcessorService;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
-import au.com.kbrsolutions.melbournepublictransport.fragments.AddStopFragment;
+import au.com.kbrsolutions.melbournepublictransport.fragments.StopDetailFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StationOnMapFragment;
 
@@ -43,13 +43,13 @@ import au.com.kbrsolutions.melbournepublictransport.fragments.StationOnMapFragme
 public class MainActivity extends AppCompatActivity
 //        implements FavoriteStopsFragmentOld.FavoriteStopsFragmentCallbacks,
         implements FavoriteStopsFragment.FavoriteStopsFragmentCallbacks,
-        AddStopFragment.AddStopFragmentCallbacks,
+        StopDetailFragment.AddStopFragmentCallbacks,
         StationOnMapFragment.StationOnMapCallbacks {
 
 //    private FavoriteStopsFragmentOld mFavoriteStopsFragment;
     private FavoriteStopsFragment mFavoriteStopsFragment;
     private StationOnMapFragment mStationOnMapFragment;
-    private AddStopFragment mAddStopFragment;
+    private StopDetailFragment mAddStopFragment;
     private StopDetails currStopDetails;
     private CharSequence mActivityTitle;
     private View mCoordinatorlayout;
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         if (cnt == 0) {      /* current fragment is FavoriteStopsFragment */
             if (mAddStopFragment == null) {
-                mAddStopFragment = new AddStopFragment();
+                mAddStopFragment = new StopDetailFragment();
             }
             mFavoriteStopsFragment.hideView();
             getSupportFragmentManager()

@@ -14,16 +14,16 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 
 public class StopDetailAdapter extends CursorAdapter {
 
-    private AddStopFragment mAddStopFragment;
+    private StopDetailFragment mAddStopFragment;
 
     private static final String TAG = StopDetailAdapter.class.getSimpleName();
 
     public static class ViewHolder {
         public final TextView locationNameView;
         public StopDetails mStopDetails;
-        AddStopFragment mAddStopFragment;
+        StopDetailFragment mAddStopFragment;
 
-        public ViewHolder(View view, AddStopFragment addStopFragment) {
+        public ViewHolder(View view, StopDetailFragment addStopFragment) {
 //            mStopDetails = stopDetails;
             mAddStopFragment = addStopFragment;
             locationNameView = (TextView) view.findViewById(R.id.locationNameId);
@@ -38,7 +38,7 @@ public class StopDetailAdapter extends CursorAdapter {
         }
     }
 
-    public StopDetailAdapter(AddStopFragment addStopFragment, Cursor c, int flags) {
+    public StopDetailAdapter(StopDetailFragment addStopFragment, Cursor c, int flags) {
         super(addStopFragment.getActivity().getApplicationContext(), c, flags);
         mAddStopFragment = addStopFragment;
     }
@@ -57,16 +57,16 @@ public class StopDetailAdapter extends CursorAdapter {
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        String locationName = cursor.getString(AddStopFragment.COL_STOP_DETAILS_LOCATION_NAME);
+        String locationName = cursor.getString(StopDetailFragment.COL_STOP_DETAILS_LOCATION_NAME);
 
         StopDetails stopDetails = new StopDetails(
-                cursor.getInt(AddStopFragment.COL_STOP_DETAILS_ID),
-                cursor.getInt(AddStopFragment.COL_STOP_DETAILS_ROUTE_TYPE),
-                cursor.getString(AddStopFragment.COL_STOP_DETAILS_STOP_ID),
-                cursor.getString(AddStopFragment.COL_STOP_DETAILS_LOCATION_NAME),
-                cursor.getDouble(AddStopFragment.COL_STOP_DETAILS_LATITUDE),
-                cursor.getDouble(AddStopFragment.COL_STOP_DETAILS_LONGITUDE),
-                cursor.getString(AddStopFragment.COL_STOP_DETAILS_FAVORITE));
+                cursor.getInt(StopDetailFragment.COL_STOP_DETAILS_ID),
+                cursor.getInt(StopDetailFragment.COL_STOP_DETAILS_ROUTE_TYPE),
+                cursor.getString(StopDetailFragment.COL_STOP_DETAILS_STOP_ID),
+                cursor.getString(StopDetailFragment.COL_STOP_DETAILS_LOCATION_NAME),
+                cursor.getDouble(StopDetailFragment.COL_STOP_DETAILS_LATITUDE),
+                cursor.getDouble(StopDetailFragment.COL_STOP_DETAILS_LONGITUDE),
+                cursor.getString(StopDetailFragment.COL_STOP_DETAILS_FAVORITE));
 
         // FIXME: 7/09/2016 - add description
 //        viewHolder.descriptionView.setText(description);
