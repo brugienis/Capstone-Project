@@ -158,9 +158,9 @@ public class MainActivity extends AppCompatActivity
         fab.show();
     }
 
-    @Override
-    public void handleSelectedStop(StopDetails stopDetails) {
-        Log.v(TAG, "handleSelectedStop called");
+    // FIXME: 11/09/2016  - show next five departures time from selected stop?
+    public void handleSelectedFavoriteStop(StopDetails stopDetails) {
+        Log.v(TAG, "handleSelectedFavoriteStop called - location name: " + stopDetails.locationName);
     }
 
 //    public void addStop(StopDetails stopDetails) {

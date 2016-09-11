@@ -1,6 +1,5 @@
 package au.com.kbrsolutions.melbournepublictransport.fragments;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -15,8 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -40,13 +37,13 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
      * Declares callback methods that have to be implemented by parent Activity
      */
     public interface FavoriteStopsFragmentCallbacks {
-        void handleSelectedStop(StopDetails stopDetails);
+        void handleSelectedFavoriteStop(StopDetails stopDetails);
         void showSelectedStopOnMap(StopDetails stopDetails);
     }
 
     private FavoriteStopsFragmentCallbacks mCallbacks;
     private ListView mListView;
-    private StopDetailsArrayAdapter<StopDetails> mStopDetailsArrayAdapter;
+//    private StopDetailsArrayAdapter<StopDetails> mStopDetailsArrayAdapter;
     private List<StopDetails> mStopDetailsList;
     private TextView mEmptyView;
     private View rootView;
@@ -108,14 +105,11 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
         }
         mListView = (ListView) rootView.findViewById(R.id.favoriteStopsListView);
         mListView.setAdapter(mFavoriteStopDetailAdapter);
-        mStopDetailsArrayAdapter = new StopDetailsArrayAdapter<>(getActivity(), mStopDetailsList);
-//        Log.v(TAG, "onCreateView - mStopDetailsArrayAdapter/mListView: " + mStopDetailsArrayAdapter + "/" + mListView);
-//        mListView.setAdapter(mStopDetailsArrayAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                handleRowClicked(position);
+                handleRowClicked(adapterView, position);
             }
         });
 
@@ -142,10 +136,6 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
 
             Uri nonFavoriteStopDetailUri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.FAVORITE_FLAG);
 
-//        Log.v(TAG, "onCreateLoader - nonFavoriteStopDetailUri: " + nonFavoriteStopDetailUri);
-
-            // FIXME: 8/09/2016 try to get distinct columns to get rid of duplicates - see
-            // http://stackoverflow.com/questions/24877815/distinct-query-for-cursorloader
             return new CursorLoader(getActivity(),
                     nonFavoriteStopDetailUri,
                     STOP_DETAILS_COLUMNS,
@@ -176,24 +166,20 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
             mFavoriteStopDetailAdapter.swapCursor(null);
         }
 
-    public void addStop(StopDetails stopDetails) {
-        if (mStopDetailsList != null) {
-            mStopDetailsArrayAdapter.add(stopDetails);
-            mListView.clearChoices();    /* will clear previously selected artist row */
-            mStopDetailsArrayAdapter.notifyDataSetChanged(); /* call after clearChoices above */
-            // FIXME: 18/08/2016 handle the line below
-//            mListView.setSelection(mArtistsListViewFirstVisiblePosition);
-            if (mStopDetailsArrayAdapter.isEmpty()) {
-                mEmptyView.setVisibility(View.VISIBLE);
-            } else {
-                mEmptyView.setVisibility(View.GONE);
-            }
+    private void handleRowClicked(AdapterView<?> adapterView, int position) {
+        // CursorAdapter returns a cursor at the correct position for getItem(), or null
+        // if it cannot seek to that position.
+        Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+        if (cursor != null) {
+            mCallbacks.handleSelectedFavoriteStop(new StopDetails(
+                    cursor.getInt(COL_STOP_DETAILS_ID),
+                    cursor.getInt(COL_STOP_DETAILS_ROUTE_TYPE),
+                    cursor.getString(COL_STOP_DETAILS_STOP_ID),
+                    cursor.getString(COL_STOP_DETAILS_LOCATION_NAME),
+                    cursor.getDouble(COL_STOP_DETAILS_LATITUDE),
+                    cursor.getDouble(COL_STOP_DETAILS_LONGITUDE),
+                    cursor.getString(COL_STOP_DETAILS_FAVORITE)));
         }
-    }
-
-    private void handleRowClicked(int position) {
-        StopDetails stopDetails = mStopDetailsArrayAdapter.getItem(position);
-        mCallbacks.handleSelectedStop(stopDetails);
     }
 
     void handleMapClicked(StopDetails stopDetails) {
@@ -223,31 +209,12 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
         mCallbacks = null;
     }
 
-    private void processSelectedStop(int position) {
-        Log.v(TAG, "processSelectedStop - position: " + position);
-    }
-
-    private void showSelectedStopOnMap(int position) {
-        // FIXME: 8/09/2016 - get lt and lon and show on StationOnMapFragment view
-        Log.v(TAG, "showSelectedStopOnMap - position: " + position);
-        StopDetails stopDetails = mStopDetailsArrayAdapter.getItem(position);
-        mCallbacks.showSelectedStopOnMap(stopDetails);
-        Log.v(TAG, "showSelectedStopOnMap - position/lat/lon: " + position + "/" + stopDetails.latitude + "/" + stopDetails.longitude);
-    }
-
-    public void removeSelectedStop(int position) {
-        Log.v(TAG, "removeSelectedStop - position: " + position);
-        // FIXME: 8/09/2016 update table - set favorite flag to 'n'
-        mStopDetailsArrayAdapter.remove(mStopDetailsArrayAdapter.getItem(position));
-        mStopDetailsArrayAdapter.notifyDataSetChanged();
-        if (mStopDetailsArrayAdapter.isEmpty()) {
-            mEmptyView.setVisibility(View.VISIBLE);
-        }
-    }
+//    private void processSelectedStop(int position) {
+//        Log.v(TAG, "processSelectedStop - position: " + position);
+//    }
 
     public void removeSelectedStop(StopDetails stopDetails) {
-        Log.v(TAG, "removeSelectedStop - stopDetails: " + stopDetails);
-        // FIXME: 8/09/2016 update table - set favorite flag to 'n'
+//        Log.v(TAG, "removeSelectedStop - stopDetails: " + stopDetails);
         ContentValues updatedValues = new ContentValues();
         updatedValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, "n");
         int count = getActivity().getContentResolver().update(
@@ -255,70 +222,4 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
                 new String [] { String.valueOf(stopDetails.id)});
     }
 
-    class StopDetailsArrayAdapter<T> extends ArrayAdapter<StopDetails> {
-
-        private TextView stopNameTv;
-        private List<StopDetails> objects;
-
-        private final String TAG = ((Object) this).getClass().getSimpleName();
-
-        public StopDetailsArrayAdapter(Activity activity, List<StopDetails> objects) {
-            super(activity.getApplicationContext(), -1, objects);
-            this.objects = objects;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            //		Log.i(LOC_CAT_TAG, "getView - start");
-            View v = convertView;
-            if (v == null) {
-                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                v = inflater.inflate(R.layout.fragment_favorite_stops_list_view, parent, false);
-            }
-
-            stopNameTv = (TextView) v.findViewById(R.id.locationNameId);
-            StopDetails folderItem = objects.get(position);
-            stopNameTv.setText(folderItem.locationName);
-            stopNameTv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    processSelectedStop(position);
-                }
-            });
-
-            ImageView mapImageId = (ImageView) v.findViewById(R.id.mapImageId);
-            mapImageId.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showSelectedRowOnMap(position);
-                }
-            });
-
-            ImageView garbageInfoImage = (ImageView) v.findViewById(R.id.garbageImageId);
-            garbageInfoImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    removeSelectedRow(position);
-                }
-            });
-
-            return v;
-        }
-
-        private void processSelectedStop(int position) {
-            Log.v(TAG, "processSelectedStop");
-            FavoriteStopsFragment.this.processSelectedStop(position);
-        }
-
-        private void removeSelectedRow(int position) {
-            Log.v(TAG, "removeSelectedRow");
-            FavoriteStopsFragment.this.removeSelectedStop(position);
-        }
-
-        private void showSelectedRowOnMap(int position) {
-            Log.v(TAG, "showSelectedRowOnMap");
-            FavoriteStopsFragment.this.showSelectedStopOnMap(position);
-        }
-
-    }
 }

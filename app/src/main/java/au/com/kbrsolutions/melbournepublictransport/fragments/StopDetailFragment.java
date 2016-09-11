@@ -124,10 +124,6 @@ public class StopDetailFragment extends Fragment implements LoaderManager.Loader
 
         Uri nonFavoriteStopDetailUri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.NON_FAVORITE_FLAG);
 
-//        Log.v(TAG, "onCreateLoader - nonFavoriteStopDetailUri: " + nonFavoriteStopDetailUri);
-
-        // FIXME: 8/09/2016 try to get distinct columns to get rid of duplicates - see
-        // http://stackoverflow.com/questions/24877815/distinct-query-for-cursorloader
         return new CursorLoader(getActivity(),
                 nonFavoriteStopDetailUri,
                 STOP_DETAILS_COLUMNS,
@@ -168,16 +164,7 @@ public class StopDetailFragment extends Fragment implements LoaderManager.Loader
             int count = getActivity().getContentResolver().update(
                     MptContract.StopDetailEntry.CONTENT_URI, updatedValues, MptContract.StopDetailEntry._ID + "= ?",
                     new String [] { String.valueOf(cursor.getInt(COL_STOP_DETAILS_ID))});
-            mCallbacks.addStop(
-//                    new StopDetails(
-//                    cursor.getInt(COL_STOP_DETAILS_ID),
-//                    cursor.getInt(COL_STOP_DETAILS_ROUTE_TYPE),
-//                    cursor.getString(COL_STOP_DETAILS_STOP_ID),
-//                    cursor.getString(COL_STOP_DETAILS_LOCATION_NAME),
-//                    cursor.getDouble(COL_STOP_DETAILS_LATITUDE),
-//                    cursor.getDouble(COL_STOP_DETAILS_LONGITUDE),
-//                    cursor.getString(COL_STOP_DETAILS_FAVORITE))
-            );
+            mCallbacks.addStop();
         }
     }
 

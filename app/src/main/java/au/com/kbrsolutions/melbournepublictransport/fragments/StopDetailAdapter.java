@@ -24,7 +24,6 @@ public class StopDetailAdapter extends CursorAdapter {
         StopDetailFragment mAddStopFragment;
 
         public ViewHolder(View view, StopDetailFragment addStopFragment) {
-//            mStopDetails = stopDetails;
             mAddStopFragment = addStopFragment;
             locationNameView = (TextView) view.findViewById(R.id.locationNameId);
 
