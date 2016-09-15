@@ -26,6 +26,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
+import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.utilities.JodaDateTimeUtility;
 
 public class RemoteMptEndpointUtil {
@@ -63,6 +64,25 @@ public class RemoteMptEndpointUtil {
 
         return databaseOK;
     }
+    /*
+
+    RemoteMptEndpointUtil.java:52 - pointing to line forecastJson = new JSONObject(jsonString); in performHealthCheck()
+    Error
+
+
+                                                                                                     --------- beginning of crash
+09-12 08:40:11.400 10671-10985/au.com.kbrsolutions.melbournepublictransport E/AndroidRuntime: FATAL EXCEPTION: IntentService[RequestProcessorService]
+                                                                                              Process: au.com.kbrsolutions.melbournepublictransport, PID: 10671
+                                                                                              java.lang.NullPointerException: Attempt to invoke virtual method 'int java.lang.String.length()' on a null object reference
+                                                                                                  at org.json.JSONTokener.nextCleanInternal(JSONTokener.java:116)
+                                                                                                  at org.json.JSONTokener.nextValue(JSONTokener.java:94)
+                                                                                                  at org.json.JSONObject.<init>(JSONObject.java:156)
+                                                                                                  at org.json.JSONObject.<init>(JSONObject.java:173)
+                                                                                                  at au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil.performHealthCheck(RemoteMptEndpointUtil.java:52)
+                                                                                                  at au.com.kbrsolutions.melbournepublictransport.data.DatabaseContentRefresher.performHealthCheck(DatabaseContentRefresher.java:19)
+                                                                                                  at au.com.kbrsolutions.melbournepublictransport.data.RequestProcessorService.onHandleIntent(RequestProcessorService.java:60)
+                                                                                                  at android.app.IntentService$ServiceHandler.handleMessage(IntentService.java:65)
+     */
 
     public static List<ContentValues> getLineDetails(int mode) {
         List<ContentValues> lineDetailsContentValuesList = new ArrayList<>();
@@ -98,6 +118,7 @@ public class RemoteMptEndpointUtil {
 
         return lineDetailsContentValuesList;
     }
+
     public static List<ContentValues> getStopDetailsForLine(int mode, String  lineId) {
         List<ContentValues> stopDetailsContentValuesList = new ArrayList<>();
         final String uri = "/v2/mode/" + mode + "/line/" + lineId + "/stops-for-line";
@@ -141,6 +162,53 @@ public class RemoteMptEndpointUtil {
         }
 
         return stopDetailsContentValuesList;
+    }
+
+    public static NextDepartureDetails getBroadNextDepartures(int mode, String stopId, int limit) {
+        final String uri = "/v2/mode/" + mode + "/stop/" + stopId + "/departures/by-destination/limit/" + limit;
+        String jsonString = processRemoteRequest(uri);
+
+        NextDepartureDetails nextDepartureDetails = null;
+        try {
+            JSONObject broadDeparturesObject = new JSONObject(jsonString);
+            Log.v(TAG, "processJsonString - broadDeparturesObject: " + broadDeparturesObject);
+            JSONArray broadDeparturesValuesArray = broadDeparturesObject.getJSONArray("values");
+            Log.v(TAG, "processJsonString - valuesArray length: " + broadDeparturesValuesArray.length());
+            for(int i = 0; i < broadDeparturesValuesArray.length(); i++) {
+                JSONObject oneBroadDeparturesValueObject = broadDeparturesValuesArray.getJSONObject(i);
+                String timeTimetableUtc = oneBroadDeparturesValueObject.getString("time_timetable_utc");
+                JSONObject platform = oneBroadDeparturesValueObject.getJSONObject("platform");
+                JSONObject direction = platform.getJSONObject("direction");
+                int directionId = direction.getInt("direction_id");
+
+                JSONObject run = oneBroadDeparturesValueObject.getJSONObject("run");
+//                        Log.v(TAG, "processJsonString - run: " + run);
+                int runId = run.getInt("run_id");
+                int destinationId = run.getInt("destination_id");
+                int numSkipped = run.getInt("num_skipped");
+                Log.v(TAG, "processJsonString - directionId/runId/numSkipped/destinationId/timeTimetableUtc: " +
+                        directionId + "/" +
+                        runId + "/" +
+                        numSkipped + "/" +
+                        destinationId + "/" +
+                        JodaDateTimeUtility.getLocalTimeFromUtcString(timeTimetableUtc));
+                nextDepartureDetails = new NextDepartureDetails(
+                        directionId,
+                        runId,
+                        numSkipped,
+                        destinationId,
+                        JodaDateTimeUtility.getLocalTimeFromUtcString(timeTimetableUtc));
+                if (directionId == 1) { //City (Flinders Street)
+//                eventBus.post(new PtvTimeTableControllerEvents.Builder((PtvTimeTableControllerEvents.PtvTimeTableEvents.GOT_BROAD_NEXT_DEPARTURES))
+//                        .setDestinationId(destinationId)
+//                        .setRunId(runId)
+//                        .build());
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return nextDepartureDetails;
     }
 
     @Nullable

@@ -12,6 +12,8 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
+import au.com.kbrsolutions.melbournepublictransport.events.RequestProcessorServiceRequestEvents;
+import au.com.kbrsolutions.melbournepublictransport.utilities.JodaDateTimeUtility;
 
 
 public class RequestProcessorService extends IntentService {
@@ -20,6 +22,10 @@ public class RequestProcessorService extends IntentService {
     public final static String  ACTION = "action";
     public final static String  REFRESH_DATA = "refresh_data";
     public final static String  REFRESH_DATA_IF_TABLES_EMPTY = "refresh_data_if_tables_empty";
+    public final static String  SHOW_NEXT_DEPARTURES = "show_next_departures";
+    public final static String  MODE = "mode";
+    public final static String  STOP_ID = "stop_id";
+    public final static String  LIMIT = "limit";
 
     private static final String TAG = RequestProcessorService.class.getSimpleName();
 
@@ -45,7 +51,7 @@ public class RequestProcessorService extends IntentService {
         if (ni == null || !ni.isConnected()) {
             Log.v(TAG, "onHandleIntent - ni is null: " + ni);
 
-            sendMessageToSpotifyStreamerActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NETWORK_STATUS)
+            sendMessageToMainrActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NETWORK_STATUS)
                     .setMsg("NO NETWORK CONNECTION")
                     .build());
             return;
@@ -55,10 +61,13 @@ public class RequestProcessorService extends IntentService {
         if (action != null) {
             boolean databaseOK = DatabaseContentRefresher.performHealthCheck();
             if (!databaseOK) {
-                sendMessageToSpotifyStreamerActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NETWORK_STATUS)
+                sendMessageToMainrActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NETWORK_STATUS)
                         .setMsg("CANNOT ACCESS MPT site")
                         .build());
             } else {
+                int mode;
+                String stopId;
+                int limit;
                 switch (action) {
                     case REFRESH_DATA:
                         DatabaseContentRefresher.refreshDatabase(getContentResolver(), false);
@@ -68,6 +77,24 @@ public class RequestProcessorService extends IntentService {
                         DatabaseContentRefresher.refreshDatabase(getContentResolver(), true);
                         break;
 
+                    case SHOW_NEXT_DEPARTURES:
+                            mode = extras.getInt(MODE);
+                            stopId = extras.getString(STOP_ID);
+                            limit = extras.getInt(LIMIT);
+                        Log.v(TAG, "onHandleIntent - action/mode/stopId/limit : " + mode + "/" + stopId + "/" + limit);
+//                        NextDepartureDetails nextDepartureDetails = RemoteMptEndpointUtil.getBroadNextDepartures(mode, stopId, limit);
+                        NextDepartureDetails
+                                nextDepartureDetails = new NextDepartureDetails(
+                                0,
+                                101,
+                                5,
+                                6,
+                                JodaDateTimeUtility.getLocalTimeFromUtcString("2016-09-12T21:12:25Z"));
+                        sendMessageToMainrActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NEXT_DEPARTURES_DETAILS)
+                                .setNextDepartureDetails(nextDepartureDetails)
+                                .build());
+                        break;
+
                     default:
                         throw new RuntimeException(TAG + ".onHandleIntent - no code to handle action: " + action);
                 }
@@ -75,21 +102,25 @@ public class RequestProcessorService extends IntentService {
         }
     }
 
-    private void sendMessageToSpotifyStreamerActivity(MainActivityEvents event) {
+    private void sendMessageToMainrActivity(MainActivityEvents event) {
         EventBus.getDefault().post(event);
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void onMessageEvent(MainActivityEvents event) {
-        MainActivityEvents.MainEvents requestEvent = event.event;
-        switch (requestEvent) {
-
-            case NETWORK_STATUS:
-//                showSnackBar(event.msg, true);
-                break;
-
-            default:
-                throw new RuntimeException("LOC_CAT_TAG - onEvent - no code to handle requestEvent: " + requestEvent);
-        }
+    public void onMessageEvent(RequestProcessorServiceRequestEvents event) {
+//        MainActivityEvents.MainEvents requestEvent = event.event;
+//        switch (requestEvent) {
+//
+//            case NETWORK_STATUS:
+////                showSnackBar(event.msg, true);
+//                break;
+//
+//            case NEXT_DEPARTURES_DETAILS:
+////                showSnackBar(event.msg, true);
+//                break;
+//
+//            default:
+//                throw new RuntimeException("LOC_CAT_TAG - onEvent - no code to handle requestEvent: " + requestEvent);
+//        }
     }
 }

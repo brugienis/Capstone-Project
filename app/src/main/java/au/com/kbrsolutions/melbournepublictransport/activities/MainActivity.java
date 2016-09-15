@@ -28,12 +28,16 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
+import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.RequestProcessorService;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
-import au.com.kbrsolutions.melbournepublictransport.fragments.StopDetailFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragment;
+import au.com.kbrsolutions.melbournepublictransport.fragments.ItemFragment;
+import au.com.kbrsolutions.melbournepublictransport.fragments.NextDeparturesFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StationOnMapFragment;
+import au.com.kbrsolutions.melbournepublictransport.fragments.StopDetailFragment;
+import au.com.kbrsolutions.melbournepublictransport.fragments.dummy.DummyContent;
 
 //import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragmentOld;
 
@@ -44,12 +48,15 @@ public class MainActivity extends AppCompatActivity
 //        implements FavoriteStopsFragmentOld.FavoriteStopsFragmentCallbacks,
         implements FavoriteStopsFragment.FavoriteStopsFragmentCallbacks,
         StopDetailFragment.AddStopFragmentCallbacks,
-        StationOnMapFragment.StationOnMapCallbacks {
+        StationOnMapFragment.StationOnMapCallbacks,
+        ItemFragment.OnItemFragmentInteractionListener {
 
 //    private FavoriteStopsFragmentOld mFavoriteStopsFragment;
     private FavoriteStopsFragment mFavoriteStopsFragment;
     private StationOnMapFragment mStationOnMapFragment;
-    private StopDetailFragment mAddStopFragment;
+    private StopDetailFragment mStopDetailFragment;
+    private NextDeparturesFragment mNextDeparturesFragment;
+    private ItemFragment mItemFragment;
     private StopDetails currStopDetails;
     private CharSequence mActivityTitle;
     private View mCoordinatorlayout;
@@ -58,7 +65,8 @@ public class MainActivity extends AppCompatActivity
     private final String FAVORITE_STOPS = "favorite_stops";
     static final String TAG_ERROR_DIALOG_FRAGMENT="errorDialog";
     private static final String STATION_ON_MAP_TAG = "station_on_map_tag";
-    private static final String ADD_STOP_TAG = "add_stop_tag";
+    private static final String STOP_TAG = "stop_tag";
+    private static final String NEXT_DEPARTURES_TAG = "next_departures_tag";
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
@@ -111,8 +119,8 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 handleFabClicked();
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
             }
         });
 
@@ -126,14 +134,53 @@ public class MainActivity extends AppCompatActivity
     private void handleFabClicked() {
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         if (cnt == 0) {      /* current fragment is FavoriteStopsFragment */
-            if (mAddStopFragment == null) {
-                mAddStopFragment = new StopDetailFragment();
+            if (mStopDetailFragment == null) {
+                mStopDetailFragment = new StopDetailFragment();
             }
             mFavoriteStopsFragment.hideView();
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.left_dynamic_fragments_frame, mAddStopFragment, ADD_STOP_TAG)
-                    .addToBackStack(ADD_STOP_TAG)     // it will also show 'Up' button in the action bar
+                    .add(R.id.left_dynamic_fragments_frame, mStopDetailFragment, STOP_TAG)
+                    .addToBackStack(STOP_TAG)     // it will also show 'Up' button in the action bar
+                    .commit();
+            fab.hide();
+        }
+    }
+
+    private void showNextDepartures(NextDepartureDetails nextDepartureDetails) {
+        int cnt = getSupportFragmentManager().getBackStackEntryCount();
+        if (cnt == 0) {      /* current fragment is FavoriteStopsFragment */
+            if (mNextDeparturesFragment == null) {
+                Log.v(TAG, "showNextDepartures - is null");
+                mNextDeparturesFragment = new NextDeparturesFragment();
+            }
+            Log.v(TAG, "showNextDepartures - nextDepartureDetails: " + nextDepartureDetails.utcDepartureTime);
+            mNextDeparturesFragment.addStop(nextDepartureDetails);
+            mFavoriteStopsFragment.hideView();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.left_dynamic_fragments_frame, mNextDeparturesFragment, NEXT_DEPARTURES_TAG)
+                    .addToBackStack(NEXT_DEPARTURES_TAG)     // it will also show 'Up' button in the action bar
+                    .commit();
+            fab.hide();
+        }
+    }
+
+    private void showNextDeparturesTest(NextDepartureDetails nextDepartureDetails) {
+        //ItemFragment
+        int cnt = getSupportFragmentManager().getBackStackEntryCount();
+        if (cnt == 0) {      /* current fragment is FavoriteStopsFragment */
+            if (mItemFragment == null) {
+                Log.v(TAG, "showNextDepartures - is null");
+                mItemFragment = ItemFragment.newInstance(1);
+            }
+//            Log.v(TAG, "showNextDepartures - nextDepartureDetails: " + nextDepartureDetails.utcDepartureTime);
+//            mItemFragment.addStop(nextDepartureDetails);
+            mFavoriteStopsFragment.hideView();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.left_dynamic_fragments_frame, mItemFragment, NEXT_DEPARTURES_TAG)
+                    .addToBackStack(NEXT_DEPARTURES_TAG)     // it will also show 'Up' button in the action bar
                     .commit();
             fab.hide();
         }
@@ -161,6 +208,14 @@ public class MainActivity extends AppCompatActivity
     // FIXME: 11/09/2016  - show next five departures time from selected stop?
     public void handleSelectedFavoriteStop(StopDetails stopDetails) {
         Log.v(TAG, "handleSelectedFavoriteStop called - location name: " + stopDetails.locationName);
+        Intent intent = new Intent(this, RequestProcessorService.class);
+//        int mode, String stopId, int limit
+        int trainMode = 0;
+        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.SHOW_NEXT_DEPARTURES);
+        intent.putExtra(RequestProcessorService.MODE, trainMode);
+        intent.putExtra(RequestProcessorService.STOP_ID, stopDetails.stopId);
+        intent.putExtra(RequestProcessorService.LIMIT, 5);
+        startService(intent);
     }
 
 //    public void addStop(StopDetails stopDetails) {
@@ -171,7 +226,7 @@ public class MainActivity extends AppCompatActivity
         }
         getSupportFragmentManager()
                 .beginTransaction()
-                .remove(mAddStopFragment)
+                .remove(mStopDetailFragment)
                 .commit();
 
         getSupportFragmentManager().popBackStack();
@@ -185,6 +240,7 @@ public class MainActivity extends AppCompatActivity
             currStopDetails = stopDetails;
             if (mStationOnMapFragment == null) {
 //                mStationOnMapFragment = new StationOnMapFragment();
+                // FIXME: 12/09/2016 - do we really use StationOnMapFragment.newInstance
                 mStationOnMapFragment = StationOnMapFragment.newInstance(
                         stopDetails.latitude,
                         stopDetails.longitude);
@@ -258,6 +314,11 @@ public class MainActivity extends AppCompatActivity
                 showSnackBar(event.msg, true);
                 break;
 
+            case NEXT_DEPARTURES_DETAILS:
+//                showNextDepartures(event.mNextDepartureDetails);
+                showNextDeparturesTest(event.mNextDepartureDetails);
+                break;
+
             default:
                 throw new RuntimeException("LOC_CAT_TAG - onEvent - no code to handle requestEvent: " + requestEvent);
 //        Toast.makeText(getActivity(), event.message, Toast.LENGTH_SHORT).show();
@@ -281,6 +342,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public StopDetails getCurrSelectedStopDetails() {
         return currStopDetails;
+    }
+
+    @Override
+    public void onItemFragmentInteractionListener(DummyContent.DummyItem item) {
+        Log.v(TAG, "onItemFragmentInteractionListener called");
     }
 
     public static class ErrorDialogFragment extends DialogFragment {

@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -18,36 +17,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
-import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 
 /**
- *
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link FavoriteStopsFragmentOld.FavoriteStopsFragmentCallbacks} interface
- * to handle interaction events.
+ * Created by business on 12/09/2016.
  */
-// FIXME: 8/09/2016 - add  implements LoaderManager.LoaderCallbacks<Cursor>
-public class FavoriteStopsFragmentOld extends Fragment {
+public class NextDeparturesFragment extends Fragment {
 
-    /**
-     * Declares callback methods that have to be implemented by parent Activity
-     */
-    public interface FavoriteStopsFragmentCallbacks {
-        void handleSelectedFavoriteStop(StopDetails stopDetails);
-        void showSelectedStopOnMap(StopDetails stopDetails);
-    }
-
-    private FavoriteStopsFragmentCallbacks mCallbacks;
     private ListView mListView;
-    private StopDetailsArrayAdapter<StopDetails> mStopDetailsArrayAdapter;
-    private List<StopDetails> mStopDetailsList;
+    private NextDepartureDetailsArrayAdapter<NextDepartureDetails> mNextDeparturesArrayAdapter;
+    private List<NextDepartureDetails> mNextDepartureDetailsList;
     private TextView mEmptyView;
     private View rootView;
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
-    public FavoriteStopsFragmentOld() {
+    public NextDeparturesFragment() {
         // Required empty public constructor
     }
 
@@ -57,7 +42,6 @@ public class FavoriteStopsFragmentOld extends Fragment {
     }
 
     public void showView() {
-        // FIXME: 8/09/2016 - start CursorLoader
 //        Log.v(TAG, "showView");
         rootView.setVisibility(View.VISIBLE);
     }
@@ -72,15 +56,15 @@ public class FavoriteStopsFragmentOld extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_favorite_stops, container, false);
+        rootView = inflater.inflate(R.layout.fragment_next_departures, container, false);
 
-        if (mStopDetailsList == null) {
-            mStopDetailsList = new ArrayList<>();
+        if (mNextDepartureDetailsList == null) {
+            mNextDepartureDetailsList = new ArrayList<>();
         }
-        mListView = (ListView) rootView.findViewById(R.id.favoriteStopsListView);
-        mStopDetailsArrayAdapter = new StopDetailsArrayAdapter<>(getActivity(), mStopDetailsList);
-        Log.v(TAG, "onCreateView - mStopDetailsArrayAdapter/mListView: " + mStopDetailsArrayAdapter + "/" + mListView);
-        mListView.setAdapter(mStopDetailsArrayAdapter);
+        mListView = (ListView) rootView.findViewById(R.id.nextDeparturesListView);
+        mNextDeparturesArrayAdapter = new NextDepartureDetailsArrayAdapter<>(getActivity(), mNextDepartureDetailsList);
+        Log.v(TAG, "onCreateView - mNextDeparturesArrayAdapter/mListView: " + mNextDeparturesArrayAdapter + "/" + mListView);
+        mListView.setAdapter(mNextDeparturesArrayAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -89,22 +73,24 @@ public class FavoriteStopsFragmentOld extends Fragment {
             }
         });
 
-        mEmptyView = (TextView) rootView.findViewById(R.id.emptyView);
+        mEmptyView = (TextView) rootView.findViewById(R.id.nextDeparturesEmptyView);
         Log.v(TAG, "onCreateView - mEmptyView: " + mEmptyView);
         mEmptyView.setText(getActivity().getResources()
-                .getString(R.string.no_favorite_stops_selected));
+                .getString(R.string.no_next_departures_available));
         Log.v(TAG, "onCreateView - showing empty list");
         return rootView;
     }
 
-    public void addStop(StopDetails stopDetails) {
-        if (mStopDetailsList != null) {
-            mStopDetailsArrayAdapter.add(stopDetails);
+    public void addStop(NextDepartureDetails nextDepartureDetails) {
+        Log.v(TAG, "addStop - mNextDeparturesArrayAdapter count: " + mNextDeparturesArrayAdapter.getCount());
+        if (mNextDepartureDetailsList != null) {
+            mNextDeparturesArrayAdapter.add(nextDepartureDetails);
             mListView.clearChoices();    /* will clear previously selected artist row */
-            mStopDetailsArrayAdapter.notifyDataSetChanged(); /* call after clearChoices above */
+            mNextDeparturesArrayAdapter.notifyDataSetChanged(); /* call after clearChoices above */
+            Log.v(TAG, "addStop - mNextDeparturesArrayAdapter count: " + mNextDeparturesArrayAdapter.getCount());
             // FIXME: 18/08/2016 handle the line below
 //            mListView.setSelection(mArtistsListViewFirstVisiblePosition);
-            if (mStopDetailsArrayAdapter.isEmpty()) {
+            if (mNextDeparturesArrayAdapter.isEmpty()) {
                 mEmptyView.setVisibility(View.VISIBLE);
             } else {
                 mEmptyView.setVisibility(View.GONE);
@@ -113,30 +99,30 @@ public class FavoriteStopsFragmentOld extends Fragment {
     }
 
     private void handleRowClicked(int position) {
-        StopDetails stopDetails = mStopDetailsArrayAdapter.getItem(position);
-        mCallbacks.handleSelectedFavoriteStop(stopDetails);
+        NextDepartureDetails nextDepartureDetails = mNextDeparturesArrayAdapter.getItem(position);
+//        mCallbacks.handleSelectedFavoriteStop(nextDepartureDetails);
     }
 
     public void showFavoriteStops() {
         // FIXME: 18/08/2016 add code
-         showView();
+        showView();
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof FavoriteStopsFragmentCallbacks) {
-            mCallbacks = (FavoriteStopsFragmentCallbacks) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+//        if (context instanceof FavoriteStopsFragmentCallbacks) {
+//            mCallbacks = (FavoriteStopsFragmentCallbacks) context;
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
+//        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mCallbacks = null;
+//        mCallbacks = null;
     }
 
     private void processSelectedStop(int position) {
@@ -146,29 +132,30 @@ public class FavoriteStopsFragmentOld extends Fragment {
     private void showSelectedStopOnMap(int position) {
         // FIXME: 8/09/2016 - get lt and lon and show on StationOnMapFragment view
         Log.v(TAG, "showSelectedStopOnMap - position: " + position);
-        StopDetails stopDetails = mStopDetailsArrayAdapter.getItem(position);
-        mCallbacks.showSelectedStopOnMap(stopDetails);
-        Log.v(TAG, "showSelectedStopOnMap - position/lat/lon: " + position + "/" + stopDetails.latitude + "/" + stopDetails.longitude);
+        NextDepartureDetails nextDepartureDetails = mNextDeparturesArrayAdapter.getItem(position);
+//        mCallbacks.showSelectedStopOnMap(nextDepartureDetails);
+//        Log.v(TAG, "showSelectedStopOnMap - position/lat/lon: " + position + "/" + nextDepartureDetails.latitude + "/" + nextDepartureDetails.longitude);
     }
 
     public void removeSelectedStop(int position) {
 //        Log.v(TAG, "removeSelectedStop - position: " + position);
         // FIXME: 8/09/2016 update table - set favorite flag to 'n'
-        mStopDetailsArrayAdapter.remove(mStopDetailsArrayAdapter.getItem(position));
-        mStopDetailsArrayAdapter.notifyDataSetChanged();
-        if (mStopDetailsArrayAdapter.isEmpty()) {
+        mNextDeparturesArrayAdapter.remove(mNextDeparturesArrayAdapter.getItem(position));
+        mNextDeparturesArrayAdapter.notifyDataSetChanged();
+        if (mNextDeparturesArrayAdapter.isEmpty()) {
             mEmptyView.setVisibility(View.VISIBLE);
         }
     }
 
-    class StopDetailsArrayAdapter<T> extends ArrayAdapter<StopDetails> {
+    class NextDepartureDetailsArrayAdapter<T> extends ArrayAdapter<NextDepartureDetails> {
 
-        private TextView stopNameTv;
-        private List<StopDetails> objects;
+        private TextView destinationTv;
+        private TextView departureTimeTv;
+        private List<NextDepartureDetails> objects;
 
         private final String TAG = ((Object) this).getClass().getSimpleName();
 
-        public StopDetailsArrayAdapter(Activity activity, List<StopDetails> objects) {
+        public NextDepartureDetailsArrayAdapter(Activity activity, List<NextDepartureDetails> objects) {
             super(activity.getApplicationContext(), -1, objects);
             this.objects = objects;
         }
@@ -182,29 +169,23 @@ public class FavoriteStopsFragmentOld extends Fragment {
                 v = inflater.inflate(R.layout.fragment_favorite_stops_list_view, parent, false);
             }
 
-            stopNameTv = (TextView) v.findViewById(R.id.locationNameId);
-            StopDetails folderItem = objects.get(position);
-            stopNameTv.setText(folderItem.locationName);
-            stopNameTv.setOnClickListener(new View.OnClickListener() {
+            destinationTv = (TextView) v.findViewById(R.id.destinationId);
+            NextDepartureDetails nextDepartureDetails = objects.get(position);
+            destinationTv.setText(nextDepartureDetails.destinationId);
+            destinationTv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    processSelectedStop(position);
+//                    processSelectedStop(position);
                 }
             });
 
-            ImageView mapImageId = (ImageView) v.findViewById(R.id.mapImageId);
-            mapImageId.setOnClickListener(new View.OnClickListener() {
+            departureTimeTv = (TextView) v.findViewById(R.id.departureTimeId);
+            nextDepartureDetails = objects.get(position);
+            departureTimeTv.setText(nextDepartureDetails.utcDepartureTime.toString());
+            departureTimeTv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    showSelectedRowOnMap(position);
-                }
-            });
-
-            ImageView garbageInfoImage = (ImageView) v.findViewById(R.id.garbageImageId);
-            garbageInfoImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    removeSelectedRow(position);
+//                    processSelecdepartureTimeTvtedStop(position);
                 }
             });
 
@@ -213,17 +194,17 @@ public class FavoriteStopsFragmentOld extends Fragment {
 
         private void processSelectedStop(int position) {
             Log.v(TAG, "processSelectedStop");
-            FavoriteStopsFragmentOld.this.processSelectedStop(position);
+//            FavoriteStopsFragmentOld.this.processSelectedStop(position);
         }
 
         private void removeSelectedRow(int position) {
             Log.v(TAG, "removeSelectedRow");
-            FavoriteStopsFragmentOld.this.removeSelectedStop(position);
+//            FavoriteStopsFragmentOld.this.removeSelectedStop(position);
         }
 
         private void showSelectedRowOnMap(int position) {
             Log.v(TAG, "showSelectedRowOnMap");
-            FavoriteStopsFragmentOld.this.showSelectedStopOnMap(position);
+//            FavoriteStopsFragmentOld.this.showSelectedStopOnMap(position);
         }
 
     }
