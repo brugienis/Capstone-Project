@@ -3,14 +3,18 @@ package au.com.kbrsolutions.melbournepublictransport.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import au.com.kbrsolutions.melbournepublictransport.R;
+import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.fragments.dummy.DummyContent;
 import au.com.kbrsolutions.melbournepublictransport.fragments.dummy.DummyContent.DummyItem;
 
@@ -25,8 +29,11 @@ public class ItemFragment extends Fragment {
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
-    private int mColumnCount = 1;
+//    private int mColumnCount = 1;
+    private List<NextDepartureDetails> mNextDepartureDetailsList;
     private OnItemFragmentInteractionListener mListener;
+
+    private static final String TAG = StopDetailAdapter.class.getSimpleName();
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -37,10 +44,12 @@ public class ItemFragment extends Fragment {
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static ItemFragment newInstance(int columnCount) {
+//    public static ItemFragment newInstance(int columnCount) {
+    public static ItemFragment newInstance(List<NextDepartureDetails> nextDepartureDetailsList) {
         ItemFragment fragment = new ItemFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
+//        args.putInt(ARG_COLUMN_COUNT, columnCount);
+        args.putParcelableArrayList(ARG_COLUMN_COUNT, (ArrayList)nextDepartureDetailsList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,10 +59,12 @@ public class ItemFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+//            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            mNextDepartureDetailsList = (ArrayList)getArguments().getParcelableArrayList(ARG_COLUMN_COUNT);
         }
     }
 
+    private MyItemRecyclerViewAdapter mRecyclerViewAdapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -63,14 +74,22 @@ public class ItemFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
+//            if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new MyItemRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+//            } else {
+//                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+//            }
+//            mRecyclerViewAdapter = new MyItemRecyclerViewAdapter(DummyContent.ITEMS, mListener);
+            mRecyclerViewAdapter = new MyItemRecyclerViewAdapter(mNextDepartureDetailsList, mListener);
+            recyclerView.setAdapter(mRecyclerViewAdapter);
+            Log.v(TAG, "onCreateView - mRecyclerViewAdapter: " + mRecyclerViewAdapter);
         }
         return view;
+    }
+
+    public void setNewContent() {
+        DummyContent.createNewDataSet();
+        mRecyclerViewAdapter.notifyDataSetChanged();
     }
 
 

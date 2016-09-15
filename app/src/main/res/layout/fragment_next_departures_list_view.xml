@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:paddingLeft="4dp"
                 android:paddingRight="4dp"
+              android:orientation="horizontal"
                 android:id="@+id/folderFragmentLayoutId" >
 
     <TextView
@@ -11,27 +12,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minHeight="25dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
         android:text="file name ..."
         android:textColor="@android:color/black"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAppearance="?attr/textAppearanceListItem"
         android:background="@color/view_not_in_focus"
         android:paddingTop="5dp"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:layout_margin="@dimen/text_margin" />
 
     <TextView
         android:id="@+id/departureTimeId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minHeight="25dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerInParent="true"
         android:text="file name ..."
         android:textColor="@android:color/black"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAppearance="?attr/textAppearanceListItem"
         android:background="@color/view_not_in_focus"
         android:paddingTop="5dp"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:layout_margin="@dimen/text_margin" />
 
-</RelativeLayout>
+</LinearLayout>

@@ -27,6 +27,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.List;
+
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.RequestProcessorService;
@@ -153,9 +155,10 @@ public class MainActivity extends AppCompatActivity
             if (mNextDeparturesFragment == null) {
                 Log.v(TAG, "showNextDepartures - is null");
                 mNextDeparturesFragment = new NextDeparturesFragment();
+            } else {
+                mNextDeparturesFragment.addStop(nextDepartureDetails);
             }
             Log.v(TAG, "showNextDepartures - nextDepartureDetails: " + nextDepartureDetails.utcDepartureTime);
-            mNextDeparturesFragment.addStop(nextDepartureDetails);
             mFavoriteStopsFragment.hideView();
             getSupportFragmentManager()
                     .beginTransaction()
@@ -166,13 +169,16 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void showNextDeparturesTest(NextDepartureDetails nextDepartureDetails) {
+    private void showNextDeparturesTest(List<NextDepartureDetails> nextDepartureDetailsList) {
         //ItemFragment
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         if (cnt == 0) {      /* current fragment is FavoriteStopsFragment */
             if (mItemFragment == null) {
                 Log.v(TAG, "showNextDepartures - is null");
-                mItemFragment = ItemFragment.newInstance(1);
+//                mItemFragment = ItemFragment.newInstance(1);
+                mItemFragment = ItemFragment.newInstance(nextDepartureDetailsList);
+            } else {
+                mItemFragment.setNewContent();
             }
 //            Log.v(TAG, "showNextDepartures - nextDepartureDetails: " + nextDepartureDetails.utcDepartureTime);
 //            mItemFragment.addStop(nextDepartureDetails);
@@ -316,7 +322,7 @@ public class MainActivity extends AppCompatActivity
 
             case NEXT_DEPARTURES_DETAILS:
 //                showNextDepartures(event.mNextDepartureDetails);
-                showNextDeparturesTest(event.mNextDepartureDetails);
+                showNextDeparturesTest(event.mNextDepartureDetailsList);
                 break;
 
             default:

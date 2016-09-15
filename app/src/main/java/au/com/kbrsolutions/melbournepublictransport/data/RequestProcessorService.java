@@ -11,6 +11,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 import au.com.kbrsolutions.melbournepublictransport.events.RequestProcessorServiceRequestEvents;
 import au.com.kbrsolutions.melbournepublictransport.utilities.JodaDateTimeUtility;
@@ -83,15 +86,24 @@ public class RequestProcessorService extends IntentService {
                             limit = extras.getInt(LIMIT);
                         Log.v(TAG, "onHandleIntent - action/mode/stopId/limit : " + mode + "/" + stopId + "/" + limit);
 //                        NextDepartureDetails nextDepartureDetails = RemoteMptEndpointUtil.getBroadNextDepartures(mode, stopId, limit);
+                        List<NextDepartureDetails> nextDepartureDetailsList = new ArrayList<>();
                         NextDepartureDetails
                                 nextDepartureDetails = new NextDepartureDetails(
                                 0,
                                 101,
                                 5,
                                 6,
-                                JodaDateTimeUtility.getLocalTimeFromUtcString("2016-09-12T21:12:25Z"));
+                                JodaDateTimeUtility.getLocalTimeFromUtcString("2016-09-12T21:12:25Z").toString());
+                        nextDepartureDetailsList.add(nextDepartureDetails);
+                        nextDepartureDetails = new NextDepartureDetails(
+                                0,
+                                101,
+                                5,
+                                6,
+                                JodaDateTimeUtility.getLocalTimeFromUtcString("2016-09-20T21:12:25Z").toString());
+                        nextDepartureDetailsList.add(nextDepartureDetails);
                         sendMessageToMainrActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NEXT_DEPARTURES_DETAILS)
-                                .setNextDepartureDetails(nextDepartureDetails)
+                                .setNextDepartureDetailsList(nextDepartureDetailsList)
                                 .build());
                         break;
 

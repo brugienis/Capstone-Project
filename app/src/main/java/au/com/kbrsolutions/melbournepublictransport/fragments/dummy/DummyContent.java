@@ -16,7 +16,8 @@ public class DummyContent {
     /**
      * An array of sample (dummy) items.
      */
-    public static final List<DummyItem> ITEMS = new ArrayList<DummyItem>();
+//    public static final List<DummyItem> ITEMS = new ArrayList<DummyItem>();
+    public static List<DummyItem> ITEMS = new ArrayList<DummyItem>();
 
     /**
      * A map of sample (dummy) items, by ID.
@@ -30,6 +31,16 @@ public class DummyContent {
         for (int i = 1; i <= COUNT; i++) {
             addItem(createDummyItem(i));
         }
+    }
+
+    private static int startNo = 25;
+    public static void createNewDataSet() {
+        ITEMS = new ArrayList<DummyItem>();
+        ITEM_MAP.clear();
+        for (int i = startNo; i <= COUNT + startNo; i++) {
+            addItem(createDummyItem(i));
+        }
+        startNo += 25;
     }
 
     private static void addItem(DummyItem item) {

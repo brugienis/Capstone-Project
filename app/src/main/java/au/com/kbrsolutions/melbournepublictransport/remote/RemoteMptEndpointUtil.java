@@ -164,11 +164,12 @@ public class RemoteMptEndpointUtil {
         return stopDetailsContentValuesList;
     }
 
-    public static NextDepartureDetails getBroadNextDepartures(int mode, String stopId, int limit) {
+    public static List<NextDepartureDetails> getBroadNextDepartures(int mode, String stopId, int limit) {
         final String uri = "/v2/mode/" + mode + "/stop/" + stopId + "/departures/by-destination/limit/" + limit;
         String jsonString = processRemoteRequest(uri);
 
         NextDepartureDetails nextDepartureDetails = null;
+        List<NextDepartureDetails> nextDepartureDetailsList = new ArrayList<>();
         try {
             JSONObject broadDeparturesObject = new JSONObject(jsonString);
             Log.v(TAG, "processJsonString - broadDeparturesObject: " + broadDeparturesObject);
@@ -192,12 +193,12 @@ public class RemoteMptEndpointUtil {
                         numSkipped + "/" +
                         destinationId + "/" +
                         JodaDateTimeUtility.getLocalTimeFromUtcString(timeTimetableUtc));
-                nextDepartureDetails = new NextDepartureDetails(
+                nextDepartureDetailsList.add(nextDepartureDetails = new NextDepartureDetails(
                         directionId,
                         runId,
                         numSkipped,
                         destinationId,
-                        JodaDateTimeUtility.getLocalTimeFromUtcString(timeTimetableUtc));
+                        JodaDateTimeUtility.getLocalTimeFromUtcString(timeTimetableUtc).toString()));
                 if (directionId == 1) { //City (Flinders Street)
 //                eventBus.post(new PtvTimeTableControllerEvents.Builder((PtvTimeTableControllerEvents.PtvTimeTableEvents.GOT_BROAD_NEXT_DEPARTURES))
 //                        .setDestinationId(destinationId)
@@ -208,7 +209,7 @@ public class RemoteMptEndpointUtil {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return nextDepartureDetails;
+        return nextDepartureDetailsList;
     }
 
     @Nullable

@@ -1,5 +1,7 @@
 package au.com.kbrsolutions.melbournepublictransport.events;
 
+import java.util.List;
+
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 
 /**
@@ -14,12 +16,12 @@ public class MainActivityEvents {
 
     public final MainEvents event;
     public final String msg;
-    public final NextDepartureDetails mNextDepartureDetails;
+    public final List<NextDepartureDetails> mNextDepartureDetailsList;
 
     private MainActivityEvents(Builder builder) {
         this.event = builder.event;
         this.msg = builder.msg;
-        this.mNextDepartureDetails = builder.nextDepartureDetails;
+        this.mNextDepartureDetailsList = builder.nextDepartureDetailsList;
     }
 
     public static class Builder {
@@ -30,15 +32,15 @@ public class MainActivityEvents {
 
         private MainEvents event;
         private String msg;
-        private NextDepartureDetails nextDepartureDetails;
+        private List<NextDepartureDetails> nextDepartureDetailsList;
 
         public Builder setMsg(String msg) {
             this.msg = msg;
             return this;
         }
 
-        public Builder setNextDepartureDetails(NextDepartureDetails nextDepartureDetails) {
-            this.nextDepartureDetails = nextDepartureDetails;
+        public Builder setNextDepartureDetailsList(List<NextDepartureDetails> nextDepartureDetailsList) {
+            this.nextDepartureDetailsList = nextDepartureDetailsList;
             return this;
         }
 
