@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
+import au.com.kbrsolutions.melbournepublictransport.adapters.NextDepartureAdapter;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.fragments.dummy.DummyContent.DummyItem;
 

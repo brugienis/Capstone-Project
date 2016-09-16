@@ -1,4 +1,4 @@
-package au.com.kbrsolutions.melbournepublictransport.fragments;
+package au.com.kbrsolutions.melbournepublictransport.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import java.util.List;
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.fragments.NextDeparturesFragment.OnItemFragmentInteractionListener;
+import au.com.kbrsolutions.melbournepublictransport.fragments.StopDetailAdapter;
 import au.com.kbrsolutions.melbournepublictransport.fragments.dummy.DummyContent.DummyItem;
 
 /**
