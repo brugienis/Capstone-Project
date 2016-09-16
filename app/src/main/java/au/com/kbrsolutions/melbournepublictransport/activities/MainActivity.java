@@ -35,7 +35,6 @@ import au.com.kbrsolutions.melbournepublictransport.data.RequestProcessorService
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragment;
-import au.com.kbrsolutions.melbournepublictransport.fragments.ItemFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.NextDeparturesFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StationOnMapFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StopDetailFragment;
@@ -47,18 +46,15 @@ import au.com.kbrsolutions.melbournepublictransport.fragments.dummy.DummyContent
 // ^((?!GLHudOverlay).)*$
 
 public class MainActivity extends AppCompatActivity
-//        implements FavoriteStopsFragmentOld.FavoriteStopsFragmentCallbacks,
         implements FavoriteStopsFragment.FavoriteStopsFragmentCallbacks,
         StopDetailFragment.AddStopFragmentCallbacks,
         StationOnMapFragment.StationOnMapCallbacks,
-        ItemFragment.OnItemFragmentInteractionListener {
+        NextDeparturesFragment.OnItemFragmentInteractionListener {
 
-//    private FavoriteStopsFragmentOld mFavoriteStopsFragment;
     private FavoriteStopsFragment mFavoriteStopsFragment;
     private StationOnMapFragment mStationOnMapFragment;
     private StopDetailFragment mStopDetailFragment;
     private NextDeparturesFragment mNextDeparturesFragment;
-    private ItemFragment mItemFragment;
     private StopDetails currStopDetails;
     private CharSequence mActivityTitle;
     private View mCoordinatorlayout;
@@ -149,43 +145,38 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void showNextDepartures(NextDepartureDetails nextDepartureDetails) {
+//    private void showNextDepartures(NextDepartureDetails nextDepartureDetails) {
+//        int cnt = getSupportFragmentManager().getBackStackEntryCount();
+//        if (cnt == 0) {      /* current fragment is FavoriteStopsFragment */
+//            if (mNextDeparturesFragment == null) {
+//                Log.v(TAG, "showNextDepartures - is null");
+//                mNextDeparturesFragment = new NextDeparturesFragmentOld();
+//            } else {
+//                mNextDeparturesFragment.addStop(nextDepartureDetails);
+//            }
+//            Log.v(TAG, "showNextDepartures - nextDepartureDetails: " + nextDepartureDetails.utcDepartureTime);
+//            mFavoriteStopsFragment.hideView();
+//            getSupportFragmentManager()
+//                    .beginTransaction()
+//                    .add(R.id.left_dynamic_fragments_frame, mNextDeparturesFragment, NEXT_DEPARTURES_TAG)
+//                    .addToBackStack(NEXT_DEPARTURES_TAG)     // it will also show 'Up' button in the action bar
+//                    .commit();
+//            fab.hide();
+//        }
+//    }
+
+    private void showNextDeparturesTest(List<NextDepartureDetails> nextDepartureDetailsList) {
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         if (cnt == 0) {      /* current fragment is FavoriteStopsFragment */
             if (mNextDeparturesFragment == null) {
-                Log.v(TAG, "showNextDepartures - is null");
-                mNextDeparturesFragment = new NextDeparturesFragment();
+                mNextDeparturesFragment = NextDeparturesFragment.newInstance(nextDepartureDetailsList);
             } else {
-                mNextDeparturesFragment.addStop(nextDepartureDetails);
+                mNextDeparturesFragment.setNewContent(nextDepartureDetailsList);
             }
-            Log.v(TAG, "showNextDepartures - nextDepartureDetails: " + nextDepartureDetails.utcDepartureTime);
             mFavoriteStopsFragment.hideView();
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.left_dynamic_fragments_frame, mNextDeparturesFragment, NEXT_DEPARTURES_TAG)
-                    .addToBackStack(NEXT_DEPARTURES_TAG)     // it will also show 'Up' button in the action bar
-                    .commit();
-            fab.hide();
-        }
-    }
-
-    private void showNextDeparturesTest(List<NextDepartureDetails> nextDepartureDetailsList) {
-        //ItemFragment
-        int cnt = getSupportFragmentManager().getBackStackEntryCount();
-        if (cnt == 0) {      /* current fragment is FavoriteStopsFragment */
-            if (mItemFragment == null) {
-//                Log.v(TAG, "showNextDepartures - is null");
-//                mItemFragment = ItemFragment.newInstance(1);
-                mItemFragment = ItemFragment.newInstance(nextDepartureDetailsList);
-            } else {
-                mItemFragment.setNewContent(nextDepartureDetailsList);
-            }
-//            Log.v(TAG, "showNextDepartures - nextDepartureDetails: " + nextDepartureDetails.utcDepartureTime);
-//            mItemFragment.addStop(nextDepartureDetails);
-            mFavoriteStopsFragment.hideView();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.left_dynamic_fragments_frame, mItemFragment, NEXT_DEPARTURES_TAG)
                     .addToBackStack(NEXT_DEPARTURES_TAG)     // it will also show 'Up' button in the action bar
                     .commit();
             fab.hide();
@@ -213,7 +204,6 @@ public class MainActivity extends AppCompatActivity
 
     // FIXME: 11/09/2016  - show next five departures time from selected stop?
     public void handleSelectedFavoriteStop(StopDetails stopDetails) {
-//        Log.v(TAG, "handleSelectedFavoriteStop called - location name: " + stopDetails.locationName);
         Intent intent = new Intent(this, RequestProcessorService.class);
 //        int mode, String stopId, int limit
         int trainMode = 0;
@@ -224,9 +214,7 @@ public class MainActivity extends AppCompatActivity
         startService(intent);
     }
 
-//    public void addStop(StopDetails stopDetails) {
     public void addStop() {
-//        Log.v(TAG, "addStop - stopDetails/mFavoriteStopsFragment: " + stopDetails + "/" + mFavoriteStopsFragment);
         if (mFavoriteStopsFragment != null) {
             mFavoriteStopsFragment.showView();
         }
@@ -236,7 +224,6 @@ public class MainActivity extends AppCompatActivity
                 .commit();
 
         getSupportFragmentManager().popBackStack();
-//        mFavoriteStopsFragment.addStop(stopDetails);
         fab.show();
     }
 
@@ -245,7 +232,6 @@ public class MainActivity extends AppCompatActivity
         if (readyToGo()) {
             currStopDetails = stopDetails;
             if (mStationOnMapFragment == null) {
-//                mStationOnMapFragment = new StationOnMapFragment();
                 // FIXME: 12/09/2016 - do we really use StationOnMapFragment.newInstance
                 mStationOnMapFragment = StationOnMapFragment.newInstance(
                         stopDetails.latitude,
