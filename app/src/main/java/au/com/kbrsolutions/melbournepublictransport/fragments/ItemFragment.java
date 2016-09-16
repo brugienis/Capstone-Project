@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,7 +80,7 @@ public class ItemFragment extends Fragment {
 //            mRecyclerViewAdapter = new MyItemRecyclerViewAdapter(DummyContent.ITEMS, mListener);
             mRecyclerViewAdapter = new MyItemRecyclerViewAdapter(mNextDepartureDetailsList, mListener);
             recyclerView.setAdapter(mRecyclerViewAdapter);
-            Log.v(TAG, "onCreateView - mRecyclerViewAdapter: " + mRecyclerViewAdapter);
+//            Log.v(TAG, "onCreateView - mRecyclerViewAdapter: " + mRecyclerViewAdapter);
         }
         return view;
     }
@@ -89,14 +88,7 @@ public class ItemFragment extends Fragment {
     public void setNewContent(List<NextDepartureDetails> nextDepartureDetailsList) {
 //        DummyContent.createNewDataSet();
         mRecyclerViewAdapter.swap(nextDepartureDetailsList);
-//        mNextDepartureDetailsList = nextDepartureDetailsList;
-//        Log.v(TAG, "setNewContent - before");
-//        for (NextDepartureDetails el: mNextDepartureDetailsList) {
-//            Log.v(TAG, el.directionName);
-//        }
-//        Log.v(TAG, "setNewContent - after");
-//        mRecyclerViewAdapter.changeDataSet();
-        mRecyclerViewAdapter.notifyDataSetChanged();
+//        mRecyclerViewAdapter.notifyDataSetChanged();
     }
 
 

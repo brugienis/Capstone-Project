@@ -92,7 +92,7 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
     }
 
-    // FIXME: 19/08/2016 use Holder pattern
+    // FIXME: 19/08/2016 use Holder pattern or use RecyclerView
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -114,10 +114,10 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
         });
 
         mEmptyView = (TextView) rootView.findViewById(R.id.emptyView);
-        Log.v(TAG, "onCreateView - mEmptyView: " + mEmptyView);
+//        Log.v(TAG, "onCreateView - mEmptyView: " + mEmptyView);
         mEmptyView.setText(getActivity().getResources()
                 .getString(R.string.no_favorite_stops_selected));
-        Log.v(TAG, "onCreateView - showing empty list");
+//        Log.v(TAG, "onCreateView - showing empty list");
         return rootView;
     }
 

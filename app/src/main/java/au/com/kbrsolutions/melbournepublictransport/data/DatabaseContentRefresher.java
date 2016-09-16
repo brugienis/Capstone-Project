@@ -100,7 +100,7 @@ public class DatabaseContentRefresher {
                 null  // no sort order
         );
         int stopDetailsRowsCnt = stopCursor.getCount();
-        Log.v(TAG, "tablesNotEmpty - line_detail/stop_detail cnt: " + lineDetailsRowsCnt + "/" + stopDetailsRowsCnt);
+//        Log.v(TAG, "tablesNotEmpty - line_detail/stop_detail cnt: " + lineDetailsRowsCnt + "/" + stopDetailsRowsCnt);
         stopCursor.close();
 
         return (lineDetailsRowsCnt + stopDetailsRowsCnt) != 0;

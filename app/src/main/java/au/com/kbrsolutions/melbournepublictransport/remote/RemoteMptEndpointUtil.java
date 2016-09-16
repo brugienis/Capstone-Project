@@ -155,6 +155,8 @@ public class RemoteMptEndpointUtil {
         directionMap.put(0, "To City");
         directionMap.put(1, "To City (Flinders Street)");
         directionMap.put(6, "To Frankston");
+        directionMap.put(11, "To Sandringham");
+        directionMap.put(15, "To Werribee");
     }
 
     public static List<NextDepartureDetails> getBroadNextDepartures(int mode, String stopId, int limit) {
@@ -165,9 +167,9 @@ public class RemoteMptEndpointUtil {
         List<NextDepartureDetails> nextDepartureDetailsList = new ArrayList<>();
         try {
             JSONObject broadDeparturesObject = new JSONObject(jsonString);
-            Log.v(TAG, "processJsonString - broadDeparturesObject: " + broadDeparturesObject);
+//            Log.v(TAG, "processJsonString - broadDeparturesObject: " + broadDeparturesObject);
             JSONArray broadDeparturesValuesArray = broadDeparturesObject.getJSONArray("values");
-            Log.v(TAG, "processJsonString - valuesArray length: " + broadDeparturesValuesArray.length());
+//            Log.v(TAG, "processJsonString - valuesArray length: " + broadDeparturesValuesArray.length());
             String directionName;
             for(int i = 0; i < broadDeparturesValuesArray.length(); i++) {
                 JSONObject oneBroadDeparturesValueObject = broadDeparturesValuesArray.getJSONObject(i);
@@ -186,12 +188,12 @@ public class RemoteMptEndpointUtil {
                 int runId = run.getInt("run_id");
                 int destinationId = run.getInt("destination_id");
                 int numSkipped = run.getInt("num_skipped");
-                Log.v(TAG, "processJsonString - directionId/runId/numSkipped/destinationId/timeTimetableUtc: " +
-                        directionId + "/" +
-                        runId + "/" +
-                        numSkipped + "/" +
-                        destinationId + "/" +
-                        JodaDateTimeUtility.getLocalTimeFromUtcString(timeTimetableUtc));
+//                Log.v(TAG, "processJsonString - directionId/runId/numSkipped/destinationId/timeTimetableUtc: " +
+//                        directionId + "/" +
+//                        runId + "/" +
+//                        numSkipped + "/" +
+//                        destinationId + "/" +
+//                        JodaDateTimeUtility.getLocalTimeFromUtcString(timeTimetableUtc));
                 if (directionMap.containsKey(directionId)) {
                     directionName = directionMap.get(directionId);
                 } else {
@@ -205,7 +207,7 @@ public class RemoteMptEndpointUtil {
                         destinationId,
 //                        JodaDateTimeUtility.getLocalTimeFromUtcString(timeTimetableUtc).toString()));
                         str));
-                Log.v(TAG, "processJsonString - in code/in details: " + directionId + "/" + nextDepartureDetailsList.get(i).directionId);
+//                Log.v(TAG, "processJsonString - in code/in details: " + directionId + "/" + nextDepartureDetailsList.get(i).directionId);
                 if (directionId == 1) { //City (Flinders Street)
 //                eventBus.post(new PtvTimeTableControllerEvents.Builder((PtvTimeTableControllerEvents.PtvTimeTableEvents.GOT_BROAD_NEXT_DEPARTURES))
 //                        .setDestinationId(directionName)

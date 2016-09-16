@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         if (cnt == 0) {      /* current fragment is FavoriteStopsFragment */
             if (mItemFragment == null) {
-                Log.v(TAG, "showNextDepartures - is null");
+//                Log.v(TAG, "showNextDepartures - is null");
 //                mItemFragment = ItemFragment.newInstance(1);
                 mItemFragment = ItemFragment.newInstance(nextDepartureDetailsList);
             } else {
@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity
 
     // FIXME: 11/09/2016  - show next five departures time from selected stop?
     public void handleSelectedFavoriteStop(StopDetails stopDetails) {
-        Log.v(TAG, "handleSelectedFavoriteStop called - location name: " + stopDetails.locationName);
+//        Log.v(TAG, "handleSelectedFavoriteStop called - location name: " + stopDetails.locationName);
         Intent intent = new Intent(this, RequestProcessorService.class);
 //        int mode, String stopId, int limit
         int trainMode = 0;
@@ -312,7 +312,7 @@ public class MainActivity extends AppCompatActivity
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MainActivityEvents event) {
-        Log.v(TAG, "onMessageEvent - start");
+//        Log.v(TAG, "onMessageEvent - start");
         MainActivityEvents.MainEvents requestEvent = event.event;
         switch (requestEvent) {
 

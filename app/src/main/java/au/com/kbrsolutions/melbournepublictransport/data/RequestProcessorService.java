@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -52,15 +51,14 @@ public class RequestProcessorService extends IntentService {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
         if (ni == null || !ni.isConnected()) {
-            Log.v(TAG, "onHandleIntent - ni is null: " + ni);
-
+//            Log.v(TAG, "onHandleIntent - ni is null: " + ni);
             sendMessageToMainrActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NETWORK_STATUS)
                     .setMsg("NO NETWORK CONNECTION")
                     .build());
             return;
         }
 
-        Log.v(TAG, "onHandleIntent - action: " + action);
+//        Log.v(TAG, "onHandleIntent - action: " + action);
         if (action != null) {
             boolean databaseOK = DatabaseContentRefresher.performHealthCheck();
             if (!databaseOK) {
@@ -84,7 +82,7 @@ public class RequestProcessorService extends IntentService {
                         mode = extras.getInt(MODE);
                         stopId = extras.getString(STOP_ID);
                         limit = extras.getInt(LIMIT);
-                        Log.v(TAG, "onHandleIntent - action/mode/stopId/limit : " + mode + "/" + stopId + "/" + limit);
+//                        Log.v(TAG, "onHandleIntent - action/mode/stopId/limit : " + mode + "/" + stopId + "/" + limit);
                         List<NextDepartureDetails> nextDepartureDetailsList = RemoteMptEndpointUtil.getBroadNextDepartures(mode, stopId, limit);
 //                        List<NextDepartureDetails> nextDepartureDetailsList = buildSimulatedDepartureDetails();
 
