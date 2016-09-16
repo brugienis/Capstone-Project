@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity
 //                mItemFragment = ItemFragment.newInstance(1);
                 mItemFragment = ItemFragment.newInstance(nextDepartureDetailsList);
             } else {
-                mItemFragment.setNewContent();
+                mItemFragment.setNewContent(nextDepartureDetailsList);
             }
 //            Log.v(TAG, "showNextDepartures - nextDepartureDetails: " + nextDepartureDetails.utcDepartureTime);
 //            mItemFragment.addStop(nextDepartureDetails);

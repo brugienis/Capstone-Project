@@ -81,11 +81,12 @@ public class RequestProcessorService extends IntentService {
                         break;
 
                     case SHOW_NEXT_DEPARTURES:
-                            mode = extras.getInt(MODE);
-                            stopId = extras.getString(STOP_ID);
-                            limit = extras.getInt(LIMIT);
+                        mode = extras.getInt(MODE);
+                        stopId = extras.getString(STOP_ID);
+                        limit = extras.getInt(LIMIT);
                         Log.v(TAG, "onHandleIntent - action/mode/stopId/limit : " + mode + "/" + stopId + "/" + limit);
                         List<NextDepartureDetails> nextDepartureDetailsList = RemoteMptEndpointUtil.getBroadNextDepartures(mode, stopId, limit);
+//                        List<NextDepartureDetails> nextDepartureDetailsList = buildSimulatedDepartureDetails();
 
                         sendMessageToMainrActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NEXT_DEPARTURES_DETAILS)
                                 .setNextDepartureDetailsList(nextDepartureDetailsList)
@@ -107,25 +108,27 @@ public class RequestProcessorService extends IntentService {
     public void onMessageEvent(RequestProcessorServiceRequestEvents event) {
     }
 
+    private static int cnt;
     private List<NextDepartureDetails> buildSimulatedDepartureDetails() {
         List<NextDepartureDetails> nextDepartureDetailsList = new ArrayList<>();
         NextDepartureDetails
                 nextDepartureDetails = new NextDepartureDetails(
-                0,
-                "to city",
+                cnt,
+                "to city " + cnt,
                 101,
                 5,
                 6,
                 "09:50");
         nextDepartureDetailsList.add(nextDepartureDetails);
         nextDepartureDetails = new NextDepartureDetails(
-                0,
-                "to frankston",
+                cnt,
+                "to frankston " + cnt,
                 101,
                 5,
                 6,
                 "10:05");
         nextDepartureDetailsList.add(nextDepartureDetails);
+        cnt++;
         return nextDepartureDetailsList;
     }
 }

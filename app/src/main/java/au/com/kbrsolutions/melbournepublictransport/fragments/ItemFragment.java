@@ -3,7 +3,6 @@ package au.com.kbrsolutions.melbournepublictransport.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,11 +12,9 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
-import au.com.kbrsolutions.melbournepublictransport.fragments.dummy.DummyContent;
 import au.com.kbrsolutions.melbournepublictransport.fragments.dummy.DummyContent.DummyItem;
 
 /**
@@ -32,7 +29,7 @@ public class ItemFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
 //    private int mColumnCount = 1;
-    private List<NextDepartureDetails> mNextDepartureDetailsList;
+    private static List<NextDepartureDetails> mNextDepartureDetailsList;
     private OnItemFragmentInteractionListener mListener;
 
     private static final String TAG = StopDetailAdapter.class.getSimpleName();
@@ -89,8 +86,16 @@ public class ItemFragment extends Fragment {
         return view;
     }
 
-    public void setNewContent() {
-        DummyContent.createNewDataSet();
+    public void setNewContent(List<NextDepartureDetails> nextDepartureDetailsList) {
+//        DummyContent.createNewDataSet();
+        mRecyclerViewAdapter.swap(nextDepartureDetailsList);
+//        mNextDepartureDetailsList = nextDepartureDetailsList;
+//        Log.v(TAG, "setNewContent - before");
+//        for (NextDepartureDetails el: mNextDepartureDetailsList) {
+//            Log.v(TAG, el.directionName);
+//        }
+//        Log.v(TAG, "setNewContent - after");
+//        mRecyclerViewAdapter.changeDataSet();
         mRecyclerViewAdapter.notifyDataSetChanged();
     }
 

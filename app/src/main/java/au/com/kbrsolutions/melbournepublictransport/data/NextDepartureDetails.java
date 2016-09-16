@@ -39,7 +39,8 @@ public class NextDepartureDetails implements Parcelable {
     }
 
     @Override
-    public String toString() {return
+    public String toString() {
+        return
             "directionId: " + directionId +
             "; directionName: " + directionName +
             "; runId: " + runId +

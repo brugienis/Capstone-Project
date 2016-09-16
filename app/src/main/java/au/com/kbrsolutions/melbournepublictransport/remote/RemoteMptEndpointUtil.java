@@ -186,7 +186,7 @@ public class RemoteMptEndpointUtil {
                 int runId = run.getInt("run_id");
                 int destinationId = run.getInt("destination_id");
                 int numSkipped = run.getInt("num_skipped");
-                Log.v(TAG, "processJsonString - directionName/runId/numSkipped/directionName/timeTimetableUtc: " +
+                Log.v(TAG, "processJsonString - directionId/runId/numSkipped/destinationId/timeTimetableUtc: " +
                         directionId + "/" +
                         runId + "/" +
                         numSkipped + "/" +
@@ -205,6 +205,7 @@ public class RemoteMptEndpointUtil {
                         destinationId,
 //                        JodaDateTimeUtility.getLocalTimeFromUtcString(timeTimetableUtc).toString()));
                         str));
+                Log.v(TAG, "processJsonString - in code/in details: " + directionId + "/" + nextDepartureDetailsList.get(i).directionId);
                 if (directionId == 1) { //City (Flinders Street)
 //                eventBus.post(new PtvTimeTableControllerEvents.Builder((PtvTimeTableControllerEvents.PtvTimeTableEvents.GOT_BROAD_NEXT_DEPARTURES))
 //                        .setDestinationId(directionName)

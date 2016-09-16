@@ -1,7 +1,6 @@
 package au.com.kbrsolutions.melbournepublictransport.fragments;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +54,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 //        holder.mItem = mValues.get(position);
 //        holder.mIdView.setText(mValues.get(position).id);
 //        holder.mContentView.setText(mValues.get(position).content);
-        Log.v(TAG, "onBindViewHolder - value: " + mValues.get(position));
+//        Log.v(TAG, "onBindViewHolder - value: " + mValues.get(position));
         NextDepartureDetails nextDepartureDetails = mValues.get(position);
 //        String directionId = String.valueOf(nextDepartureDetails.directionId);
         String directionName = String.valueOf(nextDepartureDetails.directionName);
@@ -75,8 +74,10 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 //        });
     }
 
-    public void changeDataSet() {
-
+    public void swap(List<NextDepartureDetails> nextDepartureDetailsList){
+        mValues.clear();
+        mValues.addAll(nextDepartureDetailsList);
+        notifyDataSetChanged();
     }
 
     @Override
