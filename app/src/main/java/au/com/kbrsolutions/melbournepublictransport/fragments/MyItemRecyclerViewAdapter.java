@@ -57,9 +57,10 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 //        holder.mContentView.setText(mValues.get(position).content);
         Log.v(TAG, "onBindViewHolder - value: " + mValues.get(position));
         NextDepartureDetails nextDepartureDetails = mValues.get(position);
-        String destinationId = String.valueOf(nextDepartureDetails.destinationId);
+//        String directionId = String.valueOf(nextDepartureDetails.directionId);
+        String directionName = String.valueOf(nextDepartureDetails.directionName);
         String departureTime = String.valueOf(nextDepartureDetails.utcDepartureTime);
-        holder.destinationId.setText(destinationId);
+        holder.directionName.setText(directionName);
         holder.departureTimeId.setText(departureTime);
 
 //        holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -88,7 +89,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 //        public final TextView mIdView;
 //        public final TextView mContentView;
 //        public NextDepartureDetails mItem;
-        public final TextView destinationId;
+        public final TextView directionName;
         public final TextView departureTimeId;
 
         public ViewHolder(View view) {
@@ -96,14 +97,14 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 //            mView = view;
 //            mIdView = (TextView) view.findViewById(R.id.id);
 //            mContentView = (TextView) view.findViewById(R.id.content);
-            destinationId = (TextView) view.findViewById(R.id.destinationId);
+            directionName = (TextView) view.findViewById(R.id.directionName);
             departureTimeId = (TextView) view.findViewById(R.id.departureTimeId);
         }
 
         @Override
         public String toString() {
 //            return super.toString() + " '" + mContentView.getText() + "'";
-            return super.toString() + destinationId + "/" + departureTimeId;
+            return super.toString() + directionName + "/" + departureTimeId;
         }
     }
 }

@@ -4,9 +4,12 @@ import android.content.ContentValues;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,6 +24,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -64,25 +68,8 @@ public class RemoteMptEndpointUtil {
 
         return databaseOK;
     }
-    /*
 
-    RemoteMptEndpointUtil.java:52 - pointing to line forecastJson = new JSONObject(jsonString); in performHealthCheck()
-    Error
-
-
-                                                                                                     --------- beginning of crash
-09-12 08:40:11.400 10671-10985/au.com.kbrsolutions.melbournepublictransport E/AndroidRuntime: FATAL EXCEPTION: IntentService[RequestProcessorService]
-                                                                                              Process: au.com.kbrsolutions.melbournepublictransport, PID: 10671
-                                                                                              java.lang.NullPointerException: Attempt to invoke virtual method 'int java.lang.String.length()' on a null object reference
-                                                                                                  at org.json.JSONTokener.nextCleanInternal(JSONTokener.java:116)
-                                                                                                  at org.json.JSONTokener.nextValue(JSONTokener.java:94)
-                                                                                                  at org.json.JSONObject.<init>(JSONObject.java:156)
-                                                                                                  at org.json.JSONObject.<init>(JSONObject.java:173)
-                                                                                                  at au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil.performHealthCheck(RemoteMptEndpointUtil.java:52)
-                                                                                                  at au.com.kbrsolutions.melbournepublictransport.data.DatabaseContentRefresher.performHealthCheck(DatabaseContentRefresher.java:19)
-                                                                                                  at au.com.kbrsolutions.melbournepublictransport.data.RequestProcessorService.onHandleIntent(RequestProcessorService.java:60)
-                                                                                                  at android.app.IntentService$ServiceHandler.handleMessage(IntentService.java:65)
-     */
+    private static Map<Integer, String> directionMap = new ArrayMap<>();
 
     public static List<ContentValues> getLineDetails(int mode) {
         List<ContentValues> lineDetailsContentValuesList = new ArrayList<>();
@@ -164,6 +151,12 @@ public class RemoteMptEndpointUtil {
         return stopDetailsContentValuesList;
     }
 
+    static {
+        directionMap.put(0, "To City");
+        directionMap.put(1, "To City (Flinders Street)");
+        directionMap.put(6, "To Frankston");
+    }
+
     public static List<NextDepartureDetails> getBroadNextDepartures(int mode, String stopId, int limit) {
         final String uri = "/v2/mode/" + mode + "/stop/" + stopId + "/departures/by-destination/limit/" + limit;
         String jsonString = processRemoteRequest(uri);
@@ -175,9 +168,15 @@ public class RemoteMptEndpointUtil {
             Log.v(TAG, "processJsonString - broadDeparturesObject: " + broadDeparturesObject);
             JSONArray broadDeparturesValuesArray = broadDeparturesObject.getJSONArray("values");
             Log.v(TAG, "processJsonString - valuesArray length: " + broadDeparturesValuesArray.length());
+            String directionName;
             for(int i = 0; i < broadDeparturesValuesArray.length(); i++) {
                 JSONObject oneBroadDeparturesValueObject = broadDeparturesValuesArray.getJSONObject(i);
                 String timeTimetableUtc = oneBroadDeparturesValueObject.getString("time_timetable_utc");
+
+
+                DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm");
+                String str = fmt.print(JodaDateTimeUtility.getLocalTimeFromUtcString(timeTimetableUtc));
+
                 JSONObject platform = oneBroadDeparturesValueObject.getJSONObject("platform");
                 JSONObject direction = platform.getJSONObject("direction");
                 int directionId = direction.getInt("direction_id");
@@ -187,21 +186,28 @@ public class RemoteMptEndpointUtil {
                 int runId = run.getInt("run_id");
                 int destinationId = run.getInt("destination_id");
                 int numSkipped = run.getInt("num_skipped");
-                Log.v(TAG, "processJsonString - directionId/runId/numSkipped/destinationId/timeTimetableUtc: " +
+                Log.v(TAG, "processJsonString - directionName/runId/numSkipped/directionName/timeTimetableUtc: " +
                         directionId + "/" +
                         runId + "/" +
                         numSkipped + "/" +
                         destinationId + "/" +
                         JodaDateTimeUtility.getLocalTimeFromUtcString(timeTimetableUtc));
+                if (directionMap.containsKey(directionId)) {
+                    directionName = directionMap.get(directionId);
+                } else {
+                    directionName = String.valueOf(directionId);
+                }
                 nextDepartureDetailsList.add(nextDepartureDetails = new NextDepartureDetails(
                         directionId,
+                        directionName,
                         runId,
                         numSkipped,
                         destinationId,
-                        JodaDateTimeUtility.getLocalTimeFromUtcString(timeTimetableUtc).toString()));
+//                        JodaDateTimeUtility.getLocalTimeFromUtcString(timeTimetableUtc).toString()));
+                        str));
                 if (directionId == 1) { //City (Flinders Street)
 //                eventBus.post(new PtvTimeTableControllerEvents.Builder((PtvTimeTableControllerEvents.PtvTimeTableEvents.GOT_BROAD_NEXT_DEPARTURES))
-//                        .setDestinationId(destinationId)
+//                        .setDestinationId(directionName)
 //                        .setRunId(runId)
 //                        .build());
                 }

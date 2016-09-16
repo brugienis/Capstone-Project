@@ -16,7 +16,7 @@ import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 import au.com.kbrsolutions.melbournepublictransport.events.RequestProcessorServiceRequestEvents;
-import au.com.kbrsolutions.melbournepublictransport.utilities.JodaDateTimeUtility;
+import au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil;
 
 
 public class RequestProcessorService extends IntentService {
@@ -85,23 +85,8 @@ public class RequestProcessorService extends IntentService {
                             stopId = extras.getString(STOP_ID);
                             limit = extras.getInt(LIMIT);
                         Log.v(TAG, "onHandleIntent - action/mode/stopId/limit : " + mode + "/" + stopId + "/" + limit);
-//                        NextDepartureDetails nextDepartureDetails = RemoteMptEndpointUtil.getBroadNextDepartures(mode, stopId, limit);
-                        List<NextDepartureDetails> nextDepartureDetailsList = new ArrayList<>();
-                        NextDepartureDetails
-                                nextDepartureDetails = new NextDepartureDetails(
-                                0,
-                                101,
-                                5,
-                                6,
-                                JodaDateTimeUtility.getLocalTimeFromUtcString("2016-09-12T21:12:25Z").toString());
-                        nextDepartureDetailsList.add(nextDepartureDetails);
-                        nextDepartureDetails = new NextDepartureDetails(
-                                0,
-                                101,
-                                5,
-                                6,
-                                JodaDateTimeUtility.getLocalTimeFromUtcString("2016-09-20T21:12:25Z").toString());
-                        nextDepartureDetailsList.add(nextDepartureDetails);
+                        List<NextDepartureDetails> nextDepartureDetailsList = RemoteMptEndpointUtil.getBroadNextDepartures(mode, stopId, limit);
+
                         sendMessageToMainrActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NEXT_DEPARTURES_DETAILS)
                                 .setNextDepartureDetailsList(nextDepartureDetailsList)
                                 .build());
@@ -120,19 +105,27 @@ public class RequestProcessorService extends IntentService {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(RequestProcessorServiceRequestEvents event) {
-//        MainActivityEvents.MainEvents requestEvent = event.event;
-//        switch (requestEvent) {
-//
-//            case NETWORK_STATUS:
-////                showSnackBar(event.msg, true);
-//                break;
-//
-//            case NEXT_DEPARTURES_DETAILS:
-////                showSnackBar(event.msg, true);
-//                break;
-//
-//            default:
-//                throw new RuntimeException("LOC_CAT_TAG - onEvent - no code to handle requestEvent: " + requestEvent);
-//        }
+    }
+
+    private List<NextDepartureDetails> buildSimulatedDepartureDetails() {
+        List<NextDepartureDetails> nextDepartureDetailsList = new ArrayList<>();
+        NextDepartureDetails
+                nextDepartureDetails = new NextDepartureDetails(
+                0,
+                "to city",
+                101,
+                5,
+                6,
+                "09:50");
+        nextDepartureDetailsList.add(nextDepartureDetails);
+        nextDepartureDetails = new NextDepartureDetails(
+                0,
+                "to frankston",
+                101,
+                5,
+                6,
+                "10:05");
+        nextDepartureDetailsList.add(nextDepartureDetails);
+        return nextDepartureDetailsList;
     }
 }

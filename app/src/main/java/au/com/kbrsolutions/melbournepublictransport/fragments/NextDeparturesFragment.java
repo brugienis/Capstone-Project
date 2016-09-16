@@ -169,7 +169,7 @@ public class NextDeparturesFragment extends Fragment {
                 v = inflater.inflate(R.layout.fragment_favorite_stops_list_view, parent, false);
             }
 
-            destinationTv = (TextView) v.findViewById(R.id.destinationId);
+            destinationTv = (TextView) v.findViewById(R.id.directionName);
             NextDepartureDetails nextDepartureDetails = objects.get(position);
             destinationTv.setText(nextDepartureDetails.destinationId);
             destinationTv.setOnClickListener(new View.OnClickListener() {
