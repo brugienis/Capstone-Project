@@ -60,7 +60,9 @@ public class NextDepartureAdapter extends RecyclerView.Adapter<NextDepartureAdap
 //        String directionId = String.valueOf(nextDepartureDetails.directionId);
         String directionName = String.valueOf(nextDepartureDetails.directionName);
         String departureTime = String.valueOf(nextDepartureDetails.utcDepartureTime);
+        String runTypeText = nextDepartureDetails.numSkipped == 0 ? "All stops" : "Express";
         holder.directionName.setText(directionName);
+        holder.runType.setText(runTypeText);
         holder.departureTimeId.setText(departureTime);
 
 //        holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -92,6 +94,7 @@ public class NextDepartureAdapter extends RecyclerView.Adapter<NextDepartureAdap
 //        public final TextView mContentView;
 //        public NextDepartureDetails mItem;
         public final TextView directionName;
+        public final TextView runType;
         public final TextView departureTimeId;
 
         public ViewHolder(View view) {
@@ -100,6 +103,7 @@ public class NextDepartureAdapter extends RecyclerView.Adapter<NextDepartureAdap
 //            mIdView = (TextView) view.findViewById(R.id.id);
 //            mContentView = (TextView) view.findViewById(R.id.content);
             directionName = (TextView) view.findViewById(R.id.directionName);
+            runType = (TextView) view.findViewById(R.id.runType);
             departureTimeId = (TextView) view.findViewById(R.id.departureTimeId);
         }
 

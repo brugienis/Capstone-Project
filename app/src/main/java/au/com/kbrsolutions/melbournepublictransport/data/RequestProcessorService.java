@@ -114,7 +114,7 @@ public class RequestProcessorService extends IntentService {
                 cnt,
                 "to city " + cnt,
                 101,
-                5,
+                0,
                 6,
                 "09:50");
         nextDepartureDetailsList.add(nextDepartureDetails);
