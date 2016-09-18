@@ -79,6 +79,8 @@ public class NextDeparturesFragment extends Fragment {
         selectedStopNameTv.setText(mSelectedStopName);
         Log.v(TAG, "onCreateView - selectedStopName/tv: " + selectedStopNameTv.hashCode() + "/" + mSelectedStopName + "/" + selectedStopNameTv.getText());
 
+        // fixme see Google <code>
+        // </code>https://developer.android.com/samples/RecyclerView/src/com.example.android.recyclerview/RecyclerViewFragment.html
         // Set the adapter
         if (viewR instanceof RecyclerView) {
             Context context = viewR.getContext();

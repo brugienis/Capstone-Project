@@ -156,6 +156,7 @@ public class RemoteMptEndpointUtil {
         directionMap.put(1, "To City (Flinders Street)");
         directionMap.put(6, "To Frankston");
         directionMap.put(11, "To Sandringham");
+        directionMap.put(14, "To Upfield");
         directionMap.put(15, "To Werribee");
     }
 

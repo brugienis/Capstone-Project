@@ -15,6 +15,7 @@ import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 import au.com.kbrsolutions.melbournepublictransport.events.RequestProcessorServiceRequestEvents;
+import au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil;
 
 
 public class RequestProcessorService extends IntentService {
@@ -82,8 +83,8 @@ public class RequestProcessorService extends IntentService {
                         stopId = extras.getString(STOP_ID);
                         limit = extras.getInt(LIMIT);
 //                        Log.v(TAG, "onHandleIntent - action/mode/stopId/limit : " + mode + "/" + stopId + "/" + limit);
-//                        List<NextDepartureDetails> nextDepartureDetailsList = RemoteMptEndpointUtil.getBroadNextDepartures(mode, stopId, limit);
-                        List<NextDepartureDetails> nextDepartureDetailsList = buildSimulatedDepartureDetails();
+                        List<NextDepartureDetails> nextDepartureDetailsList = RemoteMptEndpointUtil.getBroadNextDepartures(mode, stopId, limit);
+//                        List<NextDepartureDetails> nextDepartureDetailsList = buildSimulatedDepartureDetails();
 
                         sendMessageToMainrActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NEXT_DEPARTURES_DETAILS)
                                 .setNextDepartureDetailsList(nextDepartureDetailsList)
