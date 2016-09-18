@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +28,14 @@ import au.com.kbrsolutions.melbournepublictransport.fragments.dummy.DummyContent
 public class NextDeparturesFragment extends Fragment {
 
     // TODO: Customize parameter argument names
-    private static final String ARG_NEXT_DEPARTURE_DATA = "column-count";
+    private static final String ARG_SELECTED_STOP_NAME = "arg_selected_stop_name";
+    private static final String ARG_NEXT_DEPARTURE_DATA = "next_departure_data";
     private List<NextDepartureDetails> mNextDepartureDetailsList;
     private OnItemFragmentInteractionListener mListener;
     private NextDepartureAdapter mRecyclerViewAdapter;
+    private String mSelectedStopName;
+    private TextView selectedStopNameTv;
+    private boolean newInstanceArgsRetrieved;
 
     private static final String TAG = StopDetailAdapter.class.getSimpleName();
 
@@ -40,9 +46,11 @@ public class NextDeparturesFragment extends Fragment {
     public NextDeparturesFragment() {
     }
 
-    public static NextDeparturesFragment newInstance(List<NextDepartureDetails> nextDepartureDetailsList) {
+    public static NextDeparturesFragment newInstance(String stopName, List<NextDepartureDetails> nextDepartureDetailsList) {
+        Log.v(TAG, "newInstance");
         NextDeparturesFragment fragment = new NextDeparturesFragment();
         Bundle args = new Bundle();;
+        args.putString(ARG_SELECTED_STOP_NAME, stopName);
         args.putParcelableArrayList(ARG_NEXT_DEPARTURE_DATA, (ArrayList)nextDepartureDetailsList);
         fragment.setArguments(args);
         return fragment;
@@ -52,8 +60,11 @@ public class NextDeparturesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
+        if (getArguments() != null && !newInstanceArgsRetrieved) {
             mNextDepartureDetailsList = (ArrayList)getArguments().getParcelableArrayList(ARG_NEXT_DEPARTURE_DATA);
+            mSelectedStopName = getArguments().getString(ARG_SELECTED_STOP_NAME);
+            Log.v(TAG, "onCreate - selectedStopName/tv: " + mSelectedStopName);
+            newInstanceArgsRetrieved = true;
         }
     }
 
@@ -61,19 +72,29 @@ public class NextDeparturesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_next_departure, container, false);
+        View viewR = view.findViewById(R.id.list);
+//        if (selectedStopNameTv == null) {
+            selectedStopNameTv = (TextView) view.findViewById(R.id.selectedStopName);
+//        }
+        selectedStopNameTv.setText(mSelectedStopName);
+        Log.v(TAG, "onCreateView - selectedStopName/tv: " + selectedStopNameTv.hashCode() + "/" + mSelectedStopName + "/" + selectedStopNameTv.getText());
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+        if (viewR instanceof RecyclerView) {
+            Context context = viewR.getContext();
+            RecyclerView recyclerView = (RecyclerView) viewR;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             mRecyclerViewAdapter = new NextDepartureAdapter(mNextDepartureDetailsList, mListener);
             recyclerView.setAdapter(mRecyclerViewAdapter);
+            recyclerView.requestLayout();
         }
         return view;
     }
 
-    public void setNewContent(List<NextDepartureDetails> nextDepartureDetailsList) {
+    public void setNewContent(String selectedStopName, List<NextDepartureDetails> nextDepartureDetailsList) {
+        mSelectedStopName = selectedStopName;
+        selectedStopNameTv.setText(selectedStopName);
+        Log.v(TAG, "setNewContent - selectedStopName/tv: " + selectedStopNameTv.hashCode() + "/" + selectedStopName + "/" + selectedStopNameTv.getText());
         mRecyclerViewAdapter.swap(nextDepartureDetailsList);
     }
 

@@ -1,4 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:name="au.com.kbrsolutions.melbournepublictransport.fragments.ItemFragment"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/selectedStopName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
+        android:background="@color/view_not_in_focus"
+        android:minHeight="25dp"
+        android:paddingTop="5dp"
+        android:text="file name ..."
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"/>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        app:layoutManager="LinearLayoutManager"
+        tools:context=".fragments.NextDeparturesFragment"
+        tools:listitem="@layout/fragment_next_departure_list"/>
+
+</LinearLayout>
+
+<!--
+
 <android.support.v7.widget.RecyclerView
     android:id="@+id/list"
     android:name="au.com.kbrsolutions.melbournepublictransport.fragments.ItemFragment"
@@ -12,3 +49,4 @@
     app:layoutManager="LinearLayoutManager"
     tools:context=".fragments.NextDeparturesFragment"
     tools:listitem="@layout/fragment_next_departure_list"/>
+-->

@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity
     private View mCoordinatorlayout;
     private FloatingActionButton fab;
     private EventBus eventBus;
+    private String mSelectedStopName;
     private final String FAVORITE_STOPS = "favorite_stops";
     static final String TAG_ERROR_DIALOG_FRAGMENT="errorDialog";
     private static final String STATION_ON_MAP_TAG = "station_on_map_tag";
@@ -145,33 +146,13 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-//    private void showNextDepartures(NextDepartureDetails nextDepartureDetails) {
-//        int cnt = getSupportFragmentManager().getBackStackEntryCount();
-//        if (cnt == 0) {      /* current fragment is FavoriteStopsFragment */
-//            if (mNextDeparturesFragment == null) {
-//                Log.v(TAG, "showNextDepartures - is null");
-//                mNextDeparturesFragment = new NextDeparturesFragmentOld();
-//            } else {
-//                mNextDeparturesFragment.addStop(nextDepartureDetails);
-//            }
-//            Log.v(TAG, "showNextDepartures - nextDepartureDetails: " + nextDepartureDetails.utcDepartureTime);
-//            mFavoriteStopsFragment.hideView();
-//            getSupportFragmentManager()
-//                    .beginTransaction()
-//                    .add(R.id.left_dynamic_fragments_frame, mNextDeparturesFragment, NEXT_DEPARTURES_TAG)
-//                    .addToBackStack(NEXT_DEPARTURES_TAG)     // it will also show 'Up' button in the action bar
-//                    .commit();
-//            fab.hide();
-//        }
-//    }
-
-    private void showNextDeparturesTest(List<NextDepartureDetails> nextDepartureDetailsList) {
+    private void showNextDepartures(List<NextDepartureDetails> nextDepartureDetailsList) {
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         if (cnt == 0) {      /* current fragment is FavoriteStopsFragment */
             if (mNextDeparturesFragment == null) {
-                mNextDeparturesFragment = NextDeparturesFragment.newInstance(nextDepartureDetailsList);
+                mNextDeparturesFragment = NextDeparturesFragment.newInstance(mSelectedStopName, nextDepartureDetailsList);
             } else {
-                mNextDeparturesFragment.setNewContent(nextDepartureDetailsList);
+                mNextDeparturesFragment.setNewContent(mSelectedStopName, nextDepartureDetailsList);
             }
             mFavoriteStopsFragment.hideView();
             getSupportFragmentManager()
@@ -205,7 +186,7 @@ public class MainActivity extends AppCompatActivity
     // FIXME: 11/09/2016  - show next five departures time from selected stop?
     public void handleSelectedFavoriteStop(StopDetails stopDetails) {
         Intent intent = new Intent(this, RequestProcessorService.class);
-//        int mode, String stopId, int limit
+        mSelectedStopName = stopDetails.locationName;
         int trainMode = 0;
         intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.SHOW_NEXT_DEPARTURES);
         intent.putExtra(RequestProcessorService.MODE, trainMode);
@@ -308,7 +289,7 @@ public class MainActivity extends AppCompatActivity
 
             case NEXT_DEPARTURES_DETAILS:
 //                showNextDepartures(event.mNextDepartureDetails);
-                showNextDeparturesTest(event.mNextDepartureDetailsList);
+                showNextDepartures(event.mNextDepartureDetailsList);
                 break;
 
             default:
