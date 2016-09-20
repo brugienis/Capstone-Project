@@ -3,9 +3,6 @@ package au.com.kbrsolutions.melbournepublictransport.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by business on 12/09/2016.
- */
 public class NextDepartureDetails implements Parcelable {
     public final int directionId;
     public final String directionName;
