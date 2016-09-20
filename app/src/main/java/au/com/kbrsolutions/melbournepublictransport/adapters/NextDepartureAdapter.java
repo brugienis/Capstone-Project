@@ -10,25 +10,22 @@ import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
-import au.com.kbrsolutions.melbournepublictransport.fragments.NextDeparturesFragment.OnItemFragmentInteractionListener;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StopDetailAdapter;
-import au.com.kbrsolutions.melbournepublictransport.fragments.dummy.DummyContent.DummyItem;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnItemFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
+ * {@link RecyclerView.Adapter} that can display a {@link NextDepartureDetails}.
  */
 public class NextDepartureAdapter extends RecyclerView.Adapter<NextDepartureAdapter.ViewHolder> {
 
     private final List<NextDepartureDetails> mValues;
-    private final OnItemFragmentInteractionListener mListener;
+//    private final OnItemFragmentInteractionListener mListener;
 
     private static final String TAG = StopDetailAdapter.class.getSimpleName();
 
-    public NextDepartureAdapter(List<NextDepartureDetails> items, OnItemFragmentInteractionListener listener) {
+//    public NextDepartureAdapter(List<NextDepartureDetails> items, OnItemFragmentInteractionListener listener) {
+    public NextDepartureAdapter(List<NextDepartureDetails> items) {
         mValues = items;
-        mListener = listener;
+//        mListener = listener;
     }
 
     @Override

@@ -15,7 +15,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,7 +38,6 @@ import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragm
 import au.com.kbrsolutions.melbournepublictransport.fragments.NextDeparturesFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StationOnMapFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StopDetailFragment;
-import au.com.kbrsolutions.melbournepublictransport.fragments.dummy.DummyContent;
 
 //import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragmentOld;
 
@@ -49,8 +47,8 @@ import au.com.kbrsolutions.melbournepublictransport.fragments.dummy.DummyContent
 public class MainActivity extends AppCompatActivity
         implements FavoriteStopsFragment.FavoriteStopsFragmentCallbacks,
         StopDetailFragment.AddStopFragmentCallbacks,
-        StationOnMapFragment.StationOnMapCallbacks,
-        NextDeparturesFragment.OnItemFragmentInteractionListener {
+        StationOnMapFragment.StationOnMapCallbacks {
+//        NextDeparturesFragment.OnItemFragmentInteractionListener {
 
     private FavoriteStopsFragment mFavoriteStopsFragment;
     private StationOnMapFragment mStationOnMapFragment;
@@ -320,10 +318,10 @@ public class MainActivity extends AppCompatActivity
         return currStopDetails;
     }
 
-    @Override
-    public void onItemFragmentInteractionListener(DummyContent.DummyItem item) {
-        Log.v(TAG, "onItemFragmentInteractionListener called");
-    }
+//    @Override
+//    public void onItemFragmentInteractionListener(DummyContent.DummyItem item) {
+//        Log.v(TAG, "onItemFragmentInteractionListener called");
+//    }
 
     public static class ErrorDialogFragment extends DialogFragment {
         static final String ARG_ERROR_CODE="errorCode";
