@@ -18,5 +18,8 @@
     <string name="no_maps">Google Maps V2 not available!</string>
     <string name="un">UN</string>
     <string name="united_nations">United Nations</string>
-    <string name="title_activity_artists">Favorite Stops</string>
+
+    <string name="title_favorite_stops">Favorite Stops</string>
+    <string name="title_stops">Stops</string>
+    <string name="title_next_departures">Next Departures</string>
 </resources>

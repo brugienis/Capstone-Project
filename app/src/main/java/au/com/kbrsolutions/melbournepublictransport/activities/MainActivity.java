@@ -12,6 +12,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity
     private StopDetailFragment mStopDetailFragment;
     private NextDeparturesFragment mNextDeparturesFragment;
     private StopDetails currStopDetails;
-    private CharSequence mActivityTitle;
+    ActionBar actionBar;
     private View mCoordinatorlayout;
     private FloatingActionButton fab;
     private EventBus eventBus;
@@ -85,6 +86,7 @@ public class MainActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        actionBar = getSupportActionBar();
 
         getSupportFragmentManager().addOnBackStackChangedListener(
                 new FragmentManager.OnBackStackChangedListener() {
@@ -133,6 +135,7 @@ public class MainActivity extends AppCompatActivity
     private void handleFabClicked() {
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         if (cnt == 0) {      /* current fragment is FavoriteStopsFragment */
+            actionBar.setTitle(getResources().getString(R.string.title_stops));
             if (mStopDetailFragment == null) {
                 mStopDetailFragment = new StopDetailFragment();
             }
@@ -149,6 +152,7 @@ public class MainActivity extends AppCompatActivity
     private void showNextDepartures(List<NextDepartureDetails> nextDepartureDetailsList) {
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         if (cnt == 0) {      /* current fragment is FavoriteStopsFragment */
+            actionBar.setTitle(getResources().getString(R.string.title_next_departures));
             if (mNextDeparturesFragment == null) {
                 mNextDeparturesFragment = NextDeparturesFragment.newInstance(mSelectedStopName, nextDepartureDetailsList);
             } else {
@@ -177,8 +181,7 @@ public class MainActivity extends AppCompatActivity
      * Show favorite stops after user pressed Back or Up button.
      */
     private void showFavoriteStops() {
-        mActivityTitle = getResources().getString(R.string.title_activity_artists);
-        getSupportActionBar().setTitle(mActivityTitle);
+        actionBar.setTitle(getResources().getString(R.string.title_favorite_stops));
         mFavoriteStopsFragment.showFavoriteStops();
         fab.show();
     }
