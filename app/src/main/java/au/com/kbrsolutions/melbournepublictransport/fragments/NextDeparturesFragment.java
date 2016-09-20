@@ -42,7 +42,7 @@ public class NextDeparturesFragment extends Fragment {
 
     public static NextDeparturesFragment newInstance(String stopName, List<NextDepartureDetails> nextDepartureDetailsList) {
         NextDeparturesFragment fragment = new NextDeparturesFragment();
-        Bundle args = new Bundle();;
+        Bundle args = new Bundle();
         args.putString(ARG_SELECTED_STOP_NAME, stopName);
         args.putParcelableArrayList(ARG_NEXT_DEPARTURE_DATA, (ArrayList)nextDepartureDetailsList);
         fragment.setArguments(args);
