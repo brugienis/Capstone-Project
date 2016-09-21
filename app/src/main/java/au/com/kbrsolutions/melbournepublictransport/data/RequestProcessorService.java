@@ -128,7 +128,7 @@ public class RequestProcessorService extends IntentService {
                         "        DisruptionsDetails disruptionsDetails = new DisruptionsDetails( " + nextDetCnt
         );
         buildDisruptionsDetailsList.add(disruptionsDetails);
-        nextDetCnt++;
+        disruptCnt++;
         disruptionsDetails = new DisruptionsDetails(
                 "Title " + disruptCnt,
                 "Description " + disruptCnt

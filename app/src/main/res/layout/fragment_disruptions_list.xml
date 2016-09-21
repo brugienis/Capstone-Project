@@ -13,16 +13,28 @@
                   android:layout_height="match_parent">
 
         <TextView
-            android:text="TextView"
+            android:text="Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="?android:attr/textAppearanceMedium"
+            android:textStyle="bold"
+            android:paddingBottom="2dp"
             android:id="@+id/disruptionsTitle"/>
 
         <TextView
-            android:text="TextView"
+            android:text="Description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="?android:attr/textAppearanceSmall"
             android:id="@+id/disruptionsDescription"/>
+
     </LinearLayout>
-    
+
 </android.support.v7.widget.CardView>
+<!--
+
+            android:fontFamily="sans-serif-condensed"
+            android:textColor="#fff"
+            android:textStyle="bold"
+
+-->
