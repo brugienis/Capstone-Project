@@ -22,4 +22,5 @@
     <string name="title_favorite_stops">Favorite Stops</string>
     <string name="title_stops">Stops</string>
     <string name="title_next_departures">Next Departures</string>
+    <string name="title_disruptions">Disruptions</string>
 </resources>

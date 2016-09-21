@@ -12,9 +12,6 @@ import java.util.List;
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
 
-import static au.com.kbrsolutions.melbournepublictransport.R.id.directionName;
-import static au.com.kbrsolutions.melbournepublictransport.R.id.runType;
-
 /**
  * {@link RecyclerView.Adapter} that can display a 
  * {@link au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails}.
@@ -39,8 +36,6 @@ public class DisruptionsAdapter extends RecyclerView.Adapter<DisruptionsAdapter.
     @Override
     public void onBindViewHolder(final DisruptionsAdapter.ViewHolder holder, int position) {
         DisruptionsDetails disruptionsDetails = mValues.get(position);
-        String title = String.valueOf(disruptionsDetails.title);
-        String description = String.valueOf(disruptionsDetails.description);
         holder.title.setText(disruptionsDetails.title);
         holder.description.setText(disruptionsDetails.description);
     }
@@ -62,8 +57,8 @@ public class DisruptionsAdapter extends RecyclerView.Adapter<DisruptionsAdapter.
 
         public ViewHolder(View view) {
             super(view);
-            title = (TextView) view.findViewById(directionName);
-            description = (TextView) view.findViewById(runType);
+            title = (TextView) view.findViewById(R.id.disruptionsTitle);
+            description = (TextView) view.findViewById(R.id.disruptionsDescription);
         }
 
         @Override

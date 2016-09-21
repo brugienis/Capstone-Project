@@ -65,7 +65,7 @@ public class NextDeparturesFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_next_departure, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.disruptionsList);
 
         selectedStopNameTv = (TextView) view.findViewById(R.id.selectedStopName);
         selectedStopNameTv.setText(mSelectedStopName);

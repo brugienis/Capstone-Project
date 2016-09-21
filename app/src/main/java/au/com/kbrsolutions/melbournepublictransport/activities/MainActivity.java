@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,10 +31,12 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
+import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.RequestProcessorService;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
+import au.com.kbrsolutions.melbournepublictransport.fragments.DisruptionsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.NextDeparturesFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StationOnMapFragment;
@@ -54,6 +57,7 @@ public class MainActivity extends AppCompatActivity
     private StationOnMapFragment mStationOnMapFragment;
     private StopDetailFragment mStopDetailFragment;
     private NextDeparturesFragment mNextDeparturesFragment;
+    private DisruptionsFragment mDisruptionsFragment;
     private StopDetails currStopDetails;
     ActionBar actionBar;
     private View mCoordinatorlayout;
@@ -65,6 +69,7 @@ public class MainActivity extends AppCompatActivity
     private static final String STATION_ON_MAP_TAG = "station_on_map_tag";
     private static final String STOP_TAG = "stop_tag";
     private static final String NEXT_DEPARTURES_TAG = "next_departures_tag";
+    private static final String DISRUPTION_TAG = "disruption_tag";
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
@@ -166,6 +171,31 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private void getDisruptionsDetails() {
+        Intent intent = new Intent(this, RequestProcessorService.class);
+        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.GET_DISRUPTIONS_DETAILS);
+        startService(intent);
+    }
+
+    private void showDisruptions(List<DisruptionsDetails> disruptionsDetailsList) {
+        Log.v(TAG, "showDisruptions - start");
+        actionBar.setTitle(getResources().getString(R.string.title_disruptions));
+        if (mDisruptionsFragment == null) {
+            mDisruptionsFragment = DisruptionsFragment.newInstance(disruptionsDetailsList);
+        } else {
+            mDisruptionsFragment.setNewContent(disruptionsDetailsList);
+        }
+        // FIXME: 21/09/2016 - below has to hide current fragment
+        mFavoriteStopsFragment.hideView();
+        Log.v(TAG, "showDisruptions - showing mDisruptionsFragment: " + mDisruptionsFragment);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.left_dynamic_fragments_frame, mDisruptionsFragment, DISRUPTION_TAG)
+                .addToBackStack(DISRUPTION_TAG)     // it will also show 'Up' button in the action bar
+                .commit();
+        fab.hide();
+    }
+
     /**
      * Up button was pressed - remove to top entry Back Stack
      */
@@ -251,7 +281,7 @@ public class MainActivity extends AppCompatActivity
 //            startActivity(new Intent(this, StopsNearbyActivity.class));
             return true;
         } else if (id == R.id.action_disruptions) {
-//            startActivity(new Intent(this, DisruptionsActivity.class));
+            getDisruptionsDetails();
             return true;
         } else if (id == R.id.action_station_on_map) {
             if (readyToGo()) {
@@ -289,8 +319,11 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case NEXT_DEPARTURES_DETAILS:
-//                showNextDepartures(event.mNextDepartureDetails);
-                showNextDepartures(event.mNextDepartureDetailsList);
+                showNextDepartures(event.nextDepartureDetailsList);
+                break;
+
+            case DISRUPTIONS_DETAILS:
+                showDisruptions(event.disruptionsDetailsList);
                 break;
 
             default:

@@ -2,6 +2,7 @@ package au.com.kbrsolutions.melbournepublictransport.events;
 
 import java.util.List;
 
+import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 
 /**
@@ -11,17 +12,20 @@ public class MainActivityEvents {
 
     public enum MainEvents {
         NETWORK_STATUS,
-        NEXT_DEPARTURES_DETAILS
+        NEXT_DEPARTURES_DETAILS,
+        DISRUPTIONS_DETAILS
     }
 
     public final MainEvents event;
     public final String msg;
-    public final List<NextDepartureDetails> mNextDepartureDetailsList;
+    public final List<NextDepartureDetails> nextDepartureDetailsList;
+    public final List<DisruptionsDetails> disruptionsDetailsList;
 
     private MainActivityEvents(Builder builder) {
         this.event = builder.event;
         this.msg = builder.msg;
-        this.mNextDepartureDetailsList = builder.nextDepartureDetailsList;
+        this.nextDepartureDetailsList = builder.nextDepartureDetailsList;
+        this.disruptionsDetailsList = builder.disruptionsDetailsList;
     }
 
     public static class Builder {
@@ -33,6 +37,7 @@ public class MainActivityEvents {
         private MainEvents event;
         private String msg;
         private List<NextDepartureDetails> nextDepartureDetailsList;
+        private List<DisruptionsDetails> disruptionsDetailsList;
 
         public Builder setMsg(String msg) {
             this.msg = msg;
@@ -41,6 +46,11 @@ public class MainActivityEvents {
 
         public Builder setNextDepartureDetailsList(List<NextDepartureDetails> nextDepartureDetailsList) {
             this.nextDepartureDetailsList = nextDepartureDetailsList;
+            return this;
+        }
+
+        public Builder setDisruptionsDetailsList(List<DisruptionsDetails> disruptionsDetailsList) {
+            this.disruptionsDetailsList = disruptionsDetailsList;
             return this;
         }
 

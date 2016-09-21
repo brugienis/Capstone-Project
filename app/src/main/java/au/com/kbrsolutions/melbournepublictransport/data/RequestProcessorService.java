@@ -20,13 +20,14 @@ import au.com.kbrsolutions.melbournepublictransport.events.RequestProcessorServi
 public class RequestProcessorService extends IntentService {
 
     private EventBus eventBus;
-    public final static String  ACTION = "action";
-    public final static String  REFRESH_DATA = "refresh_data";
-    public final static String  REFRESH_DATA_IF_TABLES_EMPTY = "refresh_data_if_tables_empty";
-    public final static String  SHOW_NEXT_DEPARTURES = "show_next_departures";
-    public final static String  MODE = "mode";
-    public final static String  STOP_ID = "stop_id";
-    public final static String  LIMIT = "limit";
+    public final static String ACTION = "action";
+    public final static String REFRESH_DATA = "refresh_data";
+    public final static String REFRESH_DATA_IF_TABLES_EMPTY = "refresh_data_if_tables_empty";
+    public static final String GET_DISRUPTIONS_DETAILS = "get_disruptions_details";
+    public final static String SHOW_NEXT_DEPARTURES = "show_next_departures";
+    public final static String MODE = "mode";
+    public final static String STOP_ID = "stop_id";
+    public final static String LIMIT = "limit";
 
     private static final String TAG = RequestProcessorService.class.getSimpleName();
 
@@ -51,7 +52,7 @@ public class RequestProcessorService extends IntentService {
         NetworkInfo ni = cm.getActiveNetworkInfo();
         if (ni == null || !ni.isConnected()) {
 //            Log.v(TAG, "onHandleIntent - ni is null: " + ni);
-            sendMessageToMainrActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NETWORK_STATUS)
+            sendMessageToMainActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NETWORK_STATUS)
                     .setMsg("NO NETWORK CONNECTION")
                     .build());
             return;
@@ -61,7 +62,7 @@ public class RequestProcessorService extends IntentService {
         if (action != null) {
             boolean databaseOK = DatabaseContentRefresher.performHealthCheck();
             if (!databaseOK) {
-                sendMessageToMainrActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NETWORK_STATUS)
+                sendMessageToMainActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NETWORK_STATUS)
                         .setMsg("CANNOT ACCESS MPT site")
                         .build());
             } else {
@@ -85,8 +86,15 @@ public class RequestProcessorService extends IntentService {
 //                        List<NextDepartureDetails> nextDepartureDetailsList = RemoteMptEndpointUtil.getBroadNextDepartures(mode, stopId, limit);
                         List<NextDepartureDetails> nextDepartureDetailsList = buildSimulatedDepartureDetails();
 
-                        sendMessageToMainrActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NEXT_DEPARTURES_DETAILS)
+                        sendMessageToMainActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NEXT_DEPARTURES_DETAILS)
                                 .setNextDepartureDetailsList(nextDepartureDetailsList)
+                                .build());
+                        break;
+
+                    case GET_DISRUPTIONS_DETAILS:
+                        List<DisruptionsDetails> disruptionsDetailsList = buildSimulatedDisruptionsDetails();
+                        sendMessageToMainActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.DISRUPTIONS_DETAILS)
+                                .setDisruptionsDetailsList(disruptionsDetailsList)
                                 .build());
                         break;
 
@@ -97,7 +105,7 @@ public class RequestProcessorService extends IntentService {
         }
     }
 
-    private void sendMessageToMainrActivity(MainActivityEvents event) {
+    private void sendMessageToMainActivity(MainActivityEvents event) {
         EventBus.getDefault().post(event);
     }
 
@@ -105,27 +113,45 @@ public class RequestProcessorService extends IntentService {
     public void onMessageEvent(RequestProcessorServiceRequestEvents event) {
     }
 
-    private static int cnt;
+    private static int disruptCnt;
+    private List<DisruptionsDetails> buildSimulatedDisruptionsDetails() {
+        List<DisruptionsDetails> buildDisruptionsDetailsList = new ArrayList<>();
+        DisruptionsDetails disruptionsDetails = new DisruptionsDetails(
+                "Title " + nextDetCnt,
+                "Description " + nextDetCnt
+        );
+        buildDisruptionsDetailsList.add(disruptionsDetails);
+        nextDetCnt++;
+        disruptionsDetails = new DisruptionsDetails(
+                "Title " + nextDetCnt,
+                "Description " + nextDetCnt
+        );
+        buildDisruptionsDetailsList.add(disruptionsDetails);
+        nextDetCnt++;
+        return buildDisruptionsDetailsList;
+    }
+
+    private static int nextDetCnt;
     private List<NextDepartureDetails> buildSimulatedDepartureDetails() {
         List<NextDepartureDetails> nextDepartureDetailsList = new ArrayList<>();
         NextDepartureDetails
                 nextDepartureDetails = new NextDepartureDetails(
-                cnt,
-                "to city " + cnt,
+                nextDetCnt,
+                "to city " + nextDetCnt,
                 101,
                 0,
                 6,
                 "09:50");
         nextDepartureDetailsList.add(nextDepartureDetails);
         nextDepartureDetails = new NextDepartureDetails(
-                cnt,
-                "to frankston " + cnt,
+                nextDetCnt,
+                "to frankston " + nextDetCnt,
                 101,
                 5,
                 6,
                 "10:05");
         nextDepartureDetailsList.add(nextDepartureDetails);
-        cnt++;
+        nextDetCnt++;
         return nextDepartureDetailsList;
     }
 }

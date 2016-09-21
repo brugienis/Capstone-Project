@@ -58,7 +58,7 @@ public class DisruptionsFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_disruptions, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.disruptionsList);
 
         Context context = recyclerView.getContext();
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -68,7 +68,7 @@ public class DisruptionsFragment extends Fragment {
         return view;
     }
 
-    public void setNewContent(String selectedStopName, List<DisruptionsDetails> disruptionDetailsList) {
+    public void setNewContent(List<DisruptionsDetails> disruptionDetailsList) {
         mRecyclerViewAdapter.swap(disruptionDetailsList);
     }
 
