@@ -29,6 +29,7 @@ import java.util.Map;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.utilities.JodaDateTimeUtility;
@@ -164,7 +165,7 @@ public class RemoteMptEndpointUtil {
         final String uri = "/v2/mode/" + mode + "/stop/" + stopId + "/departures/by-destination/limit/" + limit;
         String jsonString = processRemoteRequest(uri);
 
-        NextDepartureDetails nextDepartureDetails = null;
+//        NextDepartureDetails nextDepartureDetails = null;
         List<NextDepartureDetails> nextDepartureDetailsList = new ArrayList<>();
         try {
             JSONObject broadDeparturesObject = new JSONObject(jsonString);
@@ -200,7 +201,7 @@ public class RemoteMptEndpointUtil {
                 } else {
                     directionName = String.valueOf(directionId);
                 }
-                nextDepartureDetailsList.add(nextDepartureDetails = new NextDepartureDetails(
+                nextDepartureDetailsList.add(new NextDepartureDetails(
                         directionId,
                         directionName,
                         runId,
@@ -210,16 +211,39 @@ public class RemoteMptEndpointUtil {
                         str));
 //                Log.v(TAG, "processJsonString - in code/in details: " + directionId + "/" + nextDepartureDetailsList.get(i).directionId);
                 if (directionId == 1) { //City (Flinders Street)
-//                eventBus.post(new PtvTimeTableControllerEvents.Builder((PtvTimeTableControllerEvents.PtvTimeTableEvents.GOT_BROAD_NEXT_DEPARTURES))
-//                        .setDestinationId(directionName)
-//                        .setRunId(runId)
-//                        .build());
                 }
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return nextDepartureDetailsList;
+    }
+
+    public static List<DisruptionsDetails> getDisruptions(String modes) {
+        Log.v(TAG, "getDisruptions - modes: " + modes);
+        final String uri = "/v2/disruptions/modes/" + modes;
+        String jsonString = processRemoteRequest(uri);
+
+        List<DisruptionsDetails> nextDisruptionsDetailsList = new ArrayList<>();
+
+        try {
+            JSONObject disruptionsObject = new JSONObject(jsonString);
+            JSONArray disruptionsArray = disruptionsObject.getJSONArray("metro-train");
+            String title;
+            String description;
+            DisruptionsDetails disruptionsDetails;
+            for(int i = 0; i < disruptionsArray.length(); i++) {
+                JSONObject oneDisruptionsObject = disruptionsArray.getJSONObject(i);
+                title = oneDisruptionsObject.getString("title");
+                description = oneDisruptionsObject.getString("description");
+                Log.v(TAG, "processJsonString - title: " + title + "/" + description);
+                disruptionsDetails = new DisruptionsDetails(title, description);
+                nextDisruptionsDetailsList.add(disruptionsDetails);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return nextDisruptionsDetailsList;
     }
 
     @Nullable

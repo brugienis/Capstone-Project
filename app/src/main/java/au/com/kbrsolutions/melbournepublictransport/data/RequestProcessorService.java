@@ -15,6 +15,7 @@ import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 import au.com.kbrsolutions.melbournepublictransport.events.RequestProcessorServiceRequestEvents;
+import au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil;
 
 
 public class RequestProcessorService extends IntentService {
@@ -26,6 +27,7 @@ public class RequestProcessorService extends IntentService {
     public static final String GET_DISRUPTIONS_DETAILS = "get_disruptions_details";
     public final static String SHOW_NEXT_DEPARTURES = "show_next_departures";
     public final static String MODE = "mode";
+    public final static String MODES = "modes";
     public final static String STOP_ID = "stop_id";
     public final static String LIMIT = "limit";
 
@@ -83,8 +85,8 @@ public class RequestProcessorService extends IntentService {
                         stopId = extras.getString(STOP_ID);
                         limit = extras.getInt(LIMIT);
 //                        Log.v(TAG, "onHandleIntent - action/mode/stopId/limit : " + mode + "/" + stopId + "/" + limit);
-//                        List<NextDepartureDetails> nextDepartureDetailsList = RemoteMptEndpointUtil.getBroadNextDepartures(mode, stopId, limit);
-                        List<NextDepartureDetails> nextDepartureDetailsList = buildSimulatedDepartureDetails();
+                        List<NextDepartureDetails> nextDepartureDetailsList = RemoteMptEndpointUtil.getBroadNextDepartures(mode, stopId, limit);
+//                        List<NextDepartureDetails> nextDepartureDetailsList = buildSimulatedDepartureDetails();
 
                         sendMessageToMainActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NEXT_DEPARTURES_DETAILS)
                                 .setNextDepartureDetailsList(nextDepartureDetailsList)
@@ -92,7 +94,9 @@ public class RequestProcessorService extends IntentService {
                         break;
 
                     case GET_DISRUPTIONS_DETAILS:
-                        List<DisruptionsDetails> disruptionsDetailsList = buildSimulatedDisruptionsDetails();
+                        String modes = extras.getString(MODES);
+                        List<DisruptionsDetails> disruptionsDetailsList = RemoteMptEndpointUtil.getDisruptions(modes);
+//                        List<DisruptionsDetails> disruptionsDetailsList = buildSimulatedDisruptionsDetails();
                         sendMessageToMainActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.DISRUPTIONS_DETAILS)
                                 .setDisruptionsDetailsList(disruptionsDetailsList)
                                 .build());
@@ -117,17 +121,20 @@ public class RequestProcessorService extends IntentService {
     private List<DisruptionsDetails> buildSimulatedDisruptionsDetails() {
         List<DisruptionsDetails> buildDisruptionsDetailsList = new ArrayList<>();
         DisruptionsDetails disruptionsDetails = new DisruptionsDetails(
-                "Title " + nextDetCnt,
-                "Description " + nextDetCnt
+                "Title " + disruptCnt,
+                "\n" +
+                        "    private List<DisruptionsDetails> buildSimulatedDisruptionsDetails() {\n" +
+                        "        List<DisruptionsDetails> buildDisruptionsDetailsList = new ArrayList<>();\n" +
+                        "        DisruptionsDetails disruptionsDetails = new DisruptionsDetails( " + nextDetCnt
         );
         buildDisruptionsDetailsList.add(disruptionsDetails);
         nextDetCnt++;
         disruptionsDetails = new DisruptionsDetails(
-                "Title " + nextDetCnt,
-                "Description " + nextDetCnt
+                "Title " + disruptCnt,
+                "Description " + disruptCnt
         );
         buildDisruptionsDetailsList.add(disruptionsDetails);
-        nextDetCnt++;
+        disruptCnt++;
         return buildDisruptionsDetailsList;
     }
 

@@ -134,7 +134,19 @@ public class MainActivity extends AppCompatActivity
         startService(intent);
     }
 
-    // FIXME: 17/08/2016 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.v(TAG, "onSaveInstanceState");
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.v(TAG, "onSaveInstanceState");
+    }
+
+    // FIXME: 17/08/2016
     private void handleFabClicked() {
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         if (cnt == 0) {      /* current fragment is FavoriteStopsFragment */
@@ -172,8 +184,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void getDisruptionsDetails() {
+        String trainMode = "metro-train";
         Intent intent = new Intent(this, RequestProcessorService.class);
         intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.GET_DISRUPTIONS_DETAILS);
+        intent.putExtra(RequestProcessorService.MODES, trainMode);
         startService(intent);
     }
 
@@ -308,6 +322,8 @@ public class MainActivity extends AppCompatActivity
      * Get messages through Event Bus from Green Robot.
      * This method will be called when a MainActivityEvents is posted (in the UI thread
      */
+    // FIXME: 21/09/2016 - read this when you get java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
+    //    http://www.androiddesignpatterns.com/2013/08/fragment-transaction-commit-state-loss.html
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MainActivityEvents event) {
 //        Log.v(TAG, "onMessageEvent - start");
