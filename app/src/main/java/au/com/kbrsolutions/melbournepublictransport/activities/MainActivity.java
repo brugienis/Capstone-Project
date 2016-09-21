@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity
         implements FavoriteStopsFragment.FavoriteStopsFragmentCallbacks,
         StopDetailFragment.AddStopFragmentCallbacks,
         StationOnMapFragment.StationOnMapCallbacks {
-//        NextDeparturesFragment.OnItemFragmentInteractionListener {
 
     private FavoriteStopsFragment mFavoriteStopsFragment;
     private StationOnMapFragment mStationOnMapFragment;
