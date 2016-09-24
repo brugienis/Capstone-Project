@@ -32,6 +32,7 @@ import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.RequestProcessorService;
@@ -195,11 +196,18 @@ public class MainActivity extends AppCompatActivity
         startService(intent);
     }
 
-    private void getNearbyDetails() {
-        CurrentGeoPositionFinder currentGeoPositionFinder = new CurrentGeoPositionFinder(getApplicationContext());
-//        Intent intent = new Intent(this, RequestProcessorService.class);
-//        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.GET_NEARBY_DETAILS);
-//        startService(intent);
+    /**
+     * Retrieve current latitude and longitude of the device.
+     */
+    private void getCurrLatLon() {
+        new CurrentGeoPositionFinder(getApplicationContext());
+    }
+
+    private void getNearbyDetails(LatLonDetails latLonDetails) {
+        Intent intent = new Intent(this, RequestProcessorService.class);
+        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.GET_NEARBY_DETAILS);
+        intent.putExtra(RequestProcessorService.LAT_LON, latLonDetails);
+        startService(intent);
     }
 
     private void showDisruptions(List<DisruptionsDetails> disruptionsDetailsList) {
@@ -317,7 +325,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_stops_nearby) {
-            getNearbyDetails();
+            getCurrLatLon();
 //            startActivity(new Intent(this, StopsNearbyActivity.class));
             return true;
         } else if (id == R.id.action_disruptions) {
@@ -371,7 +379,7 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case CURR_LOCATION_DETAILS:
-                showSelectedStopOnMap(event.stopDetails);
+                getNearbyDetails(event.latLonDetails);
                 break;
 
             default:

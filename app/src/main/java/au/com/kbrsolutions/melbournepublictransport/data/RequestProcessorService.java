@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -27,10 +28,12 @@ public class RequestProcessorService extends IntentService {
     public static final String GET_DISRUPTIONS_DETAILS = "get_disruptions_details";
     public final static String SHOW_NEXT_DEPARTURES = "show_next_departures";
     public final static String GET_NEARBY_DETAILS = "get_nearby_details";
+
     public final static String MODE = "mode";
     public final static String MODES = "modes";
     public final static String STOP_ID = "stop_id";
     public final static String LIMIT = "limit";
+    public final static String LAT_LON = "lat_lon";
 
     private static final String TAG = RequestProcessorService.class.getSimpleName();
 
@@ -105,6 +108,8 @@ public class RequestProcessorService extends IntentService {
                         break;
 
                     case GET_NEARBY_DETAILS:
+                        LatLonDetails latLonDetails = extras.getParcelable(LAT_LON);
+                        Log.v(TAG, "onHandleIntent - latLonDetails: " + latLonDetails);
                         break;
 
                     default:
@@ -112,23 +117,6 @@ public class RequestProcessorService extends IntentService {
                 }
             }
         }
-    }
-
-    private LatLon getGeoPosition() {
-        LatLon latLon = null;
-
-        return latLon;
-    }
-
-    private class LatLon {
-        public final double latitude;
-        public final double longitude;
-
-        LatLon(double latitude, double longitude) {
-            this.latitude = latitude;
-            this.longitude = longitude;
-        }
-
     }
 
     private void sendMessageToMainActivity(MainActivityEvents event) {
