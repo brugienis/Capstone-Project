@@ -55,7 +55,8 @@ import au.com.kbrsolutions.melbournepublictransport.utilities.CurrentGeoPosition
 public class MainActivity extends AppCompatActivity
         implements FavoriteStopsFragment.FavoriteStopsFragmentCallbacks,
         StopDetailFragment.AddStopFragmentCallbacks,
-        StationOnMapFragment.StationOnMapCallbacks {
+//        StationOnMapFragment.StationOnMapCallbacks,
+        NearbyStopsFragment.OnNearbyStopsFragmentInteractionListener {
 
     private FavoriteStopsFragment mFavoriteStopsFragment;
     private StationOnMapFragment mStationOnMapFragment;
@@ -64,7 +65,8 @@ public class MainActivity extends AppCompatActivity
     private DisruptionsFragment mDisruptionsFragment;
     private NearbyStopsFragment mNearbyStopsFragment;
     private Fragment mCurrFragment;
-    private StopDetails currStopDetails;
+//    private StopDetails currStopDetails;
+//    private LatLonDetails currLatLonDetails;
     ActionBar actionBar;
     private View mCoordinatorlayout;
     private FloatingActionButton fab;
@@ -282,18 +284,19 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void showSelectedStopOnMap(StopDetails stopDetails) {
+//    public void showSelectedStopOnMap(StopDetails stopDetails) {
+    public void showSelectedStopOnMap(LatLonDetails latLonDetails) {
         if (readyToGo()) {
-            currStopDetails = stopDetails;
+//            currLatLonDetails = latLonDetails;
             if (mStationOnMapFragment == null) {
                 // FIXME: 12/09/2016 - do we really use StationOnMapFragment.newInstance
                 mStationOnMapFragment = StationOnMapFragment.newInstance(
-                        stopDetails.latitude,
-                        stopDetails.longitude);
+                        latLonDetails.latitude,
+                        latLonDetails.longitude);
             } else {
                 mStationOnMapFragment.setLatLon(
-                        stopDetails.latitude,
-                        stopDetails.longitude);
+                        latLonDetails.latitude,
+                        latLonDetails.longitude);
             }
             getSupportFragmentManager()
                     .beginTransaction()
@@ -418,11 +421,15 @@ public class MainActivity extends AppCompatActivity
                 .setActionTextColor(Color.RED)
                 .show(); // Don’t forget to show!
     }
-
     @Override
-    public StopDetails getCurrSelectedStopDetails() {
-        return currStopDetails;
+    public void onNearbyStopsFragmentMapClicked(NearbyStopsDetails nearbyStopsDetails) {
+        showSelectedStopOnMap(new LatLonDetails(nearbyStopsDetails.stopLat, nearbyStopsDetails.stopLon));
     }
+
+//    @Override
+//    public LatLonDetails getCurrLatLonDetails() {
+//        return currLatLonDetails;
+//    }
 
 //    @Override
 //    public void onItemFragmentInteractionListener(DummyContent.DummyItem item) {

@@ -17,8 +17,10 @@ import au.com.kbrsolutions.melbournepublictransport.adapters.NearbyStopsAdapter;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 
 /**
- * A simple {@link Fragment} subclass.
- *
+ * A fragment representing a list of Items.
+ * <p/>
+ * Activities containing this fragment MUST implement the {@link
+ * OnNearbyStopsFragmentInteractionListener} interface.
  */
 public class NearbyStopsFragment extends Fragment {
 
@@ -26,6 +28,7 @@ public class NearbyStopsFragment extends Fragment {
     private List<NearbyStopsDetails> mNearbyStopsDetailsList;
     private NearbyStopsAdapter mRecyclerViewAdapter;
     private boolean newInstanceArgsRetrieved;
+    private OnNearbyStopsFragmentInteractionListener mListener;
 
     private static final String TAG = StopDetailAdapter.class.getSimpleName();
 
@@ -61,7 +64,7 @@ public class NearbyStopsFragment extends Fragment {
 
         Context context = recyclerView.getContext();
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        mRecyclerViewAdapter = new NearbyStopsAdapter(mNearbyStopsDetailsList);
+        mRecyclerViewAdapter = new NearbyStopsAdapter(mNearbyStopsDetailsList, mListener);
         recyclerView.setAdapter(mRecyclerViewAdapter);
         recyclerView.requestLayout();
         return view;
@@ -69,6 +72,38 @@ public class NearbyStopsFragment extends Fragment {
 
     public void setNewContent(List<NearbyStopsDetails> nearbyStopsDetailsList) {
         mRecyclerViewAdapter.swap(nearbyStopsDetailsList);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnNearbyStopsFragmentInteractionListener) {
+            mListener = (OnNearbyStopsFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnNearbyStopsFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnNearbyStopsFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onNearbyStopsFragmentMapClicked(NearbyStopsDetails nearbyStopsDetails);
     }
 
 }

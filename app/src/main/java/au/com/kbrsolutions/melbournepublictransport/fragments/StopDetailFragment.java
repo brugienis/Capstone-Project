@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
+import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 
@@ -39,7 +40,8 @@ public class StopDetailFragment extends Fragment implements LoaderManager.Loader
     public interface AddStopFragmentCallbacks {
 //        void addStop(StopDetails stopDetails);
         void addStop();
-        void showSelectedStopOnMap(StopDetails stopDetails);
+//        void showSelectedStopOnMap(StopDetails stopDetails);
+        void showSelectedStopOnMap(LatLonDetails latLonDetails);
     }
 
     AddStopFragmentCallbacks mCallbacks;
@@ -170,7 +172,8 @@ public class StopDetailFragment extends Fragment implements LoaderManager.Loader
 
     void handleMapClicked(StopDetails stopDetails) {
 //        Log.v(TAG, "handleMapClicked - locationName: " + stopDetails.locationName);
-        mCallbacks.showSelectedStopOnMap(stopDetails);
+//        mCallbacks.showSelectedStopOnMap(stopDetails);
+        mCallbacks.showSelectedStopOnMap(new LatLonDetails(stopDetails.latitude, stopDetails.longitude));
     }
 
     @Override

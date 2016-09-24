@@ -18,7 +18,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
-import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,37 +26,23 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
  */
 public class StationOnMapFragment extends Fragment implements OnMapReadyCallback {
 
-    /**
-     * Declares callback methods that have to be implemented by parent Activity
-     */
-    public interface StationOnMapCallbacks {
-        StopDetails getCurrSelectedStopDetails();
-    }
-
-    private StationOnMapCallbacks mCallbacks;
-
     private static final String ARG_LATITUDE = "arg_latitude";
     private static final String ARG_LONGITUDE = "arg_longitude";
 
     private double mLatitude;
     private double mLongitude;
-
-    private boolean needsInit=false;
     private MapView mMapView;
-    private GoogleMap googleMap;
+    private boolean newInstanceArgsRetrieved;
 
     private static final String TAG = StationOnMapFragment.class.getSimpleName();
-
-    /* callback if needed */
-//    private OnFragmentInteractionListener mListener;
 
     public StationOnMapFragment() {
         // Required empty public constructor
     }
 
     public void setLatLon(double latitude, double longitude) {
-        setLatitude(latitude);
-        setLongitude(longitude);
+        mLatitude = latitude;
+        mLongitude = longitude;
         Log.v(TAG, "setLatLon - lat/lon: " + mLatitude + "/" + mLongitude);
     }
 
@@ -82,22 +67,17 @@ public class StationOnMapFragment extends Fragment implements OnMapReadyCallback
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof StationOnMapCallbacks) {
-            mCallbacks = (StationOnMapCallbacks) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement StationOnMapFragmentCallbacks");
-        }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-//            mLatitude = getArguments().getDouble(ARG_LATITUDE);
-//            mLongitude = getArguments().getDouble(ARG_LONGITUDE);
-            setLatitude(getArguments().getDouble(ARG_LATITUDE));
-            setLongitude(getArguments().getDouble(ARG_LONGITUDE));
+        if (getArguments() != null && !newInstanceArgsRetrieved) {
+            mLatitude = getArguments().getDouble(ARG_LATITUDE);
+            mLongitude = getArguments().getDouble(ARG_LONGITUDE);
+//            setLatitude(getArguments().getDouble(ARG_LATITUDE));
+//            setLongitude(getArguments().getDouble(ARG_LONGITUDE));
+            newInstanceArgsRetrieved = true;
         }
     }
 
@@ -108,7 +88,7 @@ public class StationOnMapFragment extends Fragment implements OnMapReadyCallback
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View rootView =  inflater.inflate(R.layout.fragment_station_on_map, container, false);
 
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
@@ -122,7 +102,6 @@ public class StationOnMapFragment extends Fragment implements OnMapReadyCallback
             e.printStackTrace();
         }
 
-        needsInit = true;
         mMapView.getMapAsync(this);
 
         return rootView;
@@ -130,22 +109,15 @@ public class StationOnMapFragment extends Fragment implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-//        double latitude = getLatitude();
-//        double longitude = getLongitude();
-        StopDetails stopDetails = mCallbacks.getCurrSelectedStopDetails();
-        double latitude = stopDetails.latitude;
-        double longitude = stopDetails.longitude;
-        Log.v(TAG, "onMapReady called - lat/lon: " + latitude + "/" + longitude);
-//        if (needsInit) {
-            CameraUpdate center =
-                    CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude));
-            CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
+        Log.v(TAG, "onMapReady called - lat/lon: " + mLatitude + "/" + mLongitude);
+        CameraUpdate center =
+                CameraUpdateFactory.newLatLng(new LatLng(mLatitude, mLongitude));
+        CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
 
-            googleMap.moveCamera(center);
-            googleMap.animateCamera(zoom);
-//        }
+        googleMap.moveCamera(center);
+        googleMap.animateCamera(zoom);
 
-        addMarker(googleMap, latitude, longitude,
+        addMarker(googleMap, mLatitude, mLongitude,
                 R.string.un, R.string.united_nations);
     }
 
@@ -156,19 +128,19 @@ public class StationOnMapFragment extends Fragment implements OnMapReadyCallback
                 .snippet(getString(snippet)));
     }
 
-    public synchronized double getLongitude() {
-        return mLongitude;
-    }
-
-    public synchronized void setLongitude(double longitude) {
-        mLongitude = longitude;
-    }
-
-    public synchronized double getLatitude() {
-        return mLatitude;
-    }
-
-    public synchronized void setLatitude(double latitude) {
-        mLatitude = latitude;
-    }
+//    public synchronized double getLongitude() {
+//        return mLongitude;
+//    }
+//
+//    public synchronized void setLongitude(double longitude) {
+//        mLongitude = longitude;
+//    }
+//
+//    public synchronized double getLatitude() {
+//        return mLatitude;
+//    }
+//
+//    public synchronized void setLatitude(double latitude) {
+//        mLatitude = latitude;
+//    }
 }
