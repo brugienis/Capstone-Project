@@ -110,10 +110,10 @@ public class RequestProcessorService extends IntentService {
                     case GET_NEARBY_DETAILS:
                         LatLonDetails latLonDetails = extras.getParcelable(LAT_LON);
                         Log.v(TAG, "onHandleIntent - latLonDetails: " + latLonDetails);
-//                        List<NearbyStopsDetails> nearbyStopsDetailsList =
-//                                RemoteMptEndpointUtil.getNearbyStops(latLonDetails);
                         List<NearbyStopsDetails> nearbyStopsDetailsList =
-                                buildSimulatedNearbyDetails();
+                                RemoteMptEndpointUtil.getNearbyStops(latLonDetails);
+//                        List<NearbyStopsDetails> nearbyStopsDetailsList =
+//                                buildSimulatedNearbyDetails();
                         sendMessageToMainActivity(new MainActivityEvents.Builder(
                                 MainActivityEvents.MainEvents.NEARBY_LOCATION_DETAILS)
                                 .setNearbyStopsDetailsList(nearbyStopsDetailsList)
