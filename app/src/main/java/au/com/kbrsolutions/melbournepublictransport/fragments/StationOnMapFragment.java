@@ -3,7 +3,6 @@ package au.com.kbrsolutions.melbournepublictransport.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +42,6 @@ public class StationOnMapFragment extends Fragment implements OnMapReadyCallback
     public void setLatLon(double latitude, double longitude) {
         mLatitude = latitude;
         mLongitude = longitude;
-        Log.v(TAG, "setLatLon - lat/lon: " + mLatitude + "/" + mLongitude);
     }
 
     /**
@@ -55,7 +53,6 @@ public class StationOnMapFragment extends Fragment implements OnMapReadyCallback
      * @return A new instance of fragment StationOnMapFragment.
      */
     public static StationOnMapFragment newInstance(double latitude, double longitude) {
-        Log.v(TAG, "newInstance - lat/lon: " + latitude + "/" + longitude);
         StationOnMapFragment fragment = new StationOnMapFragment();
         Bundle args = new Bundle();
         args.putDouble(ARG_LATITUDE, latitude);
@@ -75,8 +72,6 @@ public class StationOnMapFragment extends Fragment implements OnMapReadyCallback
         if (getArguments() != null && !newInstanceArgsRetrieved) {
             mLatitude = getArguments().getDouble(ARG_LATITUDE);
             mLongitude = getArguments().getDouble(ARG_LONGITUDE);
-//            setLatitude(getArguments().getDouble(ARG_LATITUDE));
-//            setLongitude(getArguments().getDouble(ARG_LONGITUDE));
             newInstanceArgsRetrieved = true;
         }
     }
@@ -109,7 +104,6 @@ public class StationOnMapFragment extends Fragment implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.v(TAG, "onMapReady called - lat/lon: " + mLatitude + "/" + mLongitude);
         CameraUpdate center =
                 CameraUpdateFactory.newLatLng(new LatLng(mLatitude, mLongitude));
         CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
@@ -127,20 +121,4 @@ public class StationOnMapFragment extends Fragment implements OnMapReadyCallback
                 .title(getString(title))
                 .snippet(getString(snippet)));
     }
-
-//    public synchronized double getLongitude() {
-//        return mLongitude;
-//    }
-//
-//    public synchronized void setLongitude(double longitude) {
-//        mLongitude = longitude;
-//    }
-//
-//    public synchronized double getLatitude() {
-//        return mLatitude;
-//    }
-//
-//    public synchronized void setLatitude(double latitude) {
-//        mLatitude = latitude;
-//    }
 }
