@@ -47,15 +47,12 @@ import au.com.kbrsolutions.melbournepublictransport.fragments.StationOnMapFragme
 import au.com.kbrsolutions.melbournepublictransport.fragments.StopDetailFragment;
 import au.com.kbrsolutions.melbournepublictransport.utilities.CurrentGeoPositionFinder;
 
-//import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragmentOld;
-
 // git push -u origin
 // ^((?!GLHudOverlay).)*$
 
 public class MainActivity extends AppCompatActivity
         implements FavoriteStopsFragment.FavoriteStopsFragmentCallbacks,
         StopDetailFragment.AddStopFragmentCallbacks,
-//        StationOnMapFragment.StationOnMapCallbacks,
         NearbyStopsFragment.OnNearbyStopsFragmentInteractionListener {
 
     private FavoriteStopsFragment mFavoriteStopsFragment;
@@ -65,8 +62,6 @@ public class MainActivity extends AppCompatActivity
     private DisruptionsFragment mDisruptionsFragment;
     private NearbyStopsFragment mNearbyStopsFragment;
     private Fragment mCurrFragment;
-//    private StopDetails currStopDetails;
-//    private LatLonDetails currLatLonDetails;
     ActionBar actionBar;
     private View mCoordinatorlayout;
     private FloatingActionButton fab;
@@ -114,12 +109,10 @@ public class MainActivity extends AppCompatActivity
                 });
 
         mFavoriteStopsFragment =
-//                (FavoriteStopsFragmentOld) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS);
                 (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS);
 
 
         if (mFavoriteStopsFragment == null) {
-//            mFavoriteStopsFragment = new FavoriteStopsFragmentOld();
             mFavoriteStopsFragment = new FavoriteStopsFragment();
             getSupportFragmentManager()
                     .beginTransaction()
@@ -132,8 +125,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 handleFabClicked();
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
             }
         });
 
@@ -222,7 +213,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void showDisruptions(List<DisruptionsDetails> disruptionsDetailsList) {
-        Log.v(TAG, "showDisruptions - start");
         actionBar.setTitle(getResources().getString(R.string.title_disruptions));
         if (mDisruptionsFragment == null) {
             mDisruptionsFragment = DisruptionsFragment.newInstance(disruptionsDetailsList);
@@ -231,7 +221,6 @@ public class MainActivity extends AppCompatActivity
         }
         // FIXME: 21/09/2016 - below has to hide current fragment
         mFavoriteStopsFragment.hideView();
-        Log.v(TAG, "showDisruptions - showing mDisruptionsFragment: " + mDisruptionsFragment);
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.left_dynamic_fragments_frame, mDisruptionsFragment, DISRUPTION_TAG)
@@ -284,7 +273,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-//    public void showSelectedStopOnMap(StopDetails stopDetails) {
     public void showSelectedStopOnMap(LatLonDetails latLonDetails) {
         if (readyToGo()) {
 //            currLatLonDetails = latLonDetails;
@@ -348,20 +336,6 @@ public class MainActivity extends AppCompatActivity
             getDisruptionsDetails();
             return true;
         }
-//        else if (id == R.id.action_station_on_map) {
-//            if (readyToGo()) {
-//                if (mStationOnMapFragment == null) {
-//                    mStationOnMapFragment = new StationOnMapFragment();
-//                }
-//                getSupportFragmentManager()
-//                        .beginTransaction()
-//                        .add(R.id.left_dynamic_fragments_frame, mStationOnMapFragment, STATION_ON_MAP_TAG)
-//                        .addToBackStack(STATION_ON_MAP_TAG)     // it will also show 'Up' button in the action bar
-//                        .commit();
-//                fab.hide();
-//            }
-//            return true;
-//        }
         else if (id == R.id.action_settings) {
 //            startActivity(new Intent(this, SettingsActivity.class));
             return true;
@@ -404,7 +378,6 @@ public class MainActivity extends AppCompatActivity
 
             default:
                 throw new RuntimeException("LOC_CAT_TAG - onEvent - no code to handle requestEvent: " + requestEvent);
-//        Toast.makeText(getActivity(), event.message, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -425,16 +398,6 @@ public class MainActivity extends AppCompatActivity
     public void onNearbyStopsFragmentMapClicked(NearbyStopsDetails nearbyStopsDetails) {
         showSelectedStopOnMap(new LatLonDetails(nearbyStopsDetails.stopLat, nearbyStopsDetails.stopLon));
     }
-
-//    @Override
-//    public LatLonDetails getCurrLatLonDetails() {
-//        return currLatLonDetails;
-//    }
-
-//    @Override
-//    public void onItemFragmentInteractionListener(DummyContent.DummyItem item) {
-//        Log.v(TAG, "onItemFragmentInteractionListener called");
-//    }
 
     public static class ErrorDialogFragment extends DialogFragment {
         static final String ARG_ERROR_CODE="errorCode";
