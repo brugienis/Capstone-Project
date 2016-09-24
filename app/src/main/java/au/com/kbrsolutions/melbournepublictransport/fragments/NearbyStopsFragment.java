@@ -55,9 +55,9 @@ public class NearbyStopsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_nearby_stops_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_nearby_stops, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.disruptionsList);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.nearbyStopsList);
 
         Context context = recyclerView.getContext();
         recyclerView.setLayoutManager(new LinearLayoutManager(context));

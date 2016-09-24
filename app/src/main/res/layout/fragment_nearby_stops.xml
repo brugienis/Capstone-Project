@@ -1,3 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.RecyclerView
+    android:id="@+id/nearbyStopsList"
+    android:name="au.com.kbrsolutions.melbournepublictransport.fragments.ItemFragment"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    app:layoutManager="LinearLayoutManager"
+    tools:context=".fragments.NearbyStopsFragment"
+    tools:listitem="@layout/fragment_nearby_stops_list"/>
+
+<!--
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
@@ -7,7 +23,7 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/favoriteStopsListView"
+        android:id="@+id/nearbyStopsListView"
         android:layout_gravity="center_horizontal"
         android:paddingTop="20dp" />
 
@@ -20,3 +36,4 @@
         />
 
 </FrameLayout>
+-->

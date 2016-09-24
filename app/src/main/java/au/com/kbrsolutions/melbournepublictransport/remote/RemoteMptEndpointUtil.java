@@ -30,7 +30,9 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
+import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.utilities.JodaDateTimeUtility;
 
@@ -244,6 +246,41 @@ public class RemoteMptEndpointUtil {
             e.printStackTrace();
         }
         return nextDisruptionsDetailsList;
+    }
+
+    public static List<NearbyStopsDetails> getNearbyStops(LatLonDetails latLonDetails) {
+        Log.v(TAG, "getNearbyStops - latLonDetails: " + latLonDetails);
+        final String uri = "/v2/nearme/latitude/" + latLonDetails.latitude + "/longitude/" + latLonDetails.longitude;
+        String jsonString = processRemoteRequest(uri);
+
+        List<NearbyStopsDetails> nearbyStopsDetailsList = new ArrayList<>();
+
+        try {
+            JSONArray stopArray = new JSONArray(jsonString);
+            Log.v(TAG, "processJsonString - lineArray: " + stopArray);
+            Log.v(TAG, "processJsonString - lineArray length: " + stopArray.length());
+            double distance;
+            String locationName;
+            String transportType;
+            String stopId;
+            double latitude;
+            double longitude;
+            for(int i = 0; i < stopArray.length(); i++) {
+                JSONObject oneStringObject = stopArray.getJSONObject(i);
+                JSONObject resultObject = oneStringObject.getJSONObject("result");
+                distance = resultObject.getDouble("distance");
+                locationName = resultObject.getString("location_name");
+                transportType = resultObject.getString("transport_type");
+                stopId = resultObject.getString("stop_id");
+                latitude = resultObject.getDouble("lat");
+                longitude = resultObject.getDouble("lon");
+//                Log.v(TAG, "processJsonString - distance/suburb/transportType/stopId: " + distance + "/" + suburb + "/" + transportType + "/" + stopId);
+                nearbyStopsDetailsList.add(new NearbyStopsDetails(null, locationName, transportType, stopId, latitude, longitude));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return nearbyStopsDetailsList;
     }
 
     @Nullable

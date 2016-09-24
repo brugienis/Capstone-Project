@@ -3,6 +3,7 @@ package au.com.kbrsolutions.melbournepublictransport.events;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
 
@@ -15,7 +16,8 @@ public class MainActivityEvents {
         NETWORK_STATUS,
         NEXT_DEPARTURES_DETAILS,
         DISRUPTIONS_DETAILS,
-        CURR_LOCATION_DETAILS
+        CURR_LOCATION_DETAILS,
+        NEARBY_LOCATION_DETAILS
     }
 
     public final MainEvents event;
@@ -23,6 +25,7 @@ public class MainActivityEvents {
     public final List<NextDepartureDetails> nextDepartureDetailsList;
     public final List<DisruptionsDetails> disruptionsDetailsList;
     public final LatLonDetails latLonDetails;
+    public final List<NearbyStopsDetails> nearbyStopsDetailsList;
 
     private MainActivityEvents(Builder builder) {
         this.event = builder.event;
@@ -30,6 +33,7 @@ public class MainActivityEvents {
         this.nextDepartureDetailsList = builder.nextDepartureDetailsList;
         this.disruptionsDetailsList = builder.disruptionsDetailsList;
         this.latLonDetails = builder.latLonDetails;
+        this.nearbyStopsDetailsList = builder.nearbyStopsDetailsList;
     }
 
     public static class Builder {
@@ -43,6 +47,7 @@ public class MainActivityEvents {
         private List<NextDepartureDetails> nextDepartureDetailsList;
         private List<DisruptionsDetails> disruptionsDetailsList;
         private LatLonDetails latLonDetails;
+        private List<NearbyStopsDetails> nearbyStopsDetailsList;
 
         public Builder setMsg(String msg) {
             this.msg = msg;
@@ -61,6 +66,11 @@ public class MainActivityEvents {
 
         public Builder setLatLonDetails(LatLonDetails latLonDetails) {
             this.latLonDetails = latLonDetails;
+            return this;
+        }
+
+        public Builder setNearbyStopsDetailsList(List<NearbyStopsDetails> nearbyStopsDetailsList) {
+            this.nearbyStopsDetailsList = nearbyStopsDetailsList;
             return this;
         }
 

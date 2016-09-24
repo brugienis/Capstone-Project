@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity
     private NextDeparturesFragment mNextDeparturesFragment;
     private DisruptionsFragment mDisruptionsFragment;
     private NearbyStopsFragment mNearbyStopsFragment;
+    private Fragment mCurrFragment;
     private StopDetails currStopDetails;
     ActionBar actionBar;
     private View mCoordinatorlayout;
@@ -137,6 +139,13 @@ public class MainActivity extends AppCompatActivity
         intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.REFRESH_DATA_IF_TABLES_EMPTY);
 //        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.REFRESH_DATA);
         startService(intent);
+    }
+
+    private Fragment getTopFragment() {
+        int cnt = getSupportFragmentManager().getBackStackEntryCount();
+        String tag = getSupportFragmentManager().getBackStackEntryAt(cnt - 1).getName();
+        Fragment topFragmment = getSupportFragmentManager().findFragmentByTag(tag);
+        return topFragmment;
     }
 
     @Override
@@ -296,11 +305,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void showNearbyStops(List<NearbyStopsDetails> nearbyStopsDetailsList) {
+//        mCurrFragment
         if (mNearbyStopsFragment == null) {
             mNearbyStopsFragment = NearbyStopsFragment.newInstance(nearbyStopsDetailsList);
         } else {
             mNearbyStopsFragment.setNewContent(nearbyStopsDetailsList);
         }
+        // FIXME: 24/09/2016 - maybe build base fragment that will have method hideView(...)?
+//        getTopFragment().hideView();
+        mFavoriteStopsFragment.hideView();
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.left_dynamic_fragments_frame, mNearbyStopsFragment, NEARBY_TAG)
@@ -380,6 +393,10 @@ public class MainActivity extends AppCompatActivity
 
             case CURR_LOCATION_DETAILS:
                 getNearbyDetails(event.latLonDetails);
+                break;
+
+            case NEARBY_LOCATION_DETAILS:
+                showNearbyStops(event.nearbyStopsDetailsList);
                 break;
 
             default:

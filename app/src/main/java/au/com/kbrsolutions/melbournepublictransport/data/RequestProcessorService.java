@@ -110,6 +110,14 @@ public class RequestProcessorService extends IntentService {
                     case GET_NEARBY_DETAILS:
                         LatLonDetails latLonDetails = extras.getParcelable(LAT_LON);
                         Log.v(TAG, "onHandleIntent - latLonDetails: " + latLonDetails);
+//                        List<NearbyStopsDetails> nearbyStopsDetailsList =
+//                                RemoteMptEndpointUtil.getNearbyStops(latLonDetails);
+                        List<NearbyStopsDetails> nearbyStopsDetailsList =
+                                buildSimulatedNearbyDetails();
+                        sendMessageToMainActivity(new MainActivityEvents.Builder(
+                                MainActivityEvents.MainEvents.NEARBY_LOCATION_DETAILS)
+                                .setNearbyStopsDetailsList(nearbyStopsDetailsList)
+                                .build());
                         break;
 
                     default:
@@ -172,5 +180,29 @@ public class RequestProcessorService extends IntentService {
         nextDepartureDetailsList.add(nextDepartureDetails);
         nextDetCnt++;
         return nextDepartureDetailsList;
+    }
+
+    private static int nextNearCnt;
+    private List<NearbyStopsDetails> buildSimulatedNearbyDetails() {
+        List<NearbyStopsDetails> nextNearbyStopsDetailsList = new ArrayList<>();
+        NearbyStopsDetails nearbyStopsDetails = new NearbyStopsDetails(
+                "name" + nextNearCnt,
+                "adr " + nextDetCnt,
+                "transport type",
+                String.valueOf(nextNearCnt),
+                (double) nextNearCnt,
+                (double) nextNearCnt);
+        nextNearbyStopsDetailsList.add(nearbyStopsDetails);
+        nextNearCnt++;
+        nearbyStopsDetails = new NearbyStopsDetails(
+                "name" + nextNearCnt,
+                "adr " + nextDetCnt,
+                "transport type",
+                String.valueOf(nextNearCnt),
+                (double) nextNearCnt,
+                (double) nextNearCnt);
+        nextNearbyStopsDetailsList.add(nearbyStopsDetails);
+        nextNearCnt++;
+        return nextNearbyStopsDetailsList;
     }
 }
