@@ -10,7 +10,10 @@ import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
-
+/**
+ * {@link RecyclerView.Adapter} that can display a
+ * {@link au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails}.
+ */
 public class NearbyStopsAdapter extends RecyclerView.Adapter<NearbyStopsAdapter.ViewHolder> {
 
     private final List<NearbyStopsDetails> mValues;
