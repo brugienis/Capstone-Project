@@ -26,6 +26,7 @@ public class RequestProcessorService extends IntentService {
     public final static String REFRESH_DATA_IF_TABLES_EMPTY = "refresh_data_if_tables_empty";
     public static final String GET_DISRUPTIONS_DETAILS = "get_disruptions_details";
     public final static String SHOW_NEXT_DEPARTURES = "show_next_departures";
+    public final static String GET_NEARBY_DETAILS = "get_nearby_details";
     public final static String MODE = "mode";
     public final static String MODES = "modes";
     public final static String STOP_ID = "stop_id";
@@ -68,9 +69,6 @@ public class RequestProcessorService extends IntentService {
                         .setMsg("CANNOT ACCESS MPT site")
                         .build());
             } else {
-                int mode;
-                String stopId;
-                int limit;
                 switch (action) {
                     case REFRESH_DATA:
                         DatabaseContentRefresher.refreshDatabase(getContentResolver(), false);
@@ -81,25 +79,32 @@ public class RequestProcessorService extends IntentService {
                         break;
 
                     case SHOW_NEXT_DEPARTURES:
-                        mode = extras.getInt(MODE);
-                        stopId = extras.getString(STOP_ID);
-                        limit = extras.getInt(LIMIT);
-//                        Log.v(TAG, "onHandleIntent - action/mode/stopId/limit : " + mode + "/" + stopId + "/" + limit);
-                        List<NextDepartureDetails> nextDepartureDetailsList = RemoteMptEndpointUtil.getBroadNextDepartures(mode, stopId, limit);
-//                        List<NextDepartureDetails> nextDepartureDetailsList = buildSimulatedDepartureDetails();
+                        List<NextDepartureDetails> nextDepartureDetailsList =
+                                RemoteMptEndpointUtil.getBroadNextDepartures(
+                                        extras.getInt(MODE),
+                                        extras.getString(STOP_ID),
+                                        extras.getInt(LIMIT));
+//                        List<NextDepartureDetails> nextDepartureDetailsList =
+//                          buildSimulatedDepartureDetails();
 
-                        sendMessageToMainActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NEXT_DEPARTURES_DETAILS)
+                        sendMessageToMainActivity(new MainActivityEvents.Builder(
+                                MainActivityEvents.MainEvents.NEXT_DEPARTURES_DETAILS)
                                 .setNextDepartureDetailsList(nextDepartureDetailsList)
                                 .build());
                         break;
 
                     case GET_DISRUPTIONS_DETAILS:
-                        String modes = extras.getString(MODES);
-                        List<DisruptionsDetails> disruptionsDetailsList = RemoteMptEndpointUtil.getDisruptions(modes);
-//                        List<DisruptionsDetails> disruptionsDetailsList = buildSimulatedDisruptionsDetails();
-                        sendMessageToMainActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.DISRUPTIONS_DETAILS)
+                        List<DisruptionsDetails> disruptionsDetailsList =
+                                RemoteMptEndpointUtil.getDisruptions(extras.getString(MODES));
+//                        List<DisruptionsDetails> disruptionsDetailsList =
+//                          buildSimulatedDisruptionsDetails();
+                        sendMessageToMainActivity(new MainActivityEvents.Builder(
+                                MainActivityEvents.MainEvents.DISRUPTIONS_DETAILS)
                                 .setDisruptionsDetailsList(disruptionsDetailsList)
                                 .build());
+                        break;
+
+                    case GET_NEARBY_DETAILS:
                         break;
 
                     default:
@@ -109,6 +114,23 @@ public class RequestProcessorService extends IntentService {
         }
     }
 
+    private LatLon getGeoPosition() {
+        LatLon latLon = null;
+
+        return latLon;
+    }
+
+    private class LatLon {
+        public final double latitude;
+        public final double longitude;
+
+        LatLon(double latitude, double longitude) {
+            this.latitude = latitude;
+            this.longitude = longitude;
+        }
+
+    }
+
     private void sendMessageToMainActivity(MainActivityEvents event) {
         EventBus.getDefault().post(event);
     }
@@ -116,6 +138,8 @@ public class RequestProcessorService extends IntentService {
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(RequestProcessorServiceRequestEvents event) {
     }
+
+    // -----------------------------
 
     private static int disruptCnt;
     private List<DisruptionsDetails> buildSimulatedDisruptionsDetails() {

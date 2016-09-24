@@ -32,15 +32,18 @@ import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.RequestProcessorService;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 import au.com.kbrsolutions.melbournepublictransport.fragments.DisruptionsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragment;
+import au.com.kbrsolutions.melbournepublictransport.fragments.NearbyStopsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.NextDeparturesFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StationOnMapFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StopDetailFragment;
+import au.com.kbrsolutions.melbournepublictransport.utilities.CurrentGeoPositionFinder;
 
 //import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragmentOld;
 
@@ -57,6 +60,7 @@ public class MainActivity extends AppCompatActivity
     private StopDetailFragment mStopDetailFragment;
     private NextDeparturesFragment mNextDeparturesFragment;
     private DisruptionsFragment mDisruptionsFragment;
+    private NearbyStopsFragment mNearbyStopsFragment;
     private StopDetails currStopDetails;
     ActionBar actionBar;
     private View mCoordinatorlayout;
@@ -64,11 +68,12 @@ public class MainActivity extends AppCompatActivity
     private EventBus eventBus;
     private String mSelectedStopName;
     private final String FAVORITE_STOPS = "favorite_stops";
-    static final String TAG_ERROR_DIALOG_FRAGMENT="errorDialog";
+    static final String TAG_ERROR_DIALOG_FRAGMENT = "errorDialog";
     private static final String STATION_ON_MAP_TAG = "station_on_map_tag";
     private static final String STOP_TAG = "stop_tag";
     private static final String NEXT_DEPARTURES_TAG = "next_departures_tag";
     private static final String DISRUPTION_TAG = "disruption_tag";
+    private static final String NEARBY_TAG = "nearby_tag";
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
@@ -190,6 +195,13 @@ public class MainActivity extends AppCompatActivity
         startService(intent);
     }
 
+    private void getNearbyDetails() {
+        CurrentGeoPositionFinder currentGeoPositionFinder = new CurrentGeoPositionFinder(getApplicationContext());
+//        Intent intent = new Intent(this, RequestProcessorService.class);
+//        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.GET_NEARBY_DETAILS);
+//        startService(intent);
+    }
+
     private void showDisruptions(List<DisruptionsDetails> disruptionsDetailsList) {
         Log.v(TAG, "showDisruptions - start");
         actionBar.setTitle(getResources().getString(R.string.title_disruptions));
@@ -275,6 +287,20 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void showNearbyStops(List<NearbyStopsDetails> nearbyStopsDetailsList) {
+        if (mNearbyStopsFragment == null) {
+            mNearbyStopsFragment = NearbyStopsFragment.newInstance(nearbyStopsDetailsList);
+        } else {
+            mNearbyStopsFragment.setNewContent(nearbyStopsDetailsList);
+        }
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.left_dynamic_fragments_frame, mNearbyStopsFragment, NEARBY_TAG)
+                .addToBackStack(NEARBY_TAG)     // it will also show 'Up' button in the action bar
+                .commit();
+        fab.hide();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -291,25 +317,28 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_stops_nearby) {
+            getNearbyDetails();
 //            startActivity(new Intent(this, StopsNearbyActivity.class));
             return true;
         } else if (id == R.id.action_disruptions) {
             getDisruptionsDetails();
             return true;
-        } else if (id == R.id.action_station_on_map) {
-            if (readyToGo()) {
-                if (mStationOnMapFragment == null) {
-                    mStationOnMapFragment = new StationOnMapFragment();
-                }
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .add(R.id.left_dynamic_fragments_frame, mStationOnMapFragment, STATION_ON_MAP_TAG)
-                        .addToBackStack(STATION_ON_MAP_TAG)     // it will also show 'Up' button in the action bar
-                        .commit();
-                fab.hide();
-            }
-            return true;
-        } else if (id == R.id.action_settings) {
+        }
+//        else if (id == R.id.action_station_on_map) {
+//            if (readyToGo()) {
+//                if (mStationOnMapFragment == null) {
+//                    mStationOnMapFragment = new StationOnMapFragment();
+//                }
+//                getSupportFragmentManager()
+//                        .beginTransaction()
+//                        .add(R.id.left_dynamic_fragments_frame, mStationOnMapFragment, STATION_ON_MAP_TAG)
+//                        .addToBackStack(STATION_ON_MAP_TAG)     // it will also show 'Up' button in the action bar
+//                        .commit();
+//                fab.hide();
+//            }
+//            return true;
+//        }
+        else if (id == R.id.action_settings) {
 //            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
@@ -339,6 +368,10 @@ public class MainActivity extends AppCompatActivity
 
             case DISRUPTIONS_DETAILS:
                 showDisruptions(event.disruptionsDetailsList);
+                break;
+
+            case CURR_LOCATION_DETAILS:
+                showSelectedStopOnMap(event.stopDetails);
                 break;
 
             default:

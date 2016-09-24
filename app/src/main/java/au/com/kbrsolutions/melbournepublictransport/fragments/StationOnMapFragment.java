@@ -36,12 +36,9 @@ public class StationOnMapFragment extends Fragment implements OnMapReadyCallback
 
     private StationOnMapCallbacks mCallbacks;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_LATITUDE = "arg_latitude";
     private static final String ARG_LONGITUDE = "arg_longitude";
 
-    // TODO: Rename and change types of parameters
     private double mLatitude;
     private double mLongitude;
 
@@ -72,7 +69,6 @@ public class StationOnMapFragment extends Fragment implements OnMapReadyCallback
      * @param longitude Parameter 2.
      * @return A new instance of fragment StationOnMapFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static StationOnMapFragment newInstance(double latitude, double longitude) {
         Log.v(TAG, "newInstance - lat/lon: " + latitude + "/" + longitude);
         StationOnMapFragment fragment = new StationOnMapFragment();
