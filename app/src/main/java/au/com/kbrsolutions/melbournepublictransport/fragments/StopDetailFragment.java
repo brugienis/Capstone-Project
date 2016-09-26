@@ -38,9 +38,7 @@ public class StopDetailFragment extends Fragment implements LoaderManager.Loader
      * Declares callback methods that have to be implemented by parent Activity
      */
     public interface AddStopFragmentCallbacks {
-//        void addStop(StopDetails stopDetails);
         void addStop();
-//        void showSelectedStopOnMap(StopDetails stopDetails);
         void showSelectedStopOnMap(LatLonDetails latLonDetails);
     }
 
@@ -85,7 +83,7 @@ public class StopDetailFragment extends Fragment implements LoaderManager.Loader
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        mStopDetailAdapter = new StopDetailAdapter(getActivity(), null, 0);
+
         mStopDetailAdapter = new StopDetailAdapter(this, null, 0);
         View rootView = inflater.inflate(R.layout.fragment_add_stop, container, false);
 
@@ -171,8 +169,6 @@ public class StopDetailFragment extends Fragment implements LoaderManager.Loader
     }
 
     void handleMapClicked(StopDetails stopDetails) {
-//        Log.v(TAG, "handleMapClicked - locationName: " + stopDetails.locationName);
-//        mCallbacks.showSelectedStopOnMap(stopDetails);
         mCallbacks.showSelectedStopOnMap(new LatLonDetails(stopDetails.latitude, stopDetails.longitude));
     }
 

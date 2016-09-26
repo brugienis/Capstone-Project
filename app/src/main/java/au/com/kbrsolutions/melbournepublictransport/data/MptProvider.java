@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract.LineDetailEntry;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract.StopDetailEntry;
+import au.com.kbrsolutions.melbournepublictransport.utilities.Other;
 
 
 public class MptProvider extends ContentProvider {
@@ -61,15 +62,19 @@ public class MptProvider extends ContentProvider {
 
     // stop_detail.favorite = ?
     private static final String sStopDetailForOneFavoriteFlagSelection =
-            StopDetailEntry.TABLE_NAME +
-                    "." + StopDetailEntry.COLUMN_FAVORITE + " = ?";
+                    "(" +
+                    StopDetailEntry.TABLE_NAME +
+                    "." + StopDetailEntry.COLUMN_FAVORITE + " = ?" +
+                    ")";
 
     // stop_detail.favorite = ? OR stop_detail.favorite = ?
     private static final String sStopDetailForTwoFavoriteFlagSelection =
-            StopDetailEntry.TABLE_NAME +
+                    "(" +
+                    StopDetailEntry.TABLE_NAME +
                     "." + StopDetailEntry.COLUMN_FAVORITE + " = ? OR " +
-            StopDetailEntry.TABLE_NAME +
-                    "." + StopDetailEntry.COLUMN_FAVORITE + " = ?";
+                    StopDetailEntry.TABLE_NAME +
+                    "." + StopDetailEntry.COLUMN_FAVORITE + " = ?" +
+                    ")";
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
@@ -97,6 +102,7 @@ public class MptProvider extends ContentProvider {
         }
     }
 
+    // FIXME: 26/09/2016 - you are not USING selection, selectionArgs below
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
@@ -105,13 +111,13 @@ public class MptProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
             // line_detail
             case ALL_LINE_DETAIL: {
-                retCursor = sLineDetailQueryBuilder(uri, projection, sortOrder);
+                retCursor = sLineDetailQueryBuilder(uri, projection, selection, selectionArgs, sortOrder);
                 break;
             }
 
             // stop_detail?favorite_stops=value   // value is 'y', 'n' or 'a'
             case ALL_STOP_DETAIL: {
-                retCursor = getStopDetailCursorForFavoriteFlagCursor(uri, projection, sortOrder);
+                retCursor = getStopDetailCursorForFavoriteFlagCursor(uri, projection, selection, selectionArgs, sortOrder);
                 break;
             }
 
@@ -122,11 +128,11 @@ public class MptProvider extends ContentProvider {
         return retCursor;
     }
 
-    private Cursor sLineDetailQueryBuilder(Uri uri, String[] projection, String sortOrder) {
+    private Cursor sLineDetailQueryBuilder(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         return sLineDetailQueryBuilder.query(mOpenHelper.getReadableDatabase(),
                 projection,
-                null,
-                null,
+                selection,
+                selectionArgs,
                 null,
                 null,
                 sortOrder
@@ -134,23 +140,36 @@ public class MptProvider extends ContentProvider {
     }
 
     private Cursor getStopDetailCursorForFavoriteFlagCursor(
-            Uri uri, String[] projection, String sortOrder) {
+            Uri uri,
+            String[] projection,
+            String selection,
+            String[] selectionArgs,
+            String sortOrder) {
         String favoriteFlag = StopDetailEntry.getFavoriteFlagFromUri(uri);
         String selectionClause;
-        String[] selectionArgs;
+        String[] additionalSelectionArgs;
         if (favoriteFlag.equals(StopDetailEntry.ANY_FAVORITE_FLAG)) {
 //            Log.v(TAG, "getStopDetailCursorForFavoriteFlagCursor - sStopDetailForTwoFavoriteFlagSelection: " + sStopDetailForTwoFavoriteFlagSelection);
             selectionClause = sStopDetailForTwoFavoriteFlagSelection;
-            selectionArgs = new String[]{StopDetailEntry.NON_FAVORITE_FLAG, StopDetailEntry.FAVORITE_FLAG};
+            additionalSelectionArgs = new String[]{StopDetailEntry.NON_FAVORITE_FLAG, StopDetailEntry.FAVORITE_FLAG};
         } else {
             selectionClause = sStopDetailForOneFavoriteFlagSelection;
-            selectionArgs = new String[]{favoriteFlag};
+            additionalSelectionArgs = new String[]{favoriteFlag};
+        }
+        if (selection != null) {
+            selectionClause = selection + " AND " + selectionClause;
+        }
+        String[] argsArray;
+        if (selectionArgs == null) {
+            argsArray = additionalSelectionArgs;
+        } else {
+            argsArray = Other.concatAll(selectionArgs, additionalSelectionArgs);
         }
 
         return sStopDetailForFavoriteFlagQueryBuilder.query(mOpenHelper.getReadableDatabase(),
                 projection,
                 selectionClause,
-                selectionArgs,
+                argsArray,
                 null,
                 null,
                 sortOrder

@@ -21,16 +21,13 @@ import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 /**
  * Created by business on 24/09/2016.
  */
-
+// FIXME: 26/09/2016 - add static function that will get GEO position when this class is already instantiated
 public class CurrentGeoPositionFinder implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         com.google.android.gms.location.LocationListener {
 
     private GoogleApiClient mGoogleApiClient;
-//    private Location mLastLocation;
-//    private TextView mLatitudeText;
-//    private TextView mLongitudeText;
     private Context mContext;
 
     private LocationRequest mLocationRequest;
@@ -80,42 +77,6 @@ public class CurrentGeoPositionFinder implements
     public void onDisconnected() {
         Log.i(TAG, "Disconnected");
     }
-
-    /**
-     * Runs when a GoogleApiClient object successfully connects.
-     *
-     * Provides a simple way of getting a device's location and is well suited for
-     * applications that do not require a fine-grained location and that do not need location
-     * updates. Gets the best and most recent location currently available, which may be null
-     * in rare cases when a location is not available.
-     */
-    // FIXME: 24/09/2016 - handle case when recent location is null
-//    @Override
-//    public void onConnected(Bundle connectionHint) {
-//        Log.i(TAG, "onConnected - start");
-//        mLocationRequest = LocationRequest.create();
-//        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-//        mLocationRequest.setInterval(1000);
-//        if ( Build.VERSION.SDK_INT >= 23 &&
-//                ContextCompat.checkSelfPermission( mContext, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED &&
-//                ContextCompat.checkSelfPermission( mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            return;
-//        }
-//        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-//        Log.i(TAG, "onConnected - lat/lon: " + mLastLocation.getLatitude() + "/" + mLastLocation.getLongitude());
-//        EventBus.getDefault().post(new MainActivityEvents.Builder(
-//                MainActivityEvents.MainEvents.CURR_LOCATION_DETAILS)
-//                .setStopDetails(
-//                        new StopDetails(
-//                                -1,
-//                                -1,
-//                                null,
-//                                null,
-//                                mLastLocation.getLatitude(),
-//                                mLastLocation.getLongitude(),
-//                                null))
-//                .build());
-//    }
 
     /**
      * Runs when a GoogleApiClient object successfully connects.

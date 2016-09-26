@@ -20,7 +20,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -277,7 +276,6 @@ public class MainActivity extends AppCompatActivity
         if (readyToGo()) {
 //            currLatLonDetails = latLonDetails;
             if (mStationOnMapFragment == null) {
-                // FIXME: 12/09/2016 - do we really use StationOnMapFragment.newInstance
                 mStationOnMapFragment = StationOnMapFragment.newInstance(
                         latLonDetails.latitude,
                         latLonDetails.longitude);
@@ -430,6 +428,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    // FIXME: 25/09/2016 find source of the code below - The Busy ...
     protected boolean readyToGo() {
         GoogleApiAvailability checker=
                 GoogleApiAvailability.getInstance();
@@ -441,7 +440,8 @@ public class MainActivity extends AppCompatActivity
                 return(true);
             }
             else {
-                Toast.makeText(this, R.string.no_maps, Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, R.string.no_maps, Toast.LENGTH_LONG).show();
+                showSnackBar(R.string.no_maps, true);
                 finish();
             }
         }
@@ -451,7 +451,8 @@ public class MainActivity extends AppCompatActivity
                     .show(fm, TAG_ERROR_DIALOG_FRAGMENT);
         }
         else {
-            Toast.makeText(this, R.string.no_maps, Toast.LENGTH_LONG).show();
+//            Toast.makeText(this, R.string.no_maps, Toast.LENGTH_LONG).show();
+            showSnackBar(R.string.no_maps, true);
             finish();
         }
 

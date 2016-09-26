@@ -7,16 +7,24 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Collections;
+import java.util.List;
+
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract.LineDetailEntry;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract.StopDetailEntry;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -79,7 +87,7 @@ public class MptProviderTest {
                 null,
                 null
         );
-        Assert.assertEquals("Error: should delete 2 rows", 2, deletedRowsCnt);
+        assertEquals("Error: should delete 2 rows", 2, deletedRowsCnt);
 
         // If either of these fail, most-likely are not calling the
         // getContext().getContentResolver().notifyChange(uri, null); in the ContentProvider
@@ -97,7 +105,7 @@ public class MptProviderTest {
                 null,
                 null
         );
-        Assert.assertEquals("Error: Records not deleted from stop_detail table during delete", 0, cursor.getCount());
+        assertEquals("Error: Records not deleted from stop_detail table during delete", 0, cursor.getCount());
         cursor.close();
     }
 
@@ -114,6 +122,80 @@ public class MptProviderTest {
     @Test
     public void testQuery() throws Exception {
 
+    }
+
+    @Test
+    public void testQueryWithInClause() throws Exception {
+        // insert a row into line_detail table
+        ContentValues lineDetailValues = TestUtilities.createFrankstonLineDetailsValues();
+
+        Uri resultUri = mContext.getContentResolver().insert(
+                LineDetailEntry.CONTENT_URI,
+                lineDetailValues
+        );
+
+        long locationRowId = ContentUris.parseId(resultUri);
+        // insert the first row into stop_detail table
+
+        List<ContentValues> contentValuesList =
+                TestUtilities.createManyFrankstonLineStopDetailsValues(
+                        locationRowId,
+                        StopDetailEntry.NON_FAVORITE_FLAG,
+                        10);
+
+        Uri stopDetailsUri;
+        // FIXME: 26/09/2016 replace below with the batch insert
+        for (ContentValues cv : contentValuesList) {
+            stopDetailsUri = mContext.getContentResolver().insert(
+                    StopDetailEntry.CONTENT_URI,
+                    cv
+            );
+            Log.v(TAG, "inserted id: " + ContentUris.parseId(stopDetailsUri));
+        }
+
+        Uri uri = StopDetailEntry.buildFavoriteStopsUri(StopDetailEntry.NON_FAVORITE_FLAG);
+        Cursor cursor = mContext.getContentResolver().query(
+                uri,
+                null,
+                null,
+                null,
+                null
+        );
+
+        TestUtilities.printContents(cursor);
+
+        assertNotNull("Error: cursor can not be null", cursor);
+        assertNotEquals("Error: cursor can not be empty", 0, cursor.getCount());
+        assertEquals("wrong inserted rows count", 10, cursor.getCount());
+
+        String[] colNames = { StopDetailEntry.COLUMN_STOP_ID, StopDetailEntry.COLUMN_LOCATION_NAME };
+        StringBuilder sb = new StringBuilder();
+        String[] stopIds = { "101", "102", "103", "104", "107", "108" };
+        String whereClause = StopDetailEntry.COLUMN_STOP_ID + " IN (" + TextUtils.join(",", Collections.nCopies(stopIds.length, "?")) + ")";
+
+        uri = StopDetailEntry.buildFavoriteStopsUri(StopDetailEntry.NON_FAVORITE_FLAG);
+        cursor = mContext.getContentResolver().query(
+                uri,
+                null,
+                whereClause,
+                stopIds,
+                null
+        );
+
+        TestUtilities.printContents(cursor);
+//        while (cursor.moveToNext()) {
+//            Log.v(TAG, cursor.getString(1) + "/" + cursor.getString(2));
+//        }
+        assertNotNull("Error: cursor can not be null", cursor);
+        assertEquals("Error: cursor can not be empty", 6, cursor.getCount());
+
+//        assertEquals("should", "", whereClause);
+
+
+//        String[] names = { "name1", "name2" };
+//        String query = "SELECT * FROM table"
+//                + " WHERE name IN (" + TextUtils.join(",", Collections.nCopies(names.length, "?"))  + ")";
+//        Cursor cursor = mDb.rawQuery(query, names);
     }
 
     @Test
@@ -167,8 +249,8 @@ public class MptProviderTest {
                 null
         );
 
-        Assert.assertNotNull("Error: cursor can not be null", cursor);
-        Assert.assertNotEquals("Error: cursor can not be empty", 0, cursor.getCount());
+        assertNotNull("Error: cursor can not be null", cursor);
+        assertNotEquals("Error: cursor can not be empty", 0, cursor.getCount());
         // Make sure we get the correct cursor out of the database
         TestUtilities.validateCursor("testInsert, stop_detail query", cursor, stop_detailValues);
 
@@ -192,8 +274,8 @@ public class MptProviderTest {
                 null
         );
 
-        Assert.assertNotNull("Error: cursor can not be null", cursor);
-        Assert.assertNotEquals("Error: cursor can not be empty", 0, cursor.getCount());
+        assertNotNull("Error: cursor can not be null", cursor);
+        assertNotEquals("Error: cursor can not be empty", 0, cursor.getCount());
         // Make sure we get the correct cursor out of the database
         TestUtilities.validateCursor("testInsert, stop_detail query", cursor, stop_detailValues);
 
@@ -207,8 +289,8 @@ public class MptProviderTest {
                 null
         );
 
-        Assert.assertNotNull("Error: cursor can not be null", cursor);
-        Assert.assertNotEquals("Error: there must be 2 rows", 0, cursor.getCount());
+        assertNotNull("Error: cursor can not be null", cursor);
+        assertNotEquals("Error: there must be 2 rows", 0, cursor.getCount());
     }
 
     @Test
@@ -244,8 +326,8 @@ public class MptProviderTest {
                 null
         );
 
-        Assert.assertNotNull("Error: cursor can not be null", cursor);
-        Assert.assertEquals("Error: there must be 1 row", 1, cursor.getCount());
+        assertNotNull("Error: cursor can not be null", cursor);
+        assertEquals("Error: there must be 1 row", 1, cursor.getCount());
         // Make sure we get the correct cursor out of the database
         TestUtilities.validateCursor("testInsert, stop_detail query", cursor, stopDetailsValues);
 
@@ -270,8 +352,8 @@ public class MptProviderTest {
                 null
         );
 
-        Assert.assertNotNull("Error: cursor can not be null", cursor);
-        Assert.assertEquals("Error: there still must be 1 row", 1, cursor.getCount());
+        assertNotNull("Error: cursor can not be null", cursor);
+        assertEquals("Error: there still must be 1 row", 1, cursor.getCount());
         // Make sure we get the correct cursor out of the database
 
         // Verify there is 1 rows in the table
@@ -284,8 +366,8 @@ public class MptProviderTest {
                 null
         );
 
-        Assert.assertNotNull("Error: cursor can not be null", cursor);
-        Assert.assertNotEquals("Error: there must be 1 row", 0, cursor.getCount());
+        assertNotNull("Error: cursor can not be null", cursor);
+        assertNotEquals("Error: there must be 1 row", 0, cursor.getCount());
     }
 
     @Test
@@ -317,7 +399,7 @@ public class MptProviderTest {
         long stopDetailsRowId = ContentUris.parseId(stopDetailsUri);
 
         // Verify we got a row back.
-        Assert.assertTrue(stopDetailsRowId != -1);
+        assertTrue(stopDetailsRowId != -1);
 
         // Data's inserted.  IN THEORY.  Now pull some out to stare at it and verify it made
         // the round trip.
@@ -357,7 +439,7 @@ public class MptProviderTest {
         long locationRowId = ContentUris.parseId(locationUri);
 
         // Verify we got a row back.
-        Assert.assertTrue("Error: row was not inserted", locationRowId != -1);
+        assertTrue("Error: row was not inserted", locationRowId != -1);
         Log.d(TAG, "New row id: " + locationRowId);
 
         ContentValues updatedValues = new ContentValues(values);
@@ -375,7 +457,7 @@ public class MptProviderTest {
         int count = mContext.getContentResolver().update(
                 StopDetailEntry.CONTENT_URI, updatedValues, StopDetailEntry._ID + "= ?",
                 new String[] { Long.toString(locationRowId)});
-        Assert.assertEquals("Error: no row was updated", 1, count);
+        assertEquals("Error: no row was updated", 1, count);
 
         // Test to make sure our observer is called.  If not, we throw an assertion.
         //
@@ -467,7 +549,7 @@ public class MptProviderTest {
         stopDetailsObserver.waitForNotificationOrFail();
         mContext.getContentResolver().unregisterContentObserver(stopDetailsObserver);
 
-        Assert.assertEquals(BULK_INSERT_RECORDS_TO_INSERT, insertCount);
+        assertEquals(BULK_INSERT_RECORDS_TO_INSERT, insertCount);
 
         // A cursor is your primary interface to the query results.
         Uri uri = StopDetailEntry.buildFavoriteStopsUri(favoriteFlag);
@@ -480,7 +562,7 @@ public class MptProviderTest {
         );
 
         // we should have as many records in the database as we've inserted
-        Assert.assertEquals(cursor.getCount(), BULK_INSERT_RECORDS_TO_INSERT);
+        assertEquals(cursor.getCount(), BULK_INSERT_RECORDS_TO_INSERT);
 
         // and let's make sure they match the ones we created
         cursor.moveToFirst();
@@ -522,8 +604,8 @@ public class MptProviderTest {
                 null
         );
 
-        Assert.assertNotNull("Error: cursor can not be null", cursor);
-        Assert.assertNotEquals("Error: cursor can not be empty", 0, cursor.getCount());
+        assertNotNull("Error: cursor can not be null", cursor);
+        assertNotEquals("Error: cursor can not be empty", 0, cursor.getCount());
         // Make sure we get the correct cursor out of the database
         TestUtilities.validateCursor("testBasicStopDetailsQueries, stop_detail query", cursor, stopDetailValues);
 
@@ -551,7 +633,7 @@ public class MptProviderTest {
                 null,
                 null
         );
-        Assert.assertEquals("Error: Records not deleted from stop_detail table during delete", 0, cursor.getCount());
+        assertEquals("Error: Records not deleted from stop_detail table during delete", 0, cursor.getCount());
         cursor.close();
 
         // Delete all rows from line_detail
@@ -568,7 +650,7 @@ public class MptProviderTest {
                 null,
                 null
         );
-        Assert.assertEquals("Error: Records not deleted from stop_detail table during delete", 0, cursor.getCount());
+        assertEquals("Error: Records not deleted from stop_detail table during delete", 0, cursor.getCount());
         cursor.close();
     }
 }

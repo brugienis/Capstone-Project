@@ -38,13 +38,11 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
      */
     public interface FavoriteStopsFragmentCallbacks {
         void handleSelectedFavoriteStop(StopDetails stopDetails);
-//        void showSelectedStopOnMap(StopDetails stopDetails);
         void showSelectedStopOnMap(LatLonDetails latLonDetails);
     }
 
     private FavoriteStopsFragmentCallbacks mCallbacks;
     private ListView mListView;
-//    private StopDetailsArrayAdapter<StopDetails> mStopDetailsArrayAdapter;
     private List<StopDetails> mStopDetailsList;
     private TextView mEmptyView;
     private View rootView;
@@ -78,7 +76,6 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
     }
 
     public void hideView() {
-//        Log.v(TAG, "hideView");
         rootView.setVisibility(View.INVISIBLE);
     }
 

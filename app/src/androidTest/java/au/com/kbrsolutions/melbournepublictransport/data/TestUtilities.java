@@ -9,10 +9,13 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.test.runner.AndroidJUnit4;
+import android.util.Log;
 
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,6 +24,8 @@ import au.com.kbrsolutions.melbournepublictransport.utils.PollingCheck;
 
 @RunWith(AndroidJUnit4.class)
 public class TestUtilities {
+
+    private static final String TAG = TestUtilities.class.getSimpleName();
 
     static void validateCurrentRecord(String error, Cursor valueCursor, ContentValues expectedValues) {
         Set<Map.Entry<String, Object>> valueSet = expectedValues.valueSet();
@@ -84,6 +89,44 @@ public class TestUtilities {
 
         return testValues;
     }
+
+    // FIXME: 26/09/2016 combine below with the above
+    static List<ContentValues> createManyFrankstonLineStopDetailsValues(
+            long line_detailRowId,
+            String favoriteFlag,
+            int rowsCnt) {
+        List<ContentValues> contentValuesList = new ArrayList<>(rowsCnt);
+        int stopId = 101;
+        for (int i = 0; i < rowsCnt; i++) {
+            // Create a new map of values, where column names are the keys
+            ContentValues testValues = new ContentValues();
+            testValues.put(MptContract.StopDetailEntry.COLUMN_LINE_KEY, line_detailRowId);
+            testValues.put(MptContract.StopDetailEntry.COLUMN_ROUTE_TYPE, 0);
+            testValues.put(MptContract.StopDetailEntry.COLUMN_STOP_ID, String.valueOf(stopId));
+            testValues.put(MptContract.StopDetailEntry.COLUMN_LOCATION_NAME, "Carrum " + i);
+            testValues.put(MptContract.StopDetailEntry.COLUMN_LATITUDE, latitude);
+            testValues.put(MptContract.StopDetailEntry.COLUMN_LONGITUDE, longitude);
+            testValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, favoriteFlag);
+            contentValuesList.add(testValues);
+            stopId++;
+        }
+
+        latitude += increase;
+        longitude += increase;
+
+        return contentValuesList;
+    }
+
+    static void printContents(Cursor cursor) {
+        Log.v(TAG, "printContents - start");
+        int stopIdIdx;
+        int locationNameIdx;
+        while (cursor.moveToNext()) {
+            stopIdIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_STOP_ID);
+            locationNameIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LOCATION_NAME);
+            Log.v(TAG, cursor.getString(stopIdIdx) + cursor.getString(locationNameIdx));
+        }
+    };
     
     static long insertFrankstonLineStopDetailsValues(long lineDetailRowId, Context context, ContentValues stoDetailValues) {
         // insert our test records into the database
