@@ -294,6 +294,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void showNearbyStops(List<NearbyStopsDetails> nearbyStopsDetailsList) {
+        Log.v(TAG, "showNearbyStops - start");
 //        mCurrFragment
         if (mNearbyStopsFragment == null) {
             mNearbyStopsFragment = NearbyStopsFragment.newInstance(nearbyStopsDetailsList);
@@ -303,6 +304,7 @@ public class MainActivity extends AppCompatActivity
         // FIXME: 24/09/2016 - maybe build base fragment that will have method hideView(...)?
 //        getTopFragment().hideView();
         mFavoriteStopsFragment.hideView();
+        Log.v(TAG, "showNearbyStops - adding mNearbyStopsFragment");
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.left_dynamic_fragments_frame, mNearbyStopsFragment, NEARBY_TAG)

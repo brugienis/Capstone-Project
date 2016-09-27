@@ -169,14 +169,13 @@ public class MptProviderTest {
         assertEquals("wrong inserted rows count", 10, cursor.getCount());
 
         String[] colNames = { StopDetailEntry.COLUMN_STOP_ID, StopDetailEntry.COLUMN_LOCATION_NAME };
-        StringBuilder sb = new StringBuilder();
         String[] stopIds = { "101", "102", "103", "104", "107", "108" };
         String whereClause = StopDetailEntry.COLUMN_STOP_ID + " IN (" + TextUtils.join(",", Collections.nCopies(stopIds.length, "?")) + ")";
 
         uri = StopDetailEntry.buildFavoriteStopsUri(StopDetailEntry.NON_FAVORITE_FLAG);
         cursor = mContext.getContentResolver().query(
                 uri,
-                null,
+                colNames,
                 whereClause,
                 stopIds,
                 null

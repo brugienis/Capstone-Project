@@ -248,6 +248,7 @@ public class RemoteMptEndpointUtil {
         return nextDisruptionsDetailsList;
     }
 
+    private final static String STOP_ID = "Stop iD ";
     public static List<NearbyStopsDetails> getNearbyStops(LatLonDetails latLonDetails) {
         Log.v(TAG, "getNearbyStops - latLonDetails: " + latLonDetails);
         final String uri = "/v2/nearme/latitude/" + latLonDetails.latitude + "/longitude/" + latLonDetails.longitude;
@@ -257,8 +258,8 @@ public class RemoteMptEndpointUtil {
 
         try {
             JSONArray stopArray = new JSONArray(jsonString);
-            Log.v(TAG, "processJsonString - lineArray: " + stopArray);
-            Log.v(TAG, "processJsonString - lineArray length: " + stopArray.length());
+//            Log.v(TAG, "processJsonString - lineArray: " + stopArray);
+//            Log.v(TAG, "processJsonString - lineArray length: " + stopArray.length());
             double distance;
             String locationName;
             String transportType;
@@ -267,6 +268,7 @@ public class RemoteMptEndpointUtil {
             double longitude;
             for(int i = 0; i < stopArray.length(); i++) {
                 JSONObject oneStringObject = stopArray.getJSONObject(i);
+                Log.v(TAG, "getNearbyStops - oneStringObject: " + oneStringObject);
                 JSONObject resultObject = oneStringObject.getJSONObject("result");
                 distance = resultObject.getDouble("distance");
                 locationName = resultObject.getString("location_name");
@@ -275,7 +277,7 @@ public class RemoteMptEndpointUtil {
                 latitude = resultObject.getDouble("lat");
                 longitude = resultObject.getDouble("lon");
 //                Log.v(TAG, "processJsonString - distance/suburb/transportType/stopId: " + distance + "/" + suburb + "/" + transportType + "/" + stopId);
-                nearbyStopsDetailsList.add(new NearbyStopsDetails(null, locationName, transportType, stopId, latitude, longitude));
+                nearbyStopsDetailsList.add(new NearbyStopsDetails(STOP_ID + stopId, locationName, transportType, stopId, latitude, longitude));
             }
         } catch (JSONException e) {
             e.printStackTrace();

@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 public class NearbyStopsDetails implements Parcelable {
 
-    public final String stopName;
+    public String stopName;
     public final String stopAddress;
     public final String transportType;
     public final String stopId;
@@ -38,7 +38,8 @@ public class NearbyStopsDetails implements Parcelable {
 
     @Override
     public String toString() {
-        return "stopName: " + stopName +
+        return "stopId: " + stopId +
+                "stopName: " + stopName +
                 "; stopAddress: " + stopAddress +
                 "; stopLat: " + stopLat +
                 "; stopLon: " + stopLon;

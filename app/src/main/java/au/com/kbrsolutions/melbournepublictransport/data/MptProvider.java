@@ -12,7 +12,7 @@ import android.support.annotation.Nullable;
 
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract.LineDetailEntry;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract.StopDetailEntry;
-import au.com.kbrsolutions.melbournepublictransport.utilities.Other;
+import au.com.kbrsolutions.melbournepublictransport.utilities.Miscellaneous;
 
 
 public class MptProvider extends ContentProvider {
@@ -163,7 +163,7 @@ public class MptProvider extends ContentProvider {
         if (selectionArgs == null) {
             argsArray = additionalSelectionArgs;
         } else {
-            argsArray = Other.concatAll(selectionArgs, additionalSelectionArgs);
+            argsArray = Miscellaneous.concatAll(selectionArgs, additionalSelectionArgs);
         }
 
         return sStopDetailForFavoriteFlagQueryBuilder.query(mOpenHelper.getReadableDatabase(),

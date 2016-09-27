@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -13,10 +12,12 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 import au.com.kbrsolutions.melbournepublictransport.events.RequestProcessorServiceRequestEvents;
 import au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil;
+import au.com.kbrsolutions.melbournepublictransport.utilities.DbUtility;
 
 
 public class RequestProcessorService extends IntentService {
@@ -109,16 +110,47 @@ public class RequestProcessorService extends IntentService {
 
                     case GET_NEARBY_DETAILS:
                         LatLonDetails latLonDetails = extras.getParcelable(LAT_LON);
-                        Log.v(TAG, "onHandleIntent - latLonDetails: " + latLonDetails);
-                        List<NearbyStopsDetails> nearbyStopsDetailsList =
-                                RemoteMptEndpointUtil.getNearbyStops(latLonDetails);
-//                        List<NearbyStopsDetails> nearbyStopsDetailsList =
-//                                buildSimulatedNearbyDetails();
+                        DbUtility dbUtility = new DbUtility();
+                        Map<Double, NearbyTrainsDetails> map = dbUtility.getNearbyTrainDetails(latLonDetails, getApplicationContext());
+                        NearbyTrainsDetails nearbyTrainsDetails;
+                        NearbyStopsDetails nearbyStopsDetails;
+                        List<NearbyStopsDetails> nearbyStopsDetailsList = new ArrayList<>();
+                        for (Double key : map.keySet()) {
+                            nearbyTrainsDetails = map.get(key);
+                            nearbyStopsDetails = new NearbyStopsDetails(
+                                    nearbyTrainsDetails.stopName,
+                                    nearbyTrainsDetails.stopName,
+                                    "",
+                                    nearbyTrainsDetails.stopId,
+                                    nearbyTrainsDetails.latitude,
+                                    nearbyTrainsDetails.longitude
+                            );
+                            nearbyStopsDetailsList.add(nearbyStopsDetails);
+//                            Log.v(TAG, "distance/stopId/stopName: " +
+//                                    nearbyTrainsDetails.distanceMeters + " - " +
+//                                    nearbyTrainsDetails.stopId + "/" +
+//                                    nearbyTrainsDetails.stopName);
+                        }
                         sendMessageToMainActivity(new MainActivityEvents.Builder(
                                 MainActivityEvents.MainEvents.NEARBY_LOCATION_DETAILS)
                                 .setNearbyStopsDetailsList(nearbyStopsDetailsList)
                                 .build());
                         break;
+
+//                    case GET_NEARBY_DETAILS:
+//                        LatLonDetails latLonDetails = extras.getParcelable(LAT_LON);
+//                        Log.v(TAG, "onHandleIntent - latLonDetails: " + latLonDetails);
+//                        List<NearbyStopsDetails> nearbyStopsDetailsList =
+//                                RemoteMptEndpointUtil.getNearbyStops(latLonDetails);
+//                        DbUtility dbUtility = new DbUtility();
+//                        dbUtility.fillInStopNames(nearbyStopsDetailsList, getApplicationContext());
+////                        List<NearbyStopsDetails> nearbyStopsDetailsList =
+////                                buildSimulatedNearbyDetails();
+//                        sendMessageToMainActivity(new MainActivityEvents.Builder(
+//                                MainActivityEvents.MainEvents.NEARBY_LOCATION_DETAILS)
+//                                .setNearbyStopsDetailsList(nearbyStopsDetailsList)
+//                                .build());
+//                        break;
 
                     default:
                         throw new RuntimeException(TAG + ".onHandleIntent - no code to handle action: " + action);
