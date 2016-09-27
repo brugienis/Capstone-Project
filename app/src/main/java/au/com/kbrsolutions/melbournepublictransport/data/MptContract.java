@@ -95,6 +95,8 @@ public class MptContract {
 
         public static final String COLUMN_LOCATION_NAME = "location_name";
 
+        public static final String COLUMN_SUBURB = "column_suburb";
+
         public static final String COLUMN_LATITUDE = "latitude";
 
         public static final String COLUMN_LONGITUDE = "longitude";

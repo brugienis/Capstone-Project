@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +16,6 @@ import java.util.TreeMap;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
-import au.com.kbrsolutions.melbournepublictransport.data.NearbyTrainsDetails;
 
 /**
  * Created by business on 26/09/2016.
@@ -25,7 +25,7 @@ public class DbUtility {
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
-    public Map<Double, NearbyTrainsDetails> getNearbyTrainDetails(LatLonDetails latLonDetails, Context context) {
+    public List<NearbyStopsDetails> getNearbyTrainDetails(LatLonDetails latLonDetails, Context context) {
         Uri uri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.ANY_FAVORITE_FLAG);
         Cursor cursor = context.getContentResolver().query(
                 uri,
@@ -37,13 +37,15 @@ public class DbUtility {
 
         int stopIdIdx;
         int locationNameIdx;
+        int suburbIdx;
         int latIdx;
         int lonIdx;
         double distance;
-        Map<Double, NearbyTrainsDetails> map = new TreeMap<>();
+        Map<Double, NearbyStopsDetails> map = new TreeMap<>();
         while (cursor.moveToNext()) {
             stopIdIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_STOP_ID);
             locationNameIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LOCATION_NAME);
+            suburbIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_SUBURB);
             latIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LATITUDE);
             lonIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LONGITUDE);
             distance = Miscellaneous.distance(
@@ -52,9 +54,12 @@ public class DbUtility {
                     cursor.getDouble(latIdx),
                     cursor.getDouble(lonIdx),
                     "K");
-            map.put(distance, new NearbyTrainsDetails(
-                    cursor.getString(stopIdIdx),
+            map.put(distance, new NearbyStopsDetails(
                     cursor.getString(locationNameIdx),
+                    null,
+                    cursor.getString(suburbIdx),
+                    "train",
+                    cursor.getString(stopIdIdx),
                     cursor.getDouble(latIdx),
                     cursor.getDouble(lonIdx),
                     distance
@@ -62,15 +67,23 @@ public class DbUtility {
 //            Log.v(TAG, "distance/stopId/stopName: " + distance + " - " + cursor.getString(stopIdIdx) + "/" + cursor.getString(locationNameIdx));
         }
         cursor.close();
-        NearbyTrainsDetails nearbyTrainsDetails;
+        List<NearbyStopsDetails> nearbyStopsDetailsList = new ArrayList<>(map.size());
+        NearbyStopsDetails nearbyStopsDetails;
+        // FIXME: 28/09/2016 - get below from settings
+        int nearStopsLimitCnt = 10;
+        int cnt = 0;
         for (Double key : map.keySet()) {
-            nearbyTrainsDetails = map.get(key);
+            nearbyStopsDetails = map.get(key);
+            nearbyStopsDetailsList.add(nearbyStopsDetails);
             Log.v(TAG, "distance/stopId/stopName: " +
-                    nearbyTrainsDetails.distanceMeters + " - " +
-                    nearbyTrainsDetails.stopId + "/" +
-                    nearbyTrainsDetails.stopName);
+                    nearbyStopsDetails.distance + " - " +
+                    nearbyStopsDetails.stopId + "/" +
+                    nearbyStopsDetails.stopName);
+            if (cnt++ > nearStopsLimitCnt) {
+                break;
+            }
         }
-        return map;
+        return nearbyStopsDetailsList;
     }
 
     public void fillInStopNames(List<NearbyStopsDetails> nearbyStopsDetailsList, Context context) {

@@ -11,8 +11,7 @@ import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
-import au.com.kbrsolutions.melbournepublictransport.fragments.NearbyStopsFragment
-        .OnNearbyStopsFragmentInteractionListener;
+import au.com.kbrsolutions.melbournepublictransport.fragments.NearbyStopsFragment.OnNearbyStopsFragmentInteractionListener;
 
 /**
  * {@link RecyclerView.Adapter} that can display a
@@ -39,9 +38,17 @@ public class NearbyStopsAdapter extends RecyclerView.Adapter<NearbyStopsAdapter.
 
     @Override
     public void onBindViewHolder(final NearbyStopsAdapter.ViewHolder holder, int position) {
-        NearbyStopsDetails disruptionsDetails = mValues.get(position);
-        holder.stopName.setText(disruptionsDetails.stopName);
-        holder.stopAddress.setText(disruptionsDetails.stopAddress);
+        NearbyStopsDetails nearbyStopsDetails = mValues.get(position);
+//        Log.v(TAG, "onBindViewHolder - nearbyStopsDetails: " + nearbyStopsDetails);
+        if (nearbyStopsDetails.transportType.equals("train")) {
+            holder.stopName.setText(nearbyStopsDetails.stopName);
+            holder.stopAddress.setText(nearbyStopsDetails.suburb);
+
+        } else {
+            holder.stopName.setText(nearbyStopsDetails.stopName);
+            holder.stopAddress.setText(nearbyStopsDetails.stopAddress);
+
+        }
         holder.mearbyStopsDetails = mValues.get(position);
     }
 

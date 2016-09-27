@@ -55,6 +55,7 @@ public class MptDbHelper extends SQLiteOpenHelper {
                 + StopDetailEntry.COLUMN_ROUTE_TYPE + " INTEGER NOT NULL, "
                 + StopDetailEntry.COLUMN_STOP_ID + " STRING NOT NULL, "
                 + StopDetailEntry.COLUMN_LOCATION_NAME + " STRING NULL, "
+                + StopDetailEntry.COLUMN_SUBURB + " STRING NULL, "
                 + StopDetailEntry.COLUMN_LATITUDE + " REAL NOT NULL, "
                 + StopDetailEntry.COLUMN_LONGITUDE + " REAL NOT NULL, "
                 + StopDetailEntry.COLUMN_FAVORITE + " STRING, "
@@ -63,7 +64,7 @@ public class MptDbHelper extends SQLiteOpenHelper {
                 + " FOREIGN KEY (" + StopDetailEntry.COLUMN_LINE_KEY + ") REFERENCES "
                 + LineDetailEntry.TABLE_NAME + " (" + LineDetailEntry._ID + ")"
 
-                // To assure the application have just one stop_detail entry stop_id day
+                // To assure the application have just one stop_detail entry stop_id
                 // per location_name, it's created a UNIQUE constraint with REPLACE strategy
                 + " UNIQUE (" + StopDetailEntry.COLUMN_STOP_ID + ", "
 //                + StopDetailEntry.COLUMN_LOCATION_NAME + ") ON CONFLICT IGNORE);";

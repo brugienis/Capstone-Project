@@ -117,6 +117,7 @@ public class RemoteMptEndpointUtil {
         int routeType;
         String stopId;
         String locationName;
+        String suburb;
         double latitude;
         double longitude;
         String favorite = "n";  // non favorite stop
@@ -134,6 +135,7 @@ public class RemoteMptEndpointUtil {
                 routeType = oneLineObject.getInt("route_type");
                 stopId = oneLineObject.getString("stop_id");
                 locationName = oneLineObject.getString("location_name");
+                suburb = oneLineObject.getString("suburb");
                 latitude = oneLineObject.getDouble("lat");
                 longitude = oneLineObject.getDouble("lon");
 //                lineDetailsList.add(new StopDetails(routeType, stopId, locationName, latitude, longitude, favorite));
@@ -141,6 +143,7 @@ public class RemoteMptEndpointUtil {
                 values.put(MptContract.StopDetailEntry.COLUMN_ROUTE_TYPE, routeType);
                 values.put(MptContract.StopDetailEntry.COLUMN_STOP_ID, stopId);
                 values.put(MptContract.StopDetailEntry.COLUMN_LOCATION_NAME, locationName);
+                values.put(MptContract.StopDetailEntry.COLUMN_SUBURB, suburb);
                 values.put(MptContract.StopDetailEntry.COLUMN_LATITUDE, latitude);
                 values.put(MptContract.StopDetailEntry.COLUMN_LONGITUDE, longitude);
                 values.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, favorite);
@@ -277,7 +280,8 @@ public class RemoteMptEndpointUtil {
                 latitude = resultObject.getDouble("lat");
                 longitude = resultObject.getDouble("lon");
 //                Log.v(TAG, "processJsonString - distance/suburb/transportType/stopId: " + distance + "/" + suburb + "/" + transportType + "/" + stopId);
-                nearbyStopsDetailsList.add(new NearbyStopsDetails(STOP_ID + stopId, locationName, transportType, stopId, latitude, longitude));
+                nearbyStopsDetailsList.add(new NearbyStopsDetails(
+                        STOP_ID + stopId, locationName, null, transportType, stopId, latitude, longitude, -1D));
             }
         } catch (JSONException e) {
             e.printStackTrace();

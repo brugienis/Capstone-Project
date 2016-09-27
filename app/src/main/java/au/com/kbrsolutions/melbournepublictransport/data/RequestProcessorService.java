@@ -12,7 +12,6 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 import au.com.kbrsolutions.melbournepublictransport.events.RequestProcessorServiceRequestEvents;
@@ -111,26 +110,7 @@ public class RequestProcessorService extends IntentService {
                     case GET_NEARBY_DETAILS:
                         LatLonDetails latLonDetails = extras.getParcelable(LAT_LON);
                         DbUtility dbUtility = new DbUtility();
-                        Map<Double, NearbyTrainsDetails> map = dbUtility.getNearbyTrainDetails(latLonDetails, getApplicationContext());
-                        NearbyTrainsDetails nearbyTrainsDetails;
-                        NearbyStopsDetails nearbyStopsDetails;
-                        List<NearbyStopsDetails> nearbyStopsDetailsList = new ArrayList<>();
-                        for (Double key : map.keySet()) {
-                            nearbyTrainsDetails = map.get(key);
-                            nearbyStopsDetails = new NearbyStopsDetails(
-                                    nearbyTrainsDetails.stopName,
-                                    nearbyTrainsDetails.stopName,
-                                    "",
-                                    nearbyTrainsDetails.stopId,
-                                    nearbyTrainsDetails.latitude,
-                                    nearbyTrainsDetails.longitude
-                            );
-                            nearbyStopsDetailsList.add(nearbyStopsDetails);
-//                            Log.v(TAG, "distance/stopId/stopName: " +
-//                                    nearbyTrainsDetails.distanceMeters + " - " +
-//                                    nearbyTrainsDetails.stopId + "/" +
-//                                    nearbyTrainsDetails.stopName);
-                        }
+                        List<NearbyStopsDetails> nearbyStopsDetailsList = dbUtility.getNearbyTrainDetails(latLonDetails, getApplicationContext());
                         sendMessageToMainActivity(new MainActivityEvents.Builder(
                                 MainActivityEvents.MainEvents.NEARBY_LOCATION_DETAILS)
                                 .setNearbyStopsDetailsList(nearbyStopsDetailsList)
@@ -215,26 +195,26 @@ public class RequestProcessorService extends IntentService {
     }
 
     private static int nextNearCnt;
-    private List<NearbyStopsDetails> buildSimulatedNearbyDetails() {
-        List<NearbyStopsDetails> nextNearbyStopsDetailsList = new ArrayList<>();
-        NearbyStopsDetails nearbyStopsDetails = new NearbyStopsDetails(
-                "name" + nextNearCnt,
-                "adr " + nextDetCnt,
-                "transport type",
-                String.valueOf(nextNearCnt),
-                (double) nextNearCnt,
-                (double) nextNearCnt);
-        nextNearbyStopsDetailsList.add(nearbyStopsDetails);
-        nextNearCnt++;
-        nearbyStopsDetails = new NearbyStopsDetails(
-                "name" + nextNearCnt,
-                "adr " + nextDetCnt,
-                "transport type",
-                String.valueOf(nextNearCnt),
-                (double) nextNearCnt,
-                (double) nextNearCnt);
-        nextNearbyStopsDetailsList.add(nearbyStopsDetails);
-        nextNearCnt++;
-        return nextNearbyStopsDetailsList;
-    }
+//    private List<NearbyStopsDetails> buildSimulatedNearbyDetails() {
+//        List<NearbyStopsDetails> nextNearbyStopsDetailsList = new ArrayList<>();
+//        NearbyStopsDetails nearbyStopsDetails = new NearbyStopsDetails(
+//                "name" + nextNearCnt,
+//                "adr " + nextDetCnt,
+//                "transport type",
+//                String.valueOf(nextNearCnt),
+//                (double) nextNearCnt,
+//                (double) nextNearCnt);
+//        nextNearbyStopsDetailsList.add(nearbyStopsDetails);
+//        nextNearCnt++;
+//        nearbyStopsDetails = new NearbyStopsDetails(
+//                "name" + nextNearCnt,
+//                "adr " + nextDetCnt,
+//                "transport type",
+//                String.valueOf(nextNearCnt),
+//                (double) nextNearCnt,
+//                (double) nextNearCnt);
+//        nextNearbyStopsDetailsList.add(nearbyStopsDetails);
+//        nextNearCnt++;
+//        return nextNearbyStopsDetailsList;
+//    }
 }
