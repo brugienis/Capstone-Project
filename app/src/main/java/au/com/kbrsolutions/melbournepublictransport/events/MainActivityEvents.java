@@ -26,6 +26,7 @@ public class MainActivityEvents {
     public final List<DisruptionsDetails> disruptionsDetailsList;
     public final LatLonDetails latLonDetails;
     public final List<NearbyStopsDetails> nearbyStopsDetailsList;
+    public final boolean forTrainsStopsNearby;
 
     private MainActivityEvents(Builder builder) {
         this.event = builder.event;
@@ -34,6 +35,7 @@ public class MainActivityEvents {
         this.disruptionsDetailsList = builder.disruptionsDetailsList;
         this.latLonDetails = builder.latLonDetails;
         this.nearbyStopsDetailsList = builder.nearbyStopsDetailsList;
+        this.forTrainsStopsNearby = builder.forTrainsStopsNearby;
     }
 
     public static class Builder {
@@ -48,6 +50,7 @@ public class MainActivityEvents {
         private List<DisruptionsDetails> disruptionsDetailsList;
         private LatLonDetails latLonDetails;
         private List<NearbyStopsDetails> nearbyStopsDetailsList;
+        private boolean forTrainsStopsNearby;
 
         public Builder setMsg(String msg) {
             this.msg = msg;
@@ -71,6 +74,11 @@ public class MainActivityEvents {
 
         public Builder setNearbyStopsDetailsList(List<NearbyStopsDetails> nearbyStopsDetailsList) {
             this.nearbyStopsDetailsList = nearbyStopsDetailsList;
+            return this;
+        }
+
+        public Builder setForTrainsStopsNearby(boolean forTrainsStopsNearby) {
+            this.forTrainsStopsNearby = forTrainsStopsNearby;
             return this;
         }
 

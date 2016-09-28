@@ -29,14 +29,21 @@ public class CurrentGeoPositionFinder implements
 
     private GoogleApiClient mGoogleApiClient;
     private Context mContext;
+    private boolean mTrainOnly;
 
     private LocationRequest mLocationRequest;
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
-    public CurrentGeoPositionFinder(Context context) {
+    public CurrentGeoPositionFinder(Context context, boolean trainOnly) {
         mContext = context;
+        mTrainOnly = trainOnly;
         buildGoogleApiClient();
+        connectToGoogleApiClient(trainOnly);
+    }
+
+    public void connectToGoogleApiClient(boolean trainOnly) {
+        mTrainOnly = trainOnly;
         mGoogleApiClient.connect();
     }
 
@@ -58,6 +65,7 @@ public class CurrentGeoPositionFinder implements
                         new LatLonDetails(
                                 location.getLatitude(),
                                 location.getLongitude()))
+                .setForTrainsStopsNearby(mTrainOnly)
                 .build());
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();

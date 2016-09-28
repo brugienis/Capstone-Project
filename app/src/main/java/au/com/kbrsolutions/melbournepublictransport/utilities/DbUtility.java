@@ -75,10 +75,10 @@ public class DbUtility {
         for (Double key : map.keySet()) {
             nearbyStopsDetails = map.get(key);
             nearbyStopsDetailsList.add(nearbyStopsDetails);
-            Log.v(TAG, "distance/stopId/stopName: " +
-                    nearbyStopsDetails.distance + " - " +
-                    nearbyStopsDetails.stopId + "/" +
-                    nearbyStopsDetails.stopName);
+//            Log.v(TAG, "distance/stopId/stopName: " +
+//                    nearbyStopsDetails.distance + " - " +
+//                    nearbyStopsDetails.stopId + "/" +
+//                    nearbyStopsDetails.stopName);
             if (cnt++ > nearStopsLimitCnt) {
                 break;
             }
@@ -87,6 +87,7 @@ public class DbUtility {
     }
 
     public void fillInStopNames(List<NearbyStopsDetails> nearbyStopsDetailsList, Context context) {
+        Log.v(TAG, "fillInStopNames start");
         String[] stopIds = new String[nearbyStopsDetailsList.size()];
         int cnt = 0;
         for (NearbyStopsDetails details : nearbyStopsDetailsList) {
@@ -98,10 +99,10 @@ public class DbUtility {
                 " IN (" +
                 TextUtils.join(",", Collections.nCopies(stopIds.length, "?"))
                 + ")";
-        for (int i = 0; i < stopIds.length; i++) {
-            Log.v(TAG, "stopIds: " + i + " - " + stopIds[i]);
-        }
-        Log.v(TAG, "whereClause: " + whereClause);
+//        for (int i = 0; i < stopIds.length; i++) {
+//            Log.v(TAG, "stopIds: " + i + " - " + stopIds[i]);
+//        }
+//        Log.v(TAG, "whereClause: " + whereClause);
 
 //        Uri uri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.ANY_FAVORITE_FLAG);
         Uri uri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.NON_FAVORITE_FLAG);
@@ -112,26 +113,31 @@ public class DbUtility {
                 stopIds,
                 null
         );
-        Log.v(TAG, "cursor count: " + cursor.getCount());
+//        Log.v(TAG, "cursor count: " + cursor.getCount());
         Map<String, String> map = new HashMap<>();
 
         int stopIdIdx;
         int locationNameIdx;
+        String locationName;
         while (cursor.moveToNext()) {
             stopIdIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_STOP_ID);
             locationNameIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LOCATION_NAME);
-            Log.v(TAG, cursor.getString(stopIdIdx) + "/" + cursor.getString(locationNameIdx));
-            map.put(cursor.getString(stopIdIdx), cursor.getString(locationNameIdx));
+            locationName = cursor.getString(locationNameIdx);
+//            Log.v(TAG, cursor.getString(stopIdIdx) + "/" + cursor.getString(locationNameIdx));
+            if (locationName != null) {
+                map.put(cursor.getString(stopIdIdx), locationName);
+            }
         }
 
         cursor.close();
 
-        for (NearbyStopsDetails nearbyStopsDetails : nearbyStopsDetailsList) {
-            nearbyStopsDetails.stopName = map.get(nearbyStopsDetails.stopId);
-        }
-        Log.v(TAG, "after stopName updated");
-        for (NearbyStopsDetails nearbyStopsDetails : nearbyStopsDetailsList) {
-            Log.v(TAG, "details: " + nearbyStopsDetails);
-        }
+//        for (NearbyStopsDetails nearbyStopsDetails : nearbyStopsDetailsList) {
+//            nearbyStopsDetails.stopName = map.get(nearbyStopsDetails.stopId);
+//        }
+//        Log.v(TAG, "after stopName updated");
+//        for (NearbyStopsDetails nearbyStopsDetails : nearbyStopsDetailsList) {
+//            Log.v(TAG, "details: " + nearbyStopsDetails);
+//        }
+        Log.v(TAG, "fillInStopNames end");
     }
 }

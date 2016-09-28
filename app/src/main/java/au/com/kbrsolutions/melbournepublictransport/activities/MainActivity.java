@@ -66,6 +66,8 @@ public class MainActivity extends AppCompatActivity
     private FloatingActionButton fab;
     private EventBus eventBus;
     private String mSelectedStopName;
+    private CurrentGeoPositionFinder mCurrentGeoPositionFinder;
+
     private final String FAVORITE_STOPS = "favorite_stops";
     static final String TAG_ERROR_DIALOG_FRAGMENT = "errorDialog";
     private static final String STATION_ON_MAP_TAG = "station_on_map_tag";
@@ -199,14 +201,23 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Retrieve current latitude and longitude of the device.
+     * @param trainOnly
      */
-    private void getCurrLatLon() {
-        new CurrentGeoPositionFinder(getApplicationContext());
+    private void getCurrLatLon(boolean trainOnly) {
+        if (mCurrentGeoPositionFinder == null) {
+            mCurrentGeoPositionFinder = new CurrentGeoPositionFinder(getApplicationContext(), trainOnly);
+        } else {
+            mCurrentGeoPositionFinder.connectToGoogleApiClient(trainOnly);
+        }
     }
 
-    private void getNearbyDetails(LatLonDetails latLonDetails) {
+    private void getNearbyDetails(LatLonDetails latLonDetails, boolean forTrainsOnly) {
         Intent intent = new Intent(this, RequestProcessorService.class);
-        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.GET_NEARBY_DETAILS);
+        if (forTrainsOnly) {
+            intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.GET_TRAIN_NEARBY_STOPS_DETAILS);
+        } else {
+            intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.GET_NEARBY_STOPS_DETAILS);
+        }
         intent.putExtra(RequestProcessorService.LAT_LON, latLonDetails);
         startService(intent);
     }
@@ -328,8 +339,12 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_stops_nearby) {
-            getCurrLatLon();
+        if (id == R.id.action_train_stops_nearby) {
+            getCurrLatLon(true);
+//            startActivity(new Intent(this, StopsNearbyActivity.class));
+            return true;
+        } else if (id == R.id.action_stops_nearby) {
+            getCurrLatLon(false);
 //            startActivity(new Intent(this, StopsNearbyActivity.class));
             return true;
         } else if (id == R.id.action_disruptions) {
@@ -369,7 +384,7 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case CURR_LOCATION_DETAILS:
-                getNearbyDetails(event.latLonDetails);
+                getNearbyDetails(event.latLonDetails, event.forTrainsStopsNearby);
                 break;
 
             case NEARBY_LOCATION_DETAILS:

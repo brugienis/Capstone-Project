@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -22,12 +23,15 @@ import au.com.kbrsolutions.melbournepublictransport.utilities.DbUtility;
 public class RequestProcessorService extends IntentService {
 
     private EventBus eventBus;
+    private DbUtility dbUtility;
+
     public final static String ACTION = "action";
     public final static String REFRESH_DATA = "refresh_data";
     public final static String REFRESH_DATA_IF_TABLES_EMPTY = "refresh_data_if_tables_empty";
     public static final String GET_DISRUPTIONS_DETAILS = "get_disruptions_details";
     public final static String SHOW_NEXT_DEPARTURES = "show_next_departures";
-    public final static String GET_NEARBY_DETAILS = "get_nearby_details";
+    public final static String GET_NEARBY_STOPS_DETAILS = "get_nearby_details";
+    public final static String GET_TRAIN_NEARBY_STOPS_DETAILS = "get_train_nearby_stops_details";
 
     public final static String MODE = "mode";
     public final static String MODES = "modes";
@@ -72,6 +76,8 @@ public class RequestProcessorService extends IntentService {
                         .setMsg("CANNOT ACCESS MPT site")
                         .build());
             } else {
+                LatLonDetails latLonDetails;
+                List<NearbyStopsDetails> nearbyStopsDetailsList;
                 switch (action) {
                     case REFRESH_DATA:
                         DatabaseContentRefresher.refreshDatabase(getContentResolver(), false);
@@ -107,30 +113,44 @@ public class RequestProcessorService extends IntentService {
                                 .build());
                         break;
 
-                    case GET_NEARBY_DETAILS:
-                        LatLonDetails latLonDetails = extras.getParcelable(LAT_LON);
-                        DbUtility dbUtility = new DbUtility();
-                        List<NearbyStopsDetails> nearbyStopsDetailsList = dbUtility.getNearbyTrainDetails(latLonDetails, getApplicationContext());
+                    case GET_TRAIN_NEARBY_STOPS_DETAILS:
+                        latLonDetails = extras.getParcelable(LAT_LON);
+                        if (dbUtility == null) {
+                            dbUtility = new DbUtility();
+                        }
+                        nearbyStopsDetailsList = dbUtility.getNearbyTrainDetails(
+                                latLonDetails,
+                                getApplicationContext());
                         sendMessageToMainActivity(new MainActivityEvents.Builder(
                                 MainActivityEvents.MainEvents.NEARBY_LOCATION_DETAILS)
                                 .setNearbyStopsDetailsList(nearbyStopsDetailsList)
                                 .build());
                         break;
 
-//                    case GET_NEARBY_DETAILS:
-//                        LatLonDetails latLonDetails = extras.getParcelable(LAT_LON);
+                    case GET_NEARBY_STOPS_DETAILS:
+                        latLonDetails = extras.getParcelable(LAT_LON);
 //                        Log.v(TAG, "onHandleIntent - latLonDetails: " + latLonDetails);
+                        nearbyStopsDetailsList =
+                                RemoteMptEndpointUtil.getNearbyStops(latLonDetails);
+                        Log.v(TAG, "after return to RemoteMptEndpointUtil");
+                        for (NearbyStopsDetails d: nearbyStopsDetailsList) {
+                            Log.v(TAG, d.toString());
+                        }
+                        if (dbUtility == null) {
+                            dbUtility = new DbUtility();
+                        }
+                        dbUtility.fillInStopNames(nearbyStopsDetailsList, getApplicationContext());
 //                        List<NearbyStopsDetails> nearbyStopsDetailsList =
-//                                RemoteMptEndpointUtil.getNearbyStops(latLonDetails);
-//                        DbUtility dbUtility = new DbUtility();
-//                        dbUtility.fillInStopNames(nearbyStopsDetailsList, getApplicationContext());
-////                        List<NearbyStopsDetails> nearbyStopsDetailsList =
-////                                buildSimulatedNearbyDetails();
-//                        sendMessageToMainActivity(new MainActivityEvents.Builder(
-//                                MainActivityEvents.MainEvents.NEARBY_LOCATION_DETAILS)
-//                                .setNearbyStopsDetailsList(nearbyStopsDetailsList)
-//                                .build());
-//                        break;
+//                                buildSimulatedNearbyDetails();
+//                        Log.v(TAG, "after return to RequestProcessorService");
+//                        for (NearbyStopsDetails d: nearbyStopsDetailsList) {
+//                            Log.v(TAG, d.toString());
+//                        }
+                        sendMessageToMainActivity(new MainActivityEvents.Builder(
+                                MainActivityEvents.MainEvents.NEARBY_LOCATION_DETAILS)
+                                .setNearbyStopsDetailsList(nearbyStopsDetailsList)
+                                .build());
+                        break;
 
                     default:
                         throw new RuntimeException(TAG + ".onHandleIntent - no code to handle action: " + action);

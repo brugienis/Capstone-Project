@@ -271,7 +271,7 @@ public class RemoteMptEndpointUtil {
             double longitude;
             for(int i = 0; i < stopArray.length(); i++) {
                 JSONObject oneStringObject = stopArray.getJSONObject(i);
-                Log.v(TAG, "getNearbyStops - oneStringObject: " + oneStringObject);
+//                Log.v(TAG, "getNearbyStops - oneStringObject: " + oneStringObject);
                 JSONObject resultObject = oneStringObject.getJSONObject("result");
                 distance = resultObject.getDouble("distance");
                 locationName = resultObject.getString("location_name");
@@ -281,7 +281,14 @@ public class RemoteMptEndpointUtil {
                 longitude = resultObject.getDouble("lon");
 //                Log.v(TAG, "processJsonString - distance/suburb/transportType/stopId: " + distance + "/" + suburb + "/" + transportType + "/" + stopId);
                 nearbyStopsDetailsList.add(new NearbyStopsDetails(
-                        STOP_ID + stopId, locationName, null, transportType, stopId, latitude, longitude, -1D));
+                        STOP_ID + stopId,
+                        locationName,
+                        null,
+                        transportType,
+                        stopId,
+                        latitude,
+                        longitude,
+                        distance));
             }
         } catch (JSONException e) {
             e.printStackTrace();
