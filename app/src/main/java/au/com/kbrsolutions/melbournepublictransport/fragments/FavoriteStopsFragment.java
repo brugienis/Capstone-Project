@@ -1,5 +1,6 @@
 package au.com.kbrsolutions.melbournepublictransport.fragments;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -9,7 +10,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -38,6 +43,8 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
     public interface FavoriteStopsFragmentCallbacks {
         void handleSelectedFavoriteStop(StopDetails stopDetails);
         void showSelectedStopOnMap(LatLonDetails latLonDetails);
+        void startStopsNearbySearch(boolean trainsOnly);
+        void getDisruptionsDetails();
     }
 
     private FavoriteStopsFragmentCallbacks mCallbacks;
@@ -45,6 +52,7 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
     private List<StopDetails> mStopDetailsList;
     private TextView mEmptyView;
     private View rootView;
+    private boolean isVisible;
     private FavoriteStopDetailAdapter mFavoriteStopDetailAdapter;
 
     private static final int STOP_DETAILS_LOADER = 0;
@@ -75,18 +83,24 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
     }
 
     public void hideView() {
+        isVisible = false;
         rootView.setVisibility(View.INVISIBLE);
+        ((Activity) mCallbacks).invalidateOptionsMenu();
     }
 
     public void showView() {
         // FIXME: 8/09/2016 - start CursorLoader
 //        Log.v(TAG, "showView");
+        isVisible = true;
         rootView.setVisibility(View.VISIBLE);
+        ((Activity) mCallbacks).invalidateOptionsMenu();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        isVisible = true;
     }
 
     // FIXME: 19/08/2016 use Holder pattern or use RecyclerView
@@ -222,6 +236,54 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
         int count = getActivity().getContentResolver().update(
                 MptContract.StopDetailEntry.CONTENT_URI, updatedValues, MptContract.StopDetailEntry._ID + "= ?",
                 new String [] { String.valueOf(stopDetails.id)});
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        Log.v(TAG, "onPrepareOptionsMenu - isVisible: " + isVisible);
+        if (isVisible) {
+            menu.findItem(R.id.action_train_stops_nearby).setVisible(true);
+            menu.findItem(R.id.action_stops_nearby).setVisible(true);
+            menu.findItem(R.id.action_disruptions).setVisible(true);
+        } else {
+            menu.findItem(R.id.action_train_stops_nearby).setVisible(false);
+            menu.findItem(R.id.action_stops_nearby).setVisible(false);
+            menu.findItem(R.id.action_disruptions).setVisible(false);
+        }
+        super.onPrepareOptionsMenu(menu);
+
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        Log.v(TAG, "onCreateOptionsMenu - isVisible: " + isVisible);
+        inflater.inflate(R.menu.menu_favorite_stops, menu);
+//        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.v(TAG, "onOptionsItemSelected - isVisible: " + isVisible);
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_train_stops_nearby) {
+            mCallbacks.startStopsNearbySearch(true);
+//            startActivity(new Intent(this, StopsNearbyActivity.class));
+            return true;
+        } else if (id == R.id.action_stops_nearby) {
+            mCallbacks.startStopsNearbySearch(false);
+//            startActivity(new Intent(this, StopsNearbyActivity.class));
+            return true;
+        } else if (id == R.id.action_disruptions) {
+            mCallbacks.getDisruptionsDetails();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 }

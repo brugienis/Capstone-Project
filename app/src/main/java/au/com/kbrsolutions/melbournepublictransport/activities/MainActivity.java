@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void getDisruptionsDetails() {
+    public void getDisruptionsDetails() {
         String trainMode = "metro-train";
         Intent intent = new Intent(this, RequestProcessorService.class);
         intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.GET_DISRUPTIONS_DETAILS);
@@ -203,12 +203,27 @@ public class MainActivity extends AppCompatActivity
      * Retrieve current latitude and longitude of the device.
      * @param trainOnly
      */
-    private void getCurrLatLon(boolean trainOnly) {
-        Log.v(TAG, "getCurrLatLon - trainOnly: " + trainOnly);
+//    private void getCurrLatLon(boolean trainOnly) {
+//        Log.v(TAG, "getCurrLatLon - trainOnly: " + trainOnly);
+//        if (mCurrentGeoPositionFinder == null) {
+//            mCurrentGeoPositionFinder = new CurrentGeoPositionFinder(getApplicationContext(), trainOnly);
+//        } else {
+//            mCurrentGeoPositionFinder.connectToGoogleApiClient(trainOnly);
+//        }
+//    }
+
+
+    /**
+     * Retrieve current latitude and longitude of the device.
+     * @param trainsOnly
+     */
+    @Override
+    public void startStopsNearbySearch(boolean trainsOnly) {
+        Log.v(TAG, "getCurrLatLon - trainOnly: " + trainsOnly);
         if (mCurrentGeoPositionFinder == null) {
-            mCurrentGeoPositionFinder = new CurrentGeoPositionFinder(getApplicationContext(), trainOnly);
+            mCurrentGeoPositionFinder = new CurrentGeoPositionFinder(getApplicationContext(), trainsOnly);
         } else {
-            mCurrentGeoPositionFinder.connectToGoogleApiClient(trainOnly);
+            mCurrentGeoPositionFinder.connectToGoogleApiClient(trainsOnly);
         }
     }
 
@@ -298,6 +313,7 @@ public class MainActivity extends AppCompatActivity
                         latLonDetails.latitude,
                         latLonDetails.longitude);
             }
+            mFavoriteStopsFragment.hideView();
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.left_dynamic_fragments_frame, mStationOnMapFragment, STATION_ON_MAP_TAG)
@@ -342,19 +358,20 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_train_stops_nearby) {
-            getCurrLatLon(true);
-//            startActivity(new Intent(this, StopsNearbyActivity.class));
-            return true;
-        } else if (id == R.id.action_stops_nearby) {
-            getCurrLatLon(false);
-//            startActivity(new Intent(this, StopsNearbyActivity.class));
-            return true;
-        } else if (id == R.id.action_disruptions) {
-            getDisruptionsDetails();
-            return true;
-        }
-        else if (id == R.id.action_settings) {
+//        if (id == R.id.action_train_stops_nearby) {
+//            getCurrLatLon(true);
+////            startActivity(new Intent(this, StopsNearbyActivity.class));
+//            return true;
+//        } else if (id == R.id.action_stops_nearby) {
+//            getCurrLatLon(false);
+////            startActivity(new Intent(this, StopsNearbyActivity.class));
+//            return true;
+//        } else if (id == R.id.action_disruptions) {
+//            getDisruptionsDetails();
+//            return true;
+//        }
+//        else
+        if (id == R.id.action_settings) {
 //            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }

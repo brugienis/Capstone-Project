@@ -4,14 +4,6 @@
       tools:context=".activities.FavoriteStopsActivity">
 
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never"/>
-</menu>
-<!--
-
-    <item
         android:id="@+id/action_train_stops_nearby"
         android:orderInCategory="10"
         android:title="@string/action_stops_nearby"
@@ -27,4 +19,4 @@
         android:orderInCategory="20"
         android:title="@string/action_disruptions"
         app:showAsAction="never"/>
--->
+</menu>

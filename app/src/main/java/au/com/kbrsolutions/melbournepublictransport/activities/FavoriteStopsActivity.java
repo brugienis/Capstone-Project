@@ -1,6 +1,5 @@
 package au.com.kbrsolutions.melbournepublictransport.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -48,19 +47,18 @@ public class FavoriteStopsActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_stops_nearby) {
-//            startActivity(new Intent(this, StopsNearbyActivity.class));
-            return true;
-        } else if (id == R.id.action_disruptions) {
+
+//        if (id == R.id.action_train_stops_nearby) {
+//            mCa(true);
+//            return true;
+//        } else if (id == R.id.action_stops_nearby) {
+//            getCurrLatLon(false);
+////            startActivity(new Intent(this, StopsNearbyActivity.class));
+//            return true;
+//        } else if (id == R.id.action_disruptions) {
 //            startActivity(new Intent(this, DisruptionsActivity.class));
-            return true;
-        } else if (id == R.id.action_station_on_map) {
-            startActivity(new Intent(this, StationOnMapActivity.class));
-            return true;
-        } else if (id == R.id.action_settings) {
-//            startActivity(new Intent(this, SettingsActivity.class));
-            return true;
-        }
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
