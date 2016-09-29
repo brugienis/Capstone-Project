@@ -38,6 +38,14 @@ public class FavoriteStopDetailAdapter extends CursorAdapter {
                 }
             });
 
+            ImageView departuresImageId = (ImageView) view.findViewById(R.id.departuresImageId);
+            departuresImageId.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mFavoriteStopsFragment.handleNextDeparturesClicked(mStopDetails);
+                }
+            });
+
             ImageView garbageInfoImage = (ImageView) view.findViewById(R.id.garbageImageId);
             garbageInfoImage.setOnClickListener(new View.OnClickListener() {
                 @Override

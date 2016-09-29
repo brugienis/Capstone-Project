@@ -12,7 +12,6 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -103,13 +102,13 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
         }
         mListView = (ListView) rootView.findViewById(R.id.favoriteStopsListView);
         mListView.setAdapter(mFavoriteStopDetailAdapter);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                handleRowClicked(adapterView, position);
-            }
-        });
+//        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+//                handleRowClicked(adapterView, position);
+//            }
+//        });
 
         mEmptyView = (TextView) rootView.findViewById(R.id.emptyView);
 //        Log.v(TAG, "onCreateView - mEmptyView: " + mEmptyView);
@@ -164,20 +163,24 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
             mFavoriteStopDetailAdapter.swapCursor(null);
         }
 
-    private void handleRowClicked(AdapterView<?> adapterView, int position) {
-        // CursorAdapter returns a cursor at the correct position for getItem(), or null
-        // if it cannot seek to that position.
-        Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
-        if (cursor != null) {
-            mCallbacks.handleSelectedFavoriteStop(new StopDetails(
-                    cursor.getInt(COL_STOP_DETAILS_ID),
-                    cursor.getInt(COL_STOP_DETAILS_ROUTE_TYPE),
-                    cursor.getString(COL_STOP_DETAILS_STOP_ID),
-                    cursor.getString(COL_STOP_DETAILS_LOCATION_NAME),
-                    cursor.getDouble(COL_STOP_DETAILS_LATITUDE),
-                    cursor.getDouble(COL_STOP_DETAILS_LONGITUDE),
-                    cursor.getString(COL_STOP_DETAILS_FAVORITE)));
-        }
+//    public void handleRowClicked(AdapterView<?> adapterView, int position) {
+//        // CursorAdapter returns a cursor at the correct position for getItem(), or null
+//        // if it cannot seek to that position.
+//        Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+//        if (cursor != null) {
+//            mCallbacks.handleSelectedFavoriteStop(new StopDetails(
+//                    cursor.getInt(COL_STOP_DETAILS_ID),
+//                    cursor.getInt(COL_STOP_DETAILS_ROUTE_TYPE),
+//                    cursor.getString(COL_STOP_DETAILS_STOP_ID),
+//                    cursor.getString(COL_STOP_DETAILS_LOCATION_NAME),
+//                    cursor.getDouble(COL_STOP_DETAILS_LATITUDE),
+//                    cursor.getDouble(COL_STOP_DETAILS_LONGITUDE),
+//                    cursor.getString(COL_STOP_DETAILS_FAVORITE)));
+//        }
+//    }
+
+    public void handleNextDeparturesClicked(StopDetails stopDetails) {
+            mCallbacks.handleSelectedFavoriteStop(stopDetails);
     }
 
     void handleMapClicked(StopDetails stopDetails) {

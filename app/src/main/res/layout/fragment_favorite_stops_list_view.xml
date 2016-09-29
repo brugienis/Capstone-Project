@@ -38,6 +38,20 @@
         android:layout_marginTop="5dp" -->
 
     <ImageView
+        android:id="@+id/departuresImageId"
+        android:layout_width="@dimen/touchable_size"
+        android:layout_height="@dimen/touchable_size"
+        android:layout_toLeftOf="@+id/mapImageId"
+        android:layout_centerInParent="true"
+        android:adjustViewBounds="true"
+        android:background="@color/view_not_in_focus"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:src="@drawable/ic_forward_10_green_48dp" />
+
+    <ImageView
         android:id="@+id/mapImageId"
         android:layout_width="@dimen/touchable_size"
         android:layout_height="@dimen/touchable_size"

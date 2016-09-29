@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity
                     .add(R.id.left_dynamic_fragments_frame, mNextDeparturesFragment, NEXT_DEPARTURES_TAG)
                     .addToBackStack(NEXT_DEPARTURES_TAG)     // it will also show 'Up' button in the action bar
                     .commit();
-            fab.hide();
+            fab.setImageResource(R.drawable.ic_autorenew_pink_48dp);
         }
     }
 
@@ -204,6 +204,7 @@ public class MainActivity extends AppCompatActivity
      * @param trainOnly
      */
     private void getCurrLatLon(boolean trainOnly) {
+        Log.v(TAG, "getCurrLatLon - trainOnly: " + trainOnly);
         if (mCurrentGeoPositionFinder == null) {
             mCurrentGeoPositionFinder = new CurrentGeoPositionFinder(getApplicationContext(), trainOnly);
         } else {
@@ -245,6 +246,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onSupportNavigateUp() {
         getSupportFragmentManager().popBackStack();
+//        fab.setImageResource(R.drawable.ic_autorenew_pink_48dp);
+        fab.setImageResource(android.R.drawable.ic_input_add);
         return true;
     }
 
