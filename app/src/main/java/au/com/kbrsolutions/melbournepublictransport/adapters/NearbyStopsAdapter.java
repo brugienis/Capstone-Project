@@ -41,7 +41,8 @@ public class NearbyStopsAdapter extends RecyclerView.Adapter<NearbyStopsAdapter.
     public void onBindViewHolder(final NearbyStopsAdapter.ViewHolder holder, int position) {
         NearbyStopsDetails nearbyStopsDetails = mValues.get(position);
 //        Log.v(TAG, "onBindViewHolder - nearbyStopsDetails: " + nearbyStopsDetails);
-        if (nearbyStopsDetails.transportType.equals("train")) {
+//        if (nearbyStopsDetails.route_type.equals("train")) {
+        if (nearbyStopsDetails.route_type == NearbyStopsDetails.TRAIN_ROUTE_TYPE) {
             holder.stopName.setText(nearbyStopsDetails.stopName);
             holder.stopAddress.setText(nearbyStopsDetails.suburb);
 
@@ -96,7 +97,7 @@ public class NearbyStopsAdapter extends RecyclerView.Adapter<NearbyStopsAdapter.
                         // fragment is attached to one) that a map image was touched.
                         mListener.startNextDeparturesSearch(new StopDetails(
                                 -1,
-                                -1,
+                                nearbyStopsDetails.route_type,
                                 nearbyStopsDetails.stopId,
                                 nearbyStopsDetails.stopName,
                                 nearbyStopsDetails.stopLat,

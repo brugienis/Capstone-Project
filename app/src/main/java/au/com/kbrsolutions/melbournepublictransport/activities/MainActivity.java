@@ -335,14 +335,12 @@ public class MainActivity extends AppCompatActivity
 //        fab.show();
     }
 
-    // FIXME: 11/09/2016  - show next five departures time from selected stop?
     public void startNextDeparturesSearch(StopDetails stopDetails) {
         Log.v(TAG, "startNextDeparturesSearch");
         Intent intent = new Intent(this, RequestProcessorService.class);
         mSelectedStopName = stopDetails.locationName;
-        int trainMode = 0;
         intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.SHOW_NEXT_DEPARTURES);
-        intent.putExtra(RequestProcessorService.MODE, trainMode);
+        intent.putExtra(RequestProcessorService.MODE, stopDetails.routeType);
         intent.putExtra(RequestProcessorService.STOP_ID, stopDetails.stopId);
         intent.putExtra(RequestProcessorService.LIMIT, 5);
         startService(intent);

@@ -8,17 +8,19 @@ public class NearbyStopsDetails implements Parcelable {
     public String stopName;
     public final String stopAddress;
     public final String suburb;
-    public final String transportType;
+    public final int route_type;
     public final String stopId;
     public final double stopLat;
     public final double stopLon;
     public final double distance;
 
+    public final static int TRAIN_ROUTE_TYPE = 0;
+
     public NearbyStopsDetails(
             String stopName,
             String stopAddress,
             String suburb,
-            String transportType,
+            int route_type,
             String stopId,
             double stopLat,
             double stopLon,
@@ -26,7 +28,7 @@ public class NearbyStopsDetails implements Parcelable {
         this.stopName = stopName;
         this.stopAddress = stopAddress;
         this.suburb = suburb;
-        this.transportType = transportType;
+        this.route_type = route_type;
         this.stopId = stopId;
         this.stopLat = stopLat;
         this.stopLon = stopLon;
@@ -37,7 +39,7 @@ public class NearbyStopsDetails implements Parcelable {
         stopName = input.readString();
         stopAddress = input.readString();
         suburb = input.readString();
-        transportType = input.readString();
+        route_type = input.readInt();
         stopId = input.readString();
         stopLat = input.readDouble();
         stopLon = input.readDouble();
@@ -50,7 +52,7 @@ public class NearbyStopsDetails implements Parcelable {
                 "; stopName: " + stopName +
                 "; stopAddress: " + stopAddress +
                 "; suburb: " + suburb +
-                "; transportType: " + transportType +
+                "; route_type: " + route_type +
                 "; stopLat: " + stopLat +
                 "; stopLon: " + stopLon;
     }
@@ -65,7 +67,7 @@ public class NearbyStopsDetails implements Parcelable {
         dest.writeString(stopName);
         dest.writeString(stopAddress);
         dest.writeString(suburb);
-        dest.writeString(transportType);
+        dest.writeInt(route_type);
         dest.writeString(stopId);
         dest.writeDouble(stopLat);
         dest.writeDouble(stopLon);

@@ -58,7 +58,7 @@ public class DbUtility {
                     cursor.getString(locationNameIdx),
                     null,
                     cursor.getString(suburbIdx),
-                    "train",
+                    NearbyStopsDetails.TRAIN_ROUTE_TYPE,
                     cursor.getString(stopIdIdx),
                     cursor.getDouble(latIdx),
                     cursor.getDouble(lonIdx),
