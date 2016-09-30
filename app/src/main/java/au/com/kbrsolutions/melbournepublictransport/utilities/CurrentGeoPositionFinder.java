@@ -21,7 +21,7 @@ import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 /**
  * Created by business on 24/09/2016.
  */
-// FIXME: 26/09/2016 - add static function that will get GEO position when this class is already instantiated
+// FIXME: 26/09/2016 - make Singleton. Merge with DbUtility.
 public class CurrentGeoPositionFinder implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,

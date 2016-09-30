@@ -69,17 +69,19 @@ public class MainActivity extends AppCompatActivity
     private String mSelectedStopName;
     private CurrentGeoPositionFinder mCurrentGeoPositionFinder;
 
-    private final String FAVORITE_STOPS_TAG = "favorite_stops";
+    private final String FAVORITE_STOPS_TAG = "favorite_stops_tag";
     static final String TAG_ERROR_DIALOG_FRAGMENT = "errorDialog";
     private static final String STATION_ON_MAP_TAG = "station_on_map_tag";
     private static final String STOP_TAG = "stop_tag";
     private static final String NEXT_DEPARTURES_TAG = "next_departures_tag";
     private static final String DISRUPTION_TAG = "disruption_tag";
     private static final String NEARBY_TAG = "nearby_tag";
+    private final static String TRANSPORT_MODE_METRO_TRAIN = "metro-train";
 
     public enum FragmentsId {
         FAVORITE_STOPS,
-        STOPS_NEARBY
+        STOPS_NEARBY,
+        NEXT_DEPARTURES
     }
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
@@ -151,12 +153,12 @@ public class MainActivity extends AppCompatActivity
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         if (cnt > 0) {
             String tag = getSupportFragmentManager().getBackStackEntryAt(cnt - 1).getName();
-            Log.v(TAG, "getTopFragment - cnt/tag: " + cnt + "/" + tag);
+//            Log.v(TAG, "getTopFragment - cnt/tag: " + cnt + "/" + tag);
             fragment = getSupportFragmentManager().findFragmentByTag(tag);
             if (fragment instanceof BaseFragment) {
                 topFragmment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
             }
-            Log.v(TAG, "getTopFragment - fragment/topFragmment: " + fragment + "/" + topFragmment);
+//            Log.v(TAG, "getTopFragment - fragment/topFragmment: " + fragment + "/" + topFragmment);
         }
         return topFragmment;
     }
@@ -175,34 +177,61 @@ public class MainActivity extends AppCompatActivity
 
     // FIXME: 17/08/2016
     private void handleFabClicked() {
-        int cnt = getSupportFragmentManager().getBackStackEntryCount();
-            actionBar.setTitle(getResources().getString(R.string.title_stops));
-            if (mStopDetailFragment == null) {
-                mStopDetailFragment = new StopDetailFragment();
+//        int cnt = getSupportFragmentManager().getBackStackEntryCount();
+        BaseFragment baseFragment = getTopFragment();
+        if (baseFragment != null) {
+            FragmentsId fragmentsId = baseFragment.getFragmentId();
+            Log.v(TAG, "handleFabClicked - baseFragment/fragmentsId: " + baseFragment + "/" + fragmentsId);
+            if (fragmentsId != null && fragmentsId != FragmentsId.FAVORITE_STOPS) {
+                showSnackBar("No logic to handle FAB touched in BaseFragmment", true);
+                return;
             }
-            mFavoriteStopsFragment.hideView();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.left_dynamic_fragments_frame, mStopDetailFragment, STOP_TAG)
-                    .addToBackStack(STOP_TAG)     // it will also show 'Up' button in the action bar
-                    .commit();
-            fab.hide();
+        } else {
+            showSnackBar("No logic to handle FAB touched (not in BaseFragmment)", true);
+            return;
+        }
+        actionBar.setTitle(getResources().getString(R.string.title_stops));
+        if (mStopDetailFragment == null) {
+            mStopDetailFragment = new StopDetailFragment();
+        }
+        mFavoriteStopsFragment.hideView();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.left_dynamic_fragments_frame, mStopDetailFragment, STOP_TAG)
+                .addToBackStack(STOP_TAG)     // it will also show 'Up' button in the action bar
+                .commit();
+        fab.hide();
     }
 
     private void showViewIfRequired() {
         BaseFragment baseFragment = getTopFragment();
         Log.v(TAG, "showViewIfRequired - baseFragment: " + baseFragment);
+        boolean showFab = false;
         if (baseFragment != null) {
             FragmentsId fragmentsId = baseFragment.getFragmentId();
-            if (fragmentsId != null && fragmentsId == FragmentsId.FAVORITE_STOPS || fragmentsId == FragmentsId.STOPS_NEARBY) {
-                baseFragment.showView();
+            Log.v(TAG, "showViewIfRequired - fragmentsId: " + fragmentsId);
+            if (fragmentsId != null) {
+                if (fragmentsId == FragmentsId.FAVORITE_STOPS ||
+                        fragmentsId == FragmentsId.STOPS_NEARBY) {
+                    baseFragment.showView();
+                }
+                if (fragmentsId == FragmentsId.FAVORITE_STOPS ||
+                        fragmentsId == FragmentsId.NEXT_DEPARTURES) {
+                    showFab = true;
+                }
             }
+        }
+        Log.v(TAG, "showViewIfRequired - showFab: " + showFab);
+        if (showFab) {
+            fab.show();
+        } else {
+            fab.hide();
         }
     }
 
     private void hideViewIfRequired() {
         BaseFragment baseFragment = getTopFragment();
-        Log.v(TAG, "showViewIfRequired - baseFragment: " + baseFragment);
+//        Log.v(TAG, "hideViewIfRequired - baseFragment: " + baseFragment);
         if (baseFragment != null) {
             FragmentsId fragmentsId = baseFragment.getFragmentId();
             if (fragmentsId != null && fragmentsId == FragmentsId.FAVORITE_STOPS || fragmentsId == FragmentsId.STOPS_NEARBY) {
@@ -212,11 +241,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void showNextDepartures(List<NextDepartureDetails> nextDepartureDetailsList) {
-        Log.v(TAG, "showNextDepartures");
+//        Log.v(TAG, "showNextDepartures");
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         actionBar.setTitle(getResources().getString(R.string.title_next_departures));
         if (mNextDeparturesFragment == null) {
             mNextDeparturesFragment = NextDeparturesFragment.newInstance(mSelectedStopName, nextDepartureDetailsList);
+            mNextDeparturesFragment.setFragmentId(FragmentsId.NEXT_DEPARTURES);
         } else {
             mNextDeparturesFragment.setNewContent(mSelectedStopName, nextDepartureDetailsList);
         }
@@ -229,10 +259,12 @@ public class MainActivity extends AppCompatActivity
                 .addToBackStack(NEXT_DEPARTURES_TAG)     // it will also show 'Up' button in the action bar
                 .commit();
         fab.setImageResource(R.drawable.ic_autorenew_pink_48dp);
+        Log.v(TAG, "showNextDepartures: before fab.show()");
+//        fab.show();
     }
 
     public void getDisruptionsDetails() {
-        String trainMode = "metro-train";
+        String trainMode = TRANSPORT_MODE_METRO_TRAIN;
         Intent intent = new Intent(this, RequestProcessorService.class);
         intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.GET_DISRUPTIONS_DETAILS);
         intent.putExtra(RequestProcessorService.MODES, trainMode);
@@ -300,7 +332,7 @@ public class MainActivity extends AppCompatActivity
     private void showFavoriteStops() {
         actionBar.setTitle(getResources().getString(R.string.title_favorite_stops));
         mFavoriteStopsFragment.showFavoriteStops();
-        fab.show();
+//        fab.show();
     }
 
     // FIXME: 11/09/2016  - show next five departures time from selected stop?
@@ -326,12 +358,13 @@ public class MainActivity extends AppCompatActivity
                 .commit();
 
         getSupportFragmentManager().popBackStack();
-        fab.show();
+//        fab.show();
     }
 
     @Override
     public void showSelectedStopOnMap(LatLonDetails latLonDetails) {
         if (readyToGo()) {
+            fab.hide();
             if (mStationOnMapFragment == null) {
                 mStationOnMapFragment = StationOnMapFragment.newInstance(
                         latLonDetails.latitude,
@@ -347,7 +380,6 @@ public class MainActivity extends AppCompatActivity
                     .add(R.id.left_dynamic_fragments_frame, mStationOnMapFragment, STATION_ON_MAP_TAG)
                     .addToBackStack(STATION_ON_MAP_TAG)     // it will also show 'Up' button in the action bar
                     .commit();
-            fab.hide();
         }
     }
 
@@ -409,7 +441,7 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case NEXT_DEPARTURES_DETAILS:
-                Log.v(TAG, "onMessageEvent - NEXT_DEPARTURES_DETAILS: " + event.nextDepartureDetailsList);
+//                Log.v(TAG, "onMessageEvent - NEXT_DEPARTURES_DETAILS: " + event.nextDepartureDetailsList);
                 showNextDepartures(event.nextDepartureDetailsList);
                 break;
 

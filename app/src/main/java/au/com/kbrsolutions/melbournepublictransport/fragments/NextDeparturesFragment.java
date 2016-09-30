@@ -2,7 +2,6 @@ package au.com.kbrsolutions.melbournepublictransport.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,7 +20,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
  * A fragment representing a list of Items.
  * <p/>
  */
-public class NextDeparturesFragment extends Fragment {
+public class NextDeparturesFragment extends BaseFragment {
 
     private static final String ARG_SELECTED_STOP_NAME = "arg_selected_stop_name";
     private static final String ARG_NEXT_DEPARTURE_DATA = "next_departure_data";
@@ -84,4 +83,13 @@ public class NextDeparturesFragment extends Fragment {
         mRecyclerViewAdapter.swap(nextDepartureDetailsList);
     }
 
+    @Override
+    public void hideView() {
+
+    }
+
+    @Override
+    public void showView() {
+
+    }
 }

@@ -215,8 +215,8 @@ public class RemoteMptEndpointUtil {
 //                        JodaDateTimeUtility.getLocalTimeFromUtcString(timeTimetableUtc).toString()));
                         str));
 //                Log.v(TAG, "processJsonString - in code/in details: " + directionId + "/" + nextDepartureDetailsList.get(i).directionId);
-                if (directionId == 1) { //City (Flinders Street)
-                }
+//                if (directionId == 1) { //City (Flinders Street)
+//                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -225,7 +225,7 @@ public class RemoteMptEndpointUtil {
     }
 
     public static List<DisruptionsDetails> getDisruptions(String modes) {
-        Log.v(TAG, "getDisruptions - modes: " + modes);
+//        Log.v(TAG, "getDisruptions - modes: " + modes);
         final String uri = "/v2/disruptions/modes/" + modes;
         String jsonString = processRemoteRequest(uri);
 
@@ -241,7 +241,7 @@ public class RemoteMptEndpointUtil {
                 JSONObject oneDisruptionsObject = disruptionsArray.getJSONObject(i);
                 title = oneDisruptionsObject.getString("title");
                 description = oneDisruptionsObject.getString("description");
-                Log.v(TAG, "processJsonString - title: " + title + "/" + description);
+//                Log.v(TAG, "processJsonString - title: " + title + "/" + description);
                 disruptionsDetails = new DisruptionsDetails(title, description);
                 nextDisruptionsDetailsList.add(disruptionsDetails);
             }
@@ -253,7 +253,7 @@ public class RemoteMptEndpointUtil {
 
     private final static String STOP_ID = "Stop iD ";
     public static List<NearbyStopsDetails> getNearbyStops(LatLonDetails latLonDetails) {
-        Log.v(TAG, "getNearbyStops - latLonDetails: " + latLonDetails);
+//        Log.v(TAG, "getNearbyStops - latLonDetails: " + latLonDetails);
         final String uri = "/v2/nearme/latitude/" + latLonDetails.latitude + "/longitude/" + latLonDetails.longitude;
         String jsonString = processRemoteRequest(uri);
 

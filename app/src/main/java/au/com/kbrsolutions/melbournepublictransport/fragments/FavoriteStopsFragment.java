@@ -35,7 +35,9 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
  * {@link FavoriteStopsFragment.FavoriteStopsFragmentCallbacks} interface
  * to handle interaction events.
  */
-public class FavoriteStopsFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class FavoriteStopsFragment
+        extends BaseFragment
+        implements LoaderManager.LoaderCallbacks<Cursor> {
 
     /**
      * Declares callback methods that have to be implemented by parent Activity
