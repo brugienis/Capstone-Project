@@ -20,6 +20,7 @@ import au.com.kbrsolutions.melbournepublictransport.fragments.dummy.DummyContent
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
+// FIXME: 1/10/2016 - remove this class and related objects
 public class ItemFragment extends Fragment {
 
     // TODO: Customize parameter argument names
