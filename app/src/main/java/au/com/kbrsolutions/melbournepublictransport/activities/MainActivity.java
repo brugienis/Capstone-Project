@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity
         implements FavoriteStopsFragment.FavoriteStopsFragmentCallbacks,
         StopDetailFragment.AddStopFragmentCallbacks,
         NearbyStopsFragment.OnNearbyStopsFragmentInteractionListener {
-//        FragmentManager.OnBackStackChangedListener {
 
     private FavoriteStopsFragment mFavoriteStopsFragment;
     private StationOnMapFragment mStationOnMapFragment;
@@ -107,14 +106,7 @@ public class MainActivity extends AppCompatActivity
                 new FragmentManager.OnBackStackChangedListener() {
                     public void onBackStackChanged() {
                         showViewIfRequired();
-//                        BaseFragment baseFragment = getTopFragment();
-//                        Log.v(TAG, "onBackStackChanged - baseFragment: " + baseFragment);
-//                        if (baseFragment != null) {
-//                            FragmentsId fragmentsId = baseFragment.getFragmentId();
-//                            if (fragmentsId != null && fragmentsId == FragmentsId.FAVORITE_STOPS || fragmentsId == FragmentsId.STOPS_NEARBY) {
-//                                baseFragment.showView();
-//                            }
-//                        }
+
                         int cnt = getSupportFragmentManager().getBackStackEntryCount();
                         if (cnt == 1) {      /* we came back to Favorite Stops */
                             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -184,7 +176,6 @@ public class MainActivity extends AppCompatActivity
     // FIXME: 17/08/2016
     private void handleFabClicked() {
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
-//        if (cnt == 0) {      /* current fragment is FavoriteStopsFragment */
             actionBar.setTitle(getResources().getString(R.string.title_stops));
             if (mStopDetailFragment == null) {
                 mStopDetailFragment = new StopDetailFragment();
@@ -196,7 +187,6 @@ public class MainActivity extends AppCompatActivity
                     .addToBackStack(STOP_TAG)     // it will also show 'Up' button in the action bar
                     .commit();
             fab.hide();
-//        }
     }
 
     private void showViewIfRequired() {
@@ -231,13 +221,7 @@ public class MainActivity extends AppCompatActivity
             mNextDeparturesFragment.setNewContent(mSelectedStopName, nextDepartureDetailsList);
         }
         Fragment topFragment = getTopFragment();
-        Log.v(TAG, "showNextDepartures - topFragment: " + topFragment);
-        // FIXME: 30/09/2016 - below
-//        if (cnt == 1) {
-//            mFavoriteStopsFragment.hideView();
-//        } else {
-//            mNearbyStopsFragment.hideView();
-//        }
+//        Log.v(TAG, "showNextDepartures - topFragment: " + topFragment);
         hideViewIfRequired();
         getSupportFragmentManager()
                 .beginTransaction()
@@ -256,21 +240,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Retrieve current latitude and longitude of the device.
-     * @param trainOnly
-     */
-//    private void getCurrLatLon(boolean trainOnly) {
-//        Log.v(TAG, "getCurrLatLon - trainOnly: " + trainOnly);
-//        if (mCurrentGeoPositionFinder == null) {
-//            mCurrentGeoPositionFinder = new CurrentGeoPositionFinder(getApplicationContext(), trainOnly);
-//        } else {
-//            mCurrentGeoPositionFinder.connectToGoogleApiClient(trainOnly);
-//        }
-//    }
-
-
-    /**
-     * Retrieve current latitude and longitude of the device.
+     * Find current latitude and longitude of the device.
      *
      * @param trainsOnly
      */
@@ -319,27 +289,10 @@ public class MainActivity extends AppCompatActivity
     public boolean onSupportNavigateUp() {
         getSupportFragmentManager().popBackStack();
         Log.v(TAG, "onSupportNavigateUp - after popBackStack");
-//        Log.v(TAG, "onSupportNavigateUp - before cnt: " + getSupportFragmentManager().getBackStackEntryCount());
-//        getSupportFragmentManager().popBackStackImmediate();
-//        Log.v(TAG, "onSupportNavigateUp - after  cnt: " + getSupportFragmentManager().getBackStackEntryCount());
-//        BaseFragment baseFragment = getTopFragment();
-//        Log.v(TAG, "onSupportNavigateUp - baseFragment: " + baseFragment);
-//        FragmentsId fragmentsId = baseFragment.getFragmentId();
-//        if (fragmentsId != null && fragmentsId == FragmentsId.FAVORITE_STOPS || fragmentsId == FragmentsId.STOPS_NEARBY) {
-//            baseFragment.showView();
-//        } else {
-//            Log.v(TAG, "onSupportNavigateUp - baseFragment: " + baseFragment);
-//        }
 //        fab.setImageResource(R.drawable.ic_autorenew_pink_48dp);
         fab.setImageResource(android.R.drawable.ic_input_add);
         return true;
     }
-
-//    @Override
-//    public void onBackStackChanged() {
-//        BaseFragment baseFragment = getTopFragment();
-//        Log.v(TAG, "onBackStackChanged - baseFragment: " + baseFragment);
-//    }
 
     /**
      * Show favorite stops after user pressed Back or Up button.
@@ -379,7 +332,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void showSelectedStopOnMap(LatLonDetails latLonDetails) {
         if (readyToGo()) {
-//            currLatLonDetails = latLonDetails;
             if (mStationOnMapFragment == null) {
                 mStationOnMapFragment = StationOnMapFragment.newInstance(
                         latLonDetails.latitude,
@@ -408,10 +360,8 @@ public class MainActivity extends AppCompatActivity
         } else {
             mNearbyStopsFragment.setNewContent(nearbyStopsDetailsList);
         }
-        // FIXME: 24/09/2016 - maybe build base fragment that will have method hideView(...)?
-//        getTopFragment().hideView();
         mFavoriteStopsFragment.hideView();
-        Log.v(TAG, "showNearbyStops - adding mNearbyStopsFragment");
+//        Log.v(TAG, "showNearbyStops - adding mNearbyStopsFragment");
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.left_dynamic_fragments_frame, mNearbyStopsFragment, NEARBY_TAG)
@@ -434,20 +384,6 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_train_stops_nearby) {
-//            getCurrLatLon(true);
-////            startActivity(new Intent(this, StopsNearbyActivity.class));
-//            return true;
-//        } else if (id == R.id.action_stops_nearby) {
-//            getCurrLatLon(false);
-////            startActivity(new Intent(this, StopsNearbyActivity.class));
-//            return true;
-//        } else if (id == R.id.action_disruptions) {
-//            getDisruptionsDetails();
-//            return true;
-//        }
-//        else
         if (id == R.id.action_settings) {
 //            startActivity(new Intent(this, SettingsActivity.class));
             return true;

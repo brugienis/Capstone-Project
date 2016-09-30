@@ -98,7 +98,9 @@ public class FavoriteStopsFragment extends BaseFragment implements LoaderManager
 //        Log.v(TAG, "showView");
         isVisible = true;
         mRootView.setVisibility(View.VISIBLE);
-        ((Activity) mCallbacks).invalidateOptionsMenu();
+        if (mCallbacks != null) {
+            ((Activity) mCallbacks).invalidateOptionsMenu();
+        }
     }
 
     @Override
@@ -127,19 +129,10 @@ public class FavoriteStopsFragment extends BaseFragment implements LoaderManager
         }
         mListView = (ListView) mRootView.findViewById(R.id.favoriteStopsListView);
         mListView.setAdapter(mFavoriteStopDetailAdapter);
-//        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-//                handleRowClicked(adapterView, position);
-//            }
-//        });
 
         mEmptyView = (TextView) mRootView.findViewById(R.id.emptyView);
-//        Log.v(TAG, "onCreateView - mEmptyView: " + mEmptyView);
         mEmptyView.setText(getActivity().getResources()
                 .getString(R.string.no_favorite_stops_selected));
-//        Log.v(TAG, "onCreateView - showing empty list");
         return mRootView;
     }
 
@@ -184,25 +177,8 @@ public class FavoriteStopsFragment extends BaseFragment implements LoaderManager
 
         @Override
         public void onLoaderReset(Loader<Cursor> loader) {
-//        Log.v(TAG, "onLoadFinished - start");
             mFavoriteStopDetailAdapter.swapCursor(null);
         }
-
-//    public void handleRowClicked(AdapterView<?> adapterView, int position) {
-//        // CursorAdapter returns a cursor at the correct position for getItem(), or null
-//        // if it cannot seek to that position.
-//        Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
-//        if (cursor != null) {
-//            mCallbacks.startNextDeparturesSearch(new StopDetails(
-//                    cursor.getInt(COL_STOP_DETAILS_ID),
-//                    cursor.getInt(COL_STOP_DETAILS_ROUTE_TYPE),
-//                    cursor.getString(COL_STOP_DETAILS_STOP_ID),
-//                    cursor.getString(COL_STOP_DETAILS_LOCATION_NAME),
-//                    cursor.getDouble(COL_STOP_DETAILS_LATITUDE),
-//                    cursor.getDouble(COL_STOP_DETAILS_LONGITUDE),
-//                    cursor.getString(COL_STOP_DETAILS_FAVORITE)));
-//        }
-//    }
 
     public void handleNextDeparturesClicked(StopDetails stopDetails) {
             mCallbacks.startNextDeparturesSearch(stopDetails);
@@ -236,12 +212,7 @@ public class FavoriteStopsFragment extends BaseFragment implements LoaderManager
         mCallbacks = null;
     }
 
-//    private void processSelectedStop(int position) {
-//        Log.v(TAG, "processSelectedStop - position: " + position);
-//    }
-
     public void removeSelectedStop(StopDetails stopDetails) {
-//        Log.v(TAG, "removeSelectedStop - stopDetails: " + stopDetails);
         ContentValues updatedValues = new ContentValues();
         updatedValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, "n");
         int count = getActivity().getContentResolver().update(
@@ -251,7 +222,6 @@ public class FavoriteStopsFragment extends BaseFragment implements LoaderManager
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-//        Log.v(TAG, "onPrepareOptionsMenu - isVisible: " + isVisible);
         if (isVisible) {
             menu.findItem(R.id.action_train_stops_nearby).setVisible(true);
             menu.findItem(R.id.action_stops_nearby).setVisible(true);
@@ -267,14 +237,11 @@ public class FavoriteStopsFragment extends BaseFragment implements LoaderManager
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        Log.v(TAG, "onCreateOptionsMenu - isVisible: " + isVisible);
         inflater.inflate(R.menu.menu_favorite_stops, menu);
-//        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-//        Log.v(TAG, "onOptionsItemSelected - isVisible: " + isVisible);
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -283,11 +250,9 @@ public class FavoriteStopsFragment extends BaseFragment implements LoaderManager
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_train_stops_nearby) {
             mCallbacks.startStopsNearbySearch(true);
-//            startActivity(new Intent(this, StopsNearbyActivity.class));
             return true;
         } else if (id == R.id.action_stops_nearby) {
             mCallbacks.startStopsNearbySearch(false);
-//            startActivity(new Intent(this, StopsNearbyActivity.class));
             return true;
         } else if (id == R.id.action_disruptions) {
             mCallbacks.getDisruptionsDetails();

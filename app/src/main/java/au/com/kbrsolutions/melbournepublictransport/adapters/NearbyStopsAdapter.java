@@ -1,7 +1,6 @@
 package au.com.kbrsolutions.melbournepublictransport.adapters;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,7 +90,7 @@ public class NearbyStopsAdapter extends RecyclerView.Adapter<NearbyStopsAdapter.
             departuresImageId.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.v(TAG, "ViewHolder - onClick");
+//                    Log.v(TAG, "ViewHolder - onClick");
                     if (null != mListener) {
                         // Notify the active callbacks interface (the activity, if the
                         // fragment is attached to one) that a map image was touched.
