@@ -38,6 +38,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.RequestProcessorService;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
+import au.com.kbrsolutions.melbournepublictransport.fragments.BaseFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.DisruptionsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.NearbyStopsFragment;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity
         implements FavoriteStopsFragment.FavoriteStopsFragmentCallbacks,
         StopDetailFragment.AddStopFragmentCallbacks,
         NearbyStopsFragment.OnNearbyStopsFragmentInteractionListener {
+//        FragmentManager.OnBackStackChangedListener {
 
     private FavoriteStopsFragment mFavoriteStopsFragment;
     private StationOnMapFragment mStationOnMapFragment;
@@ -68,13 +70,18 @@ public class MainActivity extends AppCompatActivity
     private String mSelectedStopName;
     private CurrentGeoPositionFinder mCurrentGeoPositionFinder;
 
-    private final String FAVORITE_STOPS = "favorite_stops";
+    private final String FAVORITE_STOPS_TAG = "favorite_stops";
     static final String TAG_ERROR_DIALOG_FRAGMENT = "errorDialog";
     private static final String STATION_ON_MAP_TAG = "station_on_map_tag";
     private static final String STOP_TAG = "stop_tag";
     private static final String NEXT_DEPARTURES_TAG = "next_departures_tag";
     private static final String DISRUPTION_TAG = "disruption_tag";
     private static final String NEARBY_TAG = "nearby_tag";
+
+    public enum FragmentsId {
+        FAVORITE_STOPS,
+        STOPS_NEARBY
+    }
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
@@ -99,8 +106,17 @@ public class MainActivity extends AppCompatActivity
         getSupportFragmentManager().addOnBackStackChangedListener(
                 new FragmentManager.OnBackStackChangedListener() {
                     public void onBackStackChanged() {
+                        showViewIfRequired();
+//                        BaseFragment baseFragment = getTopFragment();
+//                        Log.v(TAG, "onBackStackChanged - baseFragment: " + baseFragment);
+//                        if (baseFragment != null) {
+//                            FragmentsId fragmentsId = baseFragment.getFragmentId();
+//                            if (fragmentsId != null && fragmentsId == FragmentsId.FAVORITE_STOPS || fragmentsId == FragmentsId.STOPS_NEARBY) {
+//                                baseFragment.showView();
+//                            }
+//                        }
                         int cnt = getSupportFragmentManager().getBackStackEntryCount();
-                        if (cnt == 0) {      /* we came back to Favorite Stops */
+                        if (cnt == 1) {      /* we came back to Favorite Stops */
                             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                             showFavoriteStops();
                         } else {
@@ -110,14 +126,16 @@ public class MainActivity extends AppCompatActivity
                 });
 
         mFavoriteStopsFragment =
-                (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS);
+                (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
 
 
         if (mFavoriteStopsFragment == null) {
             mFavoriteStopsFragment = new FavoriteStopsFragment();
+            mFavoriteStopsFragment.setFragmentId(FragmentsId.FAVORITE_STOPS);
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS)
+                    .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
+                    .addToBackStack(FAVORITE_STOPS_TAG)
                     .commit();
         }
 
@@ -135,12 +153,18 @@ public class MainActivity extends AppCompatActivity
         startService(intent);
     }
 
-    private Fragment getTopFragment() {
-        Fragment topFragmment = null;
+    private BaseFragment getTopFragment() {
+        BaseFragment topFragmment = null;
+        Fragment fragment;
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         if (cnt > 0) {
             String tag = getSupportFragmentManager().getBackStackEntryAt(cnt - 1).getName();
-            topFragmment = getSupportFragmentManager().findFragmentByTag(tag);
+            Log.v(TAG, "getTopFragment - cnt/tag: " + cnt + "/" + tag);
+            fragment = getSupportFragmentManager().findFragmentByTag(tag);
+            if (fragment instanceof BaseFragment) {
+                topFragmment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
+            }
+            Log.v(TAG, "getTopFragment - fragment/topFragmment: " + fragment + "/" + topFragmment);
         }
         return topFragmment;
     }
@@ -160,7 +184,7 @@ public class MainActivity extends AppCompatActivity
     // FIXME: 17/08/2016
     private void handleFabClicked() {
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
-        if (cnt == 0) {      /* current fragment is FavoriteStopsFragment */
+//        if (cnt == 0) {      /* current fragment is FavoriteStopsFragment */
             actionBar.setTitle(getResources().getString(R.string.title_stops));
             if (mStopDetailFragment == null) {
                 mStopDetailFragment = new StopDetailFragment();
@@ -172,12 +196,34 @@ public class MainActivity extends AppCompatActivity
                     .addToBackStack(STOP_TAG)     // it will also show 'Up' button in the action bar
                     .commit();
             fab.hide();
+//        }
+    }
+
+    private void showViewIfRequired() {
+        BaseFragment baseFragment = getTopFragment();
+        Log.v(TAG, "showViewIfRequired - baseFragment: " + baseFragment);
+        if (baseFragment != null) {
+            FragmentsId fragmentsId = baseFragment.getFragmentId();
+            if (fragmentsId != null && fragmentsId == FragmentsId.FAVORITE_STOPS || fragmentsId == FragmentsId.STOPS_NEARBY) {
+                baseFragment.showView();
+            }
+        }
+    }
+
+    private void hideViewIfRequired() {
+        BaseFragment baseFragment = getTopFragment();
+        Log.v(TAG, "showViewIfRequired - baseFragment: " + baseFragment);
+        if (baseFragment != null) {
+            FragmentsId fragmentsId = baseFragment.getFragmentId();
+            if (fragmentsId != null && fragmentsId == FragmentsId.FAVORITE_STOPS || fragmentsId == FragmentsId.STOPS_NEARBY) {
+                baseFragment.hideView();
+            }
         }
     }
 
     private void showNextDepartures(List<NextDepartureDetails> nextDepartureDetailsList) {
-    Log.v(TAG, "showNextDepartures");
-    int cnt = getSupportFragmentManager().getBackStackEntryCount();
+        Log.v(TAG, "showNextDepartures");
+        int cnt = getSupportFragmentManager().getBackStackEntryCount();
         actionBar.setTitle(getResources().getString(R.string.title_next_departures));
         if (mNextDeparturesFragment == null) {
             mNextDeparturesFragment = NextDeparturesFragment.newInstance(mSelectedStopName, nextDepartureDetailsList);
@@ -186,11 +232,13 @@ public class MainActivity extends AppCompatActivity
         }
         Fragment topFragment = getTopFragment();
         Log.v(TAG, "showNextDepartures - topFragment: " + topFragment);
-        if (cnt == 0) {
-            mFavoriteStopsFragment.hideView();
-        } else {
-            mNearbyStopsFragment.hideView();
-        }
+        // FIXME: 30/09/2016 - below
+//        if (cnt == 1) {
+//            mFavoriteStopsFragment.hideView();
+//        } else {
+//            mNearbyStopsFragment.hideView();
+//        }
+        hideViewIfRequired();
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.left_dynamic_fragments_frame, mNextDeparturesFragment, NEXT_DEPARTURES_TAG)
@@ -223,6 +271,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Retrieve current latitude and longitude of the device.
+     *
      * @param trainsOnly
      */
     @Override
@@ -269,10 +318,28 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onSupportNavigateUp() {
         getSupportFragmentManager().popBackStack();
+        Log.v(TAG, "onSupportNavigateUp - after popBackStack");
+//        Log.v(TAG, "onSupportNavigateUp - before cnt: " + getSupportFragmentManager().getBackStackEntryCount());
+//        getSupportFragmentManager().popBackStackImmediate();
+//        Log.v(TAG, "onSupportNavigateUp - after  cnt: " + getSupportFragmentManager().getBackStackEntryCount());
+//        BaseFragment baseFragment = getTopFragment();
+//        Log.v(TAG, "onSupportNavigateUp - baseFragment: " + baseFragment);
+//        FragmentsId fragmentsId = baseFragment.getFragmentId();
+//        if (fragmentsId != null && fragmentsId == FragmentsId.FAVORITE_STOPS || fragmentsId == FragmentsId.STOPS_NEARBY) {
+//            baseFragment.showView();
+//        } else {
+//            Log.v(TAG, "onSupportNavigateUp - baseFragment: " + baseFragment);
+//        }
 //        fab.setImageResource(R.drawable.ic_autorenew_pink_48dp);
         fab.setImageResource(android.R.drawable.ic_input_add);
         return true;
     }
+
+//    @Override
+//    public void onBackStackChanged() {
+//        BaseFragment baseFragment = getTopFragment();
+//        Log.v(TAG, "onBackStackChanged - baseFragment: " + baseFragment);
+//    }
 
     /**
      * Show favorite stops after user pressed Back or Up button.
@@ -337,6 +404,7 @@ public class MainActivity extends AppCompatActivity
 //        mCurrFragment
         if (mNearbyStopsFragment == null) {
             mNearbyStopsFragment = NearbyStopsFragment.newInstance(nearbyStopsDetailsList);
+            mNearbyStopsFragment.setFragmentId(FragmentsId.STOPS_NEARBY);
         } else {
             mNearbyStopsFragment.setNewContent(nearbyStopsDetailsList);
         }
@@ -439,37 +507,38 @@ public class MainActivity extends AppCompatActivity
                 .setActionTextColor(Color.RED)
                 .show(); // Don’t forget to show!
     }
+
     @Override
     public void onNearbyStopsFragmentMapClicked(NearbyStopsDetails nearbyStopsDetails) {
         showSelectedStopOnMap(new LatLonDetails(nearbyStopsDetails.stopLat, nearbyStopsDetails.stopLon));
     }
 
     public static class ErrorDialogFragment extends DialogFragment {
-        static final String ARG_ERROR_CODE="errorCode";
+        static final String ARG_ERROR_CODE = "errorCode";
 
         static ErrorDialogFragment newInstance(int errorCode) {
-            Bundle args=new Bundle();
-            ErrorDialogFragment result=new ErrorDialogFragment();
+            Bundle args = new Bundle();
+            ErrorDialogFragment result = new ErrorDialogFragment();
 
             args.putInt(ARG_ERROR_CODE, errorCode);
             result.setArguments(args);
 
-            return(result);
+            return (result);
         }
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            Bundle args=getArguments();
-            GoogleApiAvailability checker=
+            Bundle args = getArguments();
+            GoogleApiAvailability checker =
                     GoogleApiAvailability.getInstance();
 
-            return(checker.getErrorDialog(getActivity(),
+            return (checker.getErrorDialog(getActivity(),
                     args.getInt(ARG_ERROR_CODE), 0));
         }
 
         @Override
         public void onDismiss(DialogInterface dlg) {
-            if (getActivity()!=null) {
+            if (getActivity() != null) {
                 getActivity().finish();
             }
         }
@@ -477,38 +546,35 @@ public class MainActivity extends AppCompatActivity
 
     // FIXME: 25/09/2016 find source of the code below - The Busy ...
     protected boolean readyToGo() {
-        GoogleApiAvailability checker=
+        GoogleApiAvailability checker =
                 GoogleApiAvailability.getInstance();
 
-        int status=checker.isGooglePlayServicesAvailable(this);
+        int status = checker.isGooglePlayServicesAvailable(this);
 
         if (status == ConnectionResult.SUCCESS) {
-            if (getVersionFromPackageManager(this)>=2) {
-                return(true);
-            }
-            else {
+            if (getVersionFromPackageManager(this) >= 2) {
+                return (true);
+            } else {
 //                Toast.makeText(this, R.string.no_maps, Toast.LENGTH_LONG).show();
                 showSnackBar(R.string.no_maps, true);
                 finish();
             }
-        }
-        else if (checker.isUserResolvableError(status)) {
+        } else if (checker.isUserResolvableError(status)) {
             FragmentManager fm = getSupportFragmentManager();
             ErrorDialogFragment.newInstance(status)
                     .show(fm, TAG_ERROR_DIALOG_FRAGMENT);
-        }
-        else {
+        } else {
 //            Toast.makeText(this, R.string.no_maps, Toast.LENGTH_LONG).show();
             showSnackBar(R.string.no_maps, true);
             finish();
         }
 
-        return(false);
+        return (false);
     }
 
     private static int getVersionFromPackageManager(Context context) {
-        PackageManager packageManager=context.getPackageManager();
-        FeatureInfo[] featureInfos=
+        PackageManager packageManager = context.getPackageManager();
+        FeatureInfo[] featureInfos =
                 packageManager.getSystemAvailableFeatures();
         if (featureInfos != null && featureInfos.length > 0) {
             for (FeatureInfo featureInfo : featureInfos) {
@@ -517,8 +583,7 @@ public class MainActivity extends AppCompatActivity
                 if (featureInfo.name == null) {
                     if (featureInfo.reqGlEsVersion != FeatureInfo.GL_ES_VERSION_UNDEFINED) {
                         return getMajorVersion(featureInfo.reqGlEsVersion);
-                    }
-                    else {
+                    } else {
                         return 1; // Lack of property means OpenGL ES
                         // version 1
                     }
@@ -528,9 +593,11 @@ public class MainActivity extends AppCompatActivity
         return 1;
     }
 
-    /** @see FeatureInfo#getGlEsVersion() */
+    /**
+     * @see FeatureInfo#getGlEsVersion()
+     */
     private static int getMajorVersion(int glEsVersion) {
-        return((glEsVersion & 0xffff0000) >> 16);
+        return ((glEsVersion & 0xffff0000) >> 16);
     }
 
 }

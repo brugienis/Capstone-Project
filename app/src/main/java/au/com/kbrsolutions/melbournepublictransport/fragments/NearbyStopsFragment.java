@@ -2,7 +2,6 @@ package au.com.kbrsolutions.melbournepublictransport.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,7 +22,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
  * Activities containing this fragment MUST implement the {@link
  * OnNearbyStopsFragmentInteractionListener} interface.
  */
-public class NearbyStopsFragment extends Fragment {
+public class NearbyStopsFragment extends BaseFragment {
 
     private static final String ARG_NEARBY_DATA = "arg_nearby_data";
     private List<NearbyStopsDetails> mNearbyStopsDetailsList;

@@ -35,7 +35,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
  * {@link FavoriteStopsFragment.FavoriteStopsFragmentCallbacks} interface
  * to handle interaction events.
  */
-public class FavoriteStopsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class FavoriteStopsFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     /**
      * Declares callback methods that have to be implemented by parent Activity
@@ -82,10 +82,15 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
         // Required empty public constructor
     }
 
+    /*
+        Call invalidateOptionsMenu() only if mCallbacks is not null.
+     */
     public void hideView() {
         isVisible = false;
         mRootView.setVisibility(View.INVISIBLE);
-        ((Activity) mCallbacks).invalidateOptionsMenu();
+        if (mCallbacks != null) {
+            ((Activity) mCallbacks).invalidateOptionsMenu();
+        }
     }
 
     public void showView() {
@@ -94,6 +99,12 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
         isVisible = true;
         mRootView.setVisibility(View.VISIBLE);
         ((Activity) mCallbacks).invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.v(TAG, "onResume - isVisible: " + isVisible);
     }
 
     @Override
@@ -240,7 +251,7 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        Log.v(TAG, "onPrepareOptionsMenu - isVisible: " + isVisible);
+//        Log.v(TAG, "onPrepareOptionsMenu - isVisible: " + isVisible);
         if (isVisible) {
             menu.findItem(R.id.action_train_stops_nearby).setVisible(true);
             menu.findItem(R.id.action_stops_nearby).setVisible(true);
@@ -256,14 +267,14 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Log.v(TAG, "onCreateOptionsMenu - isVisible: " + isVisible);
+//        Log.v(TAG, "onCreateOptionsMenu - isVisible: " + isVisible);
         inflater.inflate(R.menu.menu_favorite_stops, menu);
 //        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.v(TAG, "onOptionsItemSelected - isVisible: " + isVisible);
+//        Log.v(TAG, "onOptionsItemSelected - isVisible: " + isVisible);
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
