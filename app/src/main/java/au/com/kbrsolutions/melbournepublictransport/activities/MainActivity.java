@@ -136,9 +136,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     private Fragment getTopFragment() {
+        Fragment topFragmment = null;
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
-        String tag = getSupportFragmentManager().getBackStackEntryAt(cnt - 1).getName();
-        Fragment topFragmment = getSupportFragmentManager().findFragmentByTag(tag);
+        if (cnt > 0) {
+            String tag = getSupportFragmentManager().getBackStackEntryAt(cnt - 1).getName();
+            topFragmment = getSupportFragmentManager().findFragmentByTag(tag);
+        }
         return topFragmment;
     }
 
@@ -173,22 +176,27 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void showNextDepartures(List<NextDepartureDetails> nextDepartureDetailsList) {
-        int cnt = getSupportFragmentManager().getBackStackEntryCount();
-        if (cnt == 0) {      /* current fragment is FavoriteStopsFragment */
-            actionBar.setTitle(getResources().getString(R.string.title_next_departures));
-            if (mNextDeparturesFragment == null) {
-                mNextDeparturesFragment = NextDeparturesFragment.newInstance(mSelectedStopName, nextDepartureDetailsList);
-            } else {
-                mNextDeparturesFragment.setNewContent(mSelectedStopName, nextDepartureDetailsList);
-            }
-            mFavoriteStopsFragment.hideView();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.left_dynamic_fragments_frame, mNextDeparturesFragment, NEXT_DEPARTURES_TAG)
-                    .addToBackStack(NEXT_DEPARTURES_TAG)     // it will also show 'Up' button in the action bar
-                    .commit();
-            fab.setImageResource(R.drawable.ic_autorenew_pink_48dp);
+    Log.v(TAG, "showNextDepartures");
+    int cnt = getSupportFragmentManager().getBackStackEntryCount();
+        actionBar.setTitle(getResources().getString(R.string.title_next_departures));
+        if (mNextDeparturesFragment == null) {
+            mNextDeparturesFragment = NextDeparturesFragment.newInstance(mSelectedStopName, nextDepartureDetailsList);
+        } else {
+            mNextDeparturesFragment.setNewContent(mSelectedStopName, nextDepartureDetailsList);
         }
+        Fragment topFragment = getTopFragment();
+        Log.v(TAG, "showNextDepartures - topFragment: " + topFragment);
+        if (cnt == 0) {
+            mFavoriteStopsFragment.hideView();
+        } else {
+            mNearbyStopsFragment.hideView();
+        }
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.left_dynamic_fragments_frame, mNextDeparturesFragment, NEXT_DEPARTURES_TAG)
+                .addToBackStack(NEXT_DEPARTURES_TAG)     // it will also show 'Up' button in the action bar
+                .commit();
+        fab.setImageResource(R.drawable.ic_autorenew_pink_48dp);
     }
 
     public void getDisruptionsDetails() {
@@ -276,7 +284,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     // FIXME: 11/09/2016  - show next five departures time from selected stop?
-    public void handleSelectedFavoriteStop(StopDetails stopDetails) {
+    public void startNextDeparturesSearch(StopDetails stopDetails) {
+        Log.v(TAG, "startNextDeparturesSearch");
         Intent intent = new Intent(this, RequestProcessorService.class);
         mSelectedStopName = stopDetails.locationName;
         int trainMode = 0;
@@ -396,6 +405,7 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case NEXT_DEPARTURES_DETAILS:
+                Log.v(TAG, "onMessageEvent - NEXT_DEPARTURES_DETAILS: " + event.nextDepartureDetailsList);
                 showNextDepartures(event.nextDepartureDetailsList);
                 break;
 

@@ -15,6 +15,7 @@ import java.util.List;
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.adapters.NearbyStopsAdapter;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 
 /**
  * A fragment representing a list of Items.
@@ -28,6 +29,7 @@ public class NearbyStopsFragment extends Fragment {
     private List<NearbyStopsDetails> mNearbyStopsDetailsList;
     private NearbyStopsAdapter mRecyclerViewAdapter;
     private boolean newInstanceArgsRetrieved;
+    private View mRootView;
     private OnNearbyStopsFragmentInteractionListener mListener;
 
     private static final String TAG = StopDetailAdapter.class.getSimpleName();
@@ -54,20 +56,28 @@ public class NearbyStopsFragment extends Fragment {
         }
     }
 
+    public void hideView() {
+        mRootView.setVisibility(View.INVISIBLE);
+    }
+
+    public void showView() {
+        mRootView.setVisibility(View.VISIBLE);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_nearby_stops, container, false);
+        mRootView = inflater.inflate(R.layout.fragment_nearby_stops, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.nearbyStopsList);
+        RecyclerView recyclerView = (RecyclerView) mRootView.findViewById(R.id.nearbyStopsList);
 
         Context context = recyclerView.getContext();
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         mRecyclerViewAdapter = new NearbyStopsAdapter(mNearbyStopsDetailsList, mListener);
         recyclerView.setAdapter(mRecyclerViewAdapter);
         recyclerView.requestLayout();
-        return view;
+        return mRootView;
     }
 
     public void setNewContent(List<NearbyStopsDetails> nearbyStopsDetailsList) {
@@ -104,6 +114,7 @@ public class NearbyStopsFragment extends Fragment {
     public interface OnNearbyStopsFragmentInteractionListener {
         // TODO: Update argument type and name
         void onNearbyStopsFragmentMapClicked(NearbyStopsDetails nearbyStopsDetails);
+        void startNextDeparturesSearch(StopDetails stopDetails);
     }
 
 }

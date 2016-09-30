@@ -15,7 +15,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 /**
  * Created by business on 10/09/2016.
  */
-public class FavoriteStopDetailAdapter extends CursorAdapter {
+public class FavoriteStopAdapter extends CursorAdapter {
 
     private FavoriteStopsFragment mFavoriteStopsFragment;
 
@@ -56,7 +56,7 @@ public class FavoriteStopDetailAdapter extends CursorAdapter {
         }
     }
 
-    public FavoriteStopDetailAdapter(FavoriteStopsFragment favoriteStopsFragment, Cursor c, int flags) {
+    public FavoriteStopAdapter(FavoriteStopsFragment favoriteStopsFragment, Cursor c, int flags) {
         super(favoriteStopsFragment.getActivity().getApplicationContext(), c, flags);
         mFavoriteStopsFragment = favoriteStopsFragment;
     }

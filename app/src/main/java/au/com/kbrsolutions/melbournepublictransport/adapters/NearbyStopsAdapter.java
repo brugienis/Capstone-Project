@@ -1,6 +1,7 @@
 package au.com.kbrsolutions.melbournepublictransport.adapters;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.fragments.NearbyStopsFragment.OnNearbyStopsFragmentInteractionListener;
 
 /**
@@ -49,7 +51,7 @@ public class NearbyStopsAdapter extends RecyclerView.Adapter<NearbyStopsAdapter.
             holder.stopAddress.setText(nearbyStopsDetails.stopAddress);
 
         }
-        holder.mearbyStopsDetails = mValues.get(position);
+        holder.nearbyStopsDetails = mValues.get(position);
     }
 
     public void swap(List<NearbyStopsDetails> nearbyStopsDetails){
@@ -67,7 +69,8 @@ public class NearbyStopsAdapter extends RecyclerView.Adapter<NearbyStopsAdapter.
         public final TextView stopName;
         public final TextView stopAddress;
         public final ImageView mapImageId;
-        private NearbyStopsDetails mearbyStopsDetails;
+        public final ImageView departuresImageId;
+        private NearbyStopsDetails nearbyStopsDetails;
 
         public ViewHolder(View view) {
             super(view);
@@ -80,7 +83,27 @@ public class NearbyStopsAdapter extends RecyclerView.Adapter<NearbyStopsAdapter.
                     if (null != mListener) {
                         // Notify the active callbacks interface (the activity, if the
                         // fragment is attached to one) that a map image was touched.
-                        mListener.onNearbyStopsFragmentMapClicked(mearbyStopsDetails);
+                        mListener.onNearbyStopsFragmentMapClicked(nearbyStopsDetails);
+                    }
+                }
+            });
+            departuresImageId = (ImageView) view.findViewById(R.id.departuresImageId);
+            departuresImageId.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.v(TAG, "ViewHolder - onClick");
+                    if (null != mListener) {
+                        // Notify the active callbacks interface (the activity, if the
+                        // fragment is attached to one) that a map image was touched.
+                        mListener.startNextDeparturesSearch(new StopDetails(
+                                -1,
+                                -1,
+                                nearbyStopsDetails.stopId,
+                                nearbyStopsDetails.stopName,
+                                nearbyStopsDetails.stopLat,
+                                nearbyStopsDetails.stopLon,
+                                "n"
+                        ));
                     }
                 }
             });

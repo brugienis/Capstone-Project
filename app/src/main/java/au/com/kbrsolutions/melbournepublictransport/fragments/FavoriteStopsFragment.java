@@ -41,7 +41,7 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
      * Declares callback methods that have to be implemented by parent Activity
      */
     public interface FavoriteStopsFragmentCallbacks {
-        void handleSelectedFavoriteStop(StopDetails stopDetails);
+        void startNextDeparturesSearch(StopDetails stopDetails);
         void showSelectedStopOnMap(LatLonDetails latLonDetails);
         void startStopsNearbySearch(boolean trainsOnly);
         void getDisruptionsDetails();
@@ -51,9 +51,9 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
     private ListView mListView;
     private List<StopDetails> mStopDetailsList;
     private TextView mEmptyView;
-    private View rootView;
+    private View mRootView;
     private boolean isVisible;
-    private FavoriteStopDetailAdapter mFavoriteStopDetailAdapter;
+    private FavoriteStopAdapter mFavoriteStopDetailAdapter;
 
     private static final int STOP_DETAILS_LOADER = 0;
 
@@ -84,7 +84,7 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
 
     public void hideView() {
         isVisible = false;
-        rootView.setVisibility(View.INVISIBLE);
+        mRootView.setVisibility(View.INVISIBLE);
         ((Activity) mCallbacks).invalidateOptionsMenu();
     }
 
@@ -92,7 +92,7 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
         // FIXME: 8/09/2016 - start CursorLoader
 //        Log.v(TAG, "showView");
         isVisible = true;
-        rootView.setVisibility(View.VISIBLE);
+        mRootView.setVisibility(View.VISIBLE);
         ((Activity) mCallbacks).invalidateOptionsMenu();
     }
 
@@ -107,14 +107,14 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mFavoriteStopDetailAdapter = new FavoriteStopDetailAdapter(this, null, 0);
+        mFavoriteStopDetailAdapter = new FavoriteStopAdapter(this, null, 0);
         // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_favorite_stops, container, false);
+        mRootView = inflater.inflate(R.layout.fragment_favorite_stops, container, false);
 
         if (mStopDetailsList == null) {
             mStopDetailsList = new ArrayList<>();
         }
-        mListView = (ListView) rootView.findViewById(R.id.favoriteStopsListView);
+        mListView = (ListView) mRootView.findViewById(R.id.favoriteStopsListView);
         mListView.setAdapter(mFavoriteStopDetailAdapter);
 //        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //
@@ -124,12 +124,12 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
 //            }
 //        });
 
-        mEmptyView = (TextView) rootView.findViewById(R.id.emptyView);
+        mEmptyView = (TextView) mRootView.findViewById(R.id.emptyView);
 //        Log.v(TAG, "onCreateView - mEmptyView: " + mEmptyView);
         mEmptyView.setText(getActivity().getResources()
                 .getString(R.string.no_favorite_stops_selected));
 //        Log.v(TAG, "onCreateView - showing empty list");
-        return rootView;
+        return mRootView;
     }
 
         @Override
@@ -182,7 +182,7 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
 //        // if it cannot seek to that position.
 //        Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
 //        if (cursor != null) {
-//            mCallbacks.handleSelectedFavoriteStop(new StopDetails(
+//            mCallbacks.startNextDeparturesSearch(new StopDetails(
 //                    cursor.getInt(COL_STOP_DETAILS_ID),
 //                    cursor.getInt(COL_STOP_DETAILS_ROUTE_TYPE),
 //                    cursor.getString(COL_STOP_DETAILS_STOP_ID),
@@ -194,7 +194,7 @@ public class FavoriteStopsFragment extends Fragment implements LoaderManager.Loa
 //    }
 
     public void handleNextDeparturesClicked(StopDetails stopDetails) {
-            mCallbacks.handleSelectedFavoriteStop(stopDetails);
+            mCallbacks.startNextDeparturesSearch(stopDetails);
     }
 
     void handleMapClicked(StopDetails stopDetails) {
