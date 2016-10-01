@@ -25,7 +25,9 @@ public class NearbyStopsAdapter extends RecyclerView.Adapter<NearbyStopsAdapter.
 
     private static final String TAG = NearbyStopsAdapter.class.getSimpleName();
 
-    public NearbyStopsAdapter(List<NearbyStopsDetails> items, OnNearbyStopsFragmentInteractionListener listener) {
+    public NearbyStopsAdapter(
+            List<NearbyStopsDetails> items,
+            OnNearbyStopsFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }

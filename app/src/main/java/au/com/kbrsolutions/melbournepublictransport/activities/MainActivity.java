@@ -41,6 +41,7 @@ import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 import au.com.kbrsolutions.melbournepublictransport.fragments.BaseFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.DisruptionsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragment;
+import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragmentRv;
 import au.com.kbrsolutions.melbournepublictransport.fragments.NearbyStopsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.NextDeparturesFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StationOnMapFragment;
@@ -51,7 +52,9 @@ import au.com.kbrsolutions.melbournepublictransport.utilities.CurrentGeoPosition
 // ^((?!GLHudOverlay).)*$
 
 public class MainActivity extends AppCompatActivity
-        implements FavoriteStopsFragment.FavoriteStopsFragmentCallbacks,
+        implements
+//        FavoriteStopsFragment.FavoriteStopsFragmentCallbacks,
+        FavoriteStopsFragmentRv.OnFavoriteStopsFragmentInteractionListener,
         StopDetailFragment.AddStopFragmentCallbacks,
         NearbyStopsFragment.OnNearbyStopsFragmentInteractionListener {
 
@@ -269,6 +272,11 @@ public class MainActivity extends AppCompatActivity
         intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.GET_DISRUPTIONS_DETAILS);
         intent.putExtra(RequestProcessorService.MODES, trainMode);
         startService(intent);
+    }
+
+    @Override
+    public void updateStopDetailRow(StopDetails stopDetails) {
+        Log.v(TAG, "updateStopDetailRow - got request");
     }
 
     /**

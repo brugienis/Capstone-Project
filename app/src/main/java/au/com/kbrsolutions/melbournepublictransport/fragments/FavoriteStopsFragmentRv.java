@@ -6,7 +6,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -24,38 +23,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
+import au.com.kbrsolutions.melbournepublictransport.adapters.FavoriteStopsAdapterRv;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 
 /**
- *
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link FavoriteStopsFragment.FavoriteStopsFragmentCallbacks} interface
- * to handle interaction events.
+ * Created by business on 1/10/2016.
  */
-public class FavoriteStopsFragment
+
+public class FavoriteStopsFragmentRv
         extends BaseFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    /**
-     * Declares callback methods that have to be implemented by parent Activity
-     */
-    public interface FavoriteStopsFragmentCallbacks {
-        void startNextDeparturesSearch(StopDetails stopDetails);
-        void showSelectedStopOnMap(LatLonDetails latLonDetails);
-        void startStopsNearbySearch(boolean trainsOnly);
-        void getDisruptionsDetails();
-    }
-
-    private FavoriteStopsFragmentCallbacks mCallbacks;
+    private FavoriteStopsFragmentRv.FavoriteStopsFragmentCallbacks mCallbacks;
     private ListView mListView;
     private List<StopDetails> mStopDetailsList;
     private TextView mEmptyView;
     private View mRootView;
     private boolean isVisible;
-    private FavoriteStopAdapter mFavoriteStopDetailAdapter;
+    private FavoriteStopsAdapterRv mFavoriteStopDetailAdapter;
+    private FavoriteStopsFragmentRv.OnFavoriteStopsFragmentInteractionListener mListener;
 
     private static final int STOP_DETAILS_LOADER = 0;
 
@@ -70,17 +58,17 @@ public class FavoriteStopsFragment
     };
 
     // These indices are tied to stop_details columns specified above.
-    static final int COL_STOP_DETAILS_ID = 0;
-    static final int COL_STOP_DETAILS_ROUTE_TYPE = 1;
-    static final int COL_STOP_DETAILS_STOP_ID = 2;
-    static final int COL_STOP_DETAILS_LOCATION_NAME = 3;
-    static final int COL_STOP_DETAILS_LATITUDE = 4;
-    static final int COL_STOP_DETAILS_LONGITUDE = 5;
-    static final int COL_STOP_DETAILS_FAVORITE = 6;
+    public static final int COL_STOP_DETAILS_ID = 0;
+    public static final int COL_STOP_DETAILS_ROUTE_TYPE = 1;
+    public static final int COL_STOP_DETAILS_STOP_ID = 2;
+    public static final int COL_STOP_DETAILS_LOCATION_NAME = 3;
+    public static final int COL_STOP_DETAILS_LATITUDE = 4;
+    public static final int COL_STOP_DETAILS_LONGITUDE = 5;
+    public static final int COL_STOP_DETAILS_FAVORITE = 6;
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
-    public FavoriteStopsFragment() {
+    public FavoriteStopsFragmentRv() {
         // Required empty public constructor
     }
 
@@ -123,10 +111,26 @@ public class FavoriteStopsFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mFavoriteStopDetailAdapter = new FavoriteStopAdapter(this, null, 0);
+        mFavoriteStopDetailAdapter = new FavoriteStopsAdapterRv(
+                getActivity().getApplicationContext(),
+                null,
+                0,
+                mListener);
 
         // Inflate the layout for this fragment
         mRootView = inflater.inflate(R.layout.fragment_favorite_stops, container, false);
+
+        //-----
+
+//        RecyclerView recyclerView = (RecyclerView) mRootView.findViewById(R.id.nearbyStopsList);
+//
+//        Context context = recyclerView.getContext();
+//        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+//        mRecyclerViewAdapter = new NearbyStopsAdapter(mNearbyStopsDetailsList, mListener);
+//        recyclerView.setAdapter(mRecyclerViewAdapter);
+//        recyclerView.requestLayout();
+//        return mRootView;
+        //-----
 
         if (mStopDetailsList == null) {
             mStopDetailsList = new ArrayList<>();
@@ -140,52 +144,52 @@ public class FavoriteStopsFragment
         return mRootView;
     }
 
-        @Override
-        public void onActivityCreated(Bundle savedInstanceState) {
-            getLoaderManager().initLoader(STOP_DETAILS_LOADER, null, this);
-            super.onActivityCreated(savedInstanceState);
-        }
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        getLoaderManager().initLoader(STOP_DETAILS_LOADER, null, this);
+        super.onActivityCreated(savedInstanceState);
+    }
 
-        @Override
-        public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-            // This is called when a new Loader needs to be created.  This
-            // fragment only uses one loader, so we don't care about checking the id.
-            // Sort order:  Ascending, by location_name.
-            String sortOrder = MptContract.StopDetailEntry.COLUMN_LOCATION_NAME + " ASC";
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        // This is called when a new Loader needs to be created.  This
+        // fragment only uses one loader, so we don't care about checking the id.
+        // Sort order:  Ascending, by location_name.
+        String sortOrder = MptContract.StopDetailEntry.COLUMN_LOCATION_NAME + " ASC";
 
-            Uri nonFavoriteStopDetailUri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.FAVORITE_FLAG);
+        Uri nonFavoriteStopDetailUri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.FAVORITE_FLAG);
 
-            return new CursorLoader(getActivity(),
-                    nonFavoriteStopDetailUri,
-                    STOP_DETAILS_COLUMNS,
-                    null,
-                    null,
-                    sortOrder);
-        }
+        return new CursorLoader(getActivity(),
+                nonFavoriteStopDetailUri,
+                STOP_DETAILS_COLUMNS,
+                null,
+                null,
+                sortOrder);
+    }
 
-        @Override
-        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 //        Log.v(TAG, "onLoadFinished - start - rows cnt: " + data.getCount());
-            mFavoriteStopDetailAdapter.swapCursor(data);
-            if (data.getCount() > 0) {
-                mEmptyView.setVisibility(View.GONE);
-            }
-            // FIXME: 30/08/2016 below add correct code
+        mFavoriteStopDetailAdapter.swapCursor(data);
+        if (data.getCount() > 0) {
+            mEmptyView.setVisibility(View.GONE);
+        }
+        // FIXME: 30/08/2016 below add correct code
 //        mForecastAdapter.swapCursor(data);
 //        if (mPosition != ListView.INVALID_POSITION) {
 //            // If we don't need to restart the loader, and there's a desired position to restore
 //            // to, do so now.
 //            mListView.smoothScrollToPosition(mPosition);
 //        }
-        }
+    }
 
-        @Override
-        public void onLoaderReset(Loader<Cursor> loader) {
-            mFavoriteStopDetailAdapter.swapCursor(null);
-        }
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mFavoriteStopDetailAdapter.swapCursor(null);
+    }
 
     public void handleNextDeparturesClicked(StopDetails stopDetails) {
-            mCallbacks.startNextDeparturesSearch(stopDetails);
+        mCallbacks.startNextDeparturesSearch(stopDetails);
     }
 
     void handleMapClicked(StopDetails stopDetails) {
@@ -202,8 +206,8 @@ public class FavoriteStopsFragment
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof FavoriteStopsFragmentCallbacks) {
-            mCallbacks = (FavoriteStopsFragmentCallbacks) context;
+        if (context instanceof FavoriteStopsFragment.FavoriteStopsFragmentCallbacks) {
+            mCallbacks = (FavoriteStopsFragmentRv.FavoriteStopsFragmentCallbacks) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -214,14 +218,6 @@ public class FavoriteStopsFragment
     public void onDetach() {
         super.onDetach();
         mCallbacks = null;
-    }
-
-    public void removeSelectedStop(StopDetails stopDetails) {
-        ContentValues updatedValues = new ContentValues();
-        updatedValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, "n");
-        int count = getActivity().getContentResolver().update(
-                MptContract.StopDetailEntry.CONTENT_URI, updatedValues, MptContract.StopDetailEntry._ID + "= ?",
-                new String [] { String.valueOf(stopDetails.id)});
     }
 
     @Override
@@ -264,6 +260,45 @@ public class FavoriteStopsFragment
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Declares callback methods that have to be implemented by parent Activity
+     */
+    public interface FavoriteStopsFragmentCallbacks {
+        void startNextDeparturesSearch(StopDetails stopDetails);
+        void showSelectedStopOnMap(LatLonDetails latLonDetails);
+        void startStopsNearbySearch(boolean trainsOnly);
+        void getDisruptionsDetails();
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFavoriteStopsFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void startNextDeparturesSearch(StopDetails stopDetails);
+        void showSelectedStopOnMap(LatLonDetails latLonDetails);
+        void startStopsNearbySearch(boolean trainsOnly);
+        void getDisruptionsDetails();
+        void updateStopDetailRow(StopDetails stopDetails);  // activity should send the removeSelectedStop() below
+                                                            // to IntentService
+    }
+
+
+    public void removeSelectedStop(StopDetails stopDetails) {
+        ContentValues updatedValues = new ContentValues();
+        updatedValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, "n");
+        int count = getActivity().getContentResolver().update(
+                MptContract.StopDetailEntry.CONTENT_URI, updatedValues, MptContract.StopDetailEntry._ID + "= ?",
+                new String [] { String.valueOf(stopDetails.id)});
     }
 
 }

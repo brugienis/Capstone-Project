@@ -18,6 +18,9 @@ import au.com.kbrsolutions.melbournepublictransport.fragments.StopDetailAdapter;
 public class NextDepartureAdapter extends RecyclerView.Adapter<NextDepartureAdapter.ViewHolder> {
 
     private final List<NextDepartureDetails> mValues;
+    // FIXME: 20/09/2016 - move strings to values
+    private static final String ALL_STOPS = "All stops";
+    private static final String EXPRESS = "Express";
 
     private static final String TAG = StopDetailAdapter.class.getSimpleName();
 
@@ -38,7 +41,7 @@ public class NextDepartureAdapter extends RecyclerView.Adapter<NextDepartureAdap
         String directionName = String.valueOf(nextDepartureDetails.directionName);
         String departureTime = String.valueOf(nextDepartureDetails.utcDepartureTime);
         // FIXME: 20/09/2016 - move strings to values
-        String runTypeText = nextDepartureDetails.numSkipped == 0 ? "All stops" : "Express";
+        String runTypeText = nextDepartureDetails.numSkipped == 0 ? ALL_STOPS : EXPRESS;
         holder.directionName.setText(directionName);
         holder.runType.setText(runTypeText);
         holder.departureTimeId.setText(departureTime);
