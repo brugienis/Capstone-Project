@@ -283,7 +283,7 @@ public class FavoriteStopsFragmentRv
         void showSelectedStopOnMap(LatLonDetails latLonDetails);
         void startStopsNearbySearch(boolean trainsOnly);
         void getDisruptionsDetails();
-        void updateStopDetailRow(StopDetails stopDetails, String favoriteColumnValue);  // activity should send the removeSelectedStop() below
+        void updateStopDetailRow(int id, String favoriteColumnValue);  // activity should send the removeSelectedStop() below
                                                             // to IntentService
     }
 

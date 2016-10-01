@@ -26,16 +26,38 @@ public class DbUtility {
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
-    public void updateStopDetails(long rowId, Context context) {
-        Log.v(TAG, "updateStopDetails - start");
+    public void updateStopDetails(long rowId, Context context, String favoriteColumnValue) {
+        Log.v(TAG, "updateStopDetails - start - favoriteColumnValue: " + favoriteColumnValue);
         ContentValues updatedValues = new ContentValues();
-        updatedValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, "n");
+        updatedValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, favoriteColumnValue);
         int count = context.getContentResolver().update(
                 MptContract.StopDetailEntry.CONTENT_URI,
                 updatedValues,
                 MptContract.StopDetailEntry._ID + "= ?",
                 new String [] { String.valueOf(rowId)});
         Log.v(TAG, "updateStopDetails - end - count: " + count);
+
+        Uri uri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.ANY_FAVORITE_FLAG);
+        Cursor cursor = context.getContentResolver().query(
+                uri,
+                null,
+                MptContract.StopDetailEntry._ID + "= ?",
+                new String [] { String.valueOf(rowId)},
+                null
+        );
+        printContents(cursor);
+    }
+
+    private void printContents(Cursor cursor) {
+        Log.v(TAG, "printContents - start");
+        int stopIdIdx;
+        int locationNameIdx;
+        while (cursor.moveToNext()) {
+            stopIdIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_STOP_ID);
+            locationNameIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LOCATION_NAME);
+            Log.v(TAG, cursor.getString(stopIdIdx) + "/" + cursor.getString(locationNameIdx));
+        }
+        Log.v(TAG, "printContents - start");
     }
 
     public List<NearbyStopsDetails> getNearbyTrainDetails(LatLonDetails latLonDetails, Context context) {
@@ -100,7 +122,7 @@ public class DbUtility {
     }
 
     public void fillInStopNames(List<NearbyStopsDetails> nearbyStopsDetailsList, Context context) {
-        Log.v(TAG, "fillInStopNames start");
+//        Log.v(TAG, "fillInStopNames start");
         String[] stopIds = new String[nearbyStopsDetailsList.size()];
         int cnt = 0;
         for (NearbyStopsDetails details : nearbyStopsDetailsList) {
@@ -141,16 +163,6 @@ public class DbUtility {
                 map.put(cursor.getString(stopIdIdx), locationName);
             }
         }
-
         cursor.close();
-
-//        for (NearbyStopsDetails nearbyStopsDetails : nearbyStopsDetailsList) {
-//            nearbyStopsDetails.stopName = map.get(nearbyStopsDetails.stopId);
-//        }
-//        Log.v(TAG, "after stopName updated");
-//        for (NearbyStopsDetails nearbyStopsDetails : nearbyStopsDetailsList) {
-//            Log.v(TAG, "details: " + nearbyStopsDetails);
-//        }
-        Log.v(TAG, "fillInStopNames end");
     }
 }

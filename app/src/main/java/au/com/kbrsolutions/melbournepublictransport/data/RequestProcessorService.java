@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -40,6 +39,7 @@ public class RequestProcessorService extends IntentService {
     public final static String LIMIT = "limit";
     public final static String LAT_LON = "lat_lon";
     public final static String ROW_ID = "row_id";
+    public final static String FAVORITE_COLUMN_VALUE = "favorite_column_value";
 
     private static final String TAG = RequestProcessorService.class.getSimpleName();
 
@@ -134,20 +134,12 @@ public class RequestProcessorService extends IntentService {
 //                        Log.v(TAG, "onHandleIntent - latLonDetails: " + latLonDetails);
                         nearbyStopsDetailsList =
                                 RemoteMptEndpointUtil.getNearbyStops(latLonDetails);
-                        Log.v(TAG, "after return to RemoteMptEndpointUtil");
-//                        for (NearbyStopsDetails d: nearbyStopsDetailsList) {
-//                            Log.v(TAG, d.toString());
-//                        }
                         if (dbUtility == null) {
                             dbUtility = new DbUtility();
                         }
                         dbUtility.fillInStopNames(nearbyStopsDetailsList, getApplicationContext());
 //                        List<NearbyStopsDetails> nearbyStopsDetailsList =
 //                                buildSimulatedNearbyDetails();
-//                        Log.v(TAG, "after return to RequestProcessorService");
-//                        for (NearbyStopsDetails d: nearbyStopsDetailsList) {
-//                            Log.v(TAG, d.toString());
-//                        }
                         sendMessageToMainActivity(new MainActivityEvents.Builder(
                                 MainActivityEvents.MainEvents.NEARBY_LOCATION_DETAILS)
                                 .setNearbyStopsDetailsList(nearbyStopsDetailsList)
@@ -155,11 +147,13 @@ public class RequestProcessorService extends IntentService {
                         break;
 
                     case UPDATE_STOPS_DETAILS:
-                        int rowId = extras.getInt(ROW_ID);
                         if (dbUtility == null) {
                             dbUtility = new DbUtility();
                         }
-                        dbUtility.updateStopDetails(rowId, getApplicationContext());
+                        dbUtility.updateStopDetails(
+                                extras.getInt(ROW_ID),
+                                getApplicationContext(),
+                                extras.getString(FAVORITE_COLUMN_VALUE));
 //                        sendMessageToMainActivity(new MainActivityEvents.Builder(
 //                                MainActivityEvents.MainEvents.NEARBY_LOCATION_DETAILS)
 //                                .setNearbyStopsDetailsList(nearbyStopsDetailsList)

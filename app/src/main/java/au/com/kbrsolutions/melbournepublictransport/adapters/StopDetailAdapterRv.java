@@ -49,11 +49,11 @@ public class StopDetailAdapterRv extends CursorAdapter {
     }
 
     public StopDetailAdapterRv(
-            StopDetailFragment addStopFragment,
+            Context context,
             Cursor c,
             int flags,
             StopDetailFragment.OnStopFragmentInteractionListener listener) {
-        super(addStopFragment.getActivity().getApplicationContext(), c, flags);
+        super(context, c, flags);
 //        mAddStopFragment = addStopFragment;
         mListener = listener;
     }

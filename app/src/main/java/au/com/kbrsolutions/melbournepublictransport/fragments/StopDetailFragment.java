@@ -1,6 +1,5 @@
 package au.com.kbrsolutions.melbournepublictransport.fragments;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -77,7 +76,7 @@ public class StopDetailFragment extends Fragment implements LoaderManager.Loader
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mStopDetailAdapter = new StopDetailAdapterRv(this, null, 0, mListener);
+        mStopDetailAdapter = new StopDetailAdapterRv(getActivity().getApplicationContext(), null, 0, mListener);
         View rootView = inflater.inflate(R.layout.fragment_add_stop, container, false);
 
         mListView = (ListView) rootView.findViewById(R.id.addStopsListView);
@@ -151,13 +150,13 @@ public class StopDetailFragment extends Fragment implements LoaderManager.Loader
         Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
         if (cursor != null) {
             // FIXME: 2/10/2016 - call below to update row
-//            private static final String FAVORITE_VALUE = "y";
-//            mListener.updateStopDetailRow(stopDetails, FAVORITE_VALUE);
-            ContentValues updatedValues = new ContentValues();
-            updatedValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, "y");
-            int count = getActivity().getContentResolver().update(
-                    MptContract.StopDetailEntry.CONTENT_URI, updatedValues, MptContract.StopDetailEntry._ID + "= ?",
-                    new String [] { String.valueOf(cursor.getInt(COL_STOP_DETAILS_ID))});
+            String favoriteValue = "y";
+            mListener.updateStopDetailRow(cursor.getInt(COL_STOP_DETAILS_ID), favoriteValue);
+//            ContentValues updatedValues = new ContentValues();
+//            updatedValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, "y");
+//            int count = getActivity().getContentResolver().update(
+//                    MptContract.StopDetailEntry.CONTENT_URI, updatedValues, MptContract.StopDetailEntry._ID + "= ?",
+//                    new String [] { String.valueOf(cursor.getInt(COL_STOP_DETAILS_ID))});
             mListener.addStop();
         }
     }
@@ -184,14 +183,6 @@ public class StopDetailFragment extends Fragment implements LoaderManager.Loader
     }
 
     /**
-     * Declares callback methods that have to be implemented by parent Activity
-     */
-    public interface AddStopFragmentCallbacks {
-        void addStop();
-        void showSelectedStopOnMap(LatLonDetails latLonDetails);
-    }
-
-    /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
@@ -204,7 +195,7 @@ public class StopDetailFragment extends Fragment implements LoaderManager.Loader
     public interface OnStopFragmentInteractionListener {
         void addStop();
         void showSelectedStopOnMap(LatLonDetails latLonDetails);
-        void updateStopDetailRow(StopDetails stopDetails, String favoriteColumnValue);  // activity should send the removeSelectedStop() below
+        void updateStopDetailRow(int id, String favoriteColumnValue);  // activity should send the removeSelectedStop() below
         // to IntentService
     }
 }

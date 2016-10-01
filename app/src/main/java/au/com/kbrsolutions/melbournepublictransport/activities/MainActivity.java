@@ -50,11 +50,9 @@ import au.com.kbrsolutions.melbournepublictransport.utilities.CurrentGeoPosition
 // git push -u origin
 // ^((?!GLHudOverlay).)*$
 
-public class MainActivity extends AppCompatActivity
-        implements
-//        FavoriteStopsFragmentRv.FavoriteStopsFragmentRvCallbacks,
+public class MainActivity extends AppCompatActivity implements
         FavoriteStopsFragmentRv.OnFavoriteStopsFragmentInteractionListener,
-        StopDetailFragment.AddStopFragmentCallbacks,
+        StopDetailFragment.OnStopFragmentInteractionListener,
         NearbyStopsFragment.OnNearbyStopsFragmentInteractionListener {
 
     private FavoriteStopsFragmentRv mFavoriteStopsFragmentRv;
@@ -144,8 +142,8 @@ public class MainActivity extends AppCompatActivity
         });
 
         Intent intent = new Intent(this, RequestProcessorService.class);
-        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.REFRESH_DATA_IF_TABLES_EMPTY);
-//        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.REFRESH_DATA);
+//        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.REFRESH_DATA_IF_TABLES_EMPTY);
+        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.REFRESH_DATA);
         startService(intent);
     }
 
@@ -177,7 +175,7 @@ public class MainActivity extends AppCompatActivity
         Log.v(TAG, "onSaveInstanceState");
     }
 
-    // FIXME: 17/08/2016
+    // FIXME: 17/08/2016 - add logic to handle refresh of departure details
     private void handleFabClicked() {
 //        int cnt = getSupportFragmentManager().getBackStackEntryCount();
         BaseFragment baseFragment = getTopFragment();
@@ -271,11 +269,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void updateStopDetailRow(StopDetails stopDetails, String favoriteColumnValue) {
-        Log.v(TAG, "updateStopDetailRow - got request - nonFavorite: " + favoriteColumnValue);
+    public void updateStopDetailRow(int id, String favoriteColumnValue) {
+        Log.v(TAG, "updateStopDetailRow - got request - favoriteColumnValue: " + favoriteColumnValue);
         Intent intent = new Intent(this, RequestProcessorService.class);
         intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.UPDATE_STOPS_DETAILS);
-        intent.putExtra(RequestProcessorService.ROW_ID, stopDetails.id);
+        intent.putExtra(RequestProcessorService.ROW_ID, id);
+        intent.putExtra(RequestProcessorService.FAVORITE_COLUMN_VALUE, favoriteColumnValue);
         startService(intent);
     }
 
@@ -390,8 +389,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void showNearbyStops(List<NearbyStopsDetails> nearbyStopsDetailsList) {
-        Log.v(TAG, "showNearbyStops - start");
-//        mCurrFragment
         if (mNearbyStopsFragment == null) {
             mNearbyStopsFragment = NearbyStopsFragment.newInstance(nearbyStopsDetailsList);
             mNearbyStopsFragment.setFragmentId(FragmentsId.STOPS_NEARBY);
@@ -399,7 +396,6 @@ public class MainActivity extends AppCompatActivity
             mNearbyStopsFragment.setNewContent(nearbyStopsDetailsList);
         }
         mFavoriteStopsFragmentRv.hideView();
-//        Log.v(TAG, "showNearbyStops - adding mNearbyStopsFragment");
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.left_dynamic_fragments_frame, mNearbyStopsFragment, NEARBY_TAG)
