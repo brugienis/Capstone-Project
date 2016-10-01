@@ -57,8 +57,6 @@ public class CurrentGeoPositionFinder implements
     
     @Override
     public void onLocationChanged(Location location) {
-        Log.i(TAG, location.toString());
-        Log.i(TAG, "onLocationChanged - lat/lon: " + location.getLatitude() + "/" + location.getLongitude());
         EventBus.getDefault().post(new MainActivityEvents.Builder(
                 MainActivityEvents.MainEvents.CURR_LOCATION_DETAILS)
                 .setLatLonDetails(

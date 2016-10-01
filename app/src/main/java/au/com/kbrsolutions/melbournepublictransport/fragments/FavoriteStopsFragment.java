@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
-import au.com.kbrsolutions.melbournepublictransport.adapters.FavoriteStopsAdapterRv;
+import au.com.kbrsolutions.melbournepublictransport.adapters.FavoriteStopsAdapter;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
@@ -33,10 +33,10 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
  *
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link FavoriteStopsFragmentRv.OnFavoriteStopsFragmentInteractionListener} interface
+ * {@link FavoriteStopsFragment.OnFavoriteStopsFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class FavoriteStopsFragmentRv
+public class FavoriteStopsFragment
         extends BaseFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -46,7 +46,7 @@ public class FavoriteStopsFragmentRv
     private TextView mEmptyView;
     private View mRootView;
     private boolean isVisible;
-    private FavoriteStopsAdapterRv mFavoriteStopDetailAdapter;
+    private FavoriteStopsAdapter mFavoriteStopDetailAdapter;
     private OnFavoriteStopsFragmentInteractionListener mListener;
 
     private static final int STOP_DETAILS_LOADER = 0;
@@ -72,7 +72,7 @@ public class FavoriteStopsFragmentRv
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
-    public FavoriteStopsFragmentRv() {
+    public FavoriteStopsFragment() {
         // Required empty public constructor
     }
 
@@ -115,7 +115,7 @@ public class FavoriteStopsFragmentRv
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mFavoriteStopDetailAdapter = new FavoriteStopsAdapterRv(
+        mFavoriteStopDetailAdapter = new FavoriteStopsAdapter(
                 getActivity().getApplicationContext(),
                 null,
                 0,
@@ -200,8 +200,8 @@ public class FavoriteStopsFragmentRv
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof FavoriteStopsFragmentRv.OnFavoriteStopsFragmentInteractionListener) {
-            mListener = (FavoriteStopsFragmentRv.OnFavoriteStopsFragmentInteractionListener) context;
+        if (context instanceof FavoriteStopsFragment.OnFavoriteStopsFragmentInteractionListener) {
+            mListener = (FavoriteStopsFragment.OnFavoriteStopsFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");

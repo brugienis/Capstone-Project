@@ -15,16 +15,16 @@ import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 /**
  * {@link RecyclerView.Adapter} that can display a {@link NextDepartureDetails}.
  */
-public class NextDepartureAdapter extends RecyclerView.Adapter<NextDepartureAdapter.ViewHolder> {
+public class NextDeparturesAdapter extends RecyclerView.Adapter<NextDeparturesAdapter.ViewHolder> {
 
     private final List<NextDepartureDetails> mValues;
     // FIXME: 20/09/2016 - move strings to values
     private static final String ALL_STOPS = "All stops";
     private static final String EXPRESS = "Express";
 
-    private static final String TAG = NextDepartureAdapter.class.getSimpleName();
+    private static final String TAG = NextDeparturesAdapter.class.getSimpleName();
 
-    public NextDepartureAdapter(List<NextDepartureDetails> items) {
+    public NextDeparturesAdapter(List<NextDepartureDetails> items) {
         mValues = items;
     }
 

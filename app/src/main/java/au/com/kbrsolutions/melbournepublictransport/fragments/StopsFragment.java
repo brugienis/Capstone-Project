@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
-import au.com.kbrsolutions.melbournepublictransport.adapters.StopDetailAdapterRv;
+import au.com.kbrsolutions.melbournepublictransport.adapters.StopsAdapter;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
@@ -27,15 +27,15 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link StopDetailFragment.OnStopFragmentInteractionListener} interface
+ * {@link StopsFragment.OnStopFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class StopDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class StopsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     // FIXME: 25/08/2016 check Running a Query with a CursorLoader - https://developer.android.com/training/load-data-background/setup-loader.html
 
     private ListView mListView;
-    private StopDetailAdapterRv mStopDetailAdapter;
+    private StopsAdapter mStopDetailAdapter;
     private OnStopFragmentInteractionListener mListener;
     private static List<StopDetails> mFolderItemList = new ArrayList<>();
     private TextView mEmptyView;
@@ -63,7 +63,7 @@ public class StopDetailFragment extends Fragment implements LoaderManager.Loader
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
-    public StopDetailFragment() {
+    public StopsFragment() {
         // Required empty public constructor
     }
 
@@ -76,7 +76,7 @@ public class StopDetailFragment extends Fragment implements LoaderManager.Loader
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mStopDetailAdapter = new StopDetailAdapterRv(getActivity().getApplicationContext(), null, 0, mListener);
+        mStopDetailAdapter = new StopsAdapter(getActivity().getApplicationContext(), null, 0, mListener);
         View rootView = inflater.inflate(R.layout.fragment_add_stop, container, false);
 
         mListView = (ListView) rootView.findViewById(R.id.addStopsListView);

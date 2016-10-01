@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
-import au.com.kbrsolutions.melbournepublictransport.adapters.NextDepartureAdapter;
+import au.com.kbrsolutions.melbournepublictransport.adapters.NextDeparturesAdapter;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 
 /**
@@ -25,7 +25,7 @@ public class NextDeparturesFragment extends BaseFragment {
     private static final String ARG_SELECTED_STOP_NAME = "arg_selected_stop_name";
     private static final String ARG_NEXT_DEPARTURE_DATA = "next_departure_data";
     private List<NextDepartureDetails> mNextDepartureDetailsList;
-    private NextDepartureAdapter mRecyclerViewAdapter;
+    private NextDeparturesAdapter mRecyclerViewAdapter;
     private String mSelectedStopName;
     private TextView selectedStopNameTv;
     private boolean newInstanceArgsRetrieved;
@@ -71,7 +71,7 @@ public class NextDeparturesFragment extends BaseFragment {
 
         Context context = recyclerView.getContext();
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        mRecyclerViewAdapter = new NextDepartureAdapter(mNextDepartureDetailsList);
+        mRecyclerViewAdapter = new NextDeparturesAdapter(mNextDepartureDetailsList);
         recyclerView.setAdapter(mRecyclerViewAdapter);
         recyclerView.requestLayout();
         return view;

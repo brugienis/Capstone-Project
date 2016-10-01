@@ -12,18 +12,18 @@ import android.widget.TextView;
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
-import au.com.kbrsolutions.melbournepublictransport.fragments.StopDetailFragment;
+import au.com.kbrsolutions.melbournepublictransport.fragments.StopsFragment;
 
 /**
  * Created by business on 2/10/2016.
  */
 
-public class StopDetailAdapterRv extends CursorAdapter {
+public class StopsAdapter extends CursorAdapter {
 
 //    private StopDetailFragment mAddStopFragment;
-    private static StopDetailFragment.OnStopFragmentInteractionListener mListener;
+    private static StopsFragment.OnStopFragmentInteractionListener mListener;
 
-    private static final String TAG = StopDetailAdapterRv.class.getSimpleName();
+    private static final String TAG = StopsAdapter.class.getSimpleName();
 
     public static class ViewHolder {
         public final TextView locationNameView;
@@ -48,11 +48,11 @@ public class StopDetailAdapterRv extends CursorAdapter {
         mListener.showSelectedStopOnMap(latLonDetails);
     }
 
-    public StopDetailAdapterRv(
+    public StopsAdapter(
             Context context,
             Cursor c,
             int flags,
-            StopDetailFragment.OnStopFragmentInteractionListener listener) {
+            StopsFragment.OnStopFragmentInteractionListener listener) {
         super(context, c, flags);
 //        mAddStopFragment = addStopFragment;
         mListener = listener;
@@ -61,7 +61,7 @@ public class StopDetailAdapterRv extends CursorAdapter {
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         View view = LayoutInflater.from(context).inflate(R.layout.fragment_add_stops_list_view, parent, false);
-        StopDetailAdapterRv.ViewHolder viewHolder = new StopDetailAdapterRv.ViewHolder(view);
+        StopsAdapter.ViewHolder viewHolder = new StopsAdapter.ViewHolder(view);
         view.setTag(viewHolder);
 
         return view;
@@ -70,18 +70,18 @@ public class StopDetailAdapterRv extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
 
-        StopDetailAdapterRv.ViewHolder viewHolder = (StopDetailAdapterRv.ViewHolder) view.getTag();
+        StopsAdapter.ViewHolder viewHolder = (StopsAdapter.ViewHolder) view.getTag();
 
-        String locationName = cursor.getString(StopDetailFragment.COL_STOP_DETAILS_LOCATION_NAME);
+        String locationName = cursor.getString(StopsFragment.COL_STOP_DETAILS_LOCATION_NAME);
 
         StopDetails stopDetails = new StopDetails(
-                cursor.getInt(StopDetailFragment.COL_STOP_DETAILS_ID),
-                cursor.getInt(StopDetailFragment.COL_STOP_DETAILS_ROUTE_TYPE),
-                cursor.getString(StopDetailFragment.COL_STOP_DETAILS_STOP_ID),
-                cursor.getString(StopDetailFragment.COL_STOP_DETAILS_LOCATION_NAME),
-                cursor.getDouble(StopDetailFragment.COL_STOP_DETAILS_LATITUDE),
-                cursor.getDouble(StopDetailFragment.COL_STOP_DETAILS_LONGITUDE),
-                cursor.getString(StopDetailFragment.COL_STOP_DETAILS_FAVORITE));
+                cursor.getInt(StopsFragment.COL_STOP_DETAILS_ID),
+                cursor.getInt(StopsFragment.COL_STOP_DETAILS_ROUTE_TYPE),
+                cursor.getString(StopsFragment.COL_STOP_DETAILS_STOP_ID),
+                cursor.getString(StopsFragment.COL_STOP_DETAILS_LOCATION_NAME),
+                cursor.getDouble(StopsFragment.COL_STOP_DETAILS_LATITUDE),
+                cursor.getDouble(StopsFragment.COL_STOP_DETAILS_LONGITUDE),
+                cursor.getString(StopsFragment.COL_STOP_DETAILS_FAVORITE));
 
         // FIXME: 7/09/2016 - add description
 //        viewHolder.descriptionView.setText(description);
