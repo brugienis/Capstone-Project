@@ -40,7 +40,6 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 import au.com.kbrsolutions.melbournepublictransport.fragments.BaseFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.DisruptionsFragment;
-import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragmentRv;
 import au.com.kbrsolutions.melbournepublictransport.fragments.NearbyStopsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.NextDeparturesFragment;
@@ -53,12 +52,12 @@ import au.com.kbrsolutions.melbournepublictransport.utilities.CurrentGeoPosition
 
 public class MainActivity extends AppCompatActivity
         implements
-//        FavoriteStopsFragment.FavoriteStopsFragmentCallbacks,
+//        FavoriteStopsFragmentRv.FavoriteStopsFragmentRvCallbacks,
         FavoriteStopsFragmentRv.OnFavoriteStopsFragmentInteractionListener,
         StopDetailFragment.AddStopFragmentCallbacks,
         NearbyStopsFragment.OnNearbyStopsFragmentInteractionListener {
 
-    private FavoriteStopsFragment mFavoriteStopsFragment;
+    private FavoriteStopsFragmentRv mFavoriteStopsFragmentRv;
     private StationOnMapFragment mStationOnMapFragment;
     private StopDetailFragment mStopDetailFragment;
     private NextDeparturesFragment mNextDeparturesFragment;
@@ -122,16 +121,16 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
 
-        mFavoriteStopsFragment =
-                (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
+        mFavoriteStopsFragmentRv =
+                (FavoriteStopsFragmentRv) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
 
 
-        if (mFavoriteStopsFragment == null) {
-            mFavoriteStopsFragment = new FavoriteStopsFragment();
-            mFavoriteStopsFragment.setFragmentId(FragmentsId.FAVORITE_STOPS);
+        if (mFavoriteStopsFragmentRv == null) {
+            mFavoriteStopsFragmentRv = new FavoriteStopsFragmentRv();
+            mFavoriteStopsFragmentRv.setFragmentId(FragmentsId.FAVORITE_STOPS);
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
+                    .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragmentRv, FAVORITE_STOPS_TAG)
                     .addToBackStack(FAVORITE_STOPS_TAG)
                     .commit();
         }
@@ -197,7 +196,7 @@ public class MainActivity extends AppCompatActivity
         if (mStopDetailFragment == null) {
             mStopDetailFragment = new StopDetailFragment();
         }
-        mFavoriteStopsFragment.hideView();
+        mFavoriteStopsFragmentRv.hideView();
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.left_dynamic_fragments_frame, mStopDetailFragment, STOP_TAG)
@@ -275,8 +274,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void updateStopDetailRow(StopDetails stopDetails) {
-        Log.v(TAG, "updateStopDetailRow - got request");
+    public void updateStopDetailRow(StopDetails stopDetails, String favoriteColumnValue) {
+        Log.v(TAG, "updateStopDetailRow - got request - nonFavorite: " + favoriteColumnValue);
+        Intent intent = new Intent(this, RequestProcessorService.class);
+        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.UPDATE_STOPS_DETAILS);
+        intent.putExtra(RequestProcessorService.ROW_ID, stopDetails.id);
+        startService(intent);
     }
 
     /**
@@ -313,7 +316,7 @@ public class MainActivity extends AppCompatActivity
             mDisruptionsFragment.setNewContent(disruptionsDetailsList);
         }
         // FIXME: 21/09/2016 - below has to hide current fragment
-        mFavoriteStopsFragment.hideView();
+        mFavoriteStopsFragmentRv.hideView();
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.left_dynamic_fragments_frame, mDisruptionsFragment, DISRUPTION_TAG)
@@ -339,7 +342,7 @@ public class MainActivity extends AppCompatActivity
      */
     private void showFavoriteStops() {
         actionBar.setTitle(getResources().getString(R.string.title_favorite_stops));
-        mFavoriteStopsFragment.showFavoriteStops();
+        mFavoriteStopsFragmentRv.showFavoriteStops();
 //        fab.show();
     }
 
@@ -355,8 +358,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void addStop() {
-        if (mFavoriteStopsFragment != null) {
-            mFavoriteStopsFragment.showView();
+        if (mFavoriteStopsFragmentRv != null) {
+            mFavoriteStopsFragmentRv.showView();
         }
         getSupportFragmentManager()
                 .beginTransaction()
@@ -380,7 +383,7 @@ public class MainActivity extends AppCompatActivity
                         latLonDetails.latitude,
                         latLonDetails.longitude);
             }
-            mFavoriteStopsFragment.hideView();
+            mFavoriteStopsFragmentRv.hideView();
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.left_dynamic_fragments_frame, mStationOnMapFragment, STATION_ON_MAP_TAG)
@@ -398,7 +401,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             mNearbyStopsFragment.setNewContent(nearbyStopsDetailsList);
         }
-        mFavoriteStopsFragment.hideView();
+        mFavoriteStopsFragmentRv.hideView();
 //        Log.v(TAG, "showNearbyStops - adding mNearbyStopsFragment");
         getSupportFragmentManager()
                 .beginTransaction()

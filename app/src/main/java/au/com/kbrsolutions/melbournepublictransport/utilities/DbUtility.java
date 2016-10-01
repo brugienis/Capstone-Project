@@ -1,5 +1,6 @@
 package au.com.kbrsolutions.melbournepublictransport.utilities;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -24,6 +25,18 @@ import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 public class DbUtility {
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
+
+    public void updateStopDetails(long rowId, Context context) {
+        Log.v(TAG, "updateStopDetails - start");
+        ContentValues updatedValues = new ContentValues();
+        updatedValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, "n");
+        int count = context.getContentResolver().update(
+                MptContract.StopDetailEntry.CONTENT_URI,
+                updatedValues,
+                MptContract.StopDetailEntry._ID + "= ?",
+                new String [] { String.valueOf(rowId)});
+        Log.v(TAG, "updateStopDetails - end - count: " + count);
+    }
 
     public List<NearbyStopsDetails> getNearbyTrainDetails(LatLonDetails latLonDetails, Context context) {
         Uri uri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.ANY_FAVORITE_FLAG);

@@ -36,14 +36,14 @@ public class FavoriteStopsFragmentRv
         extends BaseFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private FavoriteStopsFragmentRv.FavoriteStopsFragmentCallbacks mCallbacks;
+    private OnFavoriteStopsFragmentInteractionListener mCallbacks;
     private ListView mListView;
     private List<StopDetails> mStopDetailsList;
     private TextView mEmptyView;
     private View mRootView;
     private boolean isVisible;
     private FavoriteStopsAdapterRv mFavoriteStopDetailAdapter;
-    private FavoriteStopsFragmentRv.OnFavoriteStopsFragmentInteractionListener mListener;
+    private OnFavoriteStopsFragmentInteractionListener mListener;
 
     private static final int STOP_DETAILS_LOADER = 0;
 
@@ -206,8 +206,8 @@ public class FavoriteStopsFragmentRv
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof FavoriteStopsFragment.FavoriteStopsFragmentCallbacks) {
-            mCallbacks = (FavoriteStopsFragmentRv.FavoriteStopsFragmentCallbacks) context;
+        if (context instanceof FavoriteStopsFragmentRv.OnFavoriteStopsFragmentInteractionListener) {
+            mListener = (FavoriteStopsFragmentRv.OnFavoriteStopsFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -217,7 +217,7 @@ public class FavoriteStopsFragmentRv
     @Override
     public void onDetach() {
         super.onDetach();
-        mCallbacks = null;
+        mListener = null;
     }
 
     @Override
@@ -249,13 +249,13 @@ public class FavoriteStopsFragmentRv
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_train_stops_nearby) {
-            mCallbacks.startStopsNearbySearch(true);
+            mListener.startStopsNearbySearch(true);
             return true;
         } else if (id == R.id.action_stops_nearby) {
-            mCallbacks.startStopsNearbySearch(false);
+            mListener.startStopsNearbySearch(false);
             return true;
         } else if (id == R.id.action_disruptions) {
-            mCallbacks.getDisruptionsDetails();
+            mListener.getDisruptionsDetails();
             return true;
         }
 
@@ -288,7 +288,7 @@ public class FavoriteStopsFragmentRv
         void showSelectedStopOnMap(LatLonDetails latLonDetails);
         void startStopsNearbySearch(boolean trainsOnly);
         void getDisruptionsDetails();
-        void updateStopDetailRow(StopDetails stopDetails);  // activity should send the removeSelectedStop() below
+        void updateStopDetailRow(StopDetails stopDetails, String favoriteColumnValue);  // activity should send the removeSelectedStop() below
                                                             // to IntentService
     }
 

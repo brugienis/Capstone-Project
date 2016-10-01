@@ -32,12 +32,14 @@ public class RequestProcessorService extends IntentService {
     public final static String SHOW_NEXT_DEPARTURES = "show_next_departures";
     public final static String GET_NEARBY_STOPS_DETAILS = "get_nearby_details";
     public final static String GET_TRAIN_NEARBY_STOPS_DETAILS = "get_train_nearby_stops_details";
+    public final static String UPDATE_STOPS_DETAILS = "update_stops_details";
 
     public final static String MODE = "mode";
     public final static String MODES = "modes";
     public final static String STOP_ID = "stop_id";
     public final static String LIMIT = "limit";
     public final static String LAT_LON = "lat_lon";
+    public final static String ROW_ID = "row_id";
 
     private static final String TAG = RequestProcessorService.class.getSimpleName();
 
@@ -150,6 +152,18 @@ public class RequestProcessorService extends IntentService {
                                 MainActivityEvents.MainEvents.NEARBY_LOCATION_DETAILS)
                                 .setNearbyStopsDetailsList(nearbyStopsDetailsList)
                                 .build());
+                        break;
+
+                    case UPDATE_STOPS_DETAILS:
+                        int rowId = extras.getInt(ROW_ID);
+                        if (dbUtility == null) {
+                            dbUtility = new DbUtility();
+                        }
+                        dbUtility.updateStopDetails(rowId, getApplicationContext());
+//                        sendMessageToMainActivity(new MainActivityEvents.Builder(
+//                                MainActivityEvents.MainEvents.NEARBY_LOCATION_DETAILS)
+//                                .setNearbyStopsDetailsList(nearbyStopsDetailsList)
+//                                .build());
                         break;
 
                     default:
