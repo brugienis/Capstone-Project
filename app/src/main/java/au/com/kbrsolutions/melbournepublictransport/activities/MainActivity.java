@@ -142,8 +142,8 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         Intent intent = new Intent(this, RequestProcessorService.class);
-//        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.REFRESH_DATA_IF_TABLES_EMPTY);
-        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.REFRESH_DATA);
+        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.REFRESH_DATA_IF_TABLES_EMPTY);
+//        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.REFRESH_DATA);
         startService(intent);
     }
 
@@ -270,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void updateStopDetailRow(int id, String favoriteColumnValue) {
-        Log.v(TAG, "updateStopDetailRow - got request - favoriteColumnValue: " + favoriteColumnValue);
+//        Log.v(TAG, "updateStopDetailRow - got request - favoriteColumnValue: " + favoriteColumnValue);
         Intent intent = new Intent(this, RequestProcessorService.class);
         intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.UPDATE_STOPS_DETAILS);
         intent.putExtra(RequestProcessorService.ROW_ID, id);

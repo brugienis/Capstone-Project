@@ -27,7 +27,7 @@ public class DbUtility {
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
     public void updateStopDetails(long rowId, Context context, String favoriteColumnValue) {
-        Log.v(TAG, "updateStopDetails - start - favoriteColumnValue: " + favoriteColumnValue);
+//        Log.v(TAG, "updateStopDetails - start - favoriteColumnValue: " + favoriteColumnValue);
         ContentValues updatedValues = new ContentValues();
         updatedValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, favoriteColumnValue);
         int count = context.getContentResolver().update(
@@ -35,27 +35,31 @@ public class DbUtility {
                 updatedValues,
                 MptContract.StopDetailEntry._ID + "= ?",
                 new String [] { String.valueOf(rowId)});
-        Log.v(TAG, "updateStopDetails - end - count: " + count);
+//        Log.v(TAG, "updateStopDetails - end - count: " + count);
 
-        Uri uri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.ANY_FAVORITE_FLAG);
-        Cursor cursor = context.getContentResolver().query(
-                uri,
-                null,
-                MptContract.StopDetailEntry._ID + "= ?",
-                new String [] { String.valueOf(rowId)},
-                null
-        );
-        printContents(cursor);
+//        Uri uri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.ANY_FAVORITE_FLAG);
+//        Cursor cursor = context.getContentResolver().query(
+//                uri,
+//                null,
+//                MptContract.StopDetailEntry._ID + "= ?",
+//                new String [] { String.valueOf(rowId)},
+//                null
+//        );
+//        printContents(cursor);
     }
 
     private void printContents(Cursor cursor) {
         Log.v(TAG, "printContents - start");
         int stopIdIdx;
         int locationNameIdx;
+        int lfavoriteIdx;
         while (cursor.moveToNext()) {
             stopIdIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_STOP_ID);
             locationNameIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LOCATION_NAME);
-            Log.v(TAG, cursor.getString(stopIdIdx) + "/" + cursor.getString(locationNameIdx));
+            lfavoriteIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_FAVORITE);
+            Log.v(TAG, cursor.getString(stopIdIdx) + "/" +
+                    cursor.getString(locationNameIdx) + "/" +
+                    cursor.getString(lfavoriteIdx));
         }
         Log.v(TAG, "printContents - start");
     }
