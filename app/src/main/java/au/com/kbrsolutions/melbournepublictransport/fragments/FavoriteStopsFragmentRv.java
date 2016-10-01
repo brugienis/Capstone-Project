@@ -36,7 +36,7 @@ public class FavoriteStopsFragmentRv
         extends BaseFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private OnFavoriteStopsFragmentInteractionListener mCallbacks;
+//    private OnFavoriteStopsFragmentInteractionListener mCallbacks;
     private ListView mListView;
     private List<StopDetails> mStopDetailsList;
     private TextView mEmptyView;
@@ -78,8 +78,8 @@ public class FavoriteStopsFragmentRv
     public void hideView() {
         isVisible = false;
         mRootView.setVisibility(View.INVISIBLE);
-        if (mCallbacks != null) {
-            ((Activity) mCallbacks).invalidateOptionsMenu();
+        if (mListener != null) {
+            ((Activity) mListener).invalidateOptionsMenu();
         }
     }
 
@@ -88,8 +88,8 @@ public class FavoriteStopsFragmentRv
 //        Log.v(TAG, "showView");
         isVisible = true;
         mRootView.setVisibility(View.VISIBLE);
-        if (mCallbacks != null) {
-            ((Activity) mCallbacks).invalidateOptionsMenu();
+        if (mListener != null) {
+            ((Activity) mListener).invalidateOptionsMenu();
         }
     }
 
@@ -188,16 +188,6 @@ public class FavoriteStopsFragmentRv
         mFavoriteStopDetailAdapter.swapCursor(null);
     }
 
-    public void handleNextDeparturesClicked(StopDetails stopDetails) {
-        mCallbacks.startNextDeparturesSearch(stopDetails);
-    }
-
-    void handleMapClicked(StopDetails stopDetails) {
-//        Log.v(TAG, "handleMapClicked - locationName: " + stopDetails.locationName);
-//        mCallbacks.showSelectedStopOnMap(stopDetails);
-        mCallbacks.showSelectedStopOnMap(new LatLonDetails(stopDetails.latitude, stopDetails.longitude));
-    }
-
     public void showFavoriteStops() {
         // FIXME: 18/08/2016 add code
         showView();
@@ -222,6 +212,7 @@ public class FavoriteStopsFragmentRv
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
+//        Log.v(TAG, "onPrepareOptionsMenu - isVisible: " + isVisible);
         if (isVisible) {
             menu.findItem(R.id.action_train_stops_nearby).setVisible(true);
             menu.findItem(R.id.action_stops_nearby).setVisible(true);
@@ -265,12 +256,12 @@ public class FavoriteStopsFragmentRv
     /**
      * Declares callback methods that have to be implemented by parent Activity
      */
-    public interface FavoriteStopsFragmentCallbacks {
-        void startNextDeparturesSearch(StopDetails stopDetails);
-        void showSelectedStopOnMap(LatLonDetails latLonDetails);
-        void startStopsNearbySearch(boolean trainsOnly);
-        void getDisruptionsDetails();
-    }
+//    public interface FavoriteStopsFragmentCallbacks {
+//        void startNextDeparturesSearch(StopDetails stopDetails);
+//        void showSelectedStopOnMap(LatLonDetails latLonDetails);
+//        void startStopsNearbySearch(boolean trainsOnly);
+//        void getDisruptionsDetails();
+//    }
 
     /**
      * This interface must be implemented by activities that contain this

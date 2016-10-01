@@ -207,11 +207,11 @@ public class MainActivity extends AppCompatActivity
 
     private void showViewIfRequired() {
         BaseFragment baseFragment = getTopFragment();
-        Log.v(TAG, "showViewIfRequired - baseFragment: " + baseFragment);
+//        Log.v(TAG, "showViewIfRequired - baseFragment: " + baseFragment);
         boolean showFab = false;
         if (baseFragment != null) {
             FragmentsId fragmentsId = baseFragment.getFragmentId();
-            Log.v(TAG, "showViewIfRequired - fragmentsId: " + fragmentsId);
+//            Log.v(TAG, "showViewIfRequired - fragmentsId: " + fragmentsId);
             if (fragmentsId != null) {
                 if (fragmentsId == FragmentsId.FAVORITE_STOPS ||
                         fragmentsId == FragmentsId.STOPS_NEARBY) {
@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }
-        Log.v(TAG, "showViewIfRequired - showFab: " + showFab);
+//        Log.v(TAG, "showViewIfRequired - showFab: " + showFab);
         if (showFab) {
             fab.show();
         } else {
@@ -331,7 +331,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onSupportNavigateUp() {
         getSupportFragmentManager().popBackStack();
-        Log.v(TAG, "onSupportNavigateUp - after popBackStack");
+//        Log.v(TAG, "onSupportNavigateUp - after popBackStack");
 //        fab.setImageResource(R.drawable.ic_autorenew_pink_48dp);
         fab.setImageResource(android.R.drawable.ic_input_add);
         return true;
@@ -347,7 +347,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void startNextDeparturesSearch(StopDetails stopDetails) {
-        Log.v(TAG, "startNextDeparturesSearch");
+//        Log.v(TAG, "startNextDeparturesSearch");
         Intent intent = new Intent(this, RequestProcessorService.class);
         mSelectedStopName = stopDetails.locationName;
         intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.SHOW_NEXT_DEPARTURES);

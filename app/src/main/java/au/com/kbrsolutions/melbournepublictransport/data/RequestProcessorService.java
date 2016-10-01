@@ -135,9 +135,9 @@ public class RequestProcessorService extends IntentService {
                         nearbyStopsDetailsList =
                                 RemoteMptEndpointUtil.getNearbyStops(latLonDetails);
                         Log.v(TAG, "after return to RemoteMptEndpointUtil");
-                        for (NearbyStopsDetails d: nearbyStopsDetailsList) {
-                            Log.v(TAG, d.toString());
-                        }
+//                        for (NearbyStopsDetails d: nearbyStopsDetailsList) {
+//                            Log.v(TAG, d.toString());
+//                        }
                         if (dbUtility == null) {
                             dbUtility = new DbUtility();
                         }
