@@ -31,7 +31,7 @@ public class NearbyStopsFragment extends BaseFragment {
     private View mRootView;
     private OnNearbyStopsFragmentInteractionListener mListener;
 
-    private static final String TAG = StopDetailAdapter.class.getSimpleName();
+    private static final String TAG = NearbyStopsFragment.class.getSimpleName();
 
     public NearbyStopsFragment() {
         // Required empty public constructor

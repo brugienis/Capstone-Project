@@ -73,16 +73,14 @@ public class FavoriteStopsAdapterRv extends CursorAdapter {
         mListener.startNextDeparturesSearch(stopDetails);
     }
 
-    private static final String NON_FAVORITE = "n";
+    private static final String NON_FAVORITE_VALUE = "n";
     private static void updateStopDetailRow(StopDetails stopDetails) {
-        mListener.updateStopDetailRow(stopDetails, NON_FAVORITE);
+        mListener.updateStopDetailRow(stopDetails, NON_FAVORITE_VALUE);
     }
 
     public FavoriteStopsAdapterRv(Context context, Cursor c, int flags, FavoriteStopsFragmentRv.OnFavoriteStopsFragmentInteractionListener listener) {
         super(context, c, flags);
         mListener = listener;
-        Log.v(TAG, "FavoriteStopsAdapterRv - mListener: " + mListener);
-//        mFavoriteStopFragmentRv = favoriteStopsFragment;
     }
 
     @Override

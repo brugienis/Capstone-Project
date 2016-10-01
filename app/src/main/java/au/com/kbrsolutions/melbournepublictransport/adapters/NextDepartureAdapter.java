@@ -10,8 +10,8 @@ import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
-import au.com.kbrsolutions.melbournepublictransport.fragments.StopDetailAdapter;
 
+// FIXME: 2/10/2016 - how to show scrollbar?
 /**
  * {@link RecyclerView.Adapter} that can display a {@link NextDepartureDetails}.
  */
@@ -22,7 +22,7 @@ public class NextDepartureAdapter extends RecyclerView.Adapter<NextDepartureAdap
     private static final String ALL_STOPS = "All stops";
     private static final String EXPRESS = "Express";
 
-    private static final String TAG = StopDetailAdapter.class.getSimpleName();
+    private static final String TAG = NextDepartureAdapter.class.getSimpleName();
 
     public NextDepartureAdapter(List<NextDepartureDetails> items) {
         mValues = items;

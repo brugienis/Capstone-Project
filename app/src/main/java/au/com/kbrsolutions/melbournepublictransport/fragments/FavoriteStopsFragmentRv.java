@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -29,9 +30,12 @@ import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 
 /**
- * Created by business on 1/10/2016.
+ *
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link FavoriteStopsFragmentRv.OnFavoriteStopsFragmentInteractionListener} interface
+ * to handle interaction events.
  */
-
 public class FavoriteStopsFragmentRv
         extends BaseFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {

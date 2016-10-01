@@ -30,7 +30,7 @@ public class NextDeparturesFragment extends BaseFragment {
     private TextView selectedStopNameTv;
     private boolean newInstanceArgsRetrieved;
 
-    private static final String TAG = StopDetailAdapter.class.getSimpleName();
+    private static final String TAG = NextDeparturesFragment.class.getSimpleName();
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the

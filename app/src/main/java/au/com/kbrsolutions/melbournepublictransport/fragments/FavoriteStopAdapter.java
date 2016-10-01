@@ -19,7 +19,7 @@ public class FavoriteStopAdapter extends CursorAdapter {
 
     private FavoriteStopsFragment mFavoriteStopsFragment;
 
-    private static final String TAG = StopDetailAdapter.class.getSimpleName();
+    private static final String TAG = FavoriteStopAdapter.class.getSimpleName();
 
     public static class ViewHolder {
         public final TextView locationNameView;

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
+import au.com.kbrsolutions.melbournepublictransport.adapters.StopDetailAdapterRv;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
@@ -27,24 +28,16 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link StopDetailFragment.AddStopFragmentCallbacks} interface
+ * {@link StopDetailFragment.OnStopFragmentInteractionListener} interface
  * to handle interaction events.
  */
 public class StopDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     // FIXME: 25/08/2016 check Running a Query with a CursorLoader - https://developer.android.com/training/load-data-background/setup-loader.html
 
-    /**
-     * Declares callback methods that have to be implemented by parent Activity
-     */
-    public interface AddStopFragmentCallbacks {
-        void addStop();
-        void showSelectedStopOnMap(LatLonDetails latLonDetails);
-    }
-
-    AddStopFragmentCallbacks mCallbacks;
     private ListView mListView;
-    private StopDetailAdapter mStopDetailAdapter;
+    private StopDetailAdapterRv mStopDetailAdapter;
+    private OnStopFragmentInteractionListener mListener;
     private static List<StopDetails> mFolderItemList = new ArrayList<>();
     private TextView mEmptyView;
 
@@ -61,13 +54,13 @@ public class StopDetailFragment extends Fragment implements LoaderManager.Loader
     };
 
     // These indices are tied to stop_details columns specified above.
-    static final int COL_STOP_DETAILS_ID = 0;
-    static final int COL_STOP_DETAILS_ROUTE_TYPE = 1;
-    static final int COL_STOP_DETAILS_STOP_ID = 2;
-    static final int COL_STOP_DETAILS_LOCATION_NAME = 3;
-    static final int COL_STOP_DETAILS_LATITUDE = 4;
-    static final int COL_STOP_DETAILS_LONGITUDE = 5;
-    static final int COL_STOP_DETAILS_FAVORITE = 6;
+    public static final int COL_STOP_DETAILS_ID = 0;
+    public static final int COL_STOP_DETAILS_ROUTE_TYPE = 1;
+    public static final int COL_STOP_DETAILS_STOP_ID = 2;
+    public static final int COL_STOP_DETAILS_LOCATION_NAME = 3;
+    public static final int COL_STOP_DETAILS_LATITUDE = 4;
+    public static final int COL_STOP_DETAILS_LONGITUDE = 5;
+    public static final int COL_STOP_DETAILS_FAVORITE = 6;
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
@@ -84,7 +77,7 @@ public class StopDetailFragment extends Fragment implements LoaderManager.Loader
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mStopDetailAdapter = new StopDetailAdapter(this, null, 0);
+        mStopDetailAdapter = new StopDetailAdapterRv(this, null, 0, mListener);
         View rootView = inflater.inflate(R.layout.fragment_add_stop, container, false);
 
         mListView = (ListView) rootView.findViewById(R.id.addStopsListView);
@@ -101,10 +94,8 @@ public class StopDetailFragment extends Fragment implements LoaderManager.Loader
 
         if (mFolderItemList.size() == 0) {
             mEmptyView = (TextView) rootView.findViewById(R.id.emptyView);
-//            Log.v(TAG, "onCreateView - mEmptyView: " + mEmptyView);
             mEmptyView.setText(getActivity().getResources()
                     .getString(R.string.no_stops_to_add));
-//            Log.v(TAG, "onCreateView - showing empty list");
         }
         return rootView;
     }
@@ -159,33 +150,61 @@ public class StopDetailFragment extends Fragment implements LoaderManager.Loader
         // if it cannot seek to that position.
         Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
         if (cursor != null) {
+            // FIXME: 2/10/2016 - call below to update row
+//            private static final String FAVORITE_VALUE = "y";
+//            mListener.updateStopDetailRow(stopDetails, FAVORITE_VALUE);
             ContentValues updatedValues = new ContentValues();
             updatedValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, "y");
             int count = getActivity().getContentResolver().update(
                     MptContract.StopDetailEntry.CONTENT_URI, updatedValues, MptContract.StopDetailEntry._ID + "= ?",
                     new String [] { String.valueOf(cursor.getInt(COL_STOP_DETAILS_ID))});
-            mCallbacks.addStop();
+            mListener.addStop();
         }
     }
 
-    void handleMapClicked(StopDetails stopDetails) {
-        mCallbacks.showSelectedStopOnMap(new LatLonDetails(stopDetails.latitude, stopDetails.longitude));
+    public void handleMapClicked(StopDetails stopDetails) {
+        mListener.showSelectedStopOnMap(new LatLonDetails(stopDetails.latitude, stopDetails.longitude));
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof AddStopFragmentCallbacks) {
-            mCallbacks = (AddStopFragmentCallbacks) context;
+        if (context instanceof OnStopFragmentInteractionListener) {
+            mListener = (OnStopFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement AddStopFragmentCallbacks");
+                    + " must implement OnStopFragmentInteractionListener");
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mCallbacks = null;
+        mListener = null;
+    }
+
+    /**
+     * Declares callback methods that have to be implemented by parent Activity
+     */
+    public interface AddStopFragmentCallbacks {
+        void addStop();
+        void showSelectedStopOnMap(LatLonDetails latLonDetails);
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnStopFragmentInteractionListener {
+        void addStop();
+        void showSelectedStopOnMap(LatLonDetails latLonDetails);
+        void updateStopDetailRow(StopDetails stopDetails, String favoriteColumnValue);  // activity should send the removeSelectedStop() below
+        // to IntentService
     }
 }

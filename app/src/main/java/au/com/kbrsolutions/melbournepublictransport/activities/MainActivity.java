@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity
     private NextDeparturesFragment mNextDeparturesFragment;
     private DisruptionsFragment mDisruptionsFragment;
     private NearbyStopsFragment mNearbyStopsFragment;
-    private Fragment mCurrFragment;
+//    private Fragment mCurrFragment;
     ActionBar actionBar;
     private View mCoordinatorlayout;
     private FloatingActionButton fab;
@@ -243,7 +243,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void showNextDepartures(List<NextDepartureDetails> nextDepartureDetailsList) {
-//        Log.v(TAG, "showNextDepartures");
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         actionBar.setTitle(getResources().getString(R.string.title_next_departures));
         if (mNextDeparturesFragment == null) {
@@ -261,8 +260,6 @@ public class MainActivity extends AppCompatActivity
                 .addToBackStack(NEXT_DEPARTURES_TAG)     // it will also show 'Up' button in the action bar
                 .commit();
         fab.setImageResource(R.drawable.ic_autorenew_pink_48dp);
-        Log.v(TAG, "showNextDepartures: before fab.show()");
-//        fab.show();
     }
 
     public void getDisruptionsDetails() {

@@ -28,7 +28,7 @@ public class DisruptionsFragment extends Fragment {
     private DisruptionsAdapter mRecyclerViewAdapter;
     private boolean newInstanceArgsRetrieved;
 
-    private static final String TAG = StopDetailAdapter.class.getSimpleName();
+    private static final String TAG = DisruptionsFragment.class.getSimpleName();
 
     public DisruptionsFragment() {
         // Required empty public constructor
