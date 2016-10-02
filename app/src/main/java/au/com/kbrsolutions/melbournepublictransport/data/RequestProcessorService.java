@@ -18,15 +18,16 @@ import au.com.kbrsolutions.melbournepublictransport.events.RequestProcessorServi
 import au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil;
 import au.com.kbrsolutions.melbournepublictransport.utilities.DbUtility;
 
+import static au.com.kbrsolutions.melbournepublictransport.data.DatabaseContentRefresher.testProgressBar;
+
 
 public class RequestProcessorService extends IntentService {
 
     private EventBus eventBus;
     private DbUtility dbUtility;
 
-    public final static String ACTION = "action";
-    public final static String REFRESH_DATA = "refresh_data";
-    public final static String REFRESH_DATA_IF_TABLES_EMPTY = "refresh_data_if_tables_empty";
+    public final static String REQUEST = "request";
+    public final static String ACTION_REFRESH_DATA = "refresh_data";
     public static final String GET_DISRUPTIONS_DETAILS = "get_disruptions_details";
     public final static String SHOW_NEXT_DEPARTURES = "show_next_departures";
     public final static String GET_NEARBY_STOPS_DETAILS = "get_nearby_details";
@@ -40,6 +41,7 @@ public class RequestProcessorService extends IntentService {
     public final static String LAT_LON = "lat_lon";
     public final static String ROW_ID = "row_id";
     public final static String FAVORITE_COLUMN_VALUE = "favorite_column_value";
+    public final static String REFRESH_DATA_IF_TABLES_EMPTY = "refresh_data_if_tables_empty";
 
     private static final String TAG = RequestProcessorService.class.getSimpleName();
 
@@ -55,9 +57,9 @@ public class RequestProcessorService extends IntentService {
         }
 
         Bundle extras = intent.getExtras();
-        String action = null;
+        String request = null;
         if (extras != null) {
-            action = extras.getString(ACTION);
+            request = extras.getString(REQUEST);
         }
 
         ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
@@ -70,8 +72,8 @@ public class RequestProcessorService extends IntentService {
             return;
         }
 
-//        Log.v(TAG, "onHandleIntent - action: " + action);
-        if (action != null) {
+//        Log.v(TAG, "onHandleIntent - request: " + request);
+        if (request != null) {
             boolean databaseOK = DatabaseContentRefresher.performHealthCheck();
             if (!databaseOK) {
                 sendMessageToMainActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NETWORK_STATUS)
@@ -80,14 +82,22 @@ public class RequestProcessorService extends IntentService {
             } else {
                 LatLonDetails latLonDetails;
                 List<NearbyStopsDetails> nearbyStopsDetailsList;
-                switch (action) {
-                    case REFRESH_DATA:
-                        DatabaseContentRefresher.refreshDatabase(getContentResolver(), false);
+                switch (request) {
+                    case ACTION_REFRESH_DATA:
+                        boolean refreshDataIfTablesEmpty = extras.getBoolean(REFRESH_DATA_IF_TABLES_EMPTY);
+                        boolean databaseLoaded = DatabaseContentRefresher.databaseLoaded(getContentResolver());
+                        sendMessageToMainActivity(new MainActivityEvents.Builder(
+                                MainActivityEvents.MainEvents.DATABASE_STATUS)
+//                                .setDatabaseLoaded(databaseLoaded)
+                                .setDatabaseLoaded(false)
+                                .build());
+                        testProgressBar();
+//                        DatabaseContentRefresher.refreshDatabase(getContentResolver(), refreshDataIfTablesEmpty);
                         break;
 
-                    case REFRESH_DATA_IF_TABLES_EMPTY:
-                        DatabaseContentRefresher.refreshDatabase(getContentResolver(), true);
-                        break;
+//                    case REFRESH_DATA_IF_TABLES_EMPTY:
+//                        DatabaseContentRefresher.refreshDatabase(getContentResolver(), true);
+//                        break;
 
                     case SHOW_NEXT_DEPARTURES:
                         List<NextDepartureDetails> nextDepartureDetailsList =
@@ -161,7 +171,7 @@ public class RequestProcessorService extends IntentService {
                         break;
 
                     default:
-                        throw new RuntimeException(TAG + ".onHandleIntent - no code to handle action: " + action);
+                        throw new RuntimeException(TAG + ".onHandleIntent - no code to handle request: " + request);
                 }
             }
         }

@@ -6,7 +6,7 @@
     <item
         android:id="@+id/action_train_stops_nearby"
         android:orderInCategory="10"
-        android:title="@string/action_stops_nearby"
+        android:title="@string/action_train_stops_nearby"
         android:icon="@drawable/ic_near_me_orange_48dp"
         app:showAsAction="ifRoom"/>
     <item

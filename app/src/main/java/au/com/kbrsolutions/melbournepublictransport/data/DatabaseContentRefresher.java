@@ -7,22 +7,52 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
+import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
+import au.com.kbrsolutions.melbournepublictransport.events.RequestProcessorServiceRequestEvents;
 import au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil;
 
 public class DatabaseContentRefresher {
 
     private static final String TAG = DatabaseContentRefresher.class.getSimpleName();
 
-    static boolean performHealthCheck() {
+    protected static void testProgressBar() {
+        int cnt = 10;
+        for (int i = 0; i < cnt; i++) {
+            if (i == 0) {
+                sendMessageToMainActivity(new MainActivityEvents.Builder(
+                        MainActivityEvents.MainEvents.DATABASE_LOAD_TARGET)
+                        .setDatabaseLoadTarget(cnt - 1)
+                        .build());
+                Log.v(TAG, "testProgressBar - target sent");
+            } else {
+                sendMessageToMainActivity(new MainActivityEvents.Builder(
+                        MainActivityEvents.MainEvents.DATABASE_LOAD_PROGRESS)
+                        .setDatabaseLoadProgress(i)
+                        .build());
+                Log.v(TAG, "testProgressBar - progress sent i: " + i);
+            }
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    protected static boolean performHealthCheck() {
         boolean databaseOK = RemoteMptEndpointUtil.performHealthCheck();
         return databaseOK;
     }
 
-    static void refreshDatabase(ContentResolver contentResolver, boolean runIfTablesAreEmpty) {
+    protected static void refreshDatabase(ContentResolver contentResolver, boolean runIfTablesAreEmpty) {
         if (runIfTablesAreEmpty) {
-            if (tablesNotEmpty(contentResolver)) {
+            if (databaseLoaded(contentResolver)) {
                 return;
             }
         }
@@ -80,7 +110,7 @@ public class DatabaseContentRefresher {
         Log.v(TAG, "refreshDatabase - performing refresh action");
     }
 
-    private static boolean tablesNotEmpty(ContentResolver contentResolver) {
+    protected static boolean databaseLoaded(ContentResolver contentResolver) {
         Cursor lineCursor = contentResolver.query(
                 MptContract.LineDetailEntry.CONTENT_URI,
                 null, // leaving "columns" null just returns all the columns.
@@ -100,7 +130,7 @@ public class DatabaseContentRefresher {
                 null  // no sort order
         );
         int stopDetailsRowsCnt = stopCursor.getCount();
-//        Log.v(TAG, "tablesNotEmpty - line_detail/stop_detail cnt: " + lineDetailsRowsCnt + "/" + stopDetailsRowsCnt);
+//        Log.v(TAG, "databaseLoaded - line_detail/stop_detail cnt: " + lineDetailsRowsCnt + "/" + stopDetailsRowsCnt);
         stopCursor.close();
 
         return (lineDetailsRowsCnt + stopDetailsRowsCnt) != 0;
@@ -135,5 +165,13 @@ public class DatabaseContentRefresher {
             Log.v(TAG, "printLineDetailContent - lineId/lineName: " + cursor.getString(0) + "/" + cursor.getString(1));
         }
         cursor.close();
+    }
+
+    private static void sendMessageToMainActivity(MainActivityEvents event) {
+        EventBus.getDefault().post(event);
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onMessageEvent(RequestProcessorServiceRequestEvents event) {
     }
 }

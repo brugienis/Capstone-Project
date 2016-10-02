@@ -41,6 +41,7 @@ import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 import au.com.kbrsolutions.melbournepublictransport.fragments.BaseFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.DisruptionsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragment;
+import au.com.kbrsolutions.melbournepublictransport.fragments.InitFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.NearbyStopsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.NextDeparturesFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StationOnMapFragment;
@@ -51,10 +52,12 @@ import au.com.kbrsolutions.melbournepublictransport.utilities.CurrentGeoPosition
 // ^((?!GLHudOverlay).)*$
 
 public class MainActivity extends AppCompatActivity implements
+        InitFragment.OnInitFragmentInteractionListener,
         FavoriteStopsFragment.OnFavoriteStopsFragmentInteractionListener,
         StopsFragment.OnStopFragmentInteractionListener,
         NearbyStopsFragment.OnNearbyStopsFragmentInteractionListener {
 
+    private InitFragment mInitFragment;
     private FavoriteStopsFragment mFavoriteStopsFragment;
     private StationOnMapFragment mStationOnMapFragment;
     private StopsFragment mStopDetailFragment;
@@ -67,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements
     private EventBus eventBus;
     private String mSelectedStopName;
     private CurrentGeoPositionFinder mCurrentGeoPositionFinder;
+    private int mBrevBackStackEntryCount;
 
     private static final String FAVORITE_STOPS_TAG = "favorite_stops_tag";
     private static final String ERROR_DIALOG_FRAGMENT_TAG = "errorDialog";
@@ -75,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final String NEXT_DEPARTURES_TAG = "next_departures_tag";
     private static final String DISRUPTION_TAG = "disruption_tag";
     private static final String NEARBY_TAG = "nearby_tag";
+    private static final String INIT_TAG = "init_tag";
     private final static String TRANSPORT_MODE_METRO_TRAIN = "metro-train";
 
     public enum FragmentsId {
@@ -109,11 +114,22 @@ public class MainActivity extends AppCompatActivity implements
                         showViewIfRequired();
 
                         int cnt = getSupportFragmentManager().getBackStackEntryCount();
-                        if (cnt == 1) {      /* we came back to Favorite Stops */
-                            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                            showFavoriteStops();
+                        boolean backButtonPressed;
+                        if (cnt > mBrevBackStackEntryCount) {
+                            Log.v(TAG, "onBackStackChanged - going forward");
+                            backButtonPressed = false;
                         } else {
-                            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                            Log.v(TAG, "onBackStackChanged - going backward");
+                            backButtonPressed = true;
+                        }
+                        mBrevBackStackEntryCount = cnt;
+                        if (backButtonPressed) {
+                            if (cnt == 1) {      /* we came back to Favorite Stops */
+                                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                                showFavoriteStops();
+                            } else {
+                                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                            }
                         }
                     }
                 });
@@ -122,15 +138,15 @@ public class MainActivity extends AppCompatActivity implements
                 (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
 
 
-        if (mFavoriteStopsFragment == null) {
-            mFavoriteStopsFragment = new FavoriteStopsFragment();
-            mFavoriteStopsFragment.setFragmentId(FragmentsId.FAVORITE_STOPS);
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
-                    .addToBackStack(FAVORITE_STOPS_TAG)
-                    .commit();
-        }
+//        if (mFavoriteStopsFragment == null) {
+//            mFavoriteStopsFragment = new FavoriteStopsFragment();
+//            mFavoriteStopsFragment.setFragmentId(FragmentsId.FAVORITE_STOPS);
+//            getSupportFragmentManager()
+//                    .beginTransaction()
+//                    .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
+//                    .addToBackStack(FAVORITE_STOPS_TAG)
+//                    .commit();
+//        }
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -141,9 +157,51 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         Intent intent = new Intent(this, RequestProcessorService.class);
-        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.REFRESH_DATA_IF_TABLES_EMPTY);
-//        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.REFRESH_DATA);
+        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_REFRESH_DATA);
+        intent.putExtra(RequestProcessorService.REFRESH_DATA_IF_TABLES_EMPTY, true);
+        Log.v(TAG, "onCreate - request sent");
+//        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_REFRESH_DATA);
         startService(intent);
+    }
+
+    private void handleDatabaseLoadedCase(boolean databaseLoaded) {
+        Log.v(TAG, "handleDatabaseLoadedCase - databaseLoaded: " + databaseLoaded);
+        if (databaseLoaded) {
+            if (mFavoriteStopsFragment == null) {
+                mFavoriteStopsFragment = new FavoriteStopsFragment();
+                mFavoriteStopsFragment.setFragmentId(FragmentsId.FAVORITE_STOPS);
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
+                        .addToBackStack(FAVORITE_STOPS_TAG)
+                        .commit();
+            }
+        } else {
+            if (mInitFragment == null) {
+                mInitFragment = new InitFragment();
+//                mInitFragment.setFragmentId(FragmentsId.FAVORITE_STOPS);
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.left_dynamic_fragments_frame, mInitFragment, INIT_TAG)
+                        .addToBackStack(INIT_TAG)
+                        .commit();
+            }
+        }
+    }
+
+    @Override
+    public void databaseLoaded() {
+        Log.v(TAG, "databaseLoaded - start");
+        if (mFavoriteStopsFragment == null) {
+            mFavoriteStopsFragment = new FavoriteStopsFragment();
+            mFavoriteStopsFragment.setFragmentId(FragmentsId.FAVORITE_STOPS);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
+                    .addToBackStack(FAVORITE_STOPS_TAG)
+                    .commit();
+        }
+        Log.v(TAG, "databaseLoaded - end");
     }
 
     private BaseFragment getTopFragment() {
@@ -262,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements
     public void getDisruptionsDetails() {
         String trainMode = TRANSPORT_MODE_METRO_TRAIN;
         Intent intent = new Intent(this, RequestProcessorService.class);
-        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.GET_DISRUPTIONS_DETAILS);
+        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.GET_DISRUPTIONS_DETAILS);
         intent.putExtra(RequestProcessorService.MODES, trainMode);
         startService(intent);
     }
@@ -271,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements
     public void updateStopDetailRow(int id, String favoriteColumnValue) {
 //        Log.v(TAG, "updateStopDetailRow - got request - favoriteColumnValue: " + favoriteColumnValue);
         Intent intent = new Intent(this, RequestProcessorService.class);
-        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.UPDATE_STOPS_DETAILS);
+        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.UPDATE_STOPS_DETAILS);
         intent.putExtra(RequestProcessorService.ROW_ID, id);
         intent.putExtra(RequestProcessorService.FAVORITE_COLUMN_VALUE, favoriteColumnValue);
         startService(intent);
@@ -294,9 +352,9 @@ public class MainActivity extends AppCompatActivity implements
     private void getNearbyDetails(LatLonDetails latLonDetails, boolean forTrainsOnly) {
         Intent intent = new Intent(this, RequestProcessorService.class);
         if (forTrainsOnly) {
-            intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.GET_TRAIN_NEARBY_STOPS_DETAILS);
+            intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.GET_TRAIN_NEARBY_STOPS_DETAILS);
         } else {
-            intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.GET_NEARBY_STOPS_DETAILS);
+            intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.GET_NEARBY_STOPS_DETAILS);
         }
         intent.putExtra(RequestProcessorService.LAT_LON, latLonDetails);
         startService(intent);
@@ -344,7 +402,7 @@ public class MainActivity extends AppCompatActivity implements
 //        Log.v(TAG, "startNextDeparturesSearch");
         Intent intent = new Intent(this, RequestProcessorService.class);
         mSelectedStopName = stopDetails.locationName;
-        intent.putExtra(RequestProcessorService.ACTION, RequestProcessorService.SHOW_NEXT_DEPARTURES);
+        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.SHOW_NEXT_DEPARTURES);
         intent.putExtra(RequestProcessorService.MODE, stopDetails.routeType);
         intent.putExtra(RequestProcessorService.STOP_ID, stopDetails.stopId);
         intent.putExtra(RequestProcessorService.LIMIT, 5);
@@ -457,9 +515,29 @@ public class MainActivity extends AppCompatActivity implements
                 showNearbyStops(event.nearbyStopsDetailsList);
                 break;
 
+            case DATABASE_STATUS:
+                handleDatabaseLoadedCase(event.databaseLoaded);
+                break;
+
+            case DATABASE_LOAD_TARGET:
+                handleDatabaseLoadedTarget(event.databaseLoadTarget);
+                break;
+
+            case DATABASE_LOAD_PROGRESS:
+                handleDatabaseLoadProgress(event.databaseLoadProgress);
+                break;
+
             default:
                 throw new RuntimeException("LOC_CAT_TAG - onEvent - no code to handle requestEvent: " + requestEvent);
         }
+    }
+
+    private void handleDatabaseLoadedTarget(int databaseLoadTarget) {
+        mInitFragment.setDatabaseLoadTarget(databaseLoadTarget);
+    }
+
+    private void handleDatabaseLoadProgress(int databaseLoadProgress) {
+        mInitFragment.updateDatabaseLoadProgress(databaseLoadProgress);
     }
 
     public void showSnackBar(String msg, boolean showIndefinite) {

@@ -110,7 +110,6 @@ public class FavoriteStopsFragment
         isVisible = true;
     }
 
-    // FIXME: 19/08/2016 use Holder pattern or use RecyclerView
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -123,18 +122,6 @@ public class FavoriteStopsFragment
 
         // Inflate the layout for this fragment
         mRootView = inflater.inflate(R.layout.fragment_favorite_stops, container, false);
-
-        //-----
-
-//        RecyclerView recyclerView = (RecyclerView) mRootView.findViewById(R.id.nearbyStopsList);
-//
-//        Context context = recyclerView.getContext();
-//        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-//        mRecyclerViewAdapter = new NearbyStopsAdapter(mNearbyStopsDetailsList, mListener);
-//        recyclerView.setAdapter(mRecyclerViewAdapter);
-//        recyclerView.requestLayout();
-//        return mRootView;
-        //-----
 
         if (mStopDetailsList == null) {
             mStopDetailsList = new ArrayList<>();
@@ -177,6 +164,8 @@ public class FavoriteStopsFragment
         mFavoriteStopDetailAdapter.swapCursor(data);
         if (data.getCount() > 0) {
             mEmptyView.setVisibility(View.GONE);
+        } else {
+            mEmptyView.setVisibility(View.VISIBLE);
         }
         // FIXME: 30/08/2016 below add correct code
 //        mForecastAdapter.swapCursor(data);

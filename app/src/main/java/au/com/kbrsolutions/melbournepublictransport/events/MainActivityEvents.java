@@ -17,7 +17,10 @@ public class MainActivityEvents {
         NEXT_DEPARTURES_DETAILS,
         DISRUPTIONS_DETAILS,
         CURR_LOCATION_DETAILS,
-        NEARBY_LOCATION_DETAILS
+        NEARBY_LOCATION_DETAILS,
+        DATABASE_STATUS,
+        DATABASE_LOAD_PROGRESS,
+        DATABASE_LOAD_TARGET
     }
 
     public final MainEvents event;
@@ -27,6 +30,9 @@ public class MainActivityEvents {
     public final LatLonDetails latLonDetails;
     public final List<NearbyStopsDetails> nearbyStopsDetailsList;
     public final boolean forTrainsStopsNearby;
+    public final boolean databaseLoaded;
+    public final int databaseLoadProgress;
+    public final int databaseLoadTarget;
 
     private MainActivityEvents(Builder builder) {
         this.event = builder.event;
@@ -36,6 +42,9 @@ public class MainActivityEvents {
         this.latLonDetails = builder.latLonDetails;
         this.nearbyStopsDetailsList = builder.nearbyStopsDetailsList;
         this.forTrainsStopsNearby = builder.forTrainsStopsNearby;
+        this.databaseLoaded = builder.databaseLoaded;
+        this.databaseLoadProgress = builder.databaseLoadProgress;
+        this.databaseLoadTarget = builder.databaseLoadTarget;
     }
 
     public static class Builder {
@@ -51,6 +60,9 @@ public class MainActivityEvents {
         private LatLonDetails latLonDetails;
         private List<NearbyStopsDetails> nearbyStopsDetailsList;
         private boolean forTrainsStopsNearby;
+        private boolean databaseLoaded;
+        private int databaseLoadProgress;
+        private int databaseLoadTarget;
 
         public Builder setMsg(String msg) {
             this.msg = msg;
@@ -79,6 +91,21 @@ public class MainActivityEvents {
 
         public Builder setForTrainsStopsNearby(boolean forTrainsStopsNearby) {
             this.forTrainsStopsNearby = forTrainsStopsNearby;
+            return this;
+        }
+
+        public Builder setDatabaseLoaded(boolean databaseLoaded) {
+            this.databaseLoaded = databaseLoaded;
+            return this;
+        }
+
+        public Builder setDatabaseLoadProgress(int databaseLoadProgress) {
+            this.databaseLoadProgress = databaseLoadProgress;
+            return this;
+        }
+
+        public Builder setDatabaseLoadTarget(int databaseLoadTarget) {
+            this.databaseLoadTarget = databaseLoadTarget;
             return this;
         }
 
