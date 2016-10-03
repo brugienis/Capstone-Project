@@ -97,6 +97,7 @@ public class FavoriteStopsFragment
         }
     }
 
+    // FIXME: 3/10/2016 - remove below
     @Override
     public void onResume() {
         super.onResume();

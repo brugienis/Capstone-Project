@@ -1,5 +1,6 @@
 package au.com.kbrsolutions.melbournepublictransport.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -30,7 +31,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
  * {@link StopsFragment.OnStopFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class StopsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class StopsFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     // FIXME: 25/08/2016 check Running a Query with a CursorLoader - https://developer.android.com/training/load-data-background/setup-loader.html
 
@@ -39,6 +40,8 @@ public class StopsFragment extends Fragment implements LoaderManager.LoaderCallb
     private OnStopFragmentInteractionListener mListener;
     private static List<StopDetails> mFolderItemList = new ArrayList<>();
     private TextView mEmptyView;
+    private View mRootView;
+    private boolean isVisible;
 
     private static final int STOP_DETAILS_LOADER = 0;
 
@@ -72,14 +75,34 @@ public class StopsFragment extends Fragment implements LoaderManager.LoaderCallb
         super.onCreate(savedInstanceState);
     }
 
+    /*
+        Call invalidateOptionsMenu() only if mCallbacks is not null.
+     */
+    public void hideView() {
+        isVisible = false;
+        mRootView.setVisibility(View.INVISIBLE);
+        if (mListener != null) {
+            ((Activity) mListener).invalidateOptionsMenu();
+        }
+    }
+
+    public void showView() {
+        // FIXME: 8/09/2016 - start CursorLoader
+//        Log.v(TAG, "showView");
+        isVisible = true;
+        mRootView.setVisibility(View.VISIBLE);
+        if (mListener != null) {
+            ((Activity) mListener).invalidateOptionsMenu();
+        }
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         mStopDetailAdapter = new StopsAdapter(getActivity().getApplicationContext(), null, 0, mListener);
-        View rootView = inflater.inflate(R.layout.fragment_add_stop, container, false);
+        mRootView = inflater.inflate(R.layout.fragment_add_stop, container, false);
 
-        mListView = (ListView) rootView.findViewById(R.id.addStopsListView);
+        mListView = (ListView) mRootView.findViewById(R.id.addStopsListView);
         mListView.setAdapter(mStopDetailAdapter);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -92,11 +115,11 @@ public class StopsFragment extends Fragment implements LoaderManager.LoaderCallb
         });
 
         if (mFolderItemList.size() == 0) {
-            mEmptyView = (TextView) rootView.findViewById(R.id.emptyView);
+            mEmptyView = (TextView) mRootView.findViewById(R.id.emptyView);
             mEmptyView.setText(getActivity().getResources()
                     .getString(R.string.no_stops_to_add));
         }
-        return rootView;
+        return mRootView;
     }
 
     @Override
@@ -157,7 +180,7 @@ public class StopsFragment extends Fragment implements LoaderManager.LoaderCallb
 //            int count = getActivity().getContentResolver().update(
 //                    MptContract.StopDetailEntry.CONTENT_URI, updatedValues, MptContract.StopDetailEntry._ID + "= ?",
 //                    new String [] { String.valueOf(cursor.getInt(COL_STOP_DETAILS_ID))});
-            mListener.addStop();
+            mListener.showUpdatedFavoriteStops();
         }
     }
 
@@ -193,9 +216,10 @@ public class StopsFragment extends Fragment implements LoaderManager.LoaderCallb
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnStopFragmentInteractionListener {
-        void addStop();
+        void showUpdatedFavoriteStops();
         void showSelectedStopOnMap(LatLonDetails latLonDetails);
         void updateStopDetailRow(int id, String favoriteColumnValue);  // activity should send the removeSelectedStop() below
+        void startNextDeparturesSearch(StopDetails stopDetails);
         // to IntentService
     }
 }

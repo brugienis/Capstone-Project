@@ -18,8 +18,6 @@ import au.com.kbrsolutions.melbournepublictransport.events.RequestProcessorServi
 import au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil;
 import au.com.kbrsolutions.melbournepublictransport.utilities.DbUtility;
 
-import static au.com.kbrsolutions.melbournepublictransport.data.DatabaseContentRefresher.testProgressBar;
-
 
 public class RequestProcessorService extends IntentService {
 
@@ -72,7 +70,6 @@ public class RequestProcessorService extends IntentService {
             return;
         }
 
-//        Log.v(TAG, "onHandleIntent - request: " + request);
         if (request != null) {
             boolean databaseOK = DatabaseContentRefresher.performHealthCheck();
             if (!databaseOK) {
@@ -88,16 +85,11 @@ public class RequestProcessorService extends IntentService {
                         boolean databaseLoaded = DatabaseContentRefresher.databaseLoaded(getContentResolver());
                         sendMessageToMainActivity(new MainActivityEvents.Builder(
                                 MainActivityEvents.MainEvents.DATABASE_STATUS)
-//                                .setDatabaseLoaded(databaseLoaded)
-                                .setDatabaseLoaded(false)
+                                .setDatabaseLoaded(databaseLoaded)
                                 .build());
-                        testProgressBar();
-//                        DatabaseContentRefresher.refreshDatabase(getContentResolver(), refreshDataIfTablesEmpty);
+//                        testProgressBar();
+                        DatabaseContentRefresher.refreshDatabase(getContentResolver(), refreshDataIfTablesEmpty);
                         break;
-
-//                    case REFRESH_DATA_IF_TABLES_EMPTY:
-//                        DatabaseContentRefresher.refreshDatabase(getContentResolver(), true);
-//                        break;
 
                     case SHOW_NEXT_DEPARTURES:
                         List<NextDepartureDetails> nextDepartureDetailsList =

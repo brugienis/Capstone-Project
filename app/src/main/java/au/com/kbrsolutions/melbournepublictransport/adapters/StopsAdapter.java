@@ -27,12 +27,26 @@ public class StopsAdapter extends CursorAdapter {
 
     public static class ViewHolder {
         public final TextView locationNameView;
+        public final ImageView departuresImageId;
         public StopDetails stopDetails;
 //        StopDetailFragment mAddStopFragment;
 
         public ViewHolder(View view) {
 //            mAddStopFragment = addStopFragment;
             locationNameView = (TextView) view.findViewById(R.id.locationNameId);
+
+            departuresImageId = (ImageView) view.findViewById(R.id.departuresImageId);
+            departuresImageId.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    Log.v(TAG, "ViewHolder - onClick");
+                    if (null != mListener) {
+                        // Notify the active callbacks interface (the activity, if the
+                        // fragment is attached to one) that a map image was touched.
+                        startNextDeparturesSearch(stopDetails);
+                    }
+                }
+            });
 
             ImageView mapImageId = (ImageView) view.findViewById(R.id.mapImageId);
             mapImageId.setOnClickListener(new View.OnClickListener() {
@@ -42,6 +56,10 @@ public class StopsAdapter extends CursorAdapter {
                 }
             });
         }
+    }
+
+    private static void startNextDeparturesSearch(StopDetails stopDetails) {
+        mListener.startNextDeparturesSearch(stopDetails);
     }
 
     private static void showSelectedStopOnMap(LatLonDetails latLonDetails) {
