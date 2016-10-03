@@ -37,7 +37,13 @@ public class StopDetails implements Parcelable {
 
     @Override
     public String toString() {
-        return "id: " + id + "routeType: " + routeType + "stopId: " + stopId + "locationName: " + locationName + "latitude: " + latitude + "longitude: " + longitude + "favorite: " + favorite;
+        return "id: " + id +
+                "; routeType: " + routeType +
+                "; stopId: " + stopId +
+                "; locationName: " + locationName +
+                "; latitude: " + latitude +
+                "; longitude: " + longitude +
+                "; favorite: " + favorite;
     }
 
     @Override

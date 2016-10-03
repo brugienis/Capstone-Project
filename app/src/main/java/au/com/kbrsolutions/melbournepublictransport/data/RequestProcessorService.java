@@ -65,7 +65,6 @@ public class RequestProcessorService extends IntentService {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
         if (ni == null || !ni.isConnected()) {
-//            Log.v(TAG, "onHandleIntent - ni is null: " + ni);
             sendMessageToMainActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NETWORK_STATUS)
                     .setMsg("NO NETWORK CONNECTION")
                     .build());
@@ -94,12 +93,17 @@ public class RequestProcessorService extends IntentService {
                         break;
 
                     case SHOW_NEXT_DEPARTURES:
+                        // FIXME: 3/10/2016 - tomorrow get MODE and STOP_ID from stopDetails
                         StopDetails stopDetails = extras.getParcelable(STOP_DETAILS);
+
+//                        intent.putExtra(RequestProcessorService.MODE, stopDetails.routeType);
+//                        intent.putExtra(RequestProcessorService.STOP_ID, stopDetails.stopId);
+
                         Log.v(TAG, "onHandleIntent - stopDetails: " + stopDetails);
                         List<NextDepartureDetails> nextDepartureDetailsList =
                                 RemoteMptEndpointUtil.getBroadNextDepartures(
-                                        extras.getInt(MODE),
-                                        extras.getString(STOP_ID),
+                                        stopDetails.routeType,
+                                        stopDetails.stopId,
                                         extras.getInt(LIMIT));
 //                        List<NextDepartureDetails> nextDepartureDetailsList =
 //                          buildSimulatedDepartureDetails();
@@ -107,6 +111,7 @@ public class RequestProcessorService extends IntentService {
                         sendMessageToMainActivity(new MainActivityEvents.Builder(
                                 MainActivityEvents.MainEvents.NEXT_DEPARTURES_DETAILS)
                                 .setNextDepartureDetailsList(nextDepartureDetailsList)
+                                .setStopDetails(stopDetails)
                                 .build());
                         break;
 

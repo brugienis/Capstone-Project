@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import java.util.List;
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.adapters.NextDeparturesAdapter;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.RequestProcessorService;
+import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 
 /**
  * A fragment representing a list of Items.
@@ -27,6 +30,7 @@ public class NextDeparturesFragment extends BaseFragment {
     private List<NextDepartureDetails> mNextDepartureDetailsList;
     private NextDeparturesAdapter mRecyclerViewAdapter;
     private String mSelectedStopName;
+    private StopDetails mSearchStopDetails;
     private TextView selectedStopNameTv;
     private boolean newInstanceArgsRetrieved;
 
@@ -39,11 +43,17 @@ public class NextDeparturesFragment extends BaseFragment {
     public NextDeparturesFragment() {
     }
 
-    public static NextDeparturesFragment newInstance(String stopName, List<NextDepartureDetails> nextDepartureDetailsList) {
+    public static NextDeparturesFragment newInstance(
+            String stopName,
+            List<NextDepartureDetails> nextDepartureDetailsList,
+            StopDetails stopDetails) {
         NextDeparturesFragment fragment = new NextDeparturesFragment();
         Bundle args = new Bundle();
         args.putString(ARG_SELECTED_STOP_NAME, stopName);
         args.putParcelableArrayList(ARG_NEXT_DEPARTURE_DATA, (ArrayList)nextDepartureDetailsList);
+        Bundle mBundle = new Bundle();
+        mBundle.putParcelable(RequestProcessorService.STOP_DETAILS, stopDetails);
+        args.putAll(mBundle);
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,8 +65,14 @@ public class NextDeparturesFragment extends BaseFragment {
         if (getArguments() != null && !newInstanceArgsRetrieved) {
             mNextDepartureDetailsList = (ArrayList)getArguments().getParcelableArrayList(ARG_NEXT_DEPARTURE_DATA);
             mSelectedStopName = getArguments().getString(ARG_SELECTED_STOP_NAME);
+            mSearchStopDetails = getArguments().getParcelable(RequestProcessorService.STOP_DETAILS);
+            Log.v(TAG, "onCreate - stopDetails: " + mSearchStopDetails);
             newInstanceArgsRetrieved = true;
         }
+    }
+
+    public StopDetails  getSearchStopDetails() {
+        return mSearchStopDetails;
     }
 
     @Override
@@ -77,10 +93,14 @@ public class NextDeparturesFragment extends BaseFragment {
         return view;
     }
 
-    public void setNewContent(String selectedStopName, List<NextDepartureDetails> nextDepartureDetailsList) {
+    public void setNewContent(
+            String selectedStopName,
+            List<NextDepartureDetails> nextDepartureDetailsList,
+            StopDetails stopDetails) {
         mSelectedStopName = selectedStopName;
         selectedStopNameTv.setText(selectedStopName);
         mRecyclerViewAdapter.swap(nextDepartureDetailsList);
+        mSearchStopDetails = stopDetails;
     }
 
     @Override

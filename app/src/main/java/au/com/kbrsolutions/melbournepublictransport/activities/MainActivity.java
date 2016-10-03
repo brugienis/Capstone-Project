@@ -275,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements
 
             case NEXT_DEPARTURES:
             actionBar.setTitle(getResources().getString(R.string.title_next_departures));
-//                startNextDeparturesSearch();
+                startNextDeparturesSearch(mNextDeparturesFragment.getSearchStopDetails());
             break;
 
             default:
@@ -329,17 +329,26 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private void showNextDepartures(List<NextDepartureDetails> nextDepartureDetailsList) {
+    private void showNextDepartures(List<NextDepartureDetails> nextDepartureDetailsList, StopDetails stopDetails) {
 //        int cnt = getSupportFragmentManager().getBackStackEntryCount();
         actionBar.setTitle(getResources().getString(R.string.title_next_departures));
         if (mNextDeparturesFragment == null) {
-            mNextDeparturesFragment = NextDeparturesFragment.newInstance(mSelectedStopName, nextDepartureDetailsList);
+            mNextDeparturesFragment = NextDeparturesFragment.newInstance(
+                    mSelectedStopName,
+                    nextDepartureDetailsList,
+                    stopDetails);
             mNextDeparturesFragment.setFragmentId(FragmentsId.NEXT_DEPARTURES);
         } else {
-            mNextDeparturesFragment.setNewContent(mSelectedStopName, nextDepartureDetailsList);
+            mNextDeparturesFragment.setNewContent(
+                    mSelectedStopName,
+                    nextDepartureDetailsList,
+                    stopDetails);
         }
-        Fragment topFragment = getTopFragment();
+        BaseFragment topFragment = getTopFragment();
 //        Log.v(TAG, "showNextDepartures - calling hideViewIfRequired()");
+        if (topFragment.getFragmentId() == FragmentsId.NEXT_DEPARTURES) {
+            return;
+        }
         hideViewIfRequired();
         getSupportFragmentManager()
                 .beginTransaction()
@@ -443,8 +452,6 @@ public class MainActivity extends AppCompatActivity implements
         Bundle mBundle = new Bundle();
         mBundle.putParcelable(RequestProcessorService.STOP_DETAILS, stopDetails);
         intent.putExtras(mBundle);
-        intent.putExtra(RequestProcessorService.MODE, stopDetails.routeType);
-        intent.putExtra(RequestProcessorService.STOP_ID, stopDetails.stopId);
         intent.putExtra(RequestProcessorService.LIMIT, 5);
         startService(intent);
     }
@@ -455,7 +462,7 @@ public class MainActivity extends AppCompatActivity implements
     public void showUpdatedFavoriteStops() {
         if (mFavoriteStopsFragment != null) {
             mFavoriteStopsFragment.showView();
-            mDisruptionsFragment.setFragmentId(FragmentsId.STOPS);
+            mFavoriteStopsFragment.setFragmentId(FragmentsId.STOPS);
         }
         getSupportFragmentManager()
                 .beginTransaction()
@@ -546,7 +553,7 @@ public class MainActivity extends AppCompatActivity implements
 
             case NEXT_DEPARTURES_DETAILS:
 //                Log.v(TAG, "onMessageEvent - NEXT_DEPARTURES_DETAILS: " + event.nextDepartureDetailsList);
-                showNextDepartures(event.nextDepartureDetailsList);
+                showNextDepartures(event.nextDepartureDetailsList, event.stopDetails);
                 break;
 
             case DISRUPTIONS_DETAILS:

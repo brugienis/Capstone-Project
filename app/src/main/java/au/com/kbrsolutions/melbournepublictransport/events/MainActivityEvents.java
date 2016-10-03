@@ -6,6 +6,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 
 /**
  * Created by business on 5/09/2016.
@@ -26,6 +27,7 @@ public class MainActivityEvents {
     public final MainEvents event;
     public final String msg;
     public final List<NextDepartureDetails> nextDepartureDetailsList;
+    public final StopDetails stopDetails;
     public final List<DisruptionsDetails> disruptionsDetailsList;
     public final LatLonDetails latLonDetails;
     public final List<NearbyStopsDetails> nearbyStopsDetailsList;
@@ -38,6 +40,7 @@ public class MainActivityEvents {
         this.event = builder.event;
         this.msg = builder.msg;
         this.nextDepartureDetailsList = builder.nextDepartureDetailsList;
+        this.stopDetails = builder.stopDetails;
         this.disruptionsDetailsList = builder.disruptionsDetailsList;
         this.latLonDetails = builder.latLonDetails;
         this.nearbyStopsDetailsList = builder.nearbyStopsDetailsList;
@@ -56,6 +59,7 @@ public class MainActivityEvents {
         private MainEvents event;
         private String msg;
         private List<NextDepartureDetails> nextDepartureDetailsList;
+        private StopDetails stopDetails;
         private List<DisruptionsDetails> disruptionsDetailsList;
         private LatLonDetails latLonDetails;
         private List<NearbyStopsDetails> nearbyStopsDetailsList;
@@ -71,6 +75,11 @@ public class MainActivityEvents {
 
         public Builder setNextDepartureDetailsList(List<NextDepartureDetails> nextDepartureDetailsList) {
             this.nextDepartureDetailsList = nextDepartureDetailsList;
+            return this;
+        }
+
+        public Builder setStopDetails(StopDetails stopDetails) {
+            this.stopDetails = stopDetails;
             return this;
         }
 
