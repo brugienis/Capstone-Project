@@ -38,7 +38,7 @@ public class DatabaseContentRefresher {
                 Log.v(TAG, "testProgressBar - progress sent i: " + i);
             }
             try {
-                Thread.sleep(3000);
+                Thread.sleep(1500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -59,9 +59,15 @@ public class DatabaseContentRefresher {
         // Delete all rows from stop_detail and line_detail table
         deleteLineAndStopDetailRows(contentResolver);
 
-        int trainMode = 0;
+        // FIXME: 3/10/2016
+        int trainMode = NearbyStopsDetails.TRAIN_ROUTE_TYPE;    // 0;
         List<ContentValues> lineDetailsContentValuesList = RemoteMptEndpointUtil.getLineDetails(trainMode);
+        sendMessageToMainActivity(new MainActivityEvents.Builder(
+                MainActivityEvents.MainEvents.DATABASE_LOAD_TARGET)
+                .setDatabaseLoadTarget(lineDetailsContentValuesList.size() - 1)
+                .build());
         long locationId;
+        int lineNo = 0;
         for (ContentValues values: lineDetailsContentValuesList) {
             Uri insertedUri = contentResolver.insert(
                     MptContract.LineDetailEntry.CONTENT_URI,
@@ -103,6 +109,10 @@ public class DatabaseContentRefresher {
                     null, // values for "where" clause
                     null  // no sort order
             );
+            sendMessageToMainActivity(new MainActivityEvents.Builder(
+                    MainActivityEvents.MainEvents.DATABASE_LOAD_PROGRESS)
+                    .setDatabaseLoadProgress(lineNo++)
+                    .build());
             Log.v(TAG, "refreshDatabase - line_detail/stop_detail cnt: " + lineDetailsRowsCnt + "/" + stopCursor.getCount());
             stopCursor.close();
         }

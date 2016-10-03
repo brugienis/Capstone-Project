@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements
 
         Intent intent = new Intent(this, RequestProcessorService.class);
         intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_REFRESH_DATA);
-        intent.putExtra(RequestProcessorService.REFRESH_DATA_IF_TABLES_EMPTY, true);
+        intent.putExtra(RequestProcessorService.REFRESH_DATA_IF_TABLES_EMPTY, false);
         Log.v(TAG, "onCreate - request sent");
 //        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_REFRESH_DATA);
         startService(intent);

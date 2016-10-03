@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [
+    <!ENTITY about "Public Transport Victoria (PTV) is a statutory authority that acts as a system authority for all public transport and an advocate for public transport users. PTV is a single contact point for customers wanting information on public transport services, fares, tickets and initiatives.">
+    ]>
+
+<resources>
+    <string name="about_no"></string>
+    <string name="init_about"><b>To see information below again, select menu/About.</b>\n\n&about;</string>
+</resources>
+
+<!--
+    the above solution from WhereDatApp
+
+    http://stackoverflow.com/questions/3656371/dynamic-string-using-string-xml/24903097#24903097
+-->
