@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
-import au.com.kbrsolutions.melbournepublictransport.adapters.NearbyStopsAdapter;
+import au.com.kbrsolutions.melbournepublictransport.adapters.StopsNearbyAdapter;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 
@@ -22,23 +22,23 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
  * Activities containing this fragment MUST implement the {@link
  * OnNearbyStopsFragmentInteractionListener} interface.
  */
-public class NearbyStopsFragment extends BaseFragment {
+public class StopsNearbyFragment extends BaseFragment {
 
     private static final String ARG_NEARBY_DATA = "arg_nearby_data";
     private List<NearbyStopsDetails> mNearbyStopsDetailsList;
-    private NearbyStopsAdapter mRecyclerViewAdapter;
+    private StopsNearbyAdapter mRecyclerViewAdapter;
     private boolean newInstanceArgsRetrieved;
     private View mRootView;
     private OnNearbyStopsFragmentInteractionListener mListener;
 
-    private static final String TAG = NearbyStopsFragment.class.getSimpleName();
+    private static final String TAG = StopsNearbyFragment.class.getSimpleName();
 
-    public NearbyStopsFragment() {
+    public StopsNearbyFragment() {
         // Required empty public constructor
     }
 
-    public static NearbyStopsFragment newInstance(List<NearbyStopsDetails> nearbyStopsDetailsList) {
-        NearbyStopsFragment fragment = new NearbyStopsFragment();
+    public static StopsNearbyFragment newInstance(List<NearbyStopsDetails> nearbyStopsDetailsList) {
+        StopsNearbyFragment fragment = new StopsNearbyFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_NEARBY_DATA, (ArrayList) nearbyStopsDetailsList);
         fragment.setArguments(args);
@@ -73,7 +73,7 @@ public class NearbyStopsFragment extends BaseFragment {
 
         Context context = recyclerView.getContext();
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        mRecyclerViewAdapter = new NearbyStopsAdapter(mNearbyStopsDetailsList, mListener);
+        mRecyclerViewAdapter = new StopsNearbyAdapter(mNearbyStopsDetailsList, mListener);
         recyclerView.setAdapter(mRecyclerViewAdapter);
         recyclerView.requestLayout();
         return mRootView;

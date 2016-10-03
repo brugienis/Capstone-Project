@@ -42,10 +42,10 @@ import au.com.kbrsolutions.melbournepublictransport.fragments.BaseFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.DisruptionsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.InitFragment;
-import au.com.kbrsolutions.melbournepublictransport.fragments.NearbyStopsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.NextDeparturesFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StationOnMapFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StopsFragment;
+import au.com.kbrsolutions.melbournepublictransport.fragments.StopsNearbyFragment;
 import au.com.kbrsolutions.melbournepublictransport.utilities.CurrentGeoPositionFinder;
 
 // git push -u origin
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements
         InitFragment.OnInitFragmentInteractionListener,
         FavoriteStopsFragment.OnFavoriteStopsFragmentInteractionListener,
         StopsFragment.OnStopFragmentInteractionListener,
-        NearbyStopsFragment.OnNearbyStopsFragmentInteractionListener {
+        StopsNearbyFragment.OnNearbyStopsFragmentInteractionListener {
 
     private InitFragment mInitFragment;
     private FavoriteStopsFragment mFavoriteStopsFragment;
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements
     private StopsFragment mStopDetailFragment;
     private NextDeparturesFragment mNextDeparturesFragment;
     private DisruptionsFragment mDisruptionsFragment;
-    private NearbyStopsFragment mNearbyStopsFragment;
+    private StopsNearbyFragment mStopsNearbyFragment;
     ActionBar actionBar;
     private View mCoordinatorlayout;
     private FloatingActionButton fab;
@@ -83,10 +83,13 @@ public class MainActivity extends AppCompatActivity implements
     private final static String TRANSPORT_MODE_METRO_TRAIN = "metro-train";
 
     public enum FragmentsId {
+        DISRUPTIONS,
         FAVORITE_STOPS,
+        INIT,
+        NEXT_DEPARTURES,
+        STATION_ON_MAP,
         STOPS,
-        STOPS_NEARBY,
-        NEXT_DEPARTURES
+        STOPS_NEARBY
     }
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
@@ -117,11 +120,11 @@ public class MainActivity extends AppCompatActivity implements
                         int cnt = getSupportFragmentManager().getBackStackEntryCount();
                         boolean backButtonPressed;
                         if (cnt > mBrevBackStackEntryCount) {
-                            Log.v(TAG, "onCreate.onBackStackChanged - going forward");
+//                            Log.v(TAG, "onCreate.onBackStackChanged - going forward");
                             backButtonPressed = false;
                             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                         } else {
-                            Log.v(TAG, "onCreate.onBackStackChanged - going backward");
+//                            Log.v(TAG, "onCreate.onBackStackChanged - going backward");
                             backButtonPressed = true;
                         }
                         mBrevBackStackEntryCount = cnt;
@@ -181,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             if (mInitFragment == null) {
                 mInitFragment = new InitFragment();
-//                mInitFragment.setFragmentId(FragmentsId.FAVORITE_STOPS);
+                mInitFragment.setFragmentId(FragmentsId.INIT);
                 getSupportFragmentManager()
                         .beginTransaction()
                         .add(R.id.left_dynamic_fragments_frame, mInitFragment, INIT_TAG)
@@ -196,12 +199,12 @@ public class MainActivity extends AppCompatActivity implements
         if (mFavoriteStopsFragment == null) {
             mFavoriteStopsFragment = new FavoriteStopsFragment();
             mFavoriteStopsFragment.setFragmentId(FragmentsId.FAVORITE_STOPS);
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
-                    .addToBackStack(FAVORITE_STOPS_TAG)
-                    .commit();
         }
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
+                .addToBackStack(FAVORITE_STOPS_TAG)
+                .commit();
     }
 
     private BaseFragment getTopFragment() {
@@ -234,29 +237,54 @@ public class MainActivity extends AppCompatActivity implements
     private void handleFabClicked() {
 //        int cnt = getSupportFragmentManager().getBackStackEntryCount();
         BaseFragment baseFragment = getTopFragment();
+        FragmentsId fragmentsId;
         if (baseFragment != null) {
-            FragmentsId fragmentsId = baseFragment.getFragmentId();
+            fragmentsId = baseFragment.getFragmentId();
             Log.v(TAG, "handleFabClicked - baseFragment/fragmentsId: " + baseFragment + "/" + fragmentsId);
-            if (fragmentsId != null && fragmentsId != FragmentsId.FAVORITE_STOPS) {
-                showSnackBar("No logic to handle FAB touched in BaseFragmment", true);
+            if (fragmentsId != null &&
+                    fragmentsId != FragmentsId.FAVORITE_STOPS &&
+//                    fragmentsId != FragmentsId.STOPS_NEARBY &&
+                    fragmentsId != FragmentsId.NEXT_DEPARTURES
+                    ) {
+                showSnackBar("No logic to handle FAB touched in: " + fragmentsId, true);
                 return;
             }
         } else {
             showSnackBar("No logic to handle FAB touched (not in BaseFragmment)", true);
             return;
         }
-        actionBar.setTitle(getResources().getString(R.string.title_stops));
-        if (mStopDetailFragment == null) {
-            mStopDetailFragment = new StopsFragment();
-            mStopDetailFragment.setFragmentId(FragmentsId.STOPS);
+        switch (fragmentsId) {
+            case FAVORITE_STOPS:
+            actionBar.setTitle(getResources().getString(R.string.title_stops));
+                if (mStopDetailFragment == null) {
+                    mStopDetailFragment = new StopsFragment();
+                    mStopDetailFragment.setFragmentId(FragmentsId.STOPS);
+                }
+                mFavoriteStopsFragment.hideView();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.left_dynamic_fragments_frame, mStopDetailFragment, STOP_TAG)
+                        .addToBackStack(STOP_TAG)     // it will also show 'Up' button in the action bar
+                        .commit();
+                fab.hide();
+            break;
+
+//            case STOPS_NEARBY:
+//            actionBar.setTitle(getResources().getString(R.string.title_stops_nearby));
+//            break;
+
+            case NEXT_DEPARTURES:
+            actionBar.setTitle(getResources().getString(R.string.title_next_departures));
+//                startNextDeparturesSearch();
+            break;
+
+            default:
+                throw new RuntimeException(
+                        "LOC_CAT_TAG - handleFabClicked - no code to handle fragmentsId: " +
+                                "" + fragmentsId);
+
         }
-        mFavoriteStopsFragment.hideView();
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.left_dynamic_fragments_frame, mStopDetailFragment, STOP_TAG)
-                .addToBackStack(STOP_TAG)     // it will also show 'Up' button in the action bar
-                .commit();
-        fab.hide();
+//        actionBar.setTitle(getResources().getString(R.string.title_stops));
     }
 
     private void showViewIfRequired() {
@@ -368,6 +396,7 @@ public class MainActivity extends AppCompatActivity implements
         actionBar.setTitle(getResources().getString(R.string.title_disruptions));
         if (mDisruptionsFragment == null) {
             mDisruptionsFragment = DisruptionsFragment.newInstance(disruptionsDetailsList);
+            mDisruptionsFragment.setFragmentId(FragmentsId.DISRUPTIONS);
         } else {
             mDisruptionsFragment.setNewContent(disruptionsDetailsList);
         }
@@ -402,11 +431,18 @@ public class MainActivity extends AppCompatActivity implements
 //        fab.show();
     }
 
+    // FIXME: 3/10/2016 - send to RequestProcessorService stopDetails and the response should also
+    // FIXME: 3/10/2016   include it. Pass it to the NextDeparturesFragment and it should
+    // FIXME: 3/10/2016   store it. When refresh is requested, get the details from this fragment
+    // FIXME: 3/10/2016   and it will be easy to repeat search with the same parameters
     public void startNextDeparturesSearch(StopDetails stopDetails) {
 //        Log.v(TAG, "startNextDeparturesSearch");
         Intent intent = new Intent(this, RequestProcessorService.class);
         mSelectedStopName = stopDetails.locationName;
         intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.SHOW_NEXT_DEPARTURES);
+        Bundle mBundle = new Bundle();
+        mBundle.putParcelable(RequestProcessorService.STOP_DETAILS, stopDetails);
+        intent.putExtras(mBundle);
         intent.putExtra(RequestProcessorService.MODE, stopDetails.routeType);
         intent.putExtra(RequestProcessorService.STOP_ID, stopDetails.stopId);
         intent.putExtra(RequestProcessorService.LIMIT, 5);
@@ -419,6 +455,7 @@ public class MainActivity extends AppCompatActivity implements
     public void showUpdatedFavoriteStops() {
         if (mFavoriteStopsFragment != null) {
             mFavoriteStopsFragment.showView();
+            mDisruptionsFragment.setFragmentId(FragmentsId.STOPS);
         }
         getSupportFragmentManager()
                 .beginTransaction()
@@ -438,6 +475,7 @@ public class MainActivity extends AppCompatActivity implements
                 mStationOnMapFragment = StationOnMapFragment.newInstance(
                         latLonDetails.latitude,
                         latLonDetails.longitude);
+                mStationOnMapFragment.setFragmentId(FragmentsId.STATION_ON_MAP);
             } else {
                 mStationOnMapFragment.setLatLon(
                         latLonDetails.latitude,
@@ -453,16 +491,16 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void showStopsNearby(List<NearbyStopsDetails> nearbyStopsDetailsList) {
-        if (mNearbyStopsFragment == null) {
-            mNearbyStopsFragment = NearbyStopsFragment.newInstance(nearbyStopsDetailsList);
-            mNearbyStopsFragment.setFragmentId(FragmentsId.STOPS_NEARBY);
+        if (mStopsNearbyFragment == null) {
+            mStopsNearbyFragment = StopsNearbyFragment.newInstance(nearbyStopsDetailsList);
+            mStopsNearbyFragment.setFragmentId(FragmentsId.STOPS_NEARBY);
         } else {
-            mNearbyStopsFragment.setNewContent(nearbyStopsDetailsList);
+            mStopsNearbyFragment.setNewContent(nearbyStopsDetailsList);
         }
         mFavoriteStopsFragment.hideView();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.left_dynamic_fragments_frame, mNearbyStopsFragment, NEARBY_TAG)
+                .add(R.id.left_dynamic_fragments_frame, mStopsNearbyFragment, NEARBY_TAG)
                 .addToBackStack(NEARBY_TAG)     // it will also show 'Up' button in the action bar
                 .commit();
         fab.hide();

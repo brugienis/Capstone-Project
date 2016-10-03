@@ -12,20 +12,20 @@ import java.util.List;
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
-import au.com.kbrsolutions.melbournepublictransport.fragments.NearbyStopsFragment.OnNearbyStopsFragmentInteractionListener;
+import au.com.kbrsolutions.melbournepublictransport.fragments.StopsNearbyFragment.OnNearbyStopsFragmentInteractionListener;
 
 /**
  * {@link RecyclerView.Adapter} that can display a
  * {@link au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails}.
  */
-public class NearbyStopsAdapter extends RecyclerView.Adapter<NearbyStopsAdapter.ViewHolder> {
+public class StopsNearbyAdapter extends RecyclerView.Adapter<StopsNearbyAdapter.ViewHolder> {
 
     private final List<NearbyStopsDetails> mValues;
     private final OnNearbyStopsFragmentInteractionListener mListener;
 
-    private static final String TAG = NearbyStopsAdapter.class.getSimpleName();
+    private static final String TAG = StopsNearbyAdapter.class.getSimpleName();
 
-    public NearbyStopsAdapter(
+    public StopsNearbyAdapter(
             List<NearbyStopsDetails> items,
             OnNearbyStopsFragmentInteractionListener listener) {
         mValues = items;
@@ -33,14 +33,14 @@ public class NearbyStopsAdapter extends RecyclerView.Adapter<NearbyStopsAdapter.
     }
 
     @Override
-    public NearbyStopsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public StopsNearbyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_nearby_stops_list, parent, false);
-        return new NearbyStopsAdapter.ViewHolder(view);
+        return new StopsNearbyAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final NearbyStopsAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final StopsNearbyAdapter.ViewHolder holder, int position) {
         NearbyStopsDetails nearbyStopsDetails = mValues.get(position);
 //        Log.v(TAG, "onBindViewHolder - nearbyStopsDetails: " + nearbyStopsDetails);
 //        if (nearbyStopsDetails.route_type.equals("train")) {

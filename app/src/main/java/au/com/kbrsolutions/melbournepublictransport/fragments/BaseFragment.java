@@ -12,9 +12,13 @@ public abstract class BaseFragment extends Fragment {
 
     private MainActivity.FragmentsId mFragmentsId;
 
-    public abstract void hideView();
+    public void hideView() {
 
-    public abstract void showView();
+    }
+
+    public void showView() {
+
+    }
 
     public MainActivity.FragmentsId getFragmentId() {
         return  mFragmentsId;

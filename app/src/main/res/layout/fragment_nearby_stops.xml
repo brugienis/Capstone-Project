@@ -10,7 +10,7 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".fragments.NearbyStopsFragment"
+    tools:context=".fragments.StopsNearbyFragment"
     tools:listitem="@layout/fragment_nearby_stops_list"/>
 
 <!--

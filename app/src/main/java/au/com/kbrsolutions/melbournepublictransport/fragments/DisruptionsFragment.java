@@ -21,7 +21,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
  * A simple {@link Fragment} subclass.
  *
  */
-public class DisruptionsFragment extends Fragment {
+public class DisruptionsFragment extends BaseFragment {
 
     private static final String ARG_DISRUPTION_DATA = "disruption_data";
     private List<DisruptionsDetails> mDisruptionDetailsList;

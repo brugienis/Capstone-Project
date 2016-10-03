@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -38,6 +39,7 @@ public class RequestProcessorService extends IntentService {
     public final static String LIMIT = "limit";
     public final static String LAT_LON = "lat_lon";
     public final static String ROW_ID = "row_id";
+    public final static String STOP_DETAILS = "stop_details";
     public final static String FAVORITE_COLUMN_VALUE = "favorite_column_value";
     public final static String REFRESH_DATA_IF_TABLES_EMPTY = "refresh_data_if_tables_empty";
 
@@ -92,6 +94,8 @@ public class RequestProcessorService extends IntentService {
                         break;
 
                     case SHOW_NEXT_DEPARTURES:
+                        StopDetails stopDetails = extras.getParcelable(STOP_DETAILS);
+                        Log.v(TAG, "onHandleIntent - stopDetails: " + stopDetails);
                         List<NextDepartureDetails> nextDepartureDetailsList =
                                 RemoteMptEndpointUtil.getBroadNextDepartures(
                                         extras.getInt(MODE),

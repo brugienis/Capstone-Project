@@ -16,7 +16,7 @@ import au.com.kbrsolutions.melbournepublictransport.R;
  * {@link OnInitFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class InitFragment extends Fragment {
+public class InitFragment extends BaseFragment {
 
     private boolean mIsTargetSet;
     private int mTarget;

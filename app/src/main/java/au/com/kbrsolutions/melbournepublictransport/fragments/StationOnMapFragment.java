@@ -23,7 +23,7 @@ import au.com.kbrsolutions.melbournepublictransport.R;
  * Use the {@link StationOnMapFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class StationOnMapFragment extends Fragment implements OnMapReadyCallback {
+public class StationOnMapFragment extends BaseFragment implements OnMapReadyCallback {
 
     private static final String ARG_LATITUDE = "arg_latitude";
     private static final String ARG_LONGITUDE = "arg_longitude";
