@@ -20,7 +20,6 @@ import au.com.kbrsolutions.melbournepublictransport.fragments.StopsFragment;
 
 public class StopsAdapter extends CursorAdapter {
 
-//    private StopDetailFragment mAddStopFragment;
     private static StopsFragment.OnStopFragmentInteractionListener mListener;
 
     private static final String TAG = StopsAdapter.class.getSimpleName();
@@ -29,17 +28,14 @@ public class StopsAdapter extends CursorAdapter {
         public final TextView locationNameView;
         public final ImageView departuresImageId;
         public StopDetails stopDetails;
-//        StopDetailFragment mAddStopFragment;
 
         public ViewHolder(View view) {
-//            mAddStopFragment = addStopFragment;
             locationNameView = (TextView) view.findViewById(R.id.locationNameId);
 
             departuresImageId = (ImageView) view.findViewById(R.id.departuresImageId);
             departuresImageId.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Log.v(TAG, "ViewHolder - onClick");
                     if (null != mListener) {
                         // Notify the active callbacks interface (the activity, if the
                         // fragment is attached to one) that a map image was touched.
@@ -72,7 +68,6 @@ public class StopsAdapter extends CursorAdapter {
             int flags,
             StopsFragment.OnStopFragmentInteractionListener listener) {
         super(context, c, flags);
-//        mAddStopFragment = addStopFragment;
         mListener = listener;
     }
 

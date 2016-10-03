@@ -87,8 +87,6 @@ public class StopsFragment extends BaseFragment implements LoaderManager.LoaderC
     }
 
     public void showView() {
-        // FIXME: 8/09/2016 - start CursorLoader
-//        Log.v(TAG, "showView");
         isVisible = true;
         mRootView.setVisibility(View.VISIBLE);
         if (mListener != null) {
@@ -163,7 +161,6 @@ public class StopsFragment extends BaseFragment implements LoaderManager.LoaderC
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-//        Log.v(TAG, "onLoadFinished - start");
         mStopDetailAdapter.swapCursor(null);
     }
 
@@ -182,10 +179,6 @@ public class StopsFragment extends BaseFragment implements LoaderManager.LoaderC
 //                    new String [] { String.valueOf(cursor.getInt(COL_STOP_DETAILS_ID))});
             mListener.showUpdatedFavoriteStops();
         }
-    }
-
-    public void handleMapClicked(StopDetails stopDetails) {
-        mListener.showSelectedStopOnMap(new LatLonDetails(stopDetails.latitude, stopDetails.longitude));
     }
 
     @Override

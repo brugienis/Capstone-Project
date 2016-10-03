@@ -117,11 +117,11 @@ public class MainActivity extends AppCompatActivity implements
                         int cnt = getSupportFragmentManager().getBackStackEntryCount();
                         boolean backButtonPressed;
                         if (cnt > mBrevBackStackEntryCount) {
-                            Log.v(TAG, "onBackStackChanged - going forward");
+                            Log.v(TAG, "onCreate.onBackStackChanged - going forward");
                             backButtonPressed = false;
                             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                         } else {
-                            Log.v(TAG, "onBackStackChanged - going backward");
+                            Log.v(TAG, "onCreate.onBackStackChanged - going backward");
                             backButtonPressed = true;
                         }
                         mBrevBackStackEntryCount = cnt;
@@ -296,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements
                     fragmentsId == FragmentsId.STOPS ||
                     fragmentsId == FragmentsId.STOPS_NEARBY)) {
                 baseFragment.hideView();
-                Log.v(TAG, "hideViewIfRequired - hiding " + fragmentsId);
+//                Log.v(TAG, "hideViewIfRequired - hiding " + fragmentsId);
             }
         }
     }
@@ -311,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements
             mNextDeparturesFragment.setNewContent(mSelectedStopName, nextDepartureDetailsList);
         }
         Fragment topFragment = getTopFragment();
-        Log.v(TAG, "showNextDepartures - calling hideViewIfRequired()");
+//        Log.v(TAG, "showNextDepartures - calling hideViewIfRequired()");
         hideViewIfRequired();
         getSupportFragmentManager()
                 .beginTransaction()
