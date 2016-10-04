@@ -33,6 +33,7 @@ public class DatabaseContentRefresher {
             } else {
                 sendMessageToMainActivity(new MainActivityEvents.Builder(
                         MainActivityEvents.MainEvents.DATABASE_LOAD_PROGRESS)
+                        .setDatabaseLoadTarget(cnt - 1)
                         .setDatabaseLoadProgress(i)
                         .build());
                 Log.v(TAG, "testProgressBar - progress sent i: " + i);
@@ -50,12 +51,12 @@ public class DatabaseContentRefresher {
         return databaseOK;
     }
 
-    protected static void refreshDatabase(ContentResolver contentResolver, boolean runIfTablesAreEmpty) {
-        if (runIfTablesAreEmpty) {
-            if (databaseLoaded(contentResolver)) {
-                return;
-            }
-        }
+    protected static void refreshDatabase(ContentResolver contentResolver) {
+//        if (runIfTablesAreEmpty) {
+//            if (databaseLoaded(contentResolver)) {
+//                return;
+//            }
+//        }
         // Delete all rows from stop_detail and line_detail table
         deleteLineAndStopDetailRows(contentResolver);
 
@@ -111,6 +112,7 @@ public class DatabaseContentRefresher {
             );
             sendMessageToMainActivity(new MainActivityEvents.Builder(
                     MainActivityEvents.MainEvents.DATABASE_LOAD_PROGRESS)
+                    .setDatabaseLoadTarget(lineDetailsContentValuesList.size() - 1)
                     .setDatabaseLoadProgress(lineNo++)
                     .build());
             Log.v(TAG, "refreshDatabase - line_detail/stop_detail cnt: " + lineDetailsRowsCnt + "/" + stopCursor.getCount());

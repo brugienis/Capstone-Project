@@ -19,11 +19,16 @@ import au.com.kbrsolutions.melbournepublictransport.events.RequestProcessorServi
 import au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil;
 import au.com.kbrsolutions.melbournepublictransport.utilities.DbUtility;
 
+import static au.com.kbrsolutions.melbournepublictransport.data.DatabaseContentRefresher.testProgressBar;
+
 
 public class RequestProcessorService extends IntentService {
 
     private EventBus eventBus;
     private DbUtility dbUtility;
+    boolean mTestDatabaseLoaded = false;
+
+    private static boolean refreshTest = true;
 
     public final static String REQUEST = "request";
     public final static String ACTION_REFRESH_DATA = "refresh_data";
@@ -82,23 +87,26 @@ public class RequestProcessorService extends IntentService {
                 List<NearbyStopsDetails> nearbyStopsDetailsList;
                 switch (request) {
                     case ACTION_REFRESH_DATA:
-                        boolean refreshDataIfTablesEmpty = extras.getBoolean(REFRESH_DATA_IF_TABLES_EMPTY);
-                        boolean databaseLoaded = DatabaseContentRefresher.databaseLoaded(getContentResolver());
-                        sendMessageToMainActivity(new MainActivityEvents.Builder(
-                                MainActivityEvents.MainEvents.DATABASE_STATUS)
-                                .setDatabaseLoaded(databaseLoaded)
-                                .build());
-//                        testProgressBar();
-                        DatabaseContentRefresher.refreshDatabase(getContentResolver(), refreshDataIfTablesEmpty);
+                        if (refreshTest) {
+                            sendMessageToMainActivity(new MainActivityEvents.Builder(
+                                    MainActivityEvents.MainEvents.DATABASE_STATUS)
+                                    .setDatabaseLoaded(mTestDatabaseLoaded)
+                                    .build());
+                            testProgressBar();
+                            mTestDatabaseLoaded = true;
+                        } else {
+                            boolean databaseLoaded = DatabaseContentRefresher.databaseLoaded(getContentResolver());
+                            sendMessageToMainActivity(new MainActivityEvents.Builder(
+                                    MainActivityEvents.MainEvents.DATABASE_STATUS)
+                                    .setDatabaseLoaded(databaseLoaded)
+                                    .build());
+                            if (extras.getBoolean(REFRESH_DATA_IF_TABLES_EMPTY)) {
+                                DatabaseContentRefresher.refreshDatabase(getContentResolver());
+                            }}
                         break;
 
                     case SHOW_NEXT_DEPARTURES:
-                        // FIXME: 3/10/2016 - tomorrow get MODE and STOP_ID from stopDetails
                         StopDetails stopDetails = extras.getParcelable(STOP_DETAILS);
-
-//                        intent.putExtra(RequestProcessorService.MODE, stopDetails.routeType);
-//                        intent.putExtra(RequestProcessorService.STOP_ID, stopDetails.stopId);
-
                         Log.v(TAG, "onHandleIntent - stopDetails: " + stopDetails);
                         List<NextDepartureDetails> nextDepartureDetailsList =
                                 RemoteMptEndpointUtil.getBroadNextDepartures(
