@@ -82,6 +82,8 @@ public class MainActivity extends AppCompatActivity implements
     private static final String INIT_TAG = "init_tag";
     private final static String TRANSPORT_MODE_METRO_TRAIN = "metro-train";
 
+    public boolean confChanged;
+
     public enum FragmentsId {
         DISRUPTIONS,
         FAVORITE_STOPS,
@@ -123,7 +125,6 @@ public class MainActivity extends AppCompatActivity implements
                         if (cnt > mPrevBackStackEntryCount) {
                             Log.v(TAG, "onCreate.onBackStackChanged - going forward  - cnt/top: " + cnt + "/" + bf.getFragmentId());
                             backButtonPressed = false;
-//                            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                         } else {
                             Log.v(TAG, "onCreate.onBackStackChanged - going backward - cnt/top: " + cnt + "/" + (bf == null ? "null" : bf.getFragmentId()));
                             backButtonPressed = true;
@@ -136,15 +137,9 @@ public class MainActivity extends AppCompatActivity implements
                             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                         }
                         if (backButtonPressed) {
-//                            cnt = getSupportFragmentManager().getBackStackEntryCount();
                             if (cnt == 1) {      /* we came back to Favorite Stops */
-//                                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                                 showFavoriteStops();
                             }
-//                            else if (cnt > 1) {
-//                                Log.v(TAG, "onCreate.onBackStackChanged - 2 going forward  - cnt/top: " + cnt + "/" + (bf == null ? "null" : bf.getFragmentId()));
-//                                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//                            }
                         }
                     }
                 });
@@ -171,11 +166,28 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+        printBackStackFragments();
+
         Intent intent = new Intent(this, RequestProcessorService.class);
         intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_REFRESH_DATA);
         intent.putExtra(RequestProcessorService.REFRESH_DATA_IF_TABLES_EMPTY, false);
         Log.v(TAG, "onCreate - request sent");
         startService(intent);
+        if (savedInstanceState != null) {
+            confChanged = true;
+        }
+        Log.v(TAG, "onCreate - confChanged: " + confChanged);
+    }
+
+    private void printBackStackFragments() {
+        BaseFragment topFragmment = null;
+        int cnt = getSupportFragmentManager().getBackStackEntryCount();
+        for (int i = 0; i < cnt; i++) {
+            String tag = getSupportFragmentManager().getBackStackEntryAt(cnt - 1).getName();
+//            fragment = getSupportFragmentManager().findFragmentByTag(tag);
+            topFragmment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
+            Log.v(TAG, "printBackStackFragments - fragment: " + i + " - " + topFragmment + "/" + topFragmment.getFragmentId());
+        }
     }
 
     private void handleDatabaseLoadedCase(boolean databaseLoaded) {
@@ -473,7 +485,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void showSelectedStopOnMap(LatLonDetails latLonDetails) {
+    public void showStopOnMap(LatLonDetails latLonDetails) {
+        Log.v(TAG, "showStopOnMap - start");
         if (readyToGo()) {
             fab.hide();
             if (mStationOnMapFragment == null) {
@@ -608,7 +621,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onNearbyStopsFragmentMapClicked(NearbyStopsDetails nearbyStopsDetails) {
-        showSelectedStopOnMap(new LatLonDetails(nearbyStopsDetails.stopLat, nearbyStopsDetails.stopLon));
+        showStopOnMap(new LatLonDetails(nearbyStopsDetails.stopLat, nearbyStopsDetails.stopLon));
     }
 
     public static class ErrorDialogFragment extends DialogFragment {

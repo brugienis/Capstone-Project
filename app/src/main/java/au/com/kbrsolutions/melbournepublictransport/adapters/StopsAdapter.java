@@ -59,7 +59,7 @@ public class StopsAdapter extends CursorAdapter {
     }
 
     private static void showSelectedStopOnMap(LatLonDetails latLonDetails) {
-        mListener.showSelectedStopOnMap(latLonDetails);
+        mListener.showStopOnMap(latLonDetails);
     }
 
     public StopsAdapter(

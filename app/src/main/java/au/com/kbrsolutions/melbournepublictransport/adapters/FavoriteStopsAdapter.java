@@ -64,7 +64,7 @@ public class FavoriteStopsAdapter extends CursorAdapter {
     }
 
     private static void showSelectedStopOnMap(LatLonDetails latLonDetails) {
-        mListener.showSelectedStopOnMap(latLonDetails);
+        mListener.showStopOnMap(latLonDetails);
     }
 
     private static void startNextDeparturesSearch(StopDetails stopDetails) {

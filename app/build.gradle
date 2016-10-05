@@ -5,6 +5,7 @@ android {
     buildToolsVersion "23.0.3"
 
     dexOptions {
+        maxProcessCount 4
         javaMaxHeapSize "4g"
     }
 
@@ -38,6 +39,7 @@ dependencies {
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.android.support:recyclerview-v7:24.2.1'
     compile 'com.android.support:cardview-v7:24.2.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
     testCompile 'junit:junit:4.12'
     androidTestCompile 'com.android.support.test:rules:0.5'
     androidTestCompile 'com.android.support:support-annotations:24.2.1'
