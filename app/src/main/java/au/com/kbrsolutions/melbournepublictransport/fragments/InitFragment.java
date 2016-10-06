@@ -33,7 +33,7 @@ public class InitFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setRetainInstance(true);
+        setRetainInstance(true);
     }
 
     private ProgressBar mProgressBar;
@@ -57,6 +57,18 @@ public class InitFragment extends BaseFragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnInitFragmentInteractionListener");
         }
+        Log.v(TAG, "onAttach - mListener: " + String.format("0x%08X", mListener.hashCode()));
+    }
+
+    public void setListener(OnInitFragmentInteractionListener listener) {
+        String old = null;
+        if (mListener != null) {
+            old = String.format("0x%08X", mListener.hashCode());
+        }
+        mListener = listener;
+        Log.v(TAG, "setListener - new listener set - old/new: " +
+                old + "/" +
+                String.format("0x%08X", mListener.hashCode()));
     }
 
     @Override
@@ -69,15 +81,18 @@ public class InitFragment extends BaseFragment {
         mTarget = target;
     }
 
-    public void updateDatabaseLoadProgress(int progress) {
+    public void updateDatabaseLoadProgress(int progress, int target) {
+        Log.v(TAG, "updateDatabaseLoadProgress - progress/mTarget: " + progress + "/" + target);
         if (!mIsTargetSet) {
             mIsTargetSet = true;
             mProgressBar.setIndeterminate(false);
             mProgressBar.setMax(mTarget);
         }
         mProgressBar.setIndeterminate(false);
+        mProgressBar.setMax(target);
         mProgressBar.setProgress(progress);
-        if (mTarget == progress) {
+        if (target == progress) {
+            Log.v(TAG, "updateDatabaseLoadProgress - listener: " + String.format("0x%08X", mListener.hashCode()));
             mListener.databaseLoaded();
             Log.v(TAG, "updateDatabaseLoadProgress - databaseLoaded");
         }

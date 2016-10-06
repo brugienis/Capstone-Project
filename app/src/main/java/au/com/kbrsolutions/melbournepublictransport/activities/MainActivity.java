@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.v(TAG, "onCreate - start");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -168,18 +169,30 @@ public class MainActivity extends AppCompatActivity implements
 
         printBackStackFragments();
 
-        Intent intent = new Intent(this, RequestProcessorService.class);
-        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_REFRESH_DATA);
-        intent.putExtra(RequestProcessorService.REFRESH_DATA_IF_TABLES_EMPTY, false);
-        Log.v(TAG, "onCreate - request sent");
-        startService(intent);
+        Log.v(TAG, "onCreate - this/m: " + String.format("0x%08X", this.hashCode()) + "/" + mInitFragment);
+        if (savedInstanceState == null && !loadInProgress) {
+            Intent intent = new Intent(this, RequestProcessorService.class);
+            intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_REFRESH_DATA);
+            intent.putExtra(RequestProcessorService.REFRESH_DATA_IF_TABLES_EMPTY, false);
+            Log.v(TAG, "onCreate - request sent");
+            startService(intent);
+        }
         if (savedInstanceState != null) {
             confChanged = true;
+            addInitFragmentOnConfigChanged();
         }
         Log.v(TAG, "onCreate - confChanged: " + confChanged);
     }
 
+    @Override
+    protected void onDestroy() {
+        eventBus.unregister(this);
+        super.onDestroy();
+    }
+
+    private boolean loadInProgress;
     private void printBackStackFragments() {
+        Log.v(TAG, "printBackStackFragments - start");
         BaseFragment topFragmment = null;
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         for (int i = 0; i < cnt; i++) {
@@ -188,11 +201,13 @@ public class MainActivity extends AppCompatActivity implements
             topFragmment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
             Log.v(TAG, "printBackStackFragments - fragment: " + i + " - " + topFragmment + "/" + topFragmment.getFragmentId());
         }
+        Log.v(TAG, "printBackStackFragments - end");
     }
 
     private void handleDatabaseLoadedCase(boolean databaseLoaded) {
         Log.v(TAG, "handleDatabaseLoadedCase - databaseLoaded: " + databaseLoaded);
         if (databaseLoaded) {
+            loadInProgress = true;
             if (mFavoriteStopsFragment == null) {
                 mFavoriteStopsFragment = new FavoriteStopsFragment();
                 mFavoriteStopsFragment.setFragmentId(FragmentsId.FAVORITE_STOPS);
@@ -203,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements
                         .commit();
             }
         } else {
+            loadInProgress = false;
             if (mInitFragment == null) {
                 mInitFragment = new InitFragment();
                 mInitFragment.setFragmentId(FragmentsId.INIT);
@@ -213,6 +229,21 @@ public class MainActivity extends AppCompatActivity implements
                         .commit();
             }
         }
+    }
+
+    private void addInitFragmentOnConfigChanged() {
+        Log.v(TAG, "addInitFragmentOnConfigChanged - start - mInitFragment: " + mInitFragment);
+        if (mInitFragment == null) {
+            mInitFragment = new InitFragment();
+            mInitFragment.setFragmentId(FragmentsId.INIT);
+        }
+        mInitFragment.setListener(this);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.left_dynamic_fragments_frame, mInitFragment, INIT_TAG)
+//                .addToBackStack(INIT_TAG)
+                .commit();
+        Log.v(TAG, "addInitFragmentOnConfigChanged - end");
     }
 
     @Override
@@ -556,6 +587,7 @@ public class MainActivity extends AppCompatActivity implements
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MainActivityEvents event) {
 //        Log.v(TAG, "onMessageEvent - start");
+        Log.v(TAG, "onMessageEvent - this: " + String.format("0x%08X", this.hashCode()));
         MainActivityEvents.MainEvents requestEvent = event.event;
         switch (requestEvent) {
 
@@ -589,7 +621,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
 
             case DATABASE_LOAD_PROGRESS:
-                handleDatabaseLoadProgress(event.databaseLoadProgress);
+                handleDatabaseLoadProgress(event.databaseLoadProgress, event.databaseLoadTarget);
                 break;
 
             default:
@@ -598,11 +630,19 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void handleDatabaseLoadedTarget(int databaseLoadTarget) {
-        mInitFragment.setDatabaseLoadTarget(databaseLoadTarget);
+        if (mInitFragment != null) {
+            mInitFragment.setDatabaseLoadTarget(databaseLoadTarget);
+        } else {
+            Log.v(TAG, "handleDatabaseLoadedTarget - mInitFragment - is null");
+        }
     }
 
-    private void handleDatabaseLoadProgress(int databaseLoadProgress) {
-        mInitFragment.updateDatabaseLoadProgress(databaseLoadProgress);
+    private void handleDatabaseLoadProgress(int databaseLoadProgress, int databaseLoadTarget) {
+        if (mInitFragment != null) {
+            mInitFragment.updateDatabaseLoadProgress(databaseLoadProgress, databaseLoadTarget);
+        } else {
+            Log.v(TAG, "handleDatabaseLoadedTarget - mInitFragment - is null");
+        }
     }
 
     public void showSnackBar(String msg, boolean showIndefinite) {
