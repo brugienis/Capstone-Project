@@ -33,6 +33,7 @@ public class InitFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.v(TAG, "onCreate - start");
 //        setRetainInstance(true);
     }
 

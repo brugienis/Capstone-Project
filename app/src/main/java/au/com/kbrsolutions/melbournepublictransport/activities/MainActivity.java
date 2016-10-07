@@ -170,16 +170,26 @@ public class MainActivity extends AppCompatActivity implements
         printBackStackFragments();
 
         Log.v(TAG, "onCreate - this/m: " + String.format("0x%08X", this.hashCode()) + "/" + mInitFragment);
-        if (savedInstanceState == null && !loadInProgress) {
+
+        BaseFragment topFragmment = getTopFragment();
+        String topFragmentTag = getTopFragmentTag();
+
+//        if (savedInstanceState == null && !loadInProgress) {
+        Log.v(TAG, "onCreate - savedInstanceState: " + (savedInstanceState == null) + "/" + topFragmentTag);
+        if (savedInstanceState == null && (topFragmentTag == null || !topFragmentTag.equals(INIT_TAG))) {
             Intent intent = new Intent(this, RequestProcessorService.class);
             intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_REFRESH_DATA);
             intent.putExtra(RequestProcessorService.REFRESH_DATA_IF_TABLES_EMPTY, false);
             Log.v(TAG, "onCreate - request sent");
             startService(intent);
         }
+
         if (savedInstanceState != null) {
             confChanged = true;
-            addInitFragmentOnConfigChanged();
+            Log.v(TAG, "onCreate - savedInstanceState 2: " + (savedInstanceState == null) + "/" + topFragmment.getFragmentId());
+            if (topFragmentTag != null && topFragmentTag.equals(INIT_TAG)) {
+                addInitFragmentOnConfigChanged();
+            }
         }
         Log.v(TAG, "onCreate - confChanged: " + confChanged);
     }
@@ -191,12 +201,14 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private boolean loadInProgress;
+
     private void printBackStackFragments() {
         Log.v(TAG, "printBackStackFragments - start");
         BaseFragment topFragmment = null;
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
+        String tag;
         for (int i = 0; i < cnt; i++) {
-            String tag = getSupportFragmentManager().getBackStackEntryAt(cnt - 1).getName();
+            tag = getSupportFragmentManager().getBackStackEntryAt(i).getName();
 //            fragment = getSupportFragmentManager().findFragmentByTag(tag);
             topFragmment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
             Log.v(TAG, "printBackStackFragments - fragment: " + i + " - " + topFragmment + "/" + topFragmment.getFragmentId());
@@ -280,6 +292,15 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
         return topFragmment;
+    }
+
+    private String getTopFragmentTag() {
+        String tag = null;
+        int cnt = getSupportFragmentManager().getBackStackEntryCount();
+        if (cnt > 0) {
+            tag = getSupportFragmentManager().getBackStackEntryAt(cnt - 1).getName();
+        }
+        return tag;
     }
 
     @Override
