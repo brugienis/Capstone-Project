@@ -29,14 +29,14 @@ public class DatabaseContentRefresher {
                         MainActivityEvents.MainEvents.DATABASE_LOAD_TARGET)
                         .setDatabaseLoadTarget(cnt - 1)
                         .build());
-                Log.v(TAG, "testProgressBar - target sent");
+//                Log.v(TAG, "testProgressBar - target sent");
             } else {
                 sendMessageToMainActivity(new MainActivityEvents.Builder(
                         MainActivityEvents.MainEvents.DATABASE_LOAD_PROGRESS)
                         .setDatabaseLoadTarget(cnt - 1)
                         .setDatabaseLoadProgress(i)
                         .build());
-                Log.v(TAG, "testProgressBar - progress sent i: " + i);
+//                Log.v(TAG, "testProgressBar - progress sent i: " + i);
             }
             try {
                 Thread.sleep(1500);

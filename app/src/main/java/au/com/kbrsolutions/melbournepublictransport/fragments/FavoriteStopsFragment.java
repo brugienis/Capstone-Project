@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
-import au.com.kbrsolutions.melbournepublictransport.activities.MainActivity;
 import au.com.kbrsolutions.melbournepublictransport.adapters.FavoriteStopsAdapter;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
@@ -102,7 +100,7 @@ public class FavoriteStopsFragment
     @Override
     public void onResume() {
         super.onResume();
-        Log.v(TAG, "onResume - isVisible/confChanged: " + isVisible + "/" + ((MainActivity) mListener).confChanged);
+//        Log.v(TAG, "onResume - isVisible/confChanged: " + isVisible + "/" + ((MainActivity) mListener).confChanged);
 //        if (((MainActivity) mListener).confChanged) {
 //            throw new RuntimeException("BR conf changed");
 //        }

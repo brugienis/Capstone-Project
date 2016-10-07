@@ -13,6 +13,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements
     private InitFragment mInitFragment;
     private FavoriteStopsFragment mFavoriteStopsFragment;
     private StationOnMapFragment mStationOnMapFragment;
-    private StopsFragment mStopDetailFragment;
+    private StopsFragment mStopsFragment;
     private NextDeparturesFragment mNextDeparturesFragment;
     private DisruptionsFragment mDisruptionsFragment;
     private StopsNearbyFragment mStopsNearbyFragment;
@@ -81,8 +82,6 @@ public class MainActivity extends AppCompatActivity implements
     private static final String NEARBY_TAG = "nearby_tag";
     private static final String INIT_TAG = "init_tag";
     private final static String TRANSPORT_MODE_METRO_TRAIN = "metro-train";
-
-    public boolean confChanged;
 
     public enum FragmentsId {
         DISRUPTIONS,
@@ -148,17 +147,6 @@ public class MainActivity extends AppCompatActivity implements
         mFavoriteStopsFragment =
                 (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
 
-
-//        if (mFavoriteStopsFragment == null) {
-//            mFavoriteStopsFragment = new FavoriteStopsFragment();
-//            mFavoriteStopsFragment.setFragmentId(FragmentsId.FAVORITE_STOPS);
-//            getSupportFragmentManager()
-//                    .beginTransaction()
-//                    .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
-//                    .addToBackStack(FAVORITE_STOPS_TAG)
-//                    .commit();
-//        }
-
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,9 +155,10 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+        findFragments();
         printBackStackFragments();
 
-        Log.v(TAG, "onCreate - this/m: " + String.format("0x%08X", this.hashCode()) + "/" + mInitFragment);
+        Log.v(TAG, "onCreate - this/mInitFragment: " + String.format("0x%08X", this.hashCode()) + "/" + mInitFragment);
 
         BaseFragment topFragmment = getTopFragment();
         String topFragmentTag = getTopFragmentTag();
@@ -185,13 +174,23 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         if (savedInstanceState != null) {
-            confChanged = true;
+            Log.v(TAG, "onCreate - confChanged");
+            FragmentsId fragmentsId = topFragmment.getFragmentId();
             Log.v(TAG, "onCreate - savedInstanceState 2: " + (savedInstanceState == null) + "/" + topFragmment.getFragmentId());
-            if (topFragmentTag != null && topFragmentTag.equals(INIT_TAG)) {
-                addInitFragmentOnConfigChanged();
+            if (topFragmentTag != null &&
+                    (fragmentsId == FragmentsId.FAVORITE_STOPS ||
+                            fragmentsId == FragmentsId.NEXT_DEPARTURES)) {
+                fab.show();
+            } else {
+                fab.hide();
+            }
+            int cnt = getSupportFragmentManager().getBackStackEntryCount();
+            if (cnt > 1) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            } else {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             }
         }
-        Log.v(TAG, "onCreate - confChanged: " + confChanged);
     }
 
     @Override
@@ -200,16 +199,58 @@ public class MainActivity extends AppCompatActivity implements
         super.onDestroy();
     }
 
-    private boolean loadInProgress;
-
-    private void printBackStackFragments() {
-        Log.v(TAG, "printBackStackFragments - start");
-        BaseFragment topFragmment = null;
+    private void findFragments() {
+        Log.v(TAG, "findFragments - start");
+        Fragment topFragmment;
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         String tag;
         for (int i = 0; i < cnt; i++) {
             tag = getSupportFragmentManager().getBackStackEntryAt(i).getName();
-//            fragment = getSupportFragmentManager().findFragmentByTag(tag);
+            topFragmment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
+            switch (tag) {
+                case FAVORITE_STOPS_TAG:
+                    mFavoriteStopsFragment = (FavoriteStopsFragment) topFragmment;
+                    break;
+
+                case STATION_ON_MAP_TAG:
+                    mFavoriteStopsFragment = (FavoriteStopsFragment) topFragmment;
+                    break;
+
+                case STOP_TAG:
+                    mStopsFragment = (StopsFragment) topFragmment;
+                    break;
+
+                case NEXT_DEPARTURES_TAG:
+                    mNextDeparturesFragment = (NextDeparturesFragment) topFragmment;
+                    break;
+
+                case DISRUPTION_TAG:
+                    mDisruptionsFragment = (DisruptionsFragment) topFragmment;
+                    break;
+
+                case NEARBY_TAG:
+                    mStopsNearbyFragment = (StopsNearbyFragment) topFragmment;
+                    break;
+
+                case INIT_TAG:
+                    mInitFragment = (InitFragment) topFragmment;
+                    break;
+
+                default:
+                    throw new RuntimeException(TAG + ".findFragments - no code to handle tag: " + tag);
+            }
+//            Log.v(TAG, "printBackStackFragments - fragment: " + i + " - " + topFragmment + "/" + topFragmment.getFragmentId());
+        }
+        Log.v(TAG, "findFragments - end");
+    }
+
+    private void printBackStackFragments() {
+        Log.v(TAG, "printBackStackFragments - start");
+        BaseFragment topFragmment;
+        int cnt = getSupportFragmentManager().getBackStackEntryCount();
+        String tag;
+        for (int i = 0; i < cnt; i++) {
+            tag = getSupportFragmentManager().getBackStackEntryAt(i).getName();
             topFragmment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
             Log.v(TAG, "printBackStackFragments - fragment: " + i + " - " + topFragmment + "/" + topFragmment.getFragmentId());
         }
@@ -219,7 +260,6 @@ public class MainActivity extends AppCompatActivity implements
     private void handleDatabaseLoadedCase(boolean databaseLoaded) {
         Log.v(TAG, "handleDatabaseLoadedCase - databaseLoaded: " + databaseLoaded);
         if (databaseLoaded) {
-            loadInProgress = true;
             if (mFavoriteStopsFragment == null) {
                 mFavoriteStopsFragment = new FavoriteStopsFragment();
                 mFavoriteStopsFragment.setFragmentId(FragmentsId.FAVORITE_STOPS);
@@ -230,7 +270,6 @@ public class MainActivity extends AppCompatActivity implements
                         .commit();
             }
         } else {
-            loadInProgress = false;
             if (mInitFragment == null) {
                 mInitFragment = new InitFragment();
                 mInitFragment.setFragmentId(FragmentsId.INIT);
@@ -243,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private void addInitFragmentOnConfigChanged() {
+    private void addInitFragmentOnConfigChanged(boolean configChanged) {
         Log.v(TAG, "addInitFragmentOnConfigChanged - start - mInitFragment: " + mInitFragment);
         if (mInitFragment == null) {
             mInitFragment = new InitFragment();
@@ -251,11 +290,14 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             mInitFragment.setListener(this);
         }
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.left_dynamic_fragments_frame, mInitFragment, INIT_TAG)
-//                .addToBackStack(INIT_TAG)
-                .commit();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction =
+                fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.left_dynamic_fragments_frame, mInitFragment, INIT_TAG);
+        if (!configChanged) {
+            fragmentTransaction.addToBackStack(INIT_TAG);
+        }
+        fragmentTransaction.commit();
         Log.v(TAG, "addInitFragmentOnConfigChanged - end");
     }
 
@@ -335,14 +377,14 @@ public class MainActivity extends AppCompatActivity implements
         switch (fragmentsId) {
             case FAVORITE_STOPS:
             actionBar.setTitle(getResources().getString(R.string.title_stops));
-                if (mStopDetailFragment == null) {
-                    mStopDetailFragment = new StopsFragment();
-                    mStopDetailFragment.setFragmentId(FragmentsId.STOPS);
+                if (mStopsFragment == null) {
+                    mStopsFragment = new StopsFragment();
+                    mStopsFragment.setFragmentId(FragmentsId.STOPS);
                 }
                 mFavoriteStopsFragment.hideView();
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .add(R.id.left_dynamic_fragments_frame, mStopDetailFragment, STOP_TAG)
+                        .add(R.id.left_dynamic_fragments_frame, mStopsFragment, STOP_TAG)
                         .addToBackStack(STOP_TAG)     // it will also show 'Up' button in the action bar
                         .commit();
                 fab.hide();
@@ -531,7 +573,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         getSupportFragmentManager()
                 .beginTransaction()
-                .remove(mStopDetailFragment)
+                .remove(mStopsFragment)
                 .commit();
 
         getSupportFragmentManager().popBackStack();
@@ -609,7 +651,7 @@ public class MainActivity extends AppCompatActivity implements
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MainActivityEvents event) {
 //        Log.v(TAG, "onMessageEvent - start");
-        Log.v(TAG, "onMessageEvent - this: " + String.format("0x%08X", this.hashCode()));
+//        Log.v(TAG, "onMessageEvent - this: " + String.format("0x%08X", this.hashCode()));
         MainActivityEvents.MainEvents requestEvent = event.event;
         switch (requestEvent) {
 

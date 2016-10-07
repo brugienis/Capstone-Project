@@ -34,7 +34,7 @@ public class InitFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.v(TAG, "onCreate - start");
-//        setRetainInstance(true);
+        setRetainInstance(true);
     }
 
     private ProgressBar mProgressBar;
@@ -58,7 +58,7 @@ public class InitFragment extends BaseFragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnInitFragmentInteractionListener");
         }
-        Log.v(TAG, "onAttach - mListener: " + String.format("0x%08X", mListener.hashCode()));
+        Log.v(TAG, "onAttach - InitFragment: " + String.format("0x%08X", this.hashCode()) + " mListener: " + String.format("0x%08X", mListener.hashCode()));
     }
 
     public void setListener(OnInitFragmentInteractionListener listener) {
