@@ -236,8 +236,9 @@ public class MainActivity extends AppCompatActivity implements
         if (mInitFragment == null) {
             mInitFragment = new InitFragment();
             mInitFragment.setFragmentId(FragmentsId.INIT);
+        } else {
+            mInitFragment.setListener(this);
         }
-        mInitFragment.setListener(this);
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.left_dynamic_fragments_frame, mInitFragment, INIT_TAG)
