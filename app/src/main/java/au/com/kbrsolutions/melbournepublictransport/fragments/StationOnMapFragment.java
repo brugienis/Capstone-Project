@@ -74,6 +74,7 @@ public class StationOnMapFragment extends BaseFragment implements OnMapReadyCall
             mLongitude = getArguments().getDouble(ARG_LONGITUDE);
             newInstanceArgsRetrieved = true;
         }
+        setRetainInstance(true);
     }
 
     /**

@@ -50,6 +50,7 @@ public class DisruptionsFragment extends BaseFragment {
             mDisruptionDetailsList = (ArrayList)getArguments().getParcelableArrayList(ARG_DISRUPTION_DATA);
             newInstanceArgsRetrieved = true;
         }
+        setRetainInstance(true);
     }
 
     @Override

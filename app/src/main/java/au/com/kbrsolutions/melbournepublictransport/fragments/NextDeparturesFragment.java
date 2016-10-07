@@ -69,6 +69,7 @@ public class NextDeparturesFragment extends BaseFragment {
             Log.v(TAG, "onCreate - stopDetails: " + mSearchStopDetails);
             newInstanceArgsRetrieved = true;
         }
+        setRetainInstance(true);
     }
 
     public StopDetails  getSearchStopDetails() {

@@ -53,6 +53,7 @@ public class StopsNearbyFragment extends BaseFragment {
             mNearbyStopsDetailsList = (ArrayList)getArguments().getParcelableArrayList(ARG_NEARBY_DATA);
             newInstanceArgsRetrieved = true;
         }
+        setRetainInstance(true);
     }
 
     public void hideView() {

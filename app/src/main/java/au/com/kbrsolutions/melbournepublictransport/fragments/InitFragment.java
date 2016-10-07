@@ -83,7 +83,7 @@ public class InitFragment extends BaseFragment {
     }
 
     public void updateDatabaseLoadProgress(int progress, int target) {
-        Log.v(TAG, "updateDatabaseLoadProgress - progress/mTarget: " + progress + "/" + target);
+//        Log.v(TAG, "updateDatabaseLoadProgress - progress/mTarget: " + progress + "/" + target);
         if (!mIsTargetSet) {
             mIsTargetSet = true;
             mProgressBar.setIndeterminate(false);
@@ -93,9 +93,9 @@ public class InitFragment extends BaseFragment {
         mProgressBar.setMax(target);
         mProgressBar.setProgress(progress);
         if (target == progress) {
-            Log.v(TAG, "updateDatabaseLoadProgress - listener: " + String.format("0x%08X", mListener.hashCode()));
+//            Log.v(TAG, "updateDatabaseLoadProgress - listener: " + String.format("0x%08X", mListener.hashCode()));
             mListener.databaseLoaded();
-            Log.v(TAG, "updateDatabaseLoadProgress - databaseLoaded");
+//            Log.v(TAG, "updateDatabaseLoadProgress - databaseLoaded");
         }
     }
 

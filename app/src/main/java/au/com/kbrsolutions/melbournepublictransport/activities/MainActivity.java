@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements
                     break;
 
                 case STATION_ON_MAP_TAG:
-                    mFavoriteStopsFragment = (FavoriteStopsFragment) topFragmment;
+                    mStationOnMapFragment = (StationOnMapFragment) topFragmment;
                     break;
 
                 case STOP_TAG:
@@ -437,11 +437,17 @@ public class MainActivity extends AppCompatActivity implements
             FragmentsId fragmentsId = baseFragment.getFragmentId();
             if (fragmentsId != null &&
                     (fragmentsId == FragmentsId.FAVORITE_STOPS ||
-                    fragmentsId == FragmentsId.STOPS ||
-                    fragmentsId == FragmentsId.STOPS_NEARBY)) {
+                            fragmentsId == FragmentsId.STOPS ||
+                            fragmentsId == FragmentsId.STOPS_NEARBY)) {
                 baseFragment.hideView();
+                Log.v(TAG, "hideViewIfRequired - DID     hide " + fragmentsId);
 //                Log.v(TAG, "hideViewIfRequired - hiding " + fragmentsId);
+            } else {
+                Log.v(TAG, "hideViewIfRequired - DID NOT hide " + fragmentsId);
             }
+        } else {
+            // FIXME: 8/10/2016 - remove before releasing. Also the 'if (baseFragment != null)' above
+            throw new RuntimeException(TAG + ".hideViewIfRequired - baseFragment cannot be null");
         }
     }
 
