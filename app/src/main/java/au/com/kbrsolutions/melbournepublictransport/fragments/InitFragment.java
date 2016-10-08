@@ -94,8 +94,8 @@ public class InitFragment extends BaseFragment {
         mProgressBar.setProgress(progress);
         if (target == progress) {
             Log.v(TAG, "updateDatabaseLoadProgress - listener: " + String.format("0x%08X", mListener.hashCode()));
-            mListener.databaseLoaded();
-            Log.v(TAG, "updateDatabaseLoadProgress - databaseLoaded");
+            mListener.databaseLoadFinished();
+            Log.v(TAG, "updateDatabaseLoadProgress - databaseLoadFinished");
         }
     }
 
@@ -111,6 +111,6 @@ public class InitFragment extends BaseFragment {
      */
     public interface OnInitFragmentInteractionListener {
         // TODO: Update argument type and name
-        void databaseLoaded();
+        void databaseLoadFinished();
     }
 }

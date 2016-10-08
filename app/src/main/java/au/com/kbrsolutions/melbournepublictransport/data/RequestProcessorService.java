@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -27,7 +28,7 @@ public class RequestProcessorService extends IntentService {
     private DbUtility dbUtility;
     boolean mTestDatabaseLoaded = false;
 
-    private static boolean refreshTest = true;
+    private final static boolean REFRESH_TEST = true;
 
     public final static String REQUEST = "request";
     public final static String ACTION_REFRESH_DATA = "refresh_data";
@@ -37,7 +38,6 @@ public class RequestProcessorService extends IntentService {
     public final static String GET_TRAIN_NEARBY_STOPS_DETAILS = "get_train_nearby_stops_details";
     public final static String UPDATE_STOPS_DETAILS = "update_stops_details";
 
-    public final static String MODE = "mode";
     public final static String MODES = "modes";
     public final static String STOP_ID = "stop_id";
     public final static String LIMIT = "limit";
@@ -86,7 +86,8 @@ public class RequestProcessorService extends IntentService {
                 List<NearbyStopsDetails> nearbyStopsDetailsList;
                 switch (request) {
                     case ACTION_REFRESH_DATA:
-                        if (refreshTest) {
+                        if (REFRESH_TEST) {
+                            Log.v(TAG, "onHandleIntent - test load");
                             sendMessageToMainActivity(new MainActivityEvents.Builder(
                                     MainActivityEvents.MainEvents.DATABASE_STATUS)
                                     .setDatabaseLoaded(mTestDatabaseLoaded)
@@ -94,6 +95,7 @@ public class RequestProcessorService extends IntentService {
                             testProgressBar();
                             mTestDatabaseLoaded = true;
                         } else {
+                            Log.v(TAG, "onHandleIntent - real load");
                             boolean databaseLoaded = DatabaseContentRefresher.databaseLoaded(getContentResolver());
                             sendMessageToMainActivity(new MainActivityEvents.Builder(
                                     MainActivityEvents.MainEvents.DATABASE_STATUS)

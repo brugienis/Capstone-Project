@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        Log.v(TAG, "onCreate - start");
+        Log.v(TAG, "onCreate - start");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -117,29 +117,25 @@ public class MainActivity extends AppCompatActivity implements
         getSupportFragmentManager().addOnBackStackChangedListener(
                 new FragmentManager.OnBackStackChangedListener() {
                     public void onBackStackChanged() {
-                        showViewIfRequired();
+                        showTopViewAfterBackOrUpPressed();
 
+//                        printBackStackFragments();
                         int cnt = getSupportFragmentManager().getBackStackEntryCount();
                         BaseFragment bf = getTopFragment();
                         boolean backButtonPressed;
                         if (cnt > mPrevBackStackEntryCount) {
 //                            Log.v(TAG, "onCreate.onBackStackChanged - going forward  - cnt/top: " + cnt + "/" + bf.getFragmentId());
-                            backButtonPressed = false;
+//                            backButtonPressed = false;
                         } else {
 //                            Log.v(TAG, "onCreate.onBackStackChanged - going backward - cnt/top: " + cnt + "/" + (bf == null ? "null" : bf.getFragmentId()));
-                            backButtonPressed = true;
+//                            backButtonPressed = true;
                         }
                         mPrevBackStackEntryCount = cnt;
-                        if (cnt == 1 && bf.getFragmentId() == FragmentsId.FAVORITE_STOPS) {
+//                        if (cnt == 1 && bf.getFragmentId() == FragmentsId.FAVORITE_STOPS) {
+                        if (cnt == 1) {
                             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                            showFavoriteStops();
                         } else if (cnt > 1) {
                             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                        }
-                        if (backButtonPressed) {
-                            if (cnt == 1) {      /* we came back to Favorite Stops */
-                                showFavoriteStops();
-                            }
                         }
                     }
                 });
@@ -163,14 +159,6 @@ public class MainActivity extends AppCompatActivity implements
         BaseFragment topFragmment = getTopFragment();
         String topFragmentTag = getTopFragmentTag();
 
-//        if (savedInstanceState == null && (topFragmentTag == null || !topFragmentTag.equals(INIT_TAG))) {
-//            Intent intent = new Intent(this, RequestProcessorService.class);
-//            intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_REFRESH_DATA);
-//            intent.putExtra(RequestProcessorService.REFRESH_DATA_IF_TABLES_EMPTY, true);
-//            Log.v(TAG, "onCreate - request sent");
-//            startService(intent);
-//        }
-
         if (savedInstanceState != null) {   /* configuration changed */
             printBackStackFragments();
             FragmentsId fragmentsId = topFragmment.getFragmentId();
@@ -193,26 +181,16 @@ public class MainActivity extends AppCompatActivity implements
                 intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_REFRESH_DATA);
                 intent.putExtra(RequestProcessorService.REFRESH_DATA_IF_TABLES_EMPTY, true);
                 Log.v(TAG, "onCreate - load database request sent");
+                showFavoriteStops();
                 startService(intent);
             }
         }
-//        showFragmentsOnBackStackVisibility();
-//        Log.v(TAG, "onCreate - end");
+        Log.v(TAG, "onCreate - end");
     }
 
-    private void handleDatabaseLoadedCase(boolean databaseLoaded) {
-        Log.v(TAG, "handleDatabaseLoadedCase - databaseLoaded: " + databaseLoaded);
-        if (databaseLoaded) {
-            if (mFavoriteStopsFragment == null) {
-                mFavoriteStopsFragment = new FavoriteStopsFragment();
-                mFavoriteStopsFragment.setFragmentId(FragmentsId.FAVORITE_STOPS);
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
-                        .addToBackStack(FAVORITE_STOPS_TAG)
-                        .commit();
-            }
-        } else {
+    private void handleDatabaseLoadStatus(boolean databaseLoaded) {
+        Log.v(TAG, "handleDatabaseLoadStatus - databaseLoadFinished: " + databaseLoaded);
+        if (!databaseLoaded) {
             if (mInitFragment == null) {
                 mInitFragment = new InitFragment();
                 mInitFragment.setFragmentId(FragmentsId.INIT);
@@ -221,13 +199,14 @@ public class MainActivity extends AppCompatActivity implements
                         .add(R.id.left_dynamic_fragments_frame, mInitFragment, INIT_TAG)
                         .addToBackStack(INIT_TAG)
                         .commit();
+                actionBar.setTitle(getResources().getString(R.string.title_data_load));
+                mFavoriteStopsFragment.hideView();
             }
         }
     }
 
-    @Override
-    public void databaseLoaded() {
-        Log.v(TAG, "databaseLoaded - start");
+    public void databaseLoadFinished() {
+        Log.v(TAG, "databaseLoadFinished - start");
         if (mFavoriteStopsFragment == null) {
             mFavoriteStopsFragment = new FavoriteStopsFragment();
             mFavoriteStopsFragment.setFragmentId(FragmentsId.FAVORITE_STOPS);
@@ -237,13 +216,9 @@ public class MainActivity extends AppCompatActivity implements
                 .remove(mInitFragment)
                 .commit();
         getSupportFragmentManager().popBackStack();
-
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
-                .addToBackStack(FAVORITE_STOPS_TAG)
-                .commit();
-        Log.v(TAG, "databaseLoaded - end");
+//        mInitFragment.hideView();
+        actionBar.setTitle(getResources().getString(R.string.title_favorite_stops));
+        Log.v(TAG, "databaseLoadFinished - end");
     }
 
     @Override
@@ -308,13 +283,13 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private void showViewIfRequired() {
+    private void showTopViewAfterBackOrUpPressed() {
         BaseFragment baseFragment = getTopFragment();
-//        Log.v(TAG, "showViewIfRequired - baseFragment: " + baseFragment);
+//        Log.v(TAG, "showTopViewAfterBackOrUpPressed - baseFragment: " + baseFragment);
         boolean showFab = false;
         if (baseFragment != null) {
             FragmentsId fragmentsId = baseFragment.getFragmentId();
-//            Log.v(TAG, "showViewIfRequired - fragmentsId: " + fragmentsId);
+            Log.v(TAG, "showTopViewAfterBackOrUpPressed - fragmentsId: " + fragmentsId);
             if (fragmentsId != null) {
                 if (fragmentsId == FragmentsId.FAVORITE_STOPS ||
                         fragmentsId == FragmentsId.STOPS ||
@@ -327,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         }
-//        Log.v(TAG, "showViewIfRequired - showFab: " + showFab);
+//        Log.v(TAG, "showTopViewAfterBackOrUpPressed - showFab: " + showFab);
         if (showFab) {
             fab.show();
         } else {
@@ -462,26 +437,34 @@ public class MainActivity extends AppCompatActivity implements
         return true;
     }
 
-    /**
-     * Show favorite stops after user pressed Back or Up button.
-     */
-    private void showFavoriteStops() {
-        actionBar.setTitle(getResources().getString(R.string.title_favorite_stops));
-        mFavoriteStopsFragment.showFavoriteStops();
-    }
-
-    // FIXME: 8/10/2016 - remove mSelectedStopName
     public void startNextDeparturesSearch(StopDetails stopDetails) {
-//        Log.v(TAG, "startNextDeparturesSearch - start");
-//        showFragmentsOnBackStackVisibility();
         Intent intent = new Intent(this, RequestProcessorService.class);
-//        mSelectedStopName = stopDetails.locationName;
         intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.SHOW_NEXT_DEPARTURES);
         Bundle mBundle = new Bundle();
         mBundle.putParcelable(RequestProcessorService.STOP_DETAILS, stopDetails);
         intent.putExtras(mBundle);
         intent.putExtra(RequestProcessorService.LIMIT, 5);
         startService(intent);
+    }
+
+    /**
+     * Show favorite stops after user pressed Back or Up button.
+     */
+    private void showFavoriteStops() {
+        Log.v(TAG, "showFavoriteStops - start");
+        actionBar.setTitle(getResources().getString(R.string.title_favorite_stops));
+        if (mFavoriteStopsFragment == null) {
+            Log.v(TAG, "showFavoriteStops - adding new mFavoriteStopsFragment");
+            mFavoriteStopsFragment = new FavoriteStopsFragment();
+            mFavoriteStopsFragment.setFragmentId(FragmentsId.FAVORITE_STOPS);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
+                    .addToBackStack(FAVORITE_STOPS_TAG)
+                    .commit();
+        } else {
+            Log.v(TAG, "showFavoriteStops - did not added mFavoriteStopsFragment - it was not null");
+        }
     }
 
     /**
@@ -499,8 +482,6 @@ public class MainActivity extends AppCompatActivity implements
                 .commit();
 
         getSupportFragmentManager().popBackStack();
-        Log.v(TAG, "showUpdatedFavoriteStops - after popBackStack");
-        printBackStackFragments();
     }
 
     @Override
@@ -598,7 +579,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
 
             case DATABASE_STATUS:
-                handleDatabaseLoadedCase(event.databaseLoaded);
+                handleDatabaseLoadStatus(event.databaseLoaded);
                 break;
 
             case DATABASE_LOAD_TARGET:

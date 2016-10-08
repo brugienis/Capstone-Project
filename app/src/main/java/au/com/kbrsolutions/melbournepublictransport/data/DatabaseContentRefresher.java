@@ -39,7 +39,7 @@ public class DatabaseContentRefresher {
 //                Log.v(TAG, "testProgressBar - progress sent i: " + i);
             }
             try {
-                Thread.sleep(1500);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -53,7 +53,7 @@ public class DatabaseContentRefresher {
 
     protected static void refreshDatabase(ContentResolver contentResolver) {
 //        if (runIfTablesAreEmpty) {
-//            if (databaseLoaded(contentResolver)) {
+//            if (databaseLoadFinished(contentResolver)) {
 //                return;
 //            }
 //        }
@@ -142,7 +142,7 @@ public class DatabaseContentRefresher {
                 null  // no sort order
         );
         int stopDetailsRowsCnt = stopCursor.getCount();
-//        Log.v(TAG, "databaseLoaded - line_detail/stop_detail cnt: " + lineDetailsRowsCnt + "/" + stopDetailsRowsCnt);
+//        Log.v(TAG, "databaseLoadFinished - line_detail/stop_detail cnt: " + lineDetailsRowsCnt + "/" + stopDetailsRowsCnt);
         stopCursor.close();
 
         return (lineDetailsRowsCnt + stopDetailsRowsCnt) != 0;

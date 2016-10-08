@@ -94,7 +94,7 @@ public class FavoriteStopsFragment
         if (mListener != null) {
             ((Activity) mListener).invalidateOptionsMenu();
         }
-//        Log.v(TAG, "showView: " + String.format("0x%08X", this.hashCode()));
+        Log.v(TAG, "showView: " + String.format("0x%08X", this.hashCode()));
     }
 
     public void isRootViewVisible() {
@@ -194,10 +194,9 @@ public class FavoriteStopsFragment
         mFavoriteStopDetailAdapter.swapCursor(null);
     }
 
-    public void showFavoriteStops() {
-        // FIXME: 18/08/2016 add code
-        showView();
-    }
+//    public void showFavoriteStops() {
+//        showView();
+//    }
 
     @Override
     public void onAttach(Context context) {
