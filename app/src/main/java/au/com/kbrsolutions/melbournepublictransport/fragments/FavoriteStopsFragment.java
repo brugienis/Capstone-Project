@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -84,15 +85,23 @@ public class FavoriteStopsFragment
         if (mListener != null) {
             ((Activity) mListener).invalidateOptionsMenu();
         }
+//        Log.v(TAG, "hideView: " + String.format("0x%08X", this.hashCode()));
     }
 
     public void showView() {
-        // FIXME: 8/09/2016 - start CursorLoader
-//        Log.v(TAG, "showView");
         isVisible = true;
         mRootView.setVisibility(View.VISIBLE);
         if (mListener != null) {
             ((Activity) mListener).invalidateOptionsMenu();
+        }
+//        Log.v(TAG, "showView: " + String.format("0x%08X", this.hashCode()));
+    }
+
+    public void isRootViewVisible() {
+        if (mRootView.getVisibility() == View.VISIBLE) {
+            Log.v(TAG, "isVisible - is visible");
+        } else {
+            Log.v(TAG, "isVisible - is NOT visible");
         }
     }
 

@@ -23,6 +23,10 @@ public abstract class BaseFragment extends Fragment {
 
     }
 
+    public void isRootViewVisible() {
+        Log.v(TAG, "isVisible - no code");
+    }
+
     public MainActivity.FragmentsId getFragmentId() {
         return  mFragmentsId;
     }

@@ -28,7 +28,7 @@ public class RequestProcessorService extends IntentService {
     private DbUtility dbUtility;
     boolean mTestDatabaseLoaded = false;
 
-    private static boolean refreshTest = true;
+    private static boolean refreshTest = false;
 
     public final static String REQUEST = "request";
     public final static String ACTION_REFRESH_DATA = "refresh_data";
@@ -108,13 +108,13 @@ public class RequestProcessorService extends IntentService {
                     case SHOW_NEXT_DEPARTURES:
                         StopDetails stopDetails = extras.getParcelable(STOP_DETAILS);
                         Log.v(TAG, "onHandleIntent - stopDetails: " + stopDetails);
-                        List<NextDepartureDetails> nextDepartureDetailsList =
-                                RemoteMptEndpointUtil.getBroadNextDepartures(
-                                        stopDetails.routeType,
-                                        stopDetails.stopId,
-                                        extras.getInt(LIMIT));
 //                        List<NextDepartureDetails> nextDepartureDetailsList =
-//                          buildSimulatedDepartureDetails();
+//                                RemoteMptEndpointUtil.getBroadNextDepartures(
+//                                        stopDetails.routeType,
+//                                        stopDetails.stopId,
+//                                        extras.getInt(LIMIT));
+                        List<NextDepartureDetails> nextDepartureDetailsList =
+                          buildSimulatedDepartureDetails();
 
                         sendMessageToMainActivity(new MainActivityEvents.Builder(
                                 MainActivityEvents.MainEvents.NEXT_DEPARTURES_DETAILS)

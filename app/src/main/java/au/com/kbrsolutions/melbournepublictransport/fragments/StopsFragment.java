@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,6 +86,7 @@ public class StopsFragment extends BaseFragment implements LoaderManager.LoaderC
         if (mListener != null) {
             ((Activity) mListener).invalidateOptionsMenu();
         }
+//        Log.v(TAG, "hideView: " + String.format("0x%08X", this.hashCode()));
     }
 
     public void showView() {
@@ -93,7 +95,17 @@ public class StopsFragment extends BaseFragment implements LoaderManager.LoaderC
         if (mListener != null) {
             ((Activity) mListener).invalidateOptionsMenu();
         }
+//        Log.v(TAG, "showView: " + String.format("0x%08X", this.hashCode()));
     }
+
+    public void isRootViewVisible() {
+        if (mRootView.getVisibility() == View.VISIBLE) {
+            Log.v(TAG, "isVisible - is visible");
+        } else {
+            Log.v(TAG, "isVisible - is NOT visible");
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

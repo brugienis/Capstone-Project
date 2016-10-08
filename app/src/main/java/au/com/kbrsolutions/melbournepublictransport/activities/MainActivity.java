@@ -13,7 +13,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -144,8 +143,8 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 });
 
-        mFavoriteStopsFragment =
-                (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
+//        mFavoriteStopsFragment =
+//                (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -156,9 +155,9 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         findFragments();
-        printBackStackFragments();
+//        printBackStackFragments();
 
-        Log.v(TAG, "onCreate - this/mInitFragment: " + String.format("0x%08X", this.hashCode()) + "/" + mInitFragment);
+//        Log.v(TAG, "onCreate - this/mInitFragment: " + String.format("0x%08X", this.hashCode()) + "/" + mInitFragment);
 
         BaseFragment topFragmment = getTopFragment();
         String topFragmentTag = getTopFragmentTag();
@@ -174,9 +173,9 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         if (savedInstanceState != null) {
-            Log.v(TAG, "onCreate - confChanged");
+//            Log.v(TAG, "onCreate - confChanged");
             FragmentsId fragmentsId = topFragmment.getFragmentId();
-            Log.v(TAG, "onCreate - savedInstanceState 2: " + (savedInstanceState == null) + "/" + topFragmment.getFragmentId());
+//            Log.v(TAG, "onCreate - savedInstanceState 2: " + (savedInstanceState == null) + "/" + topFragmment.getFragmentId());
             if (topFragmentTag != null &&
                     (fragmentsId == FragmentsId.FAVORITE_STOPS ||
                             fragmentsId == FragmentsId.NEXT_DEPARTURES)) {
@@ -191,6 +190,8 @@ public class MainActivity extends AppCompatActivity implements
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             }
         }
+//        showFragmentsOnBackStackVisibility();
+        Log.v(TAG, "onCreate - end");
     }
 
     @Override
@@ -200,13 +201,14 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void findFragments() {
-        Log.v(TAG, "findFragments - start");
-        Fragment topFragmment;
+//        Log.v(TAG, "findFragments - start");
+        Fragment topFragmment = null;
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         String tag;
         for (int i = 0; i < cnt; i++) {
             tag = getSupportFragmentManager().getBackStackEntryAt(i).getName();
-            topFragmment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
+            topFragmment = getSupportFragmentManager().findFragmentByTag(tag);
+            ((BaseFragment)topFragmment).hideView();
             switch (tag) {
                 case FAVORITE_STOPS_TAG:
                     mFavoriteStopsFragment = (FavoriteStopsFragment) topFragmment;
@@ -241,7 +243,29 @@ public class MainActivity extends AppCompatActivity implements
             }
 //            Log.v(TAG, "printBackStackFragments - fragment: " + i + " - " + topFragmment + "/" + topFragmment.getFragmentId());
         }
-        Log.v(TAG, "findFragments - end");
+        if (topFragmment != null) {
+            ((BaseFragment)topFragmment).showView();
+        }
+//        showFragmentsOnBackStackVisibility();
+//        Log.v(TAG, "findFragments - end");
+    }
+
+    private void hideAllAndShowTheTopOneFragment() {
+        Log.v(TAG, "hideAllAndShowTheTopOneFragment - start");
+        Fragment topFragmment = null;
+        int cnt = getSupportFragmentManager().getBackStackEntryCount();
+        String tag;
+        for (int i = 0; i < cnt; i++) {
+            tag = getSupportFragmentManager().getBackStackEntryAt(i).getName();
+            topFragmment = getSupportFragmentManager().findFragmentByTag(tag);
+            ((BaseFragment)topFragmment).hideView();
+//            Log.v(TAG, "printBackStackFragments - fragment: " + i + " - " + topFragmment + "/" + topFragmment.getFragmentId());
+        }
+        if (topFragmment != null) {
+            ((BaseFragment)topFragmment).showView();
+        }
+//        showFragmentsOnBackStackVisibility();
+        Log.v(TAG, "hideAllAndShowTheTopOneFragment - end");
     }
 
     private void printBackStackFragments() {
@@ -255,6 +279,20 @@ public class MainActivity extends AppCompatActivity implements
             Log.v(TAG, "printBackStackFragments - fragment: " + i + " - " + topFragmment + "/" + topFragmment.getFragmentId());
         }
         Log.v(TAG, "printBackStackFragments - end");
+    }
+
+    private void showFragmentsOnBackStackVisibility() {
+        Log.v(TAG, "showFragmentsOnBackStackVisibility - start");
+        BaseFragment topFragmment;
+        int cnt = getSupportFragmentManager().getBackStackEntryCount();
+        String tag;
+        for (int i = 0; i < cnt; i++) {
+            tag = getSupportFragmentManager().getBackStackEntryAt(i).getName();
+            topFragmment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
+            topFragmment.isRootViewVisible();
+//            Log.v(TAG, "showFragmentsOnBackStackVisibility - fragment: " + i + " - " + topFragmment + "/" + topFragmment.getFragmentId());
+        }
+        Log.v(TAG, "showFragmentsOnBackStackVisibility - end");
     }
 
     private void handleDatabaseLoadedCase(boolean databaseLoaded) {
@@ -280,25 +318,6 @@ public class MainActivity extends AppCompatActivity implements
                         .commit();
             }
         }
-    }
-
-    private void addInitFragmentOnConfigChanged(boolean configChanged) {
-        Log.v(TAG, "addInitFragmentOnConfigChanged - start - mInitFragment: " + mInitFragment);
-        if (mInitFragment == null) {
-            mInitFragment = new InitFragment();
-            mInitFragment.setFragmentId(FragmentsId.INIT);
-        } else {
-            mInitFragment.setListener(this);
-        }
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction =
-                fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.left_dynamic_fragments_frame, mInitFragment, INIT_TAG);
-        if (!configChanged) {
-            fragmentTransaction.addToBackStack(INIT_TAG);
-        }
-        fragmentTransaction.commit();
-        Log.v(TAG, "addInitFragmentOnConfigChanged - end");
     }
 
     @Override
@@ -348,13 +367,17 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.v(TAG, "onSaveInstanceState");
+        Log.v(TAG, "onSaveInstanceState - after super");
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//        Log.v(TAG, "onRestoreInstanceState - start");
+//        showFragmentsOnBackStackVisibility();
         super.onRestoreInstanceState(savedInstanceState);
-        Log.v(TAG, "onRestoreInstanceState");
+        hideAllAndShowTheTopOneFragment();
+        Log.v(TAG, "onRestoreInstanceState - after findFragments()");
+        showFragmentsOnBackStackVisibility();
     }
 
     private void handleFabClicked() {
@@ -432,7 +455,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void hideViewIfRequired() {
         BaseFragment baseFragment = getTopFragment();
-//        Log.v(TAG, "hideViewIfRequired - baseFragment: " + baseFragment);
+        Log.v(TAG, "hideViewIfRequired - baseFragment: " + baseFragment);
         if (baseFragment != null) {
             FragmentsId fragmentsId = baseFragment.getFragmentId();
             if (fragmentsId != null &&
@@ -451,10 +474,13 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    // FIXME: 8/10/2016 - get selected stopName from stopDetails, not from mSelectedStopName
     private void showNextDepartures(
             List<NextDepartureDetails> nextDepartureDetailsList,
             StopDetails stopDetails) {
+        Log.v(TAG, "showNextDepartures - start");
         actionBar.setTitle(getResources().getString(R.string.title_next_departures));
+//        showFragmentsOnBackStackVisibility();
         if (mNextDeparturesFragment == null) {
             mNextDeparturesFragment = NextDeparturesFragment.newInstance(
                     mSelectedStopName,
@@ -472,6 +498,8 @@ public class MainActivity extends AppCompatActivity implements
             return;
         }
         hideViewIfRequired();
+        Log.v(TAG, "showNextDepartures - after hideViewIfRequired() ");
+//        showFragmentsOnBackStackVisibility();
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.left_dynamic_fragments_frame, mNextDeparturesFragment, NEXT_DEPARTURES_TAG)
@@ -558,7 +586,10 @@ public class MainActivity extends AppCompatActivity implements
         mFavoriteStopsFragment.showFavoriteStops();
     }
 
+    // FIXME: 8/10/2016 - remove mSelectedStopName
     public void startNextDeparturesSearch(StopDetails stopDetails) {
+        Log.v(TAG, "startNextDeparturesSearch - start");
+//        showFragmentsOnBackStackVisibility();
         Intent intent = new Intent(this, RequestProcessorService.class);
         mSelectedStopName = stopDetails.locationName;
         intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.SHOW_NEXT_DEPARTURES);

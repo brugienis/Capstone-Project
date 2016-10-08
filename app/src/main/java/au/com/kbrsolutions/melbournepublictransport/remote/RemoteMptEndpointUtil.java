@@ -67,6 +67,9 @@ public class RemoteMptEndpointUtil {
         } catch (JSONException e) {
             // FIXME: 5/09/2016 - handle exception properly
             e.printStackTrace();
+            return false;
+        } catch (NullPointerException e) {
+            return false;
         }
 
         return databaseOK;
