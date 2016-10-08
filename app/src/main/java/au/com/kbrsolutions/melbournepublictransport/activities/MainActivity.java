@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.v(TAG, "onCreate - start");
+//        Log.v(TAG, "onCreate - start");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements
         String topFragmentTag = getTopFragmentTag();
 
 //        if (savedInstanceState == null && !loadInProgress) {
-        Log.v(TAG, "onCreate - savedInstanceState: " + (savedInstanceState == null) + "/" + topFragmentTag);
+//        Log.v(TAG, "onCreate - savedInstanceState: " + (savedInstanceState == null) + "/" + topFragmentTag);
         if (savedInstanceState == null && (topFragmentTag == null || !topFragmentTag.equals(INIT_TAG))) {
             Intent intent = new Intent(this, RequestProcessorService.class);
             intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_REFRESH_DATA);
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
 //        showFragmentsOnBackStackVisibility();
-        Log.v(TAG, "onCreate - end");
+//        Log.v(TAG, "onCreate - end");
     }
 
     @Override
@@ -251,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void hideAllAndShowTheTopOneFragment() {
-        Log.v(TAG, "hideAllAndShowTheTopOneFragment - start");
+//        Log.v(TAG, "hideAllAndShowTheTopOneFragment - start");
         Fragment topFragmment = null;
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         String tag;
@@ -265,24 +265,24 @@ public class MainActivity extends AppCompatActivity implements
             ((BaseFragment)topFragmment).showView();
         }
 //        showFragmentsOnBackStackVisibility();
-        Log.v(TAG, "hideAllAndShowTheTopOneFragment - end");
+//        Log.v(TAG, "hideAllAndShowTheTopOneFragment - end");
     }
 
     private void printBackStackFragments() {
-        Log.v(TAG, "printBackStackFragments - start");
+//        Log.v(TAG, "printBackStackFragments - start");
         BaseFragment topFragmment;
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         String tag;
         for (int i = 0; i < cnt; i++) {
             tag = getSupportFragmentManager().getBackStackEntryAt(i).getName();
             topFragmment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
-            Log.v(TAG, "printBackStackFragments - fragment: " + i + " - " + topFragmment + "/" + topFragmment.getFragmentId());
+//            Log.v(TAG, "printBackStackFragments - fragment: " + i + " - " + topFragmment + "/" + topFragmment.getFragmentId());
         }
-        Log.v(TAG, "printBackStackFragments - end");
+//        Log.v(TAG, "printBackStackFragments - end");
     }
 
     private void showFragmentsOnBackStackVisibility() {
-        Log.v(TAG, "showFragmentsOnBackStackVisibility - start");
+//        Log.v(TAG, "showFragmentsOnBackStackVisibility - start");
         BaseFragment topFragmment;
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         String tag;
@@ -292,7 +292,7 @@ public class MainActivity extends AppCompatActivity implements
             topFragmment.isRootViewVisible();
 //            Log.v(TAG, "showFragmentsOnBackStackVisibility - fragment: " + i + " - " + topFragmment + "/" + topFragmment.getFragmentId());
         }
-        Log.v(TAG, "showFragmentsOnBackStackVisibility - end");
+//        Log.v(TAG, "showFragmentsOnBackStackVisibility - end");
     }
 
     private void handleDatabaseLoadedCase(boolean databaseLoaded) {
@@ -367,7 +367,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.v(TAG, "onSaveInstanceState - after super");
+//        Log.v(TAG, "onSaveInstanceState - after super");
     }
 
     @Override
@@ -376,8 +376,8 @@ public class MainActivity extends AppCompatActivity implements
 //        showFragmentsOnBackStackVisibility();
         super.onRestoreInstanceState(savedInstanceState);
         hideAllAndShowTheTopOneFragment();
-        Log.v(TAG, "onRestoreInstanceState - after findFragments()");
-        showFragmentsOnBackStackVisibility();
+//        Log.v(TAG, "onRestoreInstanceState - after hideAllAndShowTheTopOneFragment()");
+//        showFragmentsOnBackStackVisibility();
     }
 
     private void handleFabClicked() {
@@ -385,7 +385,7 @@ public class MainActivity extends AppCompatActivity implements
         FragmentsId fragmentsId;
         if (baseFragment != null) {
             fragmentsId = baseFragment.getFragmentId();
-            Log.v(TAG, "handleFabClicked - baseFragment/fragmentsId: " + baseFragment + "/" + fragmentsId);
+//            Log.v(TAG, "handleFabClicked - baseFragment/fragmentsId: " + baseFragment + "/" + fragmentsId);
             if (fragmentsId != null &&
                     fragmentsId != FragmentsId.FAVORITE_STOPS &&
                     fragmentsId != FragmentsId.NEXT_DEPARTURES
@@ -455,7 +455,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void hideViewIfRequired() {
         BaseFragment baseFragment = getTopFragment();
-        Log.v(TAG, "hideViewIfRequired - baseFragment: " + baseFragment);
+//        Log.v(TAG, "hideViewIfRequired - baseFragment: " + baseFragment);
         if (baseFragment != null) {
             FragmentsId fragmentsId = baseFragment.getFragmentId();
             if (fragmentsId != null &&
@@ -463,10 +463,10 @@ public class MainActivity extends AppCompatActivity implements
                             fragmentsId == FragmentsId.STOPS ||
                             fragmentsId == FragmentsId.STOPS_NEARBY)) {
                 baseFragment.hideView();
-                Log.v(TAG, "hideViewIfRequired - DID     hide " + fragmentsId);
+//                Log.v(TAG, "hideViewIfRequired - DID     hide " + fragmentsId);
 //                Log.v(TAG, "hideViewIfRequired - hiding " + fragmentsId);
             } else {
-                Log.v(TAG, "hideViewIfRequired - DID NOT hide " + fragmentsId);
+//                Log.v(TAG, "hideViewIfRequired - DID NOT hide " + fragmentsId);
             }
         } else {
             // FIXME: 8/10/2016 - remove before releasing. Also the 'if (baseFragment != null)' above
@@ -478,7 +478,7 @@ public class MainActivity extends AppCompatActivity implements
     private void showNextDepartures(
             List<NextDepartureDetails> nextDepartureDetailsList,
             StopDetails stopDetails) {
-        Log.v(TAG, "showNextDepartures - start");
+//        Log.v(TAG, "showNextDepartures - start");
         actionBar.setTitle(getResources().getString(R.string.title_next_departures));
 //        showFragmentsOnBackStackVisibility();
         if (mNextDeparturesFragment == null) {
@@ -498,7 +498,7 @@ public class MainActivity extends AppCompatActivity implements
             return;
         }
         hideViewIfRequired();
-        Log.v(TAG, "showNextDepartures - after hideViewIfRequired() ");
+//        Log.v(TAG, "showNextDepartures - after hideViewIfRequired() ");
 //        showFragmentsOnBackStackVisibility();
         getSupportFragmentManager()
                 .beginTransaction()
@@ -588,7 +588,7 @@ public class MainActivity extends AppCompatActivity implements
 
     // FIXME: 8/10/2016 - remove mSelectedStopName
     public void startNextDeparturesSearch(StopDetails stopDetails) {
-        Log.v(TAG, "startNextDeparturesSearch - start");
+//        Log.v(TAG, "startNextDeparturesSearch - start");
 //        showFragmentsOnBackStackVisibility();
         Intent intent = new Intent(this, RequestProcessorService.class);
         mSelectedStopName = stopDetails.locationName;
