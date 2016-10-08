@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -107,7 +106,7 @@ public class RequestProcessorService extends IntentService {
 
                     case SHOW_NEXT_DEPARTURES:
                         StopDetails stopDetails = extras.getParcelable(STOP_DETAILS);
-                        Log.v(TAG, "onHandleIntent - stopDetails: " + stopDetails);
+//                        Log.v(TAG, "onHandleIntent - stopDetails: " + stopDetails);
 //                        List<NextDepartureDetails> nextDepartureDetailsList =
 //                                RemoteMptEndpointUtil.getBroadNextDepartures(
 //                                        stopDetails.routeType,

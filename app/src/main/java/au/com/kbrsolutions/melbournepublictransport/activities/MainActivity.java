@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements
     private View mCoordinatorlayout;
     private FloatingActionButton fab;
     private EventBus eventBus;
-    private String mSelectedStopName;
+//    private String mSelectedStopName;
     private CurrentGeoPositionFinder mCurrentGeoPositionFinder;
     private int mPrevBackStackEntryCount;
 
@@ -269,16 +269,16 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void printBackStackFragments() {
-//        Log.v(TAG, "printBackStackFragments - start");
+        Log.v(TAG, "printBackStackFragments - start");
         BaseFragment topFragmment;
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         String tag;
         for (int i = 0; i < cnt; i++) {
             tag = getSupportFragmentManager().getBackStackEntryAt(i).getName();
             topFragmment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
-//            Log.v(TAG, "printBackStackFragments - fragment: " + i + " - " + topFragmment + "/" + topFragmment.getFragmentId());
+            Log.v(TAG, "printBackStackFragments - fragment: " + i + " - " + topFragmment + "/" + topFragmment.getFragmentId());
         }
-//        Log.v(TAG, "printBackStackFragments - end");
+        Log.v(TAG, "printBackStackFragments - end");
     }
 
     private void showFragmentsOnBackStackVisibility() {
@@ -483,13 +483,15 @@ public class MainActivity extends AppCompatActivity implements
 //        showFragmentsOnBackStackVisibility();
         if (mNextDeparturesFragment == null) {
             mNextDeparturesFragment = NextDeparturesFragment.newInstance(
-                    mSelectedStopName,
+//                    mSelectedStopName,
+                    stopDetails.locationName,
                     nextDepartureDetailsList,
                     stopDetails);
             mNextDeparturesFragment.setFragmentId(FragmentsId.NEXT_DEPARTURES);
         } else {
             mNextDeparturesFragment.setNewContent(
-                    mSelectedStopName,
+//                    mSelectedStopName,
+                    stopDetails.locationName,
                     nextDepartureDetailsList,
                     stopDetails);
         }
@@ -591,7 +593,7 @@ public class MainActivity extends AppCompatActivity implements
 //        Log.v(TAG, "startNextDeparturesSearch - start");
 //        showFragmentsOnBackStackVisibility();
         Intent intent = new Intent(this, RequestProcessorService.class);
-        mSelectedStopName = stopDetails.locationName;
+//        mSelectedStopName = stopDetails.locationName;
         intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.SHOW_NEXT_DEPARTURES);
         Bundle mBundle = new Bundle();
         mBundle.putParcelable(RequestProcessorService.STOP_DETAILS, stopDetails);
@@ -606,14 +608,17 @@ public class MainActivity extends AppCompatActivity implements
     public void showUpdatedFavoriteStops() {
         if (mFavoriteStopsFragment != null) {
             mFavoriteStopsFragment.showView();
-            mFavoriteStopsFragment.setFragmentId(FragmentsId.STOPS);
+            mFavoriteStopsFragment.setFragmentId(FragmentsId.FAVORITE_STOPS);
         }
+        printBackStackFragments();
         getSupportFragmentManager()
                 .beginTransaction()
                 .remove(mStopsFragment)
                 .commit();
 
         getSupportFragmentManager().popBackStack();
+        Log.v(TAG, "showUpdatedFavoriteStops - after popBackStack");
+        printBackStackFragments();
     }
 
     @Override

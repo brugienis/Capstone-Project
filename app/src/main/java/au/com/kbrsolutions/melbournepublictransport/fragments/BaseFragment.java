@@ -32,7 +32,7 @@ public abstract class BaseFragment extends Fragment {
     }
     public void setFragmentId(MainActivity.FragmentsId fragmentd) {
         this.mFragmentsId = fragmentd;
-        Log.v(TAG, "setFragmentId - fragmentd: " + fragmentd);
+//        Log.v(TAG, "setFragmentId - fragmentd: " + fragmentd);
     }
 
 }
