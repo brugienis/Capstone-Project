@@ -27,11 +27,14 @@ public class RequestProcessorService extends IntentService {
     private EventBus eventBus;
     private DbUtility dbUtility;
     boolean mTestDatabaseLoaded = false;
+    boolean mTestDatabaseEmpty = true;
 
     private final static boolean REFRESH_TEST = true;
 
     public final static String REQUEST = "request";
-    public final static String ACTION_REFRESH_DATA = "refresh_data";
+    // FIXME: 10/10/2016 add ACTION_prefix to all action constants
+    public final static String ACTION_REFRESH_DATA = "action_refresh_data";
+    public final static String ACTION_GET_DATABASE_STATUS = "action_get_dadabase_status";
     public static final String GET_DISRUPTIONS_DETAILS = "get_disruptions_details";
     public final static String SHOW_NEXT_DEPARTURES = "show_next_departures";
     public final static String GET_NEARBY_STOPS_DETAILS = "get_nearby_details";
@@ -65,6 +68,7 @@ public class RequestProcessorService extends IntentService {
         if (extras != null) {
             request = extras.getString(REQUEST);
         }
+        Log.v(TAG, "onHandleIntent - request: " + request);
 
         ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
@@ -85,12 +89,29 @@ public class RequestProcessorService extends IntentService {
                 LatLonDetails latLonDetails;
                 List<NearbyStopsDetails> nearbyStopsDetailsList;
                 switch (request) {
+                    case ACTION_GET_DATABASE_STATUS:
+                        if (REFRESH_TEST) {
+                            Log.v(TAG, "onHandleIntent - test database status check");
+                            sendMessageToMainActivity(new MainActivityEvents.Builder(
+                                    MainActivityEvents.MainEvents.DATABASE_STATUS)
+                                    .setDatabaseEmpty(mTestDatabaseEmpty)
+                                    .build());
+                        } else {
+                            Log.v(TAG, "onHandleIntent - real database status check");
+                            boolean databaseLoaded = DatabaseContentRefresher.databaseLoaded(getContentResolver());
+                            sendMessageToMainActivity(new MainActivityEvents.Builder(
+                                    MainActivityEvents.MainEvents.DATABASE_STATUS)
+                                    .setDatabaseEmpty(databaseLoaded)
+                                    .build());
+                        }
+                        break;
+
                     case ACTION_REFRESH_DATA:
                         if (REFRESH_TEST) {
                             Log.v(TAG, "onHandleIntent - test load");
 //                            sendMessageToMainActivity(new MainActivityEvents.Builder(
 //                                    MainActivityEvents.MainEvents.DATABASE_STATUS)
-//                                    .setDatabaseLoaded(mTestDatabaseLoaded)
+//                                    .setDatabaseEmpty(mTestDatabaseLoaded)
 //                                    .build());
                             testProgressBar();
                             mTestDatabaseLoaded = true;
@@ -99,7 +120,7 @@ public class RequestProcessorService extends IntentService {
                             boolean databaseLoaded = DatabaseContentRefresher.databaseLoaded(getContentResolver());
 //                            sendMessageToMainActivity(new MainActivityEvents.Builder(
 //                                    MainActivityEvents.MainEvents.DATABASE_STATUS)
-//                                    .setDatabaseLoaded(databaseLoaded)
+//                                    .setDatabaseEmpty(databaseEmpty)
 //                                    .build());
                             if (!databaseLoaded || !extras.getBoolean(REFRESH_DATA_IF_TABLES_EMPTY)) {
                                 DatabaseContentRefresher.refreshDatabase(getContentResolver());

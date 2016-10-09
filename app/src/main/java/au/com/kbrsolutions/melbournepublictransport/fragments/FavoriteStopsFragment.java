@@ -123,6 +123,21 @@ public class FavoriteStopsFragment
         isVisible = true;
     }
 
+    private boolean mDatabaseIsEmpty;
+    public void databaseIsEmpty(boolean databaseIsEmpty) {
+        mDatabaseIsEmpty = databaseIsEmpty;
+        setEmptyViewText();
+        Log.v(TAG, "databaseIsEmpty - mDatabaseIsEmpty: " + mDatabaseIsEmpty);
+    }
+
+    private void setEmptyViewText() {
+        Log.v(TAG, "setEmptyViewText - mDatabaseIsEmpty: " + mDatabaseIsEmpty);
+        mEmptyView.setText(mDatabaseIsEmpty ?
+                getActivity().getResources().getString(R.string.database_is_empty) :
+                getActivity().getResources().getString(R.string.no_favorite_stops_selected)
+        );
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -143,8 +158,7 @@ public class FavoriteStopsFragment
         mListView.setAdapter(mFavoriteStopDetailAdapter);
 
         mEmptyView = (TextView) mRootView.findViewById(R.id.emptyView);
-        mEmptyView.setText(getActivity().getResources()
-                .getString(R.string.no_favorite_stops_selected));
+        setEmptyViewText();
         return mRootView;
     }
 

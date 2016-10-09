@@ -182,13 +182,22 @@ public class MainActivity extends AppCompatActivity implements
                 if (isDatabaseLoaded()) {
                     Log.v(TAG, "onCreate - database already loaded");
                     showFavoriteStops();
-                    // FIXME: 10/10/2016 - add code to check if database is not empty
+                    checkIfDatabaseEmpty();
                 } else {
+                    Log.v(TAG, "onCreate - database not loaded");
                     loadDatabase();
                 }
             }
         }
         Log.v(TAG, "onCreate - end");
+    }
+
+    private void checkIfDatabaseEmpty() {
+        Log.v(TAG, "checkIfDatabaseEmpty - start");
+        Intent intent = new Intent(this, RequestProcessorService.class);
+        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_GET_DATABASE_STATUS);
+        Log.v(TAG, "checkIfDatabaseEmpty - request sent");
+        startService(intent);
     }
 
     private void loadDatabase() {
@@ -207,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements
         Intent intent = new Intent(this, RequestProcessorService.class);
         intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_REFRESH_DATA);
         intent.putExtra(RequestProcessorService.REFRESH_DATA_IF_TABLES_EMPTY, true);
-        Log.v(TAG, "loadDatabase - load database request sent");
+        Log.v(TAG, "loadDatabase - request sent");
         startService(intent);
     }
 
@@ -616,8 +625,9 @@ public class MainActivity extends AppCompatActivity implements
                 break;
 
             case DATABASE_STATUS:
-//                loadDatabase(event.databaseLoaded);
-                loadDatabase();
+                if (mFavoriteStopsFragment != null) {
+                    mFavoriteStopsFragment.databaseIsEmpty(event.databaseEmpty);
+                }
                 break;
 
             case DATABASE_LOAD_TARGET:
