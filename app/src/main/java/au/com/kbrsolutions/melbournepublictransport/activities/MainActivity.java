@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements
         getSupportFragmentManager().addOnBackStackChangedListener(
                 new FragmentManager.OnBackStackChangedListener() {
                     public void onBackStackChanged() {
+
                         showTopViewAfterBackOrUpPressed();
 
 //                        printBackStackFragments();
@@ -199,7 +200,8 @@ public class MainActivity extends AppCompatActivity implements
                         .add(R.id.left_dynamic_fragments_frame, mInitFragment, INIT_TAG)
                         .addToBackStack(INIT_TAG)
                         .commit();
-                actionBar.setTitle(getResources().getString(R.string.title_data_load));
+                mInitFragment.setActionBarTitle(getResources().getString(R.string.title_data_load));
+                actionBar.setTitle(mInitFragment.getActionBarTitle());
                 mFavoriteStopsFragment.hideView();
             }
         }
@@ -207,17 +209,17 @@ public class MainActivity extends AppCompatActivity implements
 
     public void databaseLoadFinished() {
         Log.v(TAG, "databaseLoadFinished - start");
-        if (mFavoriteStopsFragment == null) {
-            mFavoriteStopsFragment = new FavoriteStopsFragment();
-            mFavoriteStopsFragment.setFragmentId(FragmentsId.FAVORITE_STOPS);
-        }
+//        if (mFavoriteStopsFragment == null) {
+//            mFavoriteStopsFragment = new FavoriteStopsFragment();
+//            mFavoriteStopsFragment.setFragmentId(FragmentsId.FAVORITE_STOPS);
+//        }
         getSupportFragmentManager()
                 .beginTransaction()
                 .remove(mInitFragment)
                 .commit();
         getSupportFragmentManager().popBackStack();
-//        mInitFragment.hideView();
-        actionBar.setTitle(getResources().getString(R.string.title_favorite_stops));
+        // FIXME: 9/10/2016 - line below is probably no required - title will be set onBackstackListener
+//        actionBar.setTitle(getResources().getString(R.string.title_favorite_stops));
         Log.v(TAG, "databaseLoadFinished - end");
     }
 
@@ -267,6 +269,7 @@ public class MainActivity extends AppCompatActivity implements
                         .add(R.id.left_dynamic_fragments_frame, mStopsFragment, STOP_TAG)
                         .addToBackStack(STOP_TAG)     // it will also show 'Up' button in the action bar
                         .commit();
+                mStopsFragment.setActionBarTitle(getResources().getString(R.string.title_stops));
                 fab.hide();
             break;
 
@@ -300,6 +303,8 @@ public class MainActivity extends AppCompatActivity implements
                         fragmentsId == FragmentsId.NEXT_DEPARTURES) {
                     showFab = true;
                 }
+                actionBar.setTitle(baseFragment.getActionBarTitle());
+                Log.v(TAG, "showTopViewAfterBackOrUpPressed - fragmentsId/title: " + fragmentsId + "/" + baseFragment.getActionBarTitle());
             }
         }
 //        Log.v(TAG, "showTopViewAfterBackOrUpPressed - showFab: " + showFab);
@@ -364,6 +369,7 @@ public class MainActivity extends AppCompatActivity implements
                 .add(R.id.left_dynamic_fragments_frame, mNextDeparturesFragment, NEXT_DEPARTURES_TAG)
                 .addToBackStack(NEXT_DEPARTURES_TAG)     // it will also show 'Up' button in the action bar
                 .commit();
+        mNextDeparturesFragment.setActionBarTitle(getResources().getString(R.string.title_next_departures));
         fab.setImageResource(R.drawable.ic_autorenew_pink_48dp);
     }
 
@@ -424,6 +430,7 @@ public class MainActivity extends AppCompatActivity implements
                 .add(R.id.left_dynamic_fragments_frame, mDisruptionsFragment, DISRUPTION_TAG)
                 .addToBackStack(DISRUPTION_TAG)     // it will also show 'Up' button in the action bar
                 .commit();
+        mDisruptionsFragment.setActionBarTitle(getResources().getString(R.string.title_disruptions));
         fab.hide();
     }
 
@@ -462,6 +469,7 @@ public class MainActivity extends AppCompatActivity implements
                     .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
                     .addToBackStack(FAVORITE_STOPS_TAG)
                     .commit();
+            mFavoriteStopsFragment.setActionBarTitle(getResources().getString(R.string.title_favorite_stops));
         } else {
             Log.v(TAG, "showFavoriteStops - did not added mFavoriteStopsFragment - it was not null");
         }
@@ -505,6 +513,7 @@ public class MainActivity extends AppCompatActivity implements
                     .add(R.id.left_dynamic_fragments_frame, mStationOnMapFragment, STATION_ON_MAP_TAG)
                     .addToBackStack(STATION_ON_MAP_TAG)
                     .commit();
+            mStationOnMapFragment.setActionBarTitle(getResources().getString(R.string.title_stop_on_map));
         }
     }
 
@@ -521,6 +530,7 @@ public class MainActivity extends AppCompatActivity implements
                 .add(R.id.left_dynamic_fragments_frame, mStopsNearbyFragment, NEARBY_TAG)
                 .addToBackStack(NEARBY_TAG)
                 .commit();
+        mStopsNearbyFragment.setActionBarTitle(getResources().getString(R.string.title_stops_nearby));
         fab.hide();
     }
 
@@ -643,6 +653,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         if (topFragmment != null) {
             ((BaseFragment)topFragmment).showView();
+            actionBar.setTitle(((BaseFragment)topFragmment).getActionBarTitle());
         }
 //        showFragmentsOnBackStackVisibility();
 //        Log.v(TAG, "showTopFragment - end");

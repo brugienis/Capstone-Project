@@ -5,12 +5,6 @@
               android:orientation="vertical"
               tools:context="au.com.kbrsolutions.melbournepublictransport.fragments.InitFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/init_fragment_loading_init_data"
-        android:layout_weight="1"/>
-
     <ProgressBar
         android:id="@+id/loadProgressBar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -27,3 +21,12 @@
         android:layout_weight="10"/>
 
 </LinearLayout>
+<!--
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/init_fragment_loading_init_data"
+        android:layout_weight="1"/>
+-->

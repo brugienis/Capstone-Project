@@ -12,6 +12,7 @@ import au.com.kbrsolutions.melbournepublictransport.activities.MainActivity;
 public abstract class BaseFragment extends Fragment {
 
     private MainActivity.FragmentsId mFragmentsId;
+    private String mActionBarTitle;
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
@@ -25,6 +26,16 @@ public abstract class BaseFragment extends Fragment {
 
     public void isRootViewVisible() {
         Log.v(TAG, "isVisible - no code");
+    }
+
+    public String getActionBarTitle() {
+        Log.v(TAG, "getActionBarTitle - title: " + mActionBarTitle);
+        return mActionBarTitle;
+    }
+
+    public void setActionBarTitle(String actionBarTitle) {
+        mActionBarTitle = actionBarTitle;
+        Log.v(TAG, "setActionBarTitle - title: " + actionBarTitle);
     }
 
     public MainActivity.FragmentsId getFragmentId() {
