@@ -88,19 +88,19 @@ public class RequestProcessorService extends IntentService {
                     case ACTION_REFRESH_DATA:
                         if (REFRESH_TEST) {
                             Log.v(TAG, "onHandleIntent - test load");
-                            sendMessageToMainActivity(new MainActivityEvents.Builder(
-                                    MainActivityEvents.MainEvents.DATABASE_STATUS)
-                                    .setDatabaseLoaded(mTestDatabaseLoaded)
-                                    .build());
+//                            sendMessageToMainActivity(new MainActivityEvents.Builder(
+//                                    MainActivityEvents.MainEvents.DATABASE_STATUS)
+//                                    .setDatabaseLoaded(mTestDatabaseLoaded)
+//                                    .build());
                             testProgressBar();
                             mTestDatabaseLoaded = true;
                         } else {
                             Log.v(TAG, "onHandleIntent - real load");
                             boolean databaseLoaded = DatabaseContentRefresher.databaseLoaded(getContentResolver());
-                            sendMessageToMainActivity(new MainActivityEvents.Builder(
-                                    MainActivityEvents.MainEvents.DATABASE_STATUS)
-                                    .setDatabaseLoaded(databaseLoaded)
-                                    .build());
+//                            sendMessageToMainActivity(new MainActivityEvents.Builder(
+//                                    MainActivityEvents.MainEvents.DATABASE_STATUS)
+//                                    .setDatabaseLoaded(databaseLoaded)
+//                                    .build());
                             if (!databaseLoaded || !extras.getBoolean(REFRESH_DATA_IF_TABLES_EMPTY)) {
                                 DatabaseContentRefresher.refreshDatabase(getContentResolver());
                             }

@@ -6,6 +6,8 @@
     <string name="action_stops_nearby">Stops nearby</string>
     <string name="action_disruptions">Disruptions</string>
     <string name="action_station_on_map">Station location</string>
+    <string name="action_reload_database">Reload data</string>
+
     <string name="title_activity_next_departures">NextDeparturesActivity</string>
     <string name="title_activity_disruptions">DisruptionsActivity</string>
     <string name="title_activity_main">MainActivity</string>
@@ -27,4 +29,5 @@
     <string name="title_next_departures">Next departures</string>
     <string name="title_disruptions">Disruptions</string>
     <string name="title_stop_on_map">Stop location</string>
+    <string name="database_load_status">database_load_status</string>
 </resources>

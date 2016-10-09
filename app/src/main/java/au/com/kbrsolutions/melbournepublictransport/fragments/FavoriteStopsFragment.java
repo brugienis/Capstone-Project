@@ -253,20 +253,13 @@ public class FavoriteStopsFragment
         } else if (id == R.id.action_disruptions) {
             mListener.getDisruptionsDetails();
             return true;
+        } else if (id == R.id.action_reload_database) {
+            mListener.reloadDatabase();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
-    /**
-     * Declares callback methods that have to be implemented by parent Activity
-     */
-//    public interface FavoriteStopsFragmentCallbacks {
-//        void startNextDeparturesSearch(StopDetails stopDetails);
-//        void showStopOnMap(LatLonDetails latLonDetails);
-//        void startStopsNearbySearch(boolean trainsOnly);
-//        void getDisruptionsDetails();
-//    }
 
     /**
      * This interface must be implemented by activities that contain this
@@ -279,13 +272,12 @@ public class FavoriteStopsFragment
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFavoriteStopsFragmentInteractionListener {
-        // TODO: Update argument type and name
         void startNextDeparturesSearch(StopDetails stopDetails);
         void showStopOnMap(LatLonDetails latLonDetails);
         void startStopsNearbySearch(boolean trainsOnly);
         void getDisruptionsDetails();
-        void updateStopDetailRow(int id, String favoriteColumnValue);  // activity should send the removeSelectedStop() below
-                                                            // to IntentService
+        void updateStopDetailRow(int id, String favoriteColumnValue);
+        void reloadDatabase();
     }
 
 
