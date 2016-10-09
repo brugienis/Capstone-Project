@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements
                         .addToBackStack(INIT_TAG)
                         .commit();
                 mInitFragment.setActionBarTitle(getResources().getString(R.string.title_data_load));
-                actionBar.setTitle(mInitFragment.getActionBarTitle());
+//                actionBar.setTitle(mInitFragment.getActionBarTitle());
                 mFavoriteStopsFragment.hideView();
             }
         }
@@ -258,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         switch (fragmentsId) {
             case FAVORITE_STOPS:
-            actionBar.setTitle(getResources().getString(R.string.title_stops));
+//            actionBar.setTitle(getResources().getString(R.string.title_stops));
                 if (mStopsFragment == null) {
                     mStopsFragment = new StopsFragment();
                     mStopsFragment.setFragmentId(FragmentsId.STOPS);
@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements
             break;
 
             case NEXT_DEPARTURES:
-            actionBar.setTitle(getResources().getString(R.string.title_next_departures));
+//            actionBar.setTitle(getResources().getString(R.string.title_next_departures));
                 startNextDeparturesSearch(mNextDeparturesFragment.getSearchStopDetails());
             break;
 
@@ -341,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements
             List<NextDepartureDetails> nextDepartureDetailsList,
             StopDetails stopDetails) {
 //        Log.v(TAG, "showNextDepartures - start");
-        actionBar.setTitle(getResources().getString(R.string.title_next_departures));
+//        actionBar.setTitle(getResources().getString(R.string.title_next_departures));
 //        showFragmentsOnBackStackVisibility();
         if (mNextDeparturesFragment == null) {
             mNextDeparturesFragment = NextDeparturesFragment.newInstance(
@@ -416,7 +416,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void showDisruptions(List<DisruptionsDetails> disruptionsDetailsList) {
-        actionBar.setTitle(getResources().getString(R.string.title_disruptions));
+//        actionBar.setTitle(getResources().getString(R.string.title_disruptions));
         if (mDisruptionsFragment == null) {
             mDisruptionsFragment = DisruptionsFragment.newInstance(disruptionsDetailsList);
             mDisruptionsFragment.setFragmentId(FragmentsId.DISRUPTIONS);
@@ -459,7 +459,7 @@ public class MainActivity extends AppCompatActivity implements
      */
     private void showFavoriteStops() {
         Log.v(TAG, "showFavoriteStops - start");
-        actionBar.setTitle(getResources().getString(R.string.title_favorite_stops));
+//        actionBar.setTitle(getResources().getString(R.string.title_favorite_stops));
         if (mFavoriteStopsFragment == null) {
             Log.v(TAG, "showFavoriteStops - adding new mFavoriteStopsFragment");
             mFavoriteStopsFragment = new FavoriteStopsFragment();
