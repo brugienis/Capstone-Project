@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final String INIT_TAG = "init_tag";
     private final static String TRANSPORT_MODE_METRO_TRAIN = "metro-train";
 
+    // FIXME: 10/10/2016 - remove enums - not efficient in Android
     public enum FragmentsId {
         DISRUPTIONS,
         FAVORITE_STOPS,
@@ -247,7 +248,8 @@ public class MainActivity extends AppCompatActivity implements
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(getString(R.string.database_load_status), true);
-        editor.commit();
+//        editor.commit();
+        editor.apply();
         showFavoriteStops();
         Log.v(TAG, "databaseLoadFinished - end");
     }
