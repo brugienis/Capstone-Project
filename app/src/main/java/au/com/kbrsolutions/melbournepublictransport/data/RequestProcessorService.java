@@ -169,6 +169,7 @@ public class RequestProcessorService extends IntentService {
                         sendMessageToMainActivity(new MainActivityEvents.Builder(
                                 MainActivityEvents.MainEvents.NEARBY_LOCATION_DETAILS)
                                 .setNearbyStopsDetailsList(nearbyStopsDetailsList)
+                                .setForTrainsStopsNearby(true)
                                 .build());
                         break;
 

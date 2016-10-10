@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements
     private View mCoordinatorlayout;
     private FloatingActionButton fab;
     private EventBus eventBus;
-//    private String mSelectedStopName;
     private CurrentGeoPositionFinder mCurrentGeoPositionFinder;
     private int mPrevBackStackEntryCount;
 
@@ -142,9 +141,6 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 });
 
-//        mFavoriteStopsFragment =
-//                (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
-
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,9 +150,6 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         findFragments();
-//        printBackStackFragments();
-
-//        Log.v(TAG, "onCreate - this/mInitFragment: " + String.format("0x%08X", this.hashCode()) + "/" + mInitFragment);
 
         BaseFragment topFragmment = getTopFragment();
         String topFragmentTag = getTopFragmentTag();
@@ -182,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements
                 if (isDatabaseLoaded()) {
                     Log.v(TAG, "onCreate - database already loaded");
                     showFavoriteStops();
-                    checkIfDatabaseEmpty();
+//                    checkIfDatabaseEmpty();
                 } else {
                     Log.v(TAG, "onCreate - database not loaded");
                     loadDatabase();
@@ -192,13 +185,13 @@ public class MainActivity extends AppCompatActivity implements
         Log.v(TAG, "onCreate - end");
     }
 
-    private void checkIfDatabaseEmpty() {
-        Log.v(TAG, "checkIfDatabaseEmpty - start");
-        Intent intent = new Intent(this, RequestProcessorService.class);
-        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_GET_DATABASE_STATUS);
-        Log.v(TAG, "checkIfDatabaseEmpty - request sent");
-        startService(intent);
-    }
+//    private void checkIfDatabaseEmpty() {
+//        Log.v(TAG, "checkIfDatabaseEmpty - start");
+//        Intent intent = new Intent(this, RequestProcessorService.class);
+//        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_GET_DATABASE_STATUS);
+//        Log.v(TAG, "checkIfDatabaseEmpty - request sent");
+//        startService(intent);
+//    }
 
     private void loadDatabase() {
         Log.v(TAG, "loadDatabase - start");
@@ -329,7 +322,6 @@ public class MainActivity extends AppCompatActivity implements
         if (baseFragment != null) {     /*  */
             FragmentsId fragmentsId = baseFragment.getFragmentId();
             Log.v(TAG, "showTopViewOnBackStackChanged - fragmentsId: " + fragmentsId);
-//            if (fragmentsId != null) {
                 if (fragmentsId == FragmentsId.FAVORITE_STOPS ||
                         fragmentsId == FragmentsId.STOPS ||
                         fragmentsId == FragmentsId.STOPS_NEARBY) {
@@ -340,10 +332,7 @@ public class MainActivity extends AppCompatActivity implements
                     showFab = true;
                 }
                 actionBar.setTitle(baseFragment.getActionBarTitle());
-                Log.v(TAG, "showTopViewOnBackStackChanged - fragmentsId/title: " + fragmentsId + "/" + baseFragment.getActionBarTitle());
-//            }
         }
-//        Log.v(TAG, "showTopViewOnBackStackChanged - showFab: " + showFab);
         if (showFab) {
             fab.show();
         } else {
@@ -353,41 +342,26 @@ public class MainActivity extends AppCompatActivity implements
 
     private void hideViewIfRequired() {
         BaseFragment baseFragment = getTopFragment();
-//        Log.v(TAG, "hideViewIfRequired - baseFragment: " + baseFragment);
-//        if (baseFragment != null) {
             FragmentsId fragmentsId = baseFragment.getFragmentId();
             if (fragmentsId == FragmentsId.FAVORITE_STOPS ||
                             fragmentsId == FragmentsId.STOPS ||
                             fragmentsId == FragmentsId.STOPS_NEARBY) {
                 baseFragment.hideView();
-//                Log.v(TAG, "hideViewIfRequired - DID     hide " + fragmentsId);
-//                Log.v(TAG, "hideViewIfRequired - hiding " + fragmentsId);
-            } else {
-//                Log.v(TAG, "hideViewIfRequired - DID NOT hide " + fragmentsId);
             }
-//        } else {
-//            // FIXME: 8/10/2016 - remove before releasing. Also the 'if (baseFragment != null)' above
-//            throw new RuntimeException(TAG + ".hideViewIfRequired - baseFragment cannot be null");
-//        }
     }
 
     // FIXME: 8/10/2016 - get selected stopName from stopDetails, not from mSelectedStopName
     private void showNextDepartures(
             List<NextDepartureDetails> nextDepartureDetailsList,
             StopDetails stopDetails) {
-//        Log.v(TAG, "showNextDepartures - start");
-//        actionBar.setTitle(getResources().getString(R.string.title_next_departures));
-//        showFragmentsOnBackStackVisibility();
         if (mNextDeparturesFragment == null) {
             mNextDeparturesFragment = NextDeparturesFragment.newInstance(
-//                    mSelectedStopName,
                     stopDetails.locationName,
                     nextDepartureDetailsList,
                     stopDetails);
             mNextDeparturesFragment.setFragmentId(FragmentsId.NEXT_DEPARTURES);
         } else {
             mNextDeparturesFragment.setNewContent(
-//                    mSelectedStopName,
                     stopDetails.locationName,
                     nextDepartureDetailsList,
                     stopDetails);
@@ -397,8 +371,6 @@ public class MainActivity extends AppCompatActivity implements
             return;
         }
         hideViewIfRequired();
-//        Log.v(TAG, "showNextDepartures - after hideViewIfRequired() ");
-//        showFragmentsOnBackStackVisibility();
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.left_dynamic_fragments_frame, mNextDeparturesFragment, NEXT_DEPARTURES_TAG)
@@ -458,7 +430,6 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             mDisruptionsFragment.setNewContent(disruptionsDetailsList);
         }
-        // FIXME: 21/09/2016 - below has to hide current fragment
         mFavoriteStopsFragment.hideView();
         getSupportFragmentManager()
                 .beginTransaction()
@@ -494,7 +465,6 @@ public class MainActivity extends AppCompatActivity implements
      */
     private void showFavoriteStops() {
         Log.v(TAG, "showFavoriteStops - start");
-//        actionBar.setTitle(getResources().getString(R.string.title_favorite_stops));
         if (mFavoriteStopsFragment == null) {
             Log.v(TAG, "showFavoriteStops - adding new mFavoriteStopsFragment");
             mFavoriteStopsFragment = new FavoriteStopsFragment();
@@ -506,9 +476,6 @@ public class MainActivity extends AppCompatActivity implements
                     .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
                     .addToBackStack(FAVORITE_STOPS_TAG)
                     .commit();
-//        } else {
-//            Log.v(TAG, "showFavoriteStops - did not added mFavoriteStopsFragment - it was not null");
-//        }
     }
 
     /**
@@ -530,7 +497,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void showStopOnMap(LatLonDetails latLonDetails) {
-        Log.v(TAG, "showStopOnMap - start");
         if (readyToGo()) {
             fab.hide();
             if (mStationOnMapFragment == null) {
@@ -553,7 +519,9 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    public void showStopsNearby(List<NearbyStopsDetails> nearbyStopsDetailsList) {
+    public void showStopsNearby(
+            List<NearbyStopsDetails> nearbyStopsDetailsList,
+            boolean forTrainsStopsNearby) {
         if (mStopsNearbyFragment == null) {
             mStopsNearbyFragment = StopsNearbyFragment.newInstance(nearbyStopsDetailsList);
             mStopsNearbyFragment.setFragmentId(FragmentsId.STOPS_NEARBY);
@@ -566,7 +534,10 @@ public class MainActivity extends AppCompatActivity implements
                 .add(R.id.left_dynamic_fragments_frame, mStopsNearbyFragment, NEARBY_TAG)
                 .addToBackStack(NEARBY_TAG)
                 .commit();
-        mStopsNearbyFragment.setActionBarTitle(getResources().getString(R.string.title_stops_nearby));
+        mStopsNearbyFragment.setActionBarTitle(forTrainsStopsNearby ?
+                getResources().getString(R.string.title_train_stops_nearby) :
+                getResources().getString(R.string.title_stops_nearby)
+        );
         fab.hide();
     }
 
@@ -621,7 +592,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
 
             case NEARBY_LOCATION_DETAILS:
-                showStopsNearby(event.nearbyStopsDetailsList);
+                showStopsNearby(event.nearbyStopsDetailsList, event.forTrainsStopsNearby);
                 break;
 
             case DATABASE_STATUS:
@@ -691,6 +662,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         if (topFragmment != null) {
             ((BaseFragment)topFragmment).showView();
+            Log.v(TAG, "showTopFragment - setTitle");
             actionBar.setTitle(((BaseFragment)topFragmment).getActionBarTitle());
         }
 //        showFragmentsOnBackStackVisibility();

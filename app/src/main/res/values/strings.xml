@@ -26,6 +26,7 @@
     <string name="title_favorite_stops">Favorite stops</string>
     <string name="title_data_load">Loading MTV data</string>
     <string name="title_stops">Stops</string>
+    <string name="title_train_stops_nearby">Train stops nearby</string>
     <string name="title_stops_nearby">Stops nearby</string>
     <string name="title_next_departures">Next departures</string>
     <string name="title_disruptions">Disruptions</string>
