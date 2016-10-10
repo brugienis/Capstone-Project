@@ -169,6 +169,8 @@ public class RemoteMptEndpointUtil {
         directionMap.put(15, "To Werribee");
     }
 
+    private static DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm");;
+
     public static List<NextDepartureDetails> getBroadNextDepartures(int mode, String stopId, int limit) {
         final String uri = "/v2/mode/" + mode + "/stop/" + stopId + "/departures/by-destination/limit/" + limit;
         String jsonString = processRemoteRequest(uri);
@@ -183,11 +185,21 @@ public class RemoteMptEndpointUtil {
             String directionName;
             for(int i = 0; i < broadDeparturesValuesArray.length(); i++) {
                 JSONObject oneBroadDeparturesValueObject = broadDeparturesValuesArray.getJSONObject(i);
-                String timeTimetableUtc = oneBroadDeparturesValueObject.getString("time_timetable_utc");
+                String departureTimeUtc = oneBroadDeparturesValueObject.getString("time_realtime_utc");
+                if (departureTimeUtc.equals("null")) {
+                    departureTimeUtc = oneBroadDeparturesValueObject.getString("time_timetable_utc");
+                }
+                String str = fmt.print(JodaDateTimeUtility.getLocalTimeFromUtcString(departureTimeUtc));
 
-
-                DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm");
-                String str = fmt.print(JodaDateTimeUtility.getLocalTimeFromUtcString(timeTimetableUtc));
+                // FIXME: 10/10/2016 remove below lines after test
+                String realTimeUtc = oneBroadDeparturesValueObject.getString("time_realtime_utc");
+                String schedTimeUtc = oneBroadDeparturesValueObject.getString("time_timetable_utc");
+                if (!realTimeUtc.equals("null")) {
+                    Log.v(TAG, "getBroadNextDepartures - scheduled/real: " +
+                            fmt.print(JodaDateTimeUtility.getLocalTimeFromUtcString(schedTimeUtc)) + "/" +
+                            fmt.print(JodaDateTimeUtility.getLocalTimeFromUtcString(realTimeUtc)));
+                }
+                // FIXME: 10/10/2016 remove above lines after test
 
                 JSONObject platform = oneBroadDeparturesValueObject.getJSONObject("platform");
                 JSONObject direction = platform.getJSONObject("direction");

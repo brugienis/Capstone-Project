@@ -18,13 +18,13 @@
     <string name="no_stops_to_add">There are no stops to add</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="init_fragment_loading_init_data">Loading MPT data</string>
+    <string name="init_fragment_loading_init_data">Loading PTV data</string>
     <string name="no_maps">Google Maps V2 not available!</string>
     <string name="un">UN</string>
     <string name="united_nations">United Nations</string>
 
     <string name="title_favorite_stops">Favorite stops</string>
-    <string name="title_data_load">Loading MPT data</string>
+    <string name="title_data_load">Loading MTV data</string>
     <string name="title_stops">Stops</string>
     <string name="title_stops_nearby">Stops nearby</string>
     <string name="title_next_departures">Next departures</string>

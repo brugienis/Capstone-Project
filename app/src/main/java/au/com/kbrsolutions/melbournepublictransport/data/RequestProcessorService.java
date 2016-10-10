@@ -29,7 +29,7 @@ public class RequestProcessorService extends IntentService {
     boolean mTestDatabaseLoaded = false;
     boolean mTestDatabaseEmpty = true;
 
-    private final static boolean REFRESH_TEST = true;
+    private final static boolean REFRESH_TEST = false;
 
     public final static String REQUEST = "request";
     // FIXME: 10/10/2016 add ACTION_prefix to all action constants
@@ -98,10 +98,10 @@ public class RequestProcessorService extends IntentService {
                                     .build());
                         } else {
                             Log.v(TAG, "onHandleIntent - real database status check");
-                            boolean databaseLoaded = DatabaseContentRefresher.databaseLoaded(getContentResolver());
+                            boolean databaseEmpty = DatabaseContentRefresher.databaseEmpty(getContentResolver());
                             sendMessageToMainActivity(new MainActivityEvents.Builder(
                                     MainActivityEvents.MainEvents.DATABASE_STATUS)
-                                    .setDatabaseEmpty(databaseLoaded)
+                                    .setDatabaseEmpty(databaseEmpty)
                                     .build());
                         }
                         break;
@@ -117,12 +117,12 @@ public class RequestProcessorService extends IntentService {
                             mTestDatabaseLoaded = true;
                         } else {
                             Log.v(TAG, "onHandleIntent - real load");
-                            boolean databaseLoaded = DatabaseContentRefresher.databaseLoaded(getContentResolver());
+                            boolean databaseEmpty = DatabaseContentRefresher.databaseEmpty(getContentResolver());
 //                            sendMessageToMainActivity(new MainActivityEvents.Builder(
 //                                    MainActivityEvents.MainEvents.DATABASE_STATUS)
 //                                    .setDatabaseEmpty(databaseEmpty)
 //                                    .build());
-                            if (!databaseLoaded || !extras.getBoolean(REFRESH_DATA_IF_TABLES_EMPTY)) {
+                            if (databaseEmpty || !extras.getBoolean(REFRESH_DATA_IF_TABLES_EMPTY)) {
                                 DatabaseContentRefresher.refreshDatabase(getContentResolver());
                             }
                         }

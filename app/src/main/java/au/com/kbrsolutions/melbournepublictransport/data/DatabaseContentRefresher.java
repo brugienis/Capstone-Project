@@ -122,7 +122,7 @@ public class DatabaseContentRefresher {
         Log.v(TAG, "refreshDatabase - performing refresh action");
     }
 
-    protected static boolean databaseLoaded(ContentResolver contentResolver) {
+    protected static boolean databaseEmpty(ContentResolver contentResolver) {
         Cursor lineCursor = contentResolver.query(
                 MptContract.LineDetailEntry.CONTENT_URI,
                 null, // leaving "columns" null just returns all the columns.
@@ -145,7 +145,7 @@ public class DatabaseContentRefresher {
 //        Log.v(TAG, "databaseLoadFinished - line_detail/stop_detail cnt: " + lineDetailsRowsCnt + "/" + stopDetailsRowsCnt);
         stopCursor.close();
 
-        return (lineDetailsRowsCnt + stopDetailsRowsCnt) != 0;
+        return (lineDetailsRowsCnt + stopDetailsRowsCnt) == 0;
     }
 
     private static void deleteLineAndStopDetailRows(ContentResolver contentResolver) {
