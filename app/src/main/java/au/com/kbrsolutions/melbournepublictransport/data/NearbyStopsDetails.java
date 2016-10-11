@@ -15,6 +15,8 @@ public class NearbyStopsDetails implements Parcelable {
     public final double distance;
 
     public final static int TRAIN_ROUTE_TYPE = 0;
+    public final static int TRAM_ROUTE_TYPE = 1;
+    public final static int BUS_ROUTE_TYPE = 2;
 
     public NearbyStopsDetails(
             String stopName,

@@ -207,6 +207,7 @@ public class RemoteMptEndpointUtil {
 
                 JSONObject run = oneBroadDeparturesValueObject.getJSONObject("run");
 //                        Log.v(TAG, "processJsonString - run: " + run);
+                int routeType = run.getInt("route_type");
                 int runId = run.getInt("run_id");
                 int destinationId = run.getInt("destination_id");
                 int numSkipped = run.getInt("num_skipped");
@@ -223,6 +224,7 @@ public class RemoteMptEndpointUtil {
                 }
                 nextDepartureDetailsList.add(new NextDepartureDetails(
                         directionId,
+                        routeType,
                         directionName,
                         runId,
                         numSkipped,

@@ -47,10 +47,14 @@ public class StopsNearbyAdapter extends RecyclerView.Adapter<StopsNearbyAdapter.
         if (nearbyStopsDetails.route_type == NearbyStopsDetails.TRAIN_ROUTE_TYPE) {
             holder.stopName.setText(nearbyStopsDetails.stopName);
             holder.stopAddress.setText(nearbyStopsDetails.suburb);
-
         } else {
             holder.stopName.setText(nearbyStopsDetails.stopName);
             holder.stopAddress.setText(nearbyStopsDetails.stopAddress);
+            if (nearbyStopsDetails.route_type == NearbyStopsDetails.TRAM_ROUTE_TYPE) {
+                holder.transportImage.setImageResource(R.drawable.ic_tram_amber_500_48dp);
+            } else {
+                holder.transportImage.setImageResource(R.drawable.ic_directions_bus_green_500_48dp);
+            }
 
         }
         holder.nearbyStopsDetails = mValues.get(position);
@@ -68,6 +72,7 @@ public class StopsNearbyAdapter extends RecyclerView.Adapter<StopsNearbyAdapter.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        public final ImageView transportImage;
         public final TextView stopName;
         public final TextView stopAddress;
         public final ImageView mapImageId;
@@ -76,6 +81,7 @@ public class StopsNearbyAdapter extends RecyclerView.Adapter<StopsNearbyAdapter.
 
         public ViewHolder(View view) {
             super(view);
+            transportImage = (ImageView) view.findViewById(R.id.transportImageId);
             stopName = (TextView) view.findViewById(R.id.stopName);
             stopAddress = (TextView) view.findViewById(R.id.stopAddress);
             mapImageId = (ImageView) view.findViewById(R.id.mapImageId);

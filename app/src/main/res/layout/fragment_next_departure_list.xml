@@ -18,7 +18,7 @@
             android:background="@color/view_not_in_focus"
             android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
             android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
-            android:src="@drawable/ic_train_black_24dp" />
+            android:src="@drawable/ic_train_blue_500_48dp" />
 
     <LinearLayout
         android:layout_height="wrap_content"

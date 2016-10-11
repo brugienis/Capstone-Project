@@ -248,6 +248,7 @@ public class RequestProcessorService extends IntentService {
         NextDepartureDetails
                 nextDepartureDetails = new NextDepartureDetails(
                 nextDetCnt,
+                nextDetCnt,
                 "to city " + nextDetCnt,
                 101,
                 0,
@@ -255,6 +256,7 @@ public class RequestProcessorService extends IntentService {
                 "09:50");
         nextDepartureDetailsList.add(nextDepartureDetails);
         nextDepartureDetails = new NextDepartureDetails(
+                nextDetCnt,
                 nextDetCnt,
                 "to frankston " + nextDetCnt,
                 101,

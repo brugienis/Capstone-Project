@@ -4,11 +4,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
+import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 
 // FIXME: 2/10/2016 - how to show scrollbar?
@@ -45,6 +47,12 @@ public class NextDeparturesAdapter extends RecyclerView.Adapter<NextDeparturesAd
         holder.directionName.setText(directionName);
         holder.runType.setText(runTypeText);
         holder.departureTimeId.setText(departureTime);
+
+        if (nextDepartureDetails.routeType == NearbyStopsDetails.TRAM_ROUTE_TYPE) {
+            holder.transportImage.setImageResource(R.drawable.ic_tram_amber_500_48dp);
+        } else if (nextDepartureDetails.routeType  == NearbyStopsDetails.BUS_ROUTE_TYPE) {
+            holder.transportImage.setImageResource(R.drawable.ic_directions_bus_green_500_48dp);
+        }
     }
 
     public void swap(List<NextDepartureDetails> nextDepartureDetailsList){
@@ -59,12 +67,14 @@ public class NextDeparturesAdapter extends RecyclerView.Adapter<NextDeparturesAd
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        public final ImageView transportImage;
         public final TextView directionName;
         public final TextView runType;
         public final TextView departureTimeId;
 
         public ViewHolder(View view) {
             super(view);
+            transportImage = (ImageView) view.findViewById(R.id.transportImageId);
             directionName = (TextView) view.findViewById(R.id.directionName);
             runType = (TextView) view.findViewById(R.id.runType);
             departureTimeId = (TextView) view.findViewById(R.id.departureTimeId);

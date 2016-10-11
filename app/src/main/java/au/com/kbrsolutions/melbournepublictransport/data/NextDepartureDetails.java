@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 public class NextDepartureDetails implements Parcelable {
     public final int directionId;
+    public final int routeType;
     public final String directionName;
     public final int runId;
     public final int numSkipped;
@@ -13,6 +14,7 @@ public class NextDepartureDetails implements Parcelable {
 
     public NextDepartureDetails(Parcel input) {
         directionId = input.readInt();
+        routeType = input.readInt();
         directionName = input.readString();
         runId = input.readInt();
         numSkipped = input.readInt();
@@ -22,12 +24,14 @@ public class NextDepartureDetails implements Parcelable {
 
     public NextDepartureDetails(
             int directionId,
+            int routeType,
             String directionName,
             int runId,
             int numSkipped,
             int destinationId,
             String utcDepartureTime) {
         this.directionId = directionId;
+        this.routeType = routeType;
         this.directionName = directionName;
         this.runId = runId;
         this.numSkipped = numSkipped;
@@ -39,6 +43,7 @@ public class NextDepartureDetails implements Parcelable {
     public String toString() {
         return
             "directionId: " + directionId +
+            ": routeType: " + routeType +
             "; directionName: " + directionName +
             "; runId: " + runId +
             "; numSkipped: " + numSkipped +
@@ -54,6 +59,7 @@ public class NextDepartureDetails implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(directionId);
+        dest.writeInt(routeType);
         dest.writeString(directionName);
         dest.writeInt(runId);
         dest.writeInt(numSkipped);

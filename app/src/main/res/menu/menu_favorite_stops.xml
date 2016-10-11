@@ -7,7 +7,7 @@
         android:id="@+id/action_train_stops_nearby"
         android:orderInCategory="10"
         android:title="@string/action_train_stops_nearby"
-        android:icon="@drawable/ic_near_me_orange_48dp"
+        android:icon="@drawable/ic_near_me_white_48dp"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/action_stops_nearby"
