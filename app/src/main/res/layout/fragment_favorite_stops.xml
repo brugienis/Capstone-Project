@@ -8,8 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/favoriteStopsListView"
-        android:layout_gravity="center_horizontal"
-        android:paddingTop="20dp" />
+        android:layout_gravity="center_horizontal"/>
 
     <TextView
         android:id="@+id/emptyView"

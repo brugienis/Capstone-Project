@@ -111,7 +111,7 @@ public class StopsFragment extends BaseFragment implements LoaderManager.LoaderC
                              Bundle savedInstanceState) {
 
         mStopDetailAdapter = new StopsAdapter(getActivity().getApplicationContext(), null, 0, mListener);
-        mRootView = inflater.inflate(R.layout.fragment_add_stop, container, false);
+        mRootView = inflater.inflate(R.layout.fragment_stops, container, false);
 
         mListView = (ListView) mRootView.findViewById(R.id.addStopsListView);
         mListView.setAdapter(mStopDetailAdapter);
