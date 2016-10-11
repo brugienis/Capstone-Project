@@ -5,6 +5,8 @@
     <color name="colorAccent">#FF4081</color>
     <color name="secondary_text">#727272</color>
 
+    <color name="divider">#ffaaaaaa</color>
+
     <color name="view_in_focus" >#ECEFF1</color>
     <color name="view_not_in_focus">#ECEFF1</color>
 </resources>

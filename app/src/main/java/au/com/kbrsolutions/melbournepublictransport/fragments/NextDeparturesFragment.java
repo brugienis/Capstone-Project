@@ -1,6 +1,7 @@
 package au.com.kbrsolutions.melbournepublictransport.fragments;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,7 @@ import au.com.kbrsolutions.melbournepublictransport.adapters.NextDeparturesAdapt
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.RequestProcessorService;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
+import au.com.kbrsolutions.melbournepublictransport.utilities.HorizontalDividerItemDecoration;
 
 /**
  * A fragment representing a list of Items.
@@ -87,6 +89,8 @@ public class NextDeparturesFragment extends BaseFragment {
 
         Context context = recyclerView.getContext();
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        Drawable divider = getResources().getDrawable(R.drawable.item_divider);
+        recyclerView.addItemDecoration(new HorizontalDividerItemDecoration(divider));
         mRecyclerViewAdapter = new NextDeparturesAdapter(mNextDepartureDetailsList);
         recyclerView.setAdapter(mRecyclerViewAdapter);
         recyclerView.requestLayout();
