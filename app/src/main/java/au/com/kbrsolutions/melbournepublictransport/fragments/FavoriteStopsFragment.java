@@ -17,7 +17,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -41,7 +40,8 @@ public class FavoriteStopsFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
 
 //    private OnFavoriteStopsFragmentInteractionListener mCallbacks;
-    private ListView mListView;
+//    private ListView mListView;
+    private NestedScrollingListView mListView;
     private List<StopDetails> mStopDetailsList;
     private TextView mEmptyView;
     private View mRootView;
@@ -154,8 +154,9 @@ public class FavoriteStopsFragment
         if (mStopDetailsList == null) {
             mStopDetailsList = new ArrayList<>();
         }
-        mListView = (ListView) mRootView.findViewById(R.id.favoriteStopsListView);
+        mListView = (NestedScrollingListView) mRootView.findViewById(R.id.favoriteStopsListView);
         mListView.setAdapter(mFavoriteStopDetailAdapter);
+        mListView.setNestedScrollingEnabled(true);
 
         mEmptyView = (TextView) mRootView.findViewById(R.id.emptyView);
         setEmptyViewText();

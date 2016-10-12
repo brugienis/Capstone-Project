@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -36,7 +35,7 @@ public class StopsFragment extends BaseFragment implements LoaderManager.LoaderC
 
     // FIXME: 25/08/2016 check Running a Query with a CursorLoader - https://developer.android.com/training/load-data-background/setup-loader.html
 
-    private ListView mListView;
+    private NestedScrollingListView mListView;
     private StopsAdapter mStopDetailAdapter;
     private OnStopFragmentInteractionListener mListener;
     private static List<StopDetails> mFolderItemList = new ArrayList<>();
@@ -113,7 +112,7 @@ public class StopsFragment extends BaseFragment implements LoaderManager.LoaderC
         mStopDetailAdapter = new StopsAdapter(getActivity().getApplicationContext(), null, 0, mListener);
         mRootView = inflater.inflate(R.layout.fragment_stops, container, false);
 
-        mListView = (ListView) mRootView.findViewById(R.id.addStopsListView);
+        mListView = (NestedScrollingListView) mRootView.findViewById(R.id.addStopsListView);
         mListView.setAdapter(mStopDetailAdapter);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
