@@ -5,13 +5,15 @@
     <color name="colorAccent">#D84315</color>
     <color name="secondary_text">#727272</color>
 
-    <color name="divider">#ffaaaaaa</color>
+    <!--tried to find color that is close to the seperator color in ListView - Grey 300 from
+            https://material.google.com/style/color.html#color-color-palette-->
+    <color name="divider">#E0E0E0</color>
 
-    <color name="view_in_focus" >#ECEFF1</color>
     <color name="view_not_in_focus">#ECEFF1</color>
 </resources>
 <!--
 
+    <color name="view_in_focus" >#ECEFF1</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>

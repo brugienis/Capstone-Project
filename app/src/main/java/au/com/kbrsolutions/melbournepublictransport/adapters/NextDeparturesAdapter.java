@@ -49,9 +49,9 @@ public class NextDeparturesAdapter extends RecyclerView.Adapter<NextDeparturesAd
         holder.departureTimeId.setText(departureTime);
 
         if (nextDepartureDetails.routeType == NearbyStopsDetails.TRAM_ROUTE_TYPE) {
-            holder.transportImage.setImageResource(R.drawable.ic_tram_amber_500_48dp);
+            holder.transportImage.setImageResource(R.drawable.ic_stock_tram_amber_500_48dp);
         } else if (nextDepartureDetails.routeType  == NearbyStopsDetails.BUS_ROUTE_TYPE) {
-            holder.transportImage.setImageResource(R.drawable.ic_directions_bus_green_500_48dp);
+            holder.transportImage.setImageResource(R.drawable.ic_stock_directions_bus_green_500_48dp);
         }
     }
 

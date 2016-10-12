@@ -18,7 +18,7 @@
             android:background="@color/view_not_in_focus"
             android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
             android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
-            android:src="@drawable/ic_train_blue_500_48dp" />
+            android:src="@drawable/ic_stock_train_blue_500_48dp" />
 
         <TextView
             android:id="@+id/locationNameId"
@@ -35,14 +35,14 @@
             android:layout_width="@dimen/list_icon_size"
             android:layout_height="@dimen/list_icon_size"
             android:background="@color/view_not_in_focus"
-            android:src="@drawable/ic_forward_10_green_48dp" />
+            android:src="@drawable/ic_stock_forward_10_green_500_48dp" />
 
         <ImageView
             android:id="@+id/mapImageId"
             android:layout_width="@dimen/list_icon_size"
             android:layout_height="@dimen/list_icon_size"
             android:background="@color/view_not_in_focus"
-            android:src="@drawable/ic_place_black_green_18dp" />
+            android:src="@drawable/ic_stock_place_green_500_48dp" />
 
     </LinearLayout>
 </FrameLayout>

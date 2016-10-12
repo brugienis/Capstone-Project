@@ -4,7 +4,6 @@
     ]>
 
 <resources>
-    <string name="about_no"></string>
     <string name="init_about"><b>To see information below again, select menu/About.</b>\n\n&about;</string>
 </resources>
 

@@ -236,10 +236,12 @@ public class FavoriteStopsFragment
             menu.findItem(R.id.action_train_stops_nearby).setVisible(true);
             menu.findItem(R.id.action_stops_nearby).setVisible(true);
             menu.findItem(R.id.action_disruptions).setVisible(true);
+            menu.findItem(R.id.action_reload_database).setVisible(true);
         } else {
             menu.findItem(R.id.action_train_stops_nearby).setVisible(false);
             menu.findItem(R.id.action_stops_nearby).setVisible(false);
             menu.findItem(R.id.action_disruptions).setVisible(false);
+            menu.findItem(R.id.action_reload_database).setVisible(false);
         }
         super.onPrepareOptionsMenu(menu);
 

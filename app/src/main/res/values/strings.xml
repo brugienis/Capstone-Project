@@ -5,20 +5,13 @@
     <string name="action_train_stops_nearby">Train stops nearby</string>
     <string name="action_stops_nearby">Stops nearby</string>
     <string name="action_disruptions">Disruptions</string>
-    <string name="action_station_on_map">Station location</string>
     <string name="action_reload_database">Reload data</string>
-
-    <string name="title_activity_next_departures">NextDeparturesActivity</string>
-    <string name="title_activity_disruptions">DisruptionsActivity</string>
-    <string name="title_activity_main">MainActivity</string>
 
     <string name="no_favorite_stops_selected">No favorite stops selected</string>
     <string name="database_is_empty">Database is empty (select \'menu/reload\' to load it)</string>
-    <string name="no_next_departures_available">No departures data available</string>
     <string name="no_stops_to_add">There are no stops to add</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="init_fragment_loading_init_data">Loading PTV data</string>
     <string name="no_maps">Google Maps V2 not available!</string>
     <string name="un">UN</string>
     <string name="united_nations">United Nations</string>

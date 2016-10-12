@@ -51,9 +51,9 @@ public class StopsNearbyAdapter extends RecyclerView.Adapter<StopsNearbyAdapter.
             holder.stopName.setText(nearbyStopsDetails.stopName);
             holder.stopAddress.setText(nearbyStopsDetails.stopAddress);
             if (nearbyStopsDetails.route_type == NearbyStopsDetails.TRAM_ROUTE_TYPE) {
-                holder.transportImage.setImageResource(R.drawable.ic_tram_amber_500_48dp);
+                holder.transportImage.setImageResource(R.drawable.ic_stock_tram_amber_500_48dp);
             } else {
-                holder.transportImage.setImageResource(R.drawable.ic_directions_bus_green_500_48dp);
+                holder.transportImage.setImageResource(R.drawable.ic_stock_directions_bus_green_500_48dp);
             }
 
         }
