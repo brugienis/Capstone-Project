@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.pm.FeatureInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -124,7 +125,11 @@ public class MainActivity extends AppCompatActivity implements
         }
         mCoordinatorlayout = findViewById(R.id.coordinatedLayout);
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-        appBarLayout.setExpanded(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            appBarLayout.setExpanded(true);
+        } else {
+            appBarLayout.setExpanded(false);
+        }
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
         mCollapsingToolbar =

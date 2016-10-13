@@ -28,7 +28,9 @@
         android:layout_height="match_parent"
         app:layoutManager="LinearLayoutManager"
         tools:context=".fragments.NextDeparturesFragment"
-        tools:listitem="@layout/fragment_next_departure_list"/>
+        tools:listitem="@layout/fragment_next_departure_list"
+        android:paddingBottom="@dimen/list_view_bottom_padding"
+        android:clipToPadding="false" />
 
 </LinearLayout>
 

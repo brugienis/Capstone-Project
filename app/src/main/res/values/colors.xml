@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FF5722</color>
-    <color name="colorPrimaryDark">#D84315</color>
-    <color name="colorAccent">#D84315</color>
+    <color name="deep_orange_500">#FF5722</color>
+    <color name="deep_orange_700">#E64A19</color>
     <color name="secondary_text">#727272</color>
 
     <!--tried to find color that is close to the seperator color in ListView - Grey 300 from
@@ -13,6 +12,7 @@
 </resources>
 <!--
 
+    <color name="colorAccent">#D84315</color>
     <color name="view_in_focus" >#ECEFF1</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>

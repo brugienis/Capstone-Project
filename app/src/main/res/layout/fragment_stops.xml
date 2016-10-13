@@ -8,13 +8,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/addStopsListView"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="@dimen/list_view_bottom_padding"
+        android:clipToPadding="false" />
 
     <TextView
         android:id="@+id/emptyView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        />
+        android:gravity="center" />
 
 </FrameLayout>
