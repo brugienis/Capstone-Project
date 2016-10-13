@@ -9,18 +9,23 @@ import android.content.pm.FeatureInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -69,6 +74,11 @@ public class MainActivity extends AppCompatActivity implements
     ActionBar actionBar;
     private View mCoordinatorlayout;
 
+    private Toolbar mToolbar;
+    CollapsingToolbarLayout mCollapsingToolbar;
+    private ImageView collapsingToolbarImage;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private RecyclerView mRecyclerView;
 
     private FloatingActionButton fab;
     private EventBus eventBus;
@@ -102,7 +112,8 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         Log.v(TAG, "onCreate - start");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+//        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_new);
 
         if (eventBus == null) {
             eventBus = EventBus.getDefault();
@@ -112,10 +123,30 @@ public class MainActivity extends AppCompatActivity implements
             eventBus.register(this);
         }
         mCoordinatorlayout = findViewById(R.id.coordinatedLayout);
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
+        appBarLayout.setExpanded(false);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mCollapsingToolbar =
+                (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
+//        mCollapsingToolbar.setTitle("XcXcXcXc");
+
+        mToolbar.setTitle(getResources().getString(R.string.title_favorite_stops));
+
+        setSupportActionBar(mToolbar);
+
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
         actionBar = getSupportActionBar();
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                                                     @Override
+                                                     public void onRefresh() {
+                                                         handleRefresh();
+                                                     }
+                                                 }
+        );
 
         getSupportFragmentManager().addOnBackStackChangedListener(
                 new FragmentManager.OnBackStackChangedListener() {
@@ -154,6 +185,8 @@ public class MainActivity extends AppCompatActivity implements
 
         findFragments();
 
+        mCollapsingToolbar.setTitle(getResources().getString(R.string.title_favorite_stops));
+
         BaseFragment topFragmment = getTopFragment();
         String topFragmentTag = getTopFragmentTag();
 
@@ -186,6 +219,10 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
         Log.v(TAG, "onCreate - end");
+    }
+
+    private void handleRefresh() {
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
 //    private void checkIfDatabaseEmpty() {
@@ -291,7 +328,6 @@ public class MainActivity extends AppCompatActivity implements
         }
         switch (fragmentsId) {
             case FAVORITE_STOPS:
-//            actionBar.setTitle(getResources().getString(R.string.title_stops));
                 if (mStopsFragment == null) {
                     mStopsFragment = new StopsFragment();
                     mStopsFragment.setFragmentId(FragmentsId.STOPS);
@@ -307,7 +343,6 @@ public class MainActivity extends AppCompatActivity implements
             break;
 
             case NEXT_DEPARTURES:
-//            actionBar.setTitle(getResources().getString(R.string.title_next_departures));
                 startNextDeparturesSearch(mNextDeparturesFragment.getSearchStopDetails());
             break;
 
@@ -335,7 +370,11 @@ public class MainActivity extends AppCompatActivity implements
                         fragmentsId == FragmentsId.NEXT_DEPARTURES) {
                     showFab = true;
                 }
-                actionBar.setTitle(baseFragment.getActionBarTitle());
+            Log.v(TAG, "showTopViewOnBackStackChanged - setTitle");
+//                actionBar.setTitle(baseFragment.getActionBarTitle());
+                mToolbar.setTitle(baseFragment.getActionBarTitle());
+//                mToolbar.setTitle(baseFragment.getActionBarTitle());
+//                mCollapsingToolbar.setTitle(baseFragment.getActionBarTitle());
         }
         if (showFab) {
             fab.show();
@@ -428,7 +467,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void showDisruptions(List<DisruptionsDetails> disruptionsDetailsList) {
-//        actionBar.setTitle(getResources().getString(R.string.title_disruptions));
         if (mDisruptionsFragment == null) {
             mDisruptionsFragment = DisruptionsFragment.newInstance(disruptionsDetailsList);
             mDisruptionsFragment.setFragmentId(FragmentsId.DISRUPTIONS);
@@ -442,7 +480,6 @@ public class MainActivity extends AppCompatActivity implements
                 .addToBackStack(DISRUPTION_TAG)     // it will also show 'Up' button in the action bar
                 .commit();
         mDisruptionsFragment.setActionBarTitle(getResources().getString(R.string.title_disruptions));
-//        fab.hide();
     }
 
     /**
@@ -669,7 +706,9 @@ public class MainActivity extends AppCompatActivity implements
         if (topFragmment != null) {
             ((BaseFragment)topFragmment).showView();
             Log.v(TAG, "showTopFragment - setTitle");
-            actionBar.setTitle(((BaseFragment)topFragmment).getActionBarTitle());
+//            actionBar.setTitle(((BaseFragment)topFragmment).getActionBarTitle());
+            mToolbar.setTitle(((BaseFragment)topFragmment).getActionBarTitle());
+//            mCollapsingToolbar.setTitle(((BaseFragment)topFragmment).getActionBarTitle());
         }
 //        showFragmentsOnBackStackVisibility();
 //        Log.v(TAG, "showTopFragment - end");
