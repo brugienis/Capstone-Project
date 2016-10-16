@@ -5,6 +5,9 @@
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true"/>
+    <uses-feature
+        android:name="android.software.app_widgets"
+        android:required="false"/>
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -40,11 +43,13 @@
 
         <activity android:name=".activities.StationOnMapActivity">
         </activity>
+
         <activity
             android:name=".activities.FavoriteStopsActivity"
             android:label="@string/title_activity_favorite_stops"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
@@ -55,6 +60,22 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <!-- Departures Collection Widget -->
+        <receiver
+            android:name=".widget.DeparturesCollectionWidgetProvider"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="au.com.kbrsolutions.melbournepublictransport.ACTION_DEPARTURES_UPDATED" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                       android:resource="@xml/widget_info_departures_collections" />
+        </receiver>
+        <service
+            android:name=".widget.DeparturesCollectionWidgetRemoteViewsService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest> <!-- AIzaSyAp65r76t5HbQlRGKB20bjekip3QU0dsjE -->

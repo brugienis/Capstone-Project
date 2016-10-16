@@ -10,6 +10,7 @@
     <string name="no_favorite_stops_selected">No favorite stops selected</string>
     <string name="database_is_empty">Database is empty (select \'menu/reload\' to load it)</string>
     <string name="no_stops_to_add">There are no stops to add</string>
+    <string name="no_departures_detail">No departure details</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="no_maps">Google Maps V2 not available!</string>
@@ -25,4 +26,5 @@
     <string name="title_disruptions">Disruptions</string>
     <string name="title_stop_on_map">Stop location</string>
     <string name="database_load_status">database_load_status</string>
+    <string name="title_widget_departures">Departures</string>
 </resources>

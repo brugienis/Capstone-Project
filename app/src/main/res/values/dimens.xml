@@ -18,6 +18,9 @@
     <dimen name="expanded_title_margin_start">48dp</dimen>
     <dimen name="expanded_title_margin_end">64dp</dimen>
     <dimen name="recycler_view_padding_top_and_bottom">5dp</dimen>
+
+    <dimen name="widget_departures_default_height">146dp</dimen>
+    <dimen name="widget_departures_default_width">286dp</dimen>
     <!-- from XYZReader - start -->
     <!-- from XYZReader - end -->
 </resources>
