@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
+import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
+import au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil;
 
 /**
  * Created by business on 15/10/2016.
@@ -28,7 +30,7 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         return new RemoteViewsFactory() {
 //            private Cursor mCursor = null;
-            List<NextDepartureDetails> nextDepartureDetailses = new ArrayList<>();
+            List<NextDepartureDetails> mNextDepartureDetails = new ArrayList<>();
             {
                 Log.v(TAG, "RemoteViewsFactory onGetViewFactory - instance initializer - start");
             }
@@ -52,6 +54,8 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
              * The data from DB is sorted by time and hone columns in ascending order.
              *
              */
+            private String stopId = "1035";
+            private int limit = 5;
             @Override
             public void onDataSetChanged() {
                 Log.v(TAG, "onDataSetChanged - start");
@@ -60,10 +64,17 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
 //                }
                 final long identityToken = Binder.clearCallingIdentity();
 
-                nextDepartureDetailses.add(new NextDepartureDetails(1, 1, "a", 1, 1, 1, "11:10"));
-                nextDepartureDetailses.add(new NextDepartureDetails(2, 2, "a", 2, 2, 2, "12:10"));
-                nextDepartureDetailses.add(new NextDepartureDetails(3, 3, "a", 3, 3, 3, "13:10"));
-                nextDepartureDetailses.add(new NextDepartureDetails(4, 4, "a", 4, 4, 4, "14:10"));
+                mNextDepartureDetails.add(new NextDepartureDetails(1, 1, "a", 1, 1, 1, "11:10"));
+                mNextDepartureDetails.add(new NextDepartureDetails(2, 2, "a", 2, 2, 2, "12:10"));
+                mNextDepartureDetails.add(new NextDepartureDetails(3, 3, "a", 3, 3, 3, "13:10"));
+                mNextDepartureDetails.add(new NextDepartureDetails(4, 4, "a", 4, 4, 4, "14:10"));
+
+                mNextDepartureDetails =
+                        RemoteMptEndpointUtil.getBroadNextDepartures(
+                                NearbyStopsDetails.TRAIN_ROUTE_TYPE,
+                                stopId,
+                                limit);
+                Log.v(TAG, "onDataSetChanged - after getBroadNextDepartures - mNextDepartureDetails.size: " + mNextDepartureDetails.size());
 //                String currDate = MainActivity.getDefaultPageDayInMillis();
 //                mCursor = getContentResolver().query(DatabaseContract.scores_table.buildScoreWithDate(),
 //                        SCORE_COLUMNS,
@@ -87,8 +98,8 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
 
             @Override
             public int getCount() {
-                Log.v(TAG, "onCreate - getCount - count: " + nextDepartureDetailses.size());
-                return nextDepartureDetailses.size();
+                Log.v(TAG, "onCreate - getCount - count: " + mNextDepartureDetails.size());
+                return mNextDepartureDetails.size();
             }
 
 
@@ -101,18 +112,21 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
         public RemoteViews getViewAt(int position) {
             Log.v(TAG, "getViewAt - position: " + position);
             if (position == AdapterView.INVALID_POSITION ||
-                    nextDepartureDetailses == null || nextDepartureDetailses.size()  -1 < position) {
+                    mNextDepartureDetails == null || mNextDepartureDetails.size()  -1 < position) {
                 return null;
             }
 
-            String directionName = nextDepartureDetailses.get(position).directionName;
-            int runType = nextDepartureDetailses.get(position).routeType;
-            String departureTimeId = nextDepartureDetailses.get(position).utcDepartureTime;
+            String directionName = mNextDepartureDetails.get(position).directionName;
+            int runType = mNextDepartureDetails.get(position).routeType;
+            String departureTimeId = mNextDepartureDetails.get(position).utcDepartureTime;
 
             RemoteViews views = new RemoteViews(getPackageName(),
                     R.layout.widget_departures_collection_list);
 
-            views.setTextViewText(R.id.runType, String.valueOf(nextDepartureDetailses.get(position).routeType));
+            views.setTextViewText(R.id.runType, String.valueOf(mNextDepartureDetails.get(position).routeType));
+            views.setTextViewText(R.id.directionName, String.valueOf(mNextDepartureDetails.get(position).directionId));
+            views.setTextViewText(R.id.runType, String.valueOf(mNextDepartureDetails.get(position).routeType));
+            views.setTextViewText(R.id.departureTimeId, String.valueOf(mNextDepartureDetails.get(position).utcDepartureTime));
 
             final Intent fillInIntent = new Intent();
 

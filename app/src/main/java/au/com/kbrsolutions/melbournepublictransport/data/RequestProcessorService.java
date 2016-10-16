@@ -130,7 +130,7 @@ public class RequestProcessorService extends IntentService {
 
                     case SHOW_NEXT_DEPARTURES:
                         StopDetails stopDetails = extras.getParcelable(STOP_DETAILS);
-//                        Log.v(TAG, "onHandleIntent - stopDetails: " + stopDetails);
+                        Log.v(TAG, "onHandleIntent - stopDetails: " + stopDetails);
                         List<NextDepartureDetails> nextDepartureDetailsList =
                                 RemoteMptEndpointUtil.getBroadNextDepartures(
                                         stopDetails.routeType,
@@ -139,7 +139,7 @@ public class RequestProcessorService extends IntentService {
 
 //                        List<NextDepartureDetails> nextDepartureDetailsList =
 //                          buildSimulatedDepartureDetails();
-
+                        Log.v(TAG, "onHandleIntent - stopId: " + nextDepartureDetailsList.get(0));
                         sendMessageToMainActivity(new MainActivityEvents.Builder(
                                 MainActivityEvents.MainEvents.NEXT_DEPARTURES_DETAILS)
                                 .setNextDepartureDetailsList(nextDepartureDetailsList)
