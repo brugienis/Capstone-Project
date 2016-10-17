@@ -1,7 +1,9 @@
 package au.com.kbrsolutions.melbournepublictransport.widget;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Binder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.RemoteViews;
@@ -29,15 +31,10 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         return new RemoteViewsFactory() {
-//            private Cursor mCursor = null;
             List<NextDepartureDetails> mNextDepartureDetails = new ArrayList<>();
-            {
-                Log.v(TAG, "RemoteViewsFactory onGetViewFactory - instance initializer - start");
-            }
 
             @Override
             public void onCreate() {
-                Log.v(TAG, "onCreate - start");
                 // Nothing to do
             }
 
@@ -54,11 +51,13 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
              * The data from DB is sorted by time and hone columns in ascending order.
              *
              */
-            private String stopId = "1035";
+//            private String stopId = "1035";
             private int limit = 5;
             @Override
             public void onDataSetChanged() {
-                Log.v(TAG, "onDataSetChanged - start");
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                String stopId = sp.getString(getString(R.string.widget_stop_id), "-1");
+                Log.v(TAG, "onDataSetChanged - start - stopId: " + stopId);
 //                if (mCursor != null) {
 //                    mCursor.close();
 //                }

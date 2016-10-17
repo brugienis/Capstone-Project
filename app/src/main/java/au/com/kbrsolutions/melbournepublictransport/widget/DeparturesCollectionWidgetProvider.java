@@ -7,8 +7,10 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -48,7 +50,10 @@ public class DeparturesCollectionWidgetProvider extends AppWidgetProvider {
                 Intent intent = new Intent(context, MainActivity.class);
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
                 views.setOnClickPendingIntent(R.id.widget, pendingIntent);
-                views.setTextViewText(R.id.widgetSelectedStopName, "Krakow");
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+                String stopName = sp.getString(context.getString(R.string.widget_stop_name), "-1");
+                Log.v(TAG, "onUpdate - start - stopName: " + stopName);
+                views.setTextViewText(R.id.widgetSelectedStopName, stopName);
 
                 // Set up the collection
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {

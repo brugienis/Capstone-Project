@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -223,6 +224,14 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         }
+        // FIXME: 17/10/2016 - move below to settings - start
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(getString(R.string.widget_stop_id), "1035");
+        editor.putString(getString(R.string.widget_stop_name), "Carrum");
+//        editor.commit();
+        editor.apply();
+        // FIXME: 17/10/2016 - move above to settings - end
         Log.v(TAG, "onCreate - end");
     }
 

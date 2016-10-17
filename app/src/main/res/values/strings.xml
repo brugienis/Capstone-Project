@@ -13,6 +13,9 @@
     <string name="no_departures_detail">No departure details</string>
     <string name="express_train">Express</string>
     <string name="all_stops_train">All stops</string>
+    <string name="database_load_status">database_load_status</string>
+    <string name="widget_stop_id">widget_stop_id</string>
+    <string name="widget_stop_name">widget_stop_name</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="no_maps">Google Maps V2 not available!</string>
@@ -27,6 +30,5 @@
     <string name="title_next_departures">Next departures</string>
     <string name="title_disruptions">Disruptions</string>
     <string name="title_stop_on_map">Stop location</string>
-    <string name="database_load_status">database_load_status</string>
     <string name="title_widget_departures">Departures</string>
 </resources>
