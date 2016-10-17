@@ -131,11 +131,13 @@ public class RequestProcessorService extends IntentService {
                     case SHOW_NEXT_DEPARTURES:
                         StopDetails stopDetails = extras.getParcelable(STOP_DETAILS);
                         Log.v(TAG, "onHandleIntent - stopDetails: " + stopDetails);
+//                        getResources().getString(R.string.all_stops_train);
                         List<NextDepartureDetails> nextDepartureDetailsList =
                                 RemoteMptEndpointUtil.getBroadNextDepartures(
                                         stopDetails.routeType,
                                         stopDetails.stopId,
-                                        extras.getInt(LIMIT));
+                                        extras.getInt(LIMIT),
+                                        getResources());
 
 //                        List<NextDepartureDetails> nextDepartureDetailsList =
 //                          buildSimulatedDepartureDetails();
@@ -252,6 +254,7 @@ public class RequestProcessorService extends IntentService {
                 "to city " + nextDetCnt,
                 101,
                 0,
+                "All stops",
                 6,
                 "09:50");
         nextDepartureDetailsList.add(nextDepartureDetails);
@@ -261,6 +264,7 @@ public class RequestProcessorService extends IntentService {
                 "to frankston " + nextDetCnt,
                 101,
                 5,
+                "Express",
                 6,
                 "10:05");
         nextDepartureDetailsList.add(nextDepartureDetails);

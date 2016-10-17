@@ -9,6 +9,7 @@ public class NextDepartureDetails implements Parcelable {
     public final String directionName;
     public final int runId;
     public final int numSkipped;
+    public final String runType;
     public final int destinationId;
     public final String utcDepartureTime;
 
@@ -18,6 +19,7 @@ public class NextDepartureDetails implements Parcelable {
         directionName = input.readString();
         runId = input.readInt();
         numSkipped = input.readInt();
+        runType = input.readString();
         destinationId = input.readInt();
         utcDepartureTime = input.readString();
     }
@@ -28,6 +30,7 @@ public class NextDepartureDetails implements Parcelable {
             String directionName,
             int runId,
             int numSkipped,
+            String runType,
             int destinationId,
             String utcDepartureTime) {
         this.directionId = directionId;
@@ -35,6 +38,7 @@ public class NextDepartureDetails implements Parcelable {
         this.directionName = directionName;
         this.runId = runId;
         this.numSkipped = numSkipped;
+        this.runType = runType;
         this.destinationId = destinationId;
         this.utcDepartureTime = utcDepartureTime;
     }
@@ -63,6 +67,7 @@ public class NextDepartureDetails implements Parcelable {
         dest.writeString(directionName);
         dest.writeInt(runId);
         dest.writeInt(numSkipped);
+        dest.writeString(runType);
         dest.writeInt(destinationId);
         dest.writeString(utcDepartureTime);
     }

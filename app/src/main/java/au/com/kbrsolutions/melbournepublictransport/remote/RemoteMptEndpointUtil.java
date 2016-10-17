@@ -1,6 +1,7 @@
 package au.com.kbrsolutions.melbournepublictransport.remote;
 
 import android.content.ContentValues;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,6 +30,7 @@ import java.util.Map;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
@@ -42,6 +44,17 @@ public class RemoteMptEndpointUtil {
     private final static int DEVELOPER_ID = 1000796;
     private final static String PRIVATE_KEY = "8d3c3f43-4244-11e6-a0ce-06f54b901f07";
     private final static String PTV_BASE_URL = "http://timetableapi.ptv.vic.gov.au";
+
+    private static Map<Integer, String> directionMap = new ArrayMap<>();
+
+    static {
+        directionMap.put(0, "To City");
+        directionMap.put(1, "To City (Flinders Street)");
+        directionMap.put(6, "To Frankston");
+        directionMap.put(11, "To Sandringham");
+        directionMap.put(14, "To Upfield");
+        directionMap.put(15, "To Werribee");
+    }
 
     private final static String TAG = RemoteMptEndpointUtil.class.getSimpleName();
 
@@ -74,8 +87,6 @@ public class RemoteMptEndpointUtil {
 
         return databaseOK;
     }
-
-    private static Map<Integer, String> directionMap = new ArrayMap<>();
 
     public static List<ContentValues> getLineDetails(int mode) {
         List<ContentValues> lineDetailsContentValuesList = new ArrayList<>();
@@ -160,18 +171,13 @@ public class RemoteMptEndpointUtil {
         return stopDetailsContentValuesList;
     }
 
-    static {
-        directionMap.put(0, "To City");
-        directionMap.put(1, "To City (Flinders Street)");
-        directionMap.put(6, "To Frankston");
-        directionMap.put(11, "To Sandringham");
-        directionMap.put(14, "To Upfield");
-        directionMap.put(15, "To Werribee");
-    }
-
     private static DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm");;
 
-    public static List<NextDepartureDetails> getBroadNextDepartures(int mode, String stopId, int limit) {
+    public static List<NextDepartureDetails> getBroadNextDepartures(
+            int mode,
+            String stopId,
+            int limit,
+            Resources resources) {
         final String uri = "/v2/mode/" + mode + "/stop/" + stopId + "/departures/by-destination/limit/" + limit;
         String jsonString = processRemoteRequest(uri);
 
@@ -228,6 +234,9 @@ public class RemoteMptEndpointUtil {
                         directionName,
                         runId,
                         numSkipped,
+                        numSkipped == 0 ?
+                                resources.getString(R.string.all_stops_train) :
+                                resources.getString(R.string.express_train),
                         destinationId,
 //                        JodaDateTimeUtility.getLocalTimeFromUtcString(timeTimetableUtc).toString()));
                         str));

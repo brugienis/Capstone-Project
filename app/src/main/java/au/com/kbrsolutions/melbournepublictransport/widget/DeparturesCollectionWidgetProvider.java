@@ -33,7 +33,7 @@ public class DeparturesCollectionWidgetProvider extends AppWidgetProvider {
          */
         @Override
         public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-            boolean fromBook = true;
+            boolean fromBook = false;
             if (fromBook) {
                 onUpdateFromBook(context, appWidgetManager, appWidgetIds);
                 return;
@@ -48,6 +48,7 @@ public class DeparturesCollectionWidgetProvider extends AppWidgetProvider {
                 Intent intent = new Intent(context, MainActivity.class);
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
                 views.setOnClickPendingIntent(R.id.widget, pendingIntent);
+                views.setTextViewText(R.id.widgetSelectedStopName, "Krakow");
 
                 // Set up the collection
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
@@ -88,6 +89,7 @@ public class DeparturesCollectionWidgetProvider extends AppWidgetProvider {
                 RemoteViews widget=new RemoteViews(context.getPackageName(),
                         R.layout.widget_departures_collection);
 
+                widget.setTextViewText(R.id.widgetSelectedStopName, "Carrum");
                 widget.setRemoteAdapter(R.id.widget_list, svcIntent);
 
                 Intent clickIntent=new Intent(context, MainActivity.class);

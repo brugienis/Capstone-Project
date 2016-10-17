@@ -64,16 +64,16 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
 //                }
                 final long identityToken = Binder.clearCallingIdentity();
 
-                mNextDepartureDetails.add(new NextDepartureDetails(1, 1, "a", 1, 1, 1, "11:10"));
-                mNextDepartureDetails.add(new NextDepartureDetails(2, 2, "a", 2, 2, 2, "12:10"));
-                mNextDepartureDetails.add(new NextDepartureDetails(3, 3, "a", 3, 3, 3, "13:10"));
-                mNextDepartureDetails.add(new NextDepartureDetails(4, 4, "a", 4, 4, 4, "14:10"));
+//                mNextDepartureDetails.add(new NextDepartureDetails(1, 1, "a", 1, 1, 1, "11:10"));
+//                mNextDepartureDetails.add(new NextDepartureDetails(2, 2, "a", 2, 2, 2, "12:10"));
+//                mNextDepartureDetails.add(new NextDepartureDetails(3, 3, "a", 3, 3, 3, "13:10"));
+//                mNextDepartureDetails.add(new NextDepartureDetails(4, 4, "a", 4, 4, 4, "14:10"));
 
                 mNextDepartureDetails =
                         RemoteMptEndpointUtil.getBroadNextDepartures(
                                 NearbyStopsDetails.TRAIN_ROUTE_TYPE,
                                 stopId,
-                                limit);
+                                limit, getResources());
                 Log.v(TAG, "onDataSetChanged - after getBroadNextDepartures - mNextDepartureDetails.size: " + mNextDepartureDetails.size());
 //                String currDate = MainActivity.getDefaultPageDayInMillis();
 //                mCursor = getContentResolver().query(DatabaseContract.scores_table.buildScoreWithDate(),
@@ -112,21 +112,18 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
         public RemoteViews getViewAt(int position) {
             Log.v(TAG, "getViewAt - position: " + position);
             if (position == AdapterView.INVALID_POSITION ||
-                    mNextDepartureDetails == null || mNextDepartureDetails.size()  -1 < position) {
+                    mNextDepartureDetails == null || mNextDepartureDetails.size() - 1 < position) {
+                Log.v(TAG, "getViewAt - INVALID_POSITION");
                 return null;
             }
 
-            String directionName = mNextDepartureDetails.get(position).directionName;
-            int runType = mNextDepartureDetails.get(position).routeType;
-            String departureTimeId = mNextDepartureDetails.get(position).utcDepartureTime;
-
             RemoteViews views = new RemoteViews(getPackageName(),
                     R.layout.widget_departures_collection_list);
-
             views.setTextViewText(R.id.runType, String.valueOf(mNextDepartureDetails.get(position).routeType));
-            views.setTextViewText(R.id.directionName, String.valueOf(mNextDepartureDetails.get(position).directionId));
-            views.setTextViewText(R.id.runType, String.valueOf(mNextDepartureDetails.get(position).routeType));
+            views.setTextViewText(R.id.directionName, mNextDepartureDetails.get(position).directionName);
+            views.setTextViewText(R.id.runType, String.valueOf(mNextDepartureDetails.get(position).runType));
             views.setTextViewText(R.id.departureTimeId, String.valueOf(mNextDepartureDetails.get(position).utcDepartureTime));
+            Log.v(TAG, "getViewAt - populated podition: " + position);
 
             final Intent fillInIntent = new Intent();
 
@@ -134,6 +131,8 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
 //            fillInIntent.putExtra(MainActivity.WIDGET_SELECTED_MATCH_ID, mCursor.getDouble(MATCH_ID_IDX));
 //            fillInIntent.putExtra(MainActivity.WIDGET_SELECTED_ROW_IDX, position);
 //            views.setOnClickFillInIntent(R.id.widget_scores_collection_list_item, fillInIntent);
+            views.setOnClickFillInIntent(R.id.widgetDeparturesCollectionList, fillInIntent);
+            Log.v(TAG, "getViewAt - views: " + views.getLayoutId());
             return views;
         }
 

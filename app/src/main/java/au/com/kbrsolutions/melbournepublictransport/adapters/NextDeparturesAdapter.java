@@ -43,7 +43,10 @@ public class NextDeparturesAdapter extends RecyclerView.Adapter<NextDeparturesAd
         String directionName = String.valueOf(nextDepartureDetails.directionName);
         String departureTime = String.valueOf(nextDepartureDetails.utcDepartureTime);
         // FIXME: 20/09/2016 - move strings to values
-        String runTypeText = nextDepartureDetails.numSkipped == 0 ? ALL_STOPS : EXPRESS;
+        String runTypeText = nextDepartureDetails.runType;
+//        String runTypeText = nextDepartureDetails.numSkipped == 0 ?
+//                ALL_STOPS :
+//                EXPRESS;
         holder.directionName.setText(directionName);
         holder.runType.setText(runTypeText);
         holder.departureTimeId.setText(departureTime);
