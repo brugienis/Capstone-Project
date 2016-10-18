@@ -114,8 +114,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         Log.v(TAG, "onCreate - start");
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
-        setContentView(R.layout.activity_main_new);
+        setContentView(R.layout.activity_main);
 
         if (eventBus == null) {
             eventBus = EventBus.getDefault();
@@ -135,14 +134,10 @@ public class MainActivity extends AppCompatActivity implements
 
         mCollapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
-//        mCollapsingToolbar.setTitle("XcXcXcXc");
 
         mToolbar.setTitle(getResources().getString(R.string.title_favorite_stops));
 
         setSupportActionBar(mToolbar);
-
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
         actionBar = getSupportActionBar();
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
@@ -165,17 +160,17 @@ public class MainActivity extends AppCompatActivity implements
                         BaseFragment bf = getTopFragment();
                         boolean backButtonPressed;
                         if (cnt > mPrevBackStackEntryCount) {
-//                            Log.v(TAG, "onCreate.onBackStackChanged - going forward  - cnt/top: " + cnt + "/" + bf.getFragmentId());
+                            Log.v(TAG, "onCreate.onBackStackChanged - going forward  - cnt/top: " + cnt + "/" + bf.getFragmentId());
 //                            backButtonPressed = false;
                         } else {
-//                            Log.v(TAG, "onCreate.onBackStackChanged - going backward - cnt/top: " + cnt + "/" + (bf == null ? "null" : bf.getFragmentId()));
+                            Log.v(TAG, "onCreate.onBackStackChanged - going backward - cnt/top: " + cnt + "/" + (bf == null ? "null" : bf.getFragmentId()));
 //                            backButtonPressed = true;
                         }
                         mPrevBackStackEntryCount = cnt;
 //                        if (cnt == 1 && bf.getFragmentId() == FragmentsId.FAVORITE_STOPS) {
-                        if (cnt == 1) {
+                        if (cnt == 0) {
                             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                        } else if (cnt > 1) {
+                        } else {
                             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                         }
                     }
@@ -328,7 +323,7 @@ public class MainActivity extends AppCompatActivity implements
         FragmentsId fragmentsId;
         if (baseFragment != null) {
             fragmentsId = baseFragment.getFragmentId();
-//            Log.v(TAG, "handleFabClicked - baseFragment/fragmentsId: " + baseFragment + "/" + fragmentsId);
+            Log.v(TAG, "handleFabClicked - baseFragment/fragmentsId: " + baseFragment + "/" + fragmentsId);
             if (fragmentsId != null &&
                     fragmentsId != FragmentsId.FAVORITE_STOPS &&
                     fragmentsId != FragmentsId.NEXT_DEPARTURES
@@ -337,8 +332,9 @@ public class MainActivity extends AppCompatActivity implements
                 return;
             }
         } else {
-            showSnackBar("No logic to handle FAB touched (not in BaseFragmment)", true);
-            return;
+            fragmentsId = FragmentsId.FAVORITE_STOPS;
+//            showSnackBar("No logic to handle FAB touched (not in BaseFragmment)", true);
+//            return;
         }
         switch (fragmentsId) {
             case FAVORITE_STOPS:
@@ -531,7 +527,7 @@ public class MainActivity extends AppCompatActivity implements
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
-                    .addToBackStack(FAVORITE_STOPS_TAG)
+//                    .addToBackStack(FAVORITE_STOPS_TAG)
                     .commit();
     }
 
@@ -759,7 +755,9 @@ public class MainActivity extends AppCompatActivity implements
         BaseFragment topFragmment = null;
         Fragment fragment;
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
-        if (cnt > 0) {
+        if (cnt == 0) {
+            topFragmment = mFavoriteStopsFragment;
+        } else  {
             String tag = getSupportFragmentManager().getBackStackEntryAt(cnt - 1).getName();
             fragment = getSupportFragmentManager().findFragmentByTag(tag);
 //            if (fragment instanceof BaseFragment) {
