@@ -59,7 +59,9 @@ public class PreferencesActivity extends AppCompatActivity
 
     void bindPreferencesSummaryToValue() {
         bindPreferenceSummaryToValue(mDisplay.findPreference(getString(R.string.pref_key_location)));
-        bindPreferenceSummaryToValue(mDisplay.findPreference(getString(R.string.pref_key_use_device_location)));
+//        bindPreferenceSummaryToValue(mDisplay.findPreference(getString(R.string.pref_key_use_device_location)));
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        currUseDeviceLocationValue = sp.getBoolean(getString(R.string.pref_key_use_device_location), false);
     }
 
     /**
@@ -72,23 +74,12 @@ public class PreferencesActivity extends AppCompatActivity
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(this);
 
-        Object value;
-        final String useDevice = getString(R.string.pref_key_use_device_location);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        if (key.equals(getString(R.string.pref_key_use_device_location))) {
-            value = currUseDeviceLocationValue = sp.getBoolean(getString(R.string.pref_key_use_device_location), false);
-
-        }
-//        TOMORROW set summary based on the preference type - String, booleam, etc.
-        // Set the preference summaries
-//        setPreferenceSummary(preference,
-//                PreferenceManager
-//                        .getDefaultSharedPreferences(preference.getContext())
-//                        .getString(preference.getKey(), ""));                                   // exception when boolean value required
-        if (key.equals(getString(R.string.pref_key_use_device_location))) {
-//            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+//        if (key.equals(getString(R.string.pref_key_use_device_location))) {
 //            currUseDeviceLocationValue = sp.getBoolean(getString(R.string.pref_key_use_device_location), false);
-        }
+//        }
+        String value = sp.getString(getString(R.string.pref_key_location), "");
+        setPreferenceSummary(preference, value);
     }
 
     // Registers a shared preference change listener that gets notified when preferences change
@@ -139,26 +130,25 @@ public class PreferencesActivity extends AppCompatActivity
     public boolean onPreferenceChange(Preference preference, Object value) {
         String key = preference.getKey();
         Log.v(TAG, "onPreferenceChange - key" + preference.getKey());
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-//        if ((key == getString(R.string.pref_location_key))) {
-        String useDeviceFixedLocationKey = getString(R.string.pref_key_use_device_location);
-        Log.v(TAG, "onPreferenceChange - useDeviceFixedLocationKey: " + useDeviceFixedLocationKey);
-//        String useDeviceFixedLocationValue = sp.getString(useDeviceFixedLocationKey, null);
-        Log.v(TAG, "onPreferenceChange - useDeviceFixedLocationValue: " + currUseDeviceLocationValue);
-        validateUseDeviceFixedLocationValue((boolean) value);
-//        if (currUseDeviceLocationValue == false) {
-//            String latitude = sp.getString(getString(R.string.pref_key_location_latitude), null);
-//            latitude = null;
-//            if (latitude == null) {
-//                View rootView = findViewById(android.R.id.content);
-//                Log.v(TAG, "onPreferenceChange - latitude is null");
-//                Snackbar.make(rootView, getString(R.string.pref_err_use_device_location),
-//                        Snackbar.LENGTH_LONG).show();
-//            }
-//        }
-        Log.v(TAG, "onPreferenceChange - key/value" + preference.getKey() + "/" + value.toString());
-        Log.v(TAG, "onPreferenceChange - key/value" + preference.getKey() + "/" + value.toString());
-        setPreferenceSummary(preference, value);
+        if ((key == getString(R.string.pref_key_use_device_location))) {
+            currUseDeviceLocationValue = (boolean) value;
+            Log.v(TAG, "onPreferenceChange - currUseDeviceLocationValue: " + currUseDeviceLocationValue);
+            boolean success = validateUseDeviceFixedLocationValue((boolean) value);
+            return success;
+        } else if ((key == getString(R.string.pref_key_location))) {
+            setPreferenceSummary(preference, value);
+        }
+
+//        final String useDevice = getString(R.string.pref_key_use_device_location);
+//        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+////        if ((key == getString(R.string.pref_location_key))) {
+//        String useDeviceFixedLocationKey = getString(R.string.pref_key_use_device_location);
+//        Log.v(TAG, "onPreferenceChange - useDeviceFixedLocationKey: " + useDeviceFixedLocationKey);
+////        String useDeviceFixedLocationValue = sp.getString(useDeviceFixedLocationKey, null);
+//        Log.v(TAG, "onPreferenceChange - useDeviceFixedLocationValue: " + currUseDeviceLocationValue);
+//        validateUseDeviceFixedLocationValue((boolean) value);
+//        Log.v(TAG, "onPreferenceChange - key/value" + preference.getKey() + "/" + value.toString());
+//        setPreferenceSummary(preference, value);
         return true;
     }
 
