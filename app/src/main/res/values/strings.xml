@@ -25,7 +25,7 @@
     <!-- Key name for storing use fixed/device location in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_key_use_device_location">use_device_fixed_location</string>
     <string name="pref_title_use_device_location">Use device location</string>
-    <string name="pref_err_use_device_location">Fixed location not assigned</string>
+    <string name="pref_err_use_device_location">\'fixed location\' not assigned</string>
     <string name="pref_summary_use_device_location">Use real location to show stops
         nearby, instead of fixed location.
     </string>
