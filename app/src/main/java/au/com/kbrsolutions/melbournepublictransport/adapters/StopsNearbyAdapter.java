@@ -108,8 +108,8 @@ public class StopsNearbyAdapter extends RecyclerView.Adapter<StopsNearbyAdapter.
                                 nearbyStopsDetails.route_type,
                                 nearbyStopsDetails.stopId,
                                 nearbyStopsDetails.stopName,
-                                nearbyStopsDetails.stopLat,
-                                nearbyStopsDetails.stopLon,
+                                nearbyStopsDetails.latitude,
+                                nearbyStopsDetails.longitude,
                                 "n"
                         ));
                     }

@@ -5,17 +5,17 @@ import android.os.Parcelable;
 
 /**
  */
-public class LatLonDetails implements Parcelable {
+public class LatLngDetails implements Parcelable {
 
     public final double latitude;
     public final double longitude;
 
-    public LatLonDetails(double latitude, double longitude) {
+    public LatLngDetails(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    public LatLonDetails(Parcel input) {
+    public LatLngDetails(Parcel input) {
         latitude = input.readDouble();
         longitude = input.readDouble();
     }
@@ -37,14 +37,14 @@ public class LatLonDetails implements Parcelable {
         dest.writeDouble(longitude);
     }
 
-    public static final Parcelable.Creator<LatLonDetails> CREATOR =
-            new Parcelable.Creator<LatLonDetails>() {
-                public LatLonDetails createFromParcel(Parcel in) {
-                    return new LatLonDetails(in);
+    public static final Parcelable.Creator<LatLngDetails> CREATOR =
+            new Parcelable.Creator<LatLngDetails>() {
+                public LatLngDetails createFromParcel(Parcel in) {
+                    return new LatLngDetails(in);
                 }
 
-                public LatLonDetails[] newArray(int size) {
-                    return new LatLonDetails[size];
+                public LatLngDetails[] newArray(int size) {
+                    return new LatLngDetails[size];
                 }
             };
 }

@@ -86,7 +86,7 @@ public class RequestProcessorService extends IntentService {
                         .setMsg("CANNOT ACCESS MPT site")
                         .build());
             } else {
-                LatLonDetails latLonDetails;
+                LatLngDetails latLonDetails;
                 List<NearbyStopsDetails> nearbyStopsDetailsList;
                 switch (request) {
                     case ACTION_GET_DATABASE_STATUS:

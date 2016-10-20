@@ -10,8 +10,8 @@ public class NearbyStopsDetails implements Parcelable {
     public final String suburb;
     public final int route_type;
     public final String stopId;
-    public final double stopLat;
-    public final double stopLon;
+    public final double latitude;
+    public final double longitude;
     public final double distance;
 
     public final static int TRAIN_ROUTE_TYPE = 0;
@@ -32,8 +32,8 @@ public class NearbyStopsDetails implements Parcelable {
         this.suburb = suburb;
         this.route_type = route_type;
         this.stopId = stopId;
-        this.stopLat = stopLat;
-        this.stopLon = stopLon;
+        this.latitude = stopLat;
+        this.longitude = stopLon;
         this.distance = distance;
     }
 
@@ -43,8 +43,8 @@ public class NearbyStopsDetails implements Parcelable {
         suburb = input.readString();
         route_type = input.readInt();
         stopId = input.readString();
-        stopLat = input.readDouble();
-        stopLon = input.readDouble();
+        latitude = input.readDouble();
+        longitude = input.readDouble();
         distance = input.readDouble();
     }
 
@@ -55,8 +55,8 @@ public class NearbyStopsDetails implements Parcelable {
                 "; stopAddress: " + stopAddress +
                 "; suburb: " + suburb +
                 "; route_type: " + route_type +
-                "; stopLat: " + stopLat +
-                "; stopLon: " + stopLon;
+                "; latitude: " + latitude +
+                "; longitude: " + longitude;
     }
 
     @Override
@@ -71,8 +71,8 @@ public class NearbyStopsDetails implements Parcelable {
         dest.writeString(suburb);
         dest.writeInt(route_type);
         dest.writeString(stopId);
-        dest.writeDouble(stopLat);
-        dest.writeDouble(stopLon);
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
         dest.writeDouble(distance);
     }
 

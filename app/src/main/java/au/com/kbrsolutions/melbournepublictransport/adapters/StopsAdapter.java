@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
-import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StopsFragment;
 
@@ -48,7 +48,7 @@ public class StopsAdapter extends CursorAdapter {
             mapImageId.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    showSelectedStopOnMap(new LatLonDetails(stopDetails.latitude, stopDetails.longitude));
+                    showSelectedStopOnMap(new LatLngDetails(stopDetails.latitude, stopDetails.longitude));
                 }
             });
         }
@@ -58,7 +58,7 @@ public class StopsAdapter extends CursorAdapter {
         mListener.startNextDeparturesSearch(stopDetails);
     }
 
-    private static void showSelectedStopOnMap(LatLonDetails latLonDetails) {
+    private static void showSelectedStopOnMap(LatLngDetails latLonDetails) {
         mListener.showStopOnMap(latLonDetails);
     }
 

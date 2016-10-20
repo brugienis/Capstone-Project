@@ -83,7 +83,7 @@ public class LocationEditTextPreference extends EditTextPreference {
                 // an activity that we can use to start our Place Picker intent. By using
                 // SettingsActivity in this way, we can ensure the result of the Place Picker
                 // intent comes to the right place for us to process it.
-                Activity settingsActivity = (SettingsActivity) context;
+                Activity settingsActivity = (PreferencesActivity) context;
                 try {
                     settingsActivity.startActivityForResult(
                             builder.build(settingsActivity), SettingsActivity.PLACE_PICKER_REQUEST);

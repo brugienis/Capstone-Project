@@ -15,7 +15,7 @@ import com.google.android.gms.location.LocationServices;
 
 import org.greenrobot.eventbus.EventBus;
 
-import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 
 /**
@@ -60,7 +60,7 @@ public class CurrentGeoPositionFinder implements
         EventBus.getDefault().post(new MainActivityEvents.Builder(
                 MainActivityEvents.MainEvents.CURR_LOCATION_DETAILS)
                 .setLatLonDetails(
-                        new LatLonDetails(
+                        new LatLngDetails(
                                 location.getLatitude(),
                                 location.getLongitude()))
                 .setForTrainsStopsNearby(mTrainOnly)

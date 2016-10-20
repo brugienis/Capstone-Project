@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 
@@ -64,7 +64,7 @@ public class DbUtility {
         Log.v(TAG, "printContents - start");
     }
 
-    public List<NearbyStopsDetails> getNearbyTrainDetails(LatLonDetails latLonDetails, Context context) {
+    public List<NearbyStopsDetails> getNearbyTrainDetails(LatLngDetails latLonDetails, Context context) {
         Uri uri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.ANY_FAVORITE_FLAG);
         Cursor cursor = context.getContentResolver().query(
                 uri,

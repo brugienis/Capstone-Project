@@ -24,7 +24,7 @@ import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.adapters.FavoriteStopsAdapter;
-import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 
@@ -290,7 +290,7 @@ public class FavoriteStopsFragment
      */
     public interface OnFavoriteStopsFragmentInteractionListener {
         void startNextDeparturesSearch(StopDetails stopDetails);
-        void showStopOnMap(LatLonDetails latLonDetails);
+        void showStopOnMap(LatLngDetails latLonDetails);
         void startStopsNearbySearch(boolean trainsOnly);
         void getDisruptionsDetails();
         void updateStopDetailRow(int id, String favoriteColumnValue);

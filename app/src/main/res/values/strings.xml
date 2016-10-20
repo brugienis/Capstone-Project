@@ -1,4 +1,3 @@
-
 <resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
     <string name="app_name">MelbournePublicTransport</string>
     <string name="title_activity_favorite_stops">FavoriteStopsActivity</string>
@@ -18,21 +17,28 @@
     <string name="widget_stop_id">widget_stop_id</string>
     <string name="widget_stop_name">widget_stop_name</string>
 
-    <!-- Label for the location preference [CHAR LIMIT=30] -->
-    <string name="pref_location_label">Location</string>
-
     <!-- Key name for storing location in SharedPreferences [CHAR LIMIT=NONE] -->
-    <string name="pref_location_key" translatable="false">location</string>
+    <string name="pref_key_location" translatable="false">location</string>
+    <!-- Title for the location preference [CHAR LIMIT=30]  -->
+    <string name="pref_title_location">Fixed location</string>
+
+    <!-- Key name for storing use fixed/device location in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_key_use_device_location">use_device_fixed_location</string>
+    <string name="pref_title_use_device_location">Use device location</string>
+    <string name="pref_err_use_device_location">Fixed location not assigned</string>
+    <string name="pref_summary_use_device_location">Use real location to show stops
+        nearby, instead of fixed location.
+    </string>
 
     <!-- Key name for storing location status in SharedPreferences -->
     <string name="pref_location_status_key" translatable="false">loc-status</string>
 
     <!-- Key name for storing location latlong in SharedPreferences -->
-    <string name="pref_location_latitude" translatable="false">loc-latitude</string>
-    <string name="pref_location_longitude" translatable="false">loc-longitude</string>
+    <string name="pref_key_location_latitude" translatable="false">loc-latitude</string>
+    <string name="pref_key_location_longitude" translatable="false">loc-longitude</string>
 
     <!-- Default postal code for location preference [CHAR LIMIT=NONE] -->
-    <string name="pref_location_default" translatable="false">94043</string>
+    <string name="pref_location_default" translatable="false">Not assigned</string>
 
     <!-- Content description for the get current location button in the location preference -->
     <string name="pref_current_location_desc">Use my location</string>
@@ -40,6 +46,9 @@
     <!-- Strings used when displaying the state of the Location in settings -->
     <string name="pref_location_error_description">Invalid Location (<xliff:g id="location_setting">%1$s</xliff:g>)"</string>
     <string name="pref_location_unknown_description">Validating Location... (<xliff:g id="location_setting">%1$s</xliff:g>)"</string>
+
+    <!-- For Google Places API Attributions -->
+    <string name="attribution_text">Powered by Google</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="no_maps">Google Maps V2 not available!</string>
@@ -61,11 +70,6 @@
 
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
-
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
-    </string>
 
     <string name="pref_title_display_name">Display name</string>
     <string name="pref_default_display_name">John Smith</string>

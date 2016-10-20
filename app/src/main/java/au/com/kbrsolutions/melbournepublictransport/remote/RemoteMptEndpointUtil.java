@@ -32,7 +32,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
-import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
@@ -278,7 +278,7 @@ public class RemoteMptEndpointUtil {
     }
 
     private final static String STOP_ID = "Stop iD ";
-    public static List<NearbyStopsDetails> getNearbyStops(LatLonDetails latLonDetails) {
+    public static List<NearbyStopsDetails> getNearbyStops(LatLngDetails latLonDetails) {
 //        Log.v(TAG, "getNearbyStops - latLonDetails: " + latLonDetails);
         final String uri = "/v2/nearme/latitude/" + latLonDetails.latitude + "/longitude/" + latLonDetails.longitude;
         String jsonString = processRemoteRequest(uri);

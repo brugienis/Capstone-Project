@@ -40,7 +40,7 @@ import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
-import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.RequestProcessorService;
@@ -465,7 +465,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private void getNearbyDetails(LatLonDetails latLonDetails, boolean forTrainsOnly) {
+    private void getNearbyDetails(LatLngDetails latLonDetails, boolean forTrainsOnly) {
         Intent intent = new Intent(this, RequestProcessorService.class);
         if (forTrainsOnly) {
             intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.GET_TRAIN_NEARBY_STOPS_DETAILS);
@@ -549,7 +549,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void showStopOnMap(LatLonDetails latLonDetails) {
+    public void showStopOnMap(LatLngDetails latLonDetails) {
         if (readyToGo()) {
             fab.hide();
             if (mStationOnMapFragment == null) {
@@ -609,7 +609,8 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-            startActivity(new Intent(this, SettingsActivity.class));
+//            startActivity(new Intent(this, SettingsActivity.class));
+            startActivity(new Intent(this, PreferencesActivity.class));
             return true;
         }
 
@@ -699,7 +700,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onNearbyStopsFragmentMapClicked(NearbyStopsDetails nearbyStopsDetails) {
-        showStopOnMap(new LatLonDetails(nearbyStopsDetails.stopLat, nearbyStopsDetails.stopLon));
+        showStopOnMap(new LatLngDetails(nearbyStopsDetails.latitude, nearbyStopsDetails.longitude));
     }
 
     private void showTopFragment() {
@@ -920,3 +921,38 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 }
+/*
+
+    private void bindPreferenceSummaryToValue(Preference preference) {
+        String key = preference.getKey();
+        // Set the listener to watch for value changes.
+        preference.setOnPreferenceChangeListener(this);
+
+        Object value;
+        final String useDevice = getString(R.string.pref_key_use_device_location);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        if (key.equals(getString(R.string.pref_key_use_device_location))) {
+            value = currUseDeviceLocationValue = sp.getBoolean(getString(R.string.pref_key_use_device_location), false);
+            // Set the preference summaries
+            setPreferenceSummary(preference,
+                    PreferenceManager
+                            .getDefaultSharedPreferences(preference.getContext())
+                            .getString(preference.getKey(), ""));
+
+        } else if (key.equals(getString(R.string.pref_key_location_latitude))) {
+            value = currFixedLocationLatitude = sp.getFloat(getString(R.string.pref_key_use_device_location), Float.NaN);
+            // Set the preference summaries
+            setPreferenceSummary(preference,
+                    PreferenceManager
+                            .getDefaultSharedPreferences(preference.getContext())
+                            .getFloat(preference.getKey(), Float.NaN));
+
+        } else {
+            // Set the preference summaries
+            setPreferenceSummary(preference,
+                    PreferenceManager
+                            .getDefaultSharedPreferences(preference.getContext())
+                            .getString(preference.getKey(), ""));
+        }
+    }
+ */
