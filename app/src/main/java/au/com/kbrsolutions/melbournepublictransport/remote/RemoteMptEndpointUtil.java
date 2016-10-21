@@ -277,7 +277,6 @@ public class RemoteMptEndpointUtil {
         return nextDisruptionsDetailsList;
     }
 
-    private final static String STOP_ID = "Stop iD ";
     public static List<NearbyStopsDetails> getNearbyStops(LatLngDetails latLonDetails) {
 //        Log.v(TAG, "getNearbyStops - latLonDetails: " + latLonDetails);
         final String uri = "/v2/nearme/latitude/" + latLonDetails.latitude + "/longitude/" + latLonDetails.longitude;
@@ -307,7 +306,8 @@ public class RemoteMptEndpointUtil {
                 longitude = resultObject.getDouble("lon");
 //                Log.v(TAG, "processJsonString - distance/suburb/route_type/stopId: " + distance + "/" + suburb + "/" + route_type + "/" + stopId);
                 nearbyStopsDetailsList.add(new NearbyStopsDetails(
-                        STOP_ID + stopId,
+//                        STOP_ID + stopId,
+                        stopId,
                         locationName,
                         null,
                         routeType,

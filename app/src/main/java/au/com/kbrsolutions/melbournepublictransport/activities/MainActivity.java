@@ -55,6 +55,7 @@ import au.com.kbrsolutions.melbournepublictransport.fragments.StationOnMapFragme
 import au.com.kbrsolutions.melbournepublictransport.fragments.StopsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StopsNearbyFragment;
 import au.com.kbrsolutions.melbournepublictransport.utilities.CurrentGeoPositionFinder;
+import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
 // git push -u origin
 // ^((?!GLHudOverlay).)*$
@@ -454,18 +455,25 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Find current latitude and longitude of the device.
      *
-     * @param trainsOnly
+     * @param forTrainsOnly
      */
     @Override
-    public void startStopsNearbySearch(boolean trainsOnly) {
-        if (mCurrentGeoPositionFinder == null) {
-            mCurrentGeoPositionFinder = new CurrentGeoPositionFinder(getApplicationContext(), trainsOnly);
+    public void startStopsNearbySearch(boolean forTrainsOnly) {
+        LatLngDetails latLngDetails = Utility.getLatLng(this);
+        if (latLngDetails == null) {
+            Log.v(TAG, "startStopsNearbySearch - using device location");
+            if (mCurrentGeoPositionFinder == null) {
+                mCurrentGeoPositionFinder = new CurrentGeoPositionFinder(getApplicationContext(), forTrainsOnly);
+            } else {
+                mCurrentGeoPositionFinder.connectToGoogleApiClient(forTrainsOnly);
+            }
         } else {
-            mCurrentGeoPositionFinder.connectToGoogleApiClient(trainsOnly);
+            Log.v(TAG, "startStopsNearbySearch - using fixed location");
+            getStopsNearbyDetails(latLngDetails, forTrainsOnly);
         }
     }
 
-    private void getNearbyDetails(LatLngDetails latLonDetails, boolean forTrainsOnly) {
+    private void getStopsNearbyDetails(LatLngDetails latLonDetails, boolean forTrainsOnly) {
         Intent intent = new Intent(this, RequestProcessorService.class);
         if (forTrainsOnly) {
             intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.GET_TRAIN_NEARBY_STOPS_DETAILS);
@@ -642,7 +650,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
 
             case CURR_LOCATION_DETAILS:
-                getNearbyDetails(event.latLonDetails, event.forTrainsStopsNearby);
+                getStopsNearbyDetails(event.latLonDetails, event.forTrainsStopsNearby);
                 break;
 
             case NEARBY_LOCATION_DETAILS:

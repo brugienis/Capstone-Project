@@ -125,6 +125,7 @@ public class DbUtility {
         return nearbyStopsDetailsList;
     }
 
+    private final static String STOP_ID = "Stop iD ";
     public void fillInStopNames(List<NearbyStopsDetails> nearbyStopsDetailsList, Context context) {
 //        Log.v(TAG, "fillInStopNames start");
         String[] stopIds = new String[nearbyStopsDetailsList.size()];
@@ -132,7 +133,10 @@ public class DbUtility {
         for (NearbyStopsDetails details : nearbyStopsDetailsList) {
             stopIds[cnt++] = details.stopId;
         }
-        String[] colNames = {MptContract.StopDetailEntry.COLUMN_STOP_ID, MptContract.StopDetailEntry.COLUMN_LOCATION_NAME};
+        String[] colNames = {
+                MptContract.StopDetailEntry.COLUMN_STOP_ID,
+                MptContract.StopDetailEntry.COLUMN_LOCATION_NAME,
+                MptContract.StopDetailEntry.COLUMN_SUBURB};
 //        String[] stopIds = {"101", "102", "103", "104", "107", "108"};
         String whereClause = MptContract.StopDetailEntry.COLUMN_STOP_ID +
                 " IN (" +
@@ -144,7 +148,7 @@ public class DbUtility {
 //        Log.v(TAG, "whereClause: " + whereClause);
 
 //        Uri uri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.ANY_FAVORITE_FLAG);
-        Uri uri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.NON_FAVORITE_FLAG);
+        Uri uri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.ANY_FAVORITE_FLAG);
         Cursor cursor = context.getContentResolver().query(
                 uri,
                 colNames,
@@ -152,21 +156,43 @@ public class DbUtility {
                 stopIds,
                 null
         );
-//        Log.v(TAG, "cursor count: " + cursor.getCount());
-        Map<String, String> map = new HashMap<>();
+        Log.v(TAG, "cursor count: " + cursor.getCount());
+        Map<String, MissingDetails> map = new HashMap<>();
 
         int stopIdIdx;
         int locationNameIdx;
+        int suburbIdx;
         String locationName;
+        String suburb;
         while (cursor.moveToNext()) {
             stopIdIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_STOP_ID);
             locationNameIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LOCATION_NAME);
+            suburbIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_SUBURB);
             locationName = cursor.getString(locationNameIdx);
+            suburb = cursor.getString(suburbIdx);
 //            Log.v(TAG, cursor.getString(stopIdIdx) + "/" + cursor.getString(locationNameIdx));
-            if (locationName != null) {
-                map.put(cursor.getString(stopIdIdx), locationName);
+            if (locationName != null && suburb != null) {
+                map.put(cursor.getString(stopIdIdx), new MissingDetails(
+                        cursor.getString(locationNameIdx),
+                        cursor.getString(suburbIdx)
+                ));
             }
         }
         cursor.close();
+        for (String key : map.keySet()) {
+            MissingDetails missingDetails = map.get(key);
+            Log.v(TAG, "fillInStopNames - locationName/suburb: " + missingDetails.locationName + "/" + missingDetails.suburb);
+        }
+    }
+
+    class MissingDetails {
+        final String locationName;
+        final String suburb;
+
+        MissingDetails(String locationName, String suburb) {
+            this.locationName = locationName;
+            this.suburb = suburb;
+        }
+
     }
 }
