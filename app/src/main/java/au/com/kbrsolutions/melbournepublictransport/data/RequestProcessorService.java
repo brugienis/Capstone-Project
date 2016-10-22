@@ -183,7 +183,7 @@ public class RequestProcessorService extends IntentService {
                         if (dbUtility == null) {
                             dbUtility = new DbUtility();
                         }
-                        dbUtility.fillInStopNames(nearbyStopsDetailsList, getApplicationContext());
+                        dbUtility.fillInMissingDetails(nearbyStopsDetailsList, getApplicationContext());
 //                        List<NearbyStopsDetails> nearbyStopsDetailsList =
 //                                buildSimulatedNearbyDetails();
                         sendMessageToMainActivity(new MainActivityEvents.Builder(

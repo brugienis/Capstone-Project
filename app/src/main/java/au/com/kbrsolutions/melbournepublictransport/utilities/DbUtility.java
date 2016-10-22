@@ -126,8 +126,9 @@ public class DbUtility {
     }
 
     private final static String STOP_ID = "Stop iD ";
-    public void fillInStopNames(List<NearbyStopsDetails> nearbyStopsDetailsList, Context context) {
-//        Log.v(TAG, "fillInStopNames start");
+    public void fillInMissingDetails(List<NearbyStopsDetails> nearbyStopsDetailsList, Context context) {
+//    public List<NearbyStopsDetails> fillInMissingDetails(Map<Double, NearbyStopsDetails> nearbyStopsDetailsMap, Context context) {
+//        Log.v(TAG, "fillInMissingDetails start");
         String[] stopIds = new String[nearbyStopsDetailsList.size()];
         int cnt = 0;
         for (NearbyStopsDetails details : nearbyStopsDetailsList) {
@@ -157,7 +158,7 @@ public class DbUtility {
                 null
         );
         Log.v(TAG, "cursor count: " + cursor.getCount());
-        Map<String, MissingDetails> map = new HashMap<>();
+        Map<String, MissingDetails> missingDetailsMap = new HashMap<>();
 
         int stopIdIdx;
         int locationNameIdx;
@@ -172,16 +173,37 @@ public class DbUtility {
             suburb = cursor.getString(suburbIdx);
 //            Log.v(TAG, cursor.getString(stopIdIdx) + "/" + cursor.getString(locationNameIdx));
             if (locationName != null && suburb != null) {
-                map.put(cursor.getString(stopIdIdx), new MissingDetails(
+                missingDetailsMap.put(cursor.getString(stopIdIdx), new MissingDetails(
                         cursor.getString(locationNameIdx),
                         cursor.getString(suburbIdx)
                 ));
             }
         }
         cursor.close();
-        for (String key : map.keySet()) {
-            MissingDetails missingDetails = map.get(key);
-            Log.v(TAG, "fillInStopNames - locationName/suburb: " + missingDetails.locationName + "/" + missingDetails.suburb);
+        for (String key : missingDetailsMap.keySet()) {
+            MissingDetails missingDetails = missingDetailsMap.get(key);
+            Log.v(TAG, "fillInMissingDetails - locationName/suburb: " + missingDetails.locationName + "/" + missingDetails.suburb);
+        }
+
+        String stopId;
+        NearbyStopsDetails nearbyStopsDetails;
+        for (int i = 0; i < nearbyStopsDetailsList.size(); i++) {
+            stopId = nearbyStopsDetailsList.get(i).stopId;
+            nearbyStopsDetails = nearbyStopsDetailsList.get(i);
+            if (missingDetailsMap.containsKey(stopId)) {
+                nearbyStopsDetailsList.set(i, new NearbyStopsDetails(
+                        missingDetailsMap.get(stopId).locationName,
+                        nearbyStopsDetails.stopAddress,
+                        missingDetailsMap.get(stopId).suburb,
+                        nearbyStopsDetails.route_type,
+                        nearbyStopsDetails.stopId,
+                        nearbyStopsDetails.latitude,
+                        nearbyStopsDetails.longitude,
+                        nearbyStopsDetails.distance
+                ));
+            } else {
+
+            }
         }
     }
 
