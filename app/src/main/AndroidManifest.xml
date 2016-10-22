@@ -33,7 +33,6 @@
             android:name=".data.MptProvider"
             android:authorities="au.com.kbrsolutions.melbournepublictransport"
             android:exported="false"/>
-
         <!--
             Because android:exported is set to "false",
             the service is only available to this app.
@@ -51,6 +50,14 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+
+        <activity android:name=".activities.PreferencesActivity"
+                  android:parentActivityName=".activities.MainActivity"
+                  android:theme="@style/SettingsTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity"/>
         </activity>
 
         <!-- Departures Collection Widget -->
@@ -75,8 +82,6 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings">
-        </activity>
-        <activity android:name=".activities.PreferencesActivity">
         </activity>
     </application>
 

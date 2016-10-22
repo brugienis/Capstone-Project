@@ -58,6 +58,7 @@ public class PreferencesActivity extends AppCompatActivity
                 // FIXME: 19/10/2016 - check how to set attributions
 //                setListFooter(mAttribution);
             }
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 
@@ -263,6 +264,7 @@ public class PreferencesActivity extends AppCompatActivity
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_general);
             ((PreferencesActivity)getActivity()).bindPreferencesSummaryToValue();
+//            setListFooter(mAttribution);
         }
 
         Preference getPreference(String key) {
