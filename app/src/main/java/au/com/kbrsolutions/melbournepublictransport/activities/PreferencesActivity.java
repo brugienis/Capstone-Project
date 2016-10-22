@@ -58,6 +58,7 @@ public class PreferencesActivity extends AppCompatActivity
                 // FIXME: 19/10/2016 - check how to set attributions
 //                setListFooter(mAttribution);
             }
+            CHALLANGE - how to show UP button to returen to the Main activity?
 //            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
