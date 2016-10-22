@@ -12,8 +12,11 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.support.v7.widget.Toolbar;
 
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
@@ -58,9 +61,34 @@ public class PreferencesActivity extends AppCompatActivity
                 // FIXME: 19/10/2016 - check how to set attributions
 //                setListFooter(mAttribution);
             }
-            CHALLANGE - how to show UP button to returen to the Main activity?
+//            CHALLANGE - how to show UP button to returen to the Main activity?
 //            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+    /**
+     *
+     * Show toolbar with Up button.
+     *
+     * From David Passmore
+     *
+     * http://stackoverflow.com/questions/17849193/how-to-add-action-bar-from-support-library-into-preferenceactivity?rq=1
+     *
+     * @param savedInstanceState
+     */
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        LinearLayout root = (LinearLayout)findViewById(android.R.id.list).getParent().getParent().getParent();
+        Toolbar bar = (Toolbar) LayoutInflater.from(this).inflate(R.layout.settings_toolbar, root, false);
+        root.addView(bar, 0); // insert at top
+        bar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     void bindPreferencesSummaryToValue() {
