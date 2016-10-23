@@ -57,6 +57,9 @@ import au.com.kbrsolutions.melbournepublictransport.fragments.StopsNearbyFragmen
 import au.com.kbrsolutions.melbournepublictransport.utilities.CurrentGeoPositionFinder;
 import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
+import static au.com.kbrsolutions.melbournepublictransport.activities.MainActivity.FragmentsId.FAVORITE_STOPS;
+import static au.com.kbrsolutions.melbournepublictransport.activities.MainActivity.FragmentsId.NEXT_DEPARTURES;
+
 // git push -u origin
 // ^((?!GLHudOverlay).)*$
 // ^((?!OpenGLRenderer).)*$
@@ -189,21 +192,20 @@ public class MainActivity extends AppCompatActivity implements
 
         mCollapsingToolbar.setTitle(getResources().getString(R.string.title_favorite_stops));
 
-        BaseFragment topFragmment = getTopFragment();
+//        BaseFragment topFragmment = getTopFragment();
         String topFragmentTag = getTopFragmentTag();
 
         if (savedInstanceState != null) {   /* configuration changed */
             printBackStackFragments();
-            FragmentsId fragmentsId = topFragmment.getFragmentId();
-            if (topFragmentTag != null &&
-                    (fragmentsId == FragmentsId.FAVORITE_STOPS ||
-                            fragmentsId == FragmentsId.NEXT_DEPARTURES)) {
+            Log.v(TAG, "onCreate - topFragmentTag: " + topFragmentTag);
+//            FragmentsId fragmentsId = topFragmment.getFragmentId();
+            if (topFragmentTag.equals(FAVORITE_STOPS_TAG) || topFragmentTag.equals(NEXT_DEPARTURES_TAG)) {
                 fab.show();
             } else {
                 fab.hide();
             }
             int cnt = getSupportFragmentManager().getBackStackEntryCount();
-            if (cnt > 1) {
+            if (cnt > 0) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             } else {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -320,25 +322,26 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void handleFabClicked() {
-        BaseFragment baseFragment = getTopFragment();
+        BaseFragment topFragment = getTopFragment();
+        String topFragmentTag = getTopFragmentTag();
         FragmentsId fragmentsId;
-        if (baseFragment != null) {
-            fragmentsId = baseFragment.getFragmentId();
-            Log.v(TAG, "handleFabClicked - baseFragment/fragmentsId: " + baseFragment + "/" + fragmentsId);
+        if (topFragment != null) {
+            fragmentsId = topFragment.getFragmentId();
+            Log.v(TAG, "handleFabClicked - topFragment/fragmentsId: " + topFragment + "/" + fragmentsId);
             if (fragmentsId != null &&
-                    fragmentsId != FragmentsId.FAVORITE_STOPS &&
-                    fragmentsId != FragmentsId.NEXT_DEPARTURES
+                    fragmentsId != FAVORITE_STOPS &&
+                    fragmentsId != NEXT_DEPARTURES
                     ) {
                 showSnackBar("No logic to handle FAB touched in: " + fragmentsId, true);
                 return;
             }
         } else {
-            fragmentsId = FragmentsId.FAVORITE_STOPS;
+            fragmentsId = FAVORITE_STOPS;
 //            showSnackBar("No logic to handle FAB touched (not in BaseFragmment)", true);
 //            return;
         }
-        switch (fragmentsId) {
-            case FAVORITE_STOPS:
+        switch (topFragmentTag) {
+            case FAVORITE_STOPS_TAG:
                 if (mStopsFragment == null) {
                     mStopsFragment = new StopsFragment();
                     mStopsFragment.setFragmentId(FragmentsId.STOPS);
@@ -353,7 +356,7 @@ public class MainActivity extends AppCompatActivity implements
                 fab.hide();
             break;
 
-            case NEXT_DEPARTURES:
+            case NEXT_DEPARTURES_TAG:
                 startNextDeparturesSearch(mNextDeparturesFragment.getSearchStopDetails());
             break;
 
@@ -367,18 +370,19 @@ public class MainActivity extends AppCompatActivity implements
 
     private void showTopViewOnBackStackChanged() {
         BaseFragment baseFragment = getTopFragment();
-//        Log.v(TAG, "showTopViewOnBackStackChanged - baseFragment: " + baseFragment);
+        String tag = getTopFragmentTag();
+        Log.v(TAG, "showTopViewOnBackStackChanged - baseFragment/tag: " + baseFragment + "/" + tag);
         boolean showFab = false;
         if (baseFragment != null) {     /*  */
             FragmentsId fragmentsId = baseFragment.getFragmentId();
             Log.v(TAG, "showTopViewOnBackStackChanged - fragmentsId: " + fragmentsId);
-                if (fragmentsId == FragmentsId.FAVORITE_STOPS ||
+                if (fragmentsId == FAVORITE_STOPS ||
                         fragmentsId == FragmentsId.STOPS ||
                         fragmentsId == FragmentsId.STOPS_NEARBY) {
                     baseFragment.showView();
                 }
-                if (fragmentsId == FragmentsId.FAVORITE_STOPS ||
-                        fragmentsId == FragmentsId.NEXT_DEPARTURES) {
+                if (fragmentsId == FAVORITE_STOPS ||
+                        fragmentsId == NEXT_DEPARTURES) {
                     showFab = true;
                 }
             Log.v(TAG, "showTopViewOnBackStackChanged - setTitle");
@@ -397,7 +401,7 @@ public class MainActivity extends AppCompatActivity implements
     private void hideViewIfRequired() {
         BaseFragment baseFragment = getTopFragment();
             FragmentsId fragmentsId = baseFragment.getFragmentId();
-            if (fragmentsId == FragmentsId.FAVORITE_STOPS ||
+            if (fragmentsId == FAVORITE_STOPS ||
                             fragmentsId == FragmentsId.STOPS ||
                             fragmentsId == FragmentsId.STOPS_NEARBY) {
                 baseFragment.hideView();
@@ -413,7 +417,7 @@ public class MainActivity extends AppCompatActivity implements
                     stopDetails.locationName,
                     nextDepartureDetailsList,
                     stopDetails);
-            mNextDeparturesFragment.setFragmentId(FragmentsId.NEXT_DEPARTURES);
+            mNextDeparturesFragment.setFragmentId(NEXT_DEPARTURES);
         } else {
             mNextDeparturesFragment.setNewContent(
                     stopDetails.locationName,
@@ -421,7 +425,9 @@ public class MainActivity extends AppCompatActivity implements
                     stopDetails);
         }
         BaseFragment topFragment = getTopFragment();
-        if (topFragment.getFragmentId() == FragmentsId.NEXT_DEPARTURES) {
+        String topFragmentTag = getTopFragmentTag();
+//        if (topFragment.getFragmentId() == NEXT_DEPARTURES) {
+        if (topFragmentTag.equals(NEXT_DEPARTURES_TAG)) {
             return;
         }
         hideViewIfRequired();
@@ -529,7 +535,7 @@ public class MainActivity extends AppCompatActivity implements
         if (mFavoriteStopsFragment == null) {
             Log.v(TAG, "showFavoriteStops - adding new mFavoriteStopsFragment");
             mFavoriteStopsFragment = new FavoriteStopsFragment();
-            mFavoriteStopsFragment.setFragmentId(FragmentsId.FAVORITE_STOPS);
+            mFavoriteStopsFragment.setFragmentId(FAVORITE_STOPS);
             mFavoriteStopsFragment.setActionBarTitle(getResources().getString(R.string.title_favorite_stops));
         }
             getSupportFragmentManager()
@@ -545,7 +551,7 @@ public class MainActivity extends AppCompatActivity implements
     public void showUpdatedFavoriteStops() {
         if (mFavoriteStopsFragment != null) {
             mFavoriteStopsFragment.showView();
-            mFavoriteStopsFragment.setFragmentId(FragmentsId.FAVORITE_STOPS);
+            mFavoriteStopsFragment.setFragmentId(FAVORITE_STOPS);
         }
         printBackStackFragments();
         getSupportFragmentManager()
@@ -776,28 +782,39 @@ public class MainActivity extends AppCompatActivity implements
         return topFragmment;
     }
 
+
     private String getTopFragmentTag() {
         String tag = null;
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         if (cnt > 0) {
             tag = getSupportFragmentManager().getBackStackEntryAt(cnt - 1).getName();
+        } else {
+            tag = FAVORITE_STOPS_TAG;
         }
         return tag;
     }
 
     private void findFragments() {
-//        Log.v(TAG, "findFragments - start");
-        Fragment topFragmment = null;
+        Log.v(TAG, "findFragments - start");
+//        BaseFragment topFragmment = null;
+        BaseFragment topFragmment = mFavoriteStopsFragment = (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
+        if (topFragmment != null) {
+            topFragmment.hideView();
+        }
+        Log.v(TAG, "findFragments - mFavoriteStopsFragment: " + mFavoriteStopsFragment);
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         String tag;
-        for (int i = 0; i < cnt; i++) {
+        for (int i = 1; i < cnt; i++) {
             tag = getSupportFragmentManager().getBackStackEntryAt(i).getName();
-            topFragmment = getSupportFragmentManager().findFragmentByTag(tag);
+            topFragmment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
             ((BaseFragment)topFragmment).hideView();
+            Log.v(TAG, "findFragments - cnt/topFragment: " + cnt + "/" + topFragmment);
             switch (tag) {
-                case FAVORITE_STOPS_TAG:
-                    mFavoriteStopsFragment = (FavoriteStopsFragment) topFragmment;
-                    break;
+//                case FAVORITE_STOPS_TAG:
+////                    mFavoriteStopsFragment = (FavoriteStopsFragment) topFragmment;
+//                    mFavoriteStopsFragment = (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
+//                    Log.v(TAG, "findFragments - what? = mFavoriteStopsFragment: " + mFavoriteStopsFragment);
+//                    break;
 
                 case STATION_ON_MAP_TAG:
                     mStationOnMapFragment = (StationOnMapFragment) topFragmment;
