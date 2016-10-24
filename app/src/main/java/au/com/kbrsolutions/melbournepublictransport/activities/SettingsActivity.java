@@ -10,13 +10,13 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.support.v7.widget.Toolbar;
 
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
@@ -25,10 +25,12 @@ import com.google.android.gms.maps.model.LatLng;
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
-public class PreferencesActivity extends AppCompatActivity
-        implements Preference.OnPreferenceChangeListener, SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsActivity extends AppCompatActivity
+        implements Preference.OnPreferenceChangeListener,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     protected final static int PLACE_PICKER_REQUEST = 1000;
+    protected final static int WIDGET_STOP_REQUEST = 2000;
     private ImageView mAttribution;
     private SettingsFragment mDisplay;
 
@@ -94,6 +96,7 @@ public class PreferencesActivity extends AppCompatActivity
     void bindPreferencesSummaryToValue() {
         bindPreferenceSummaryToValueAndSetListener(mDisplay.findPreference(getString(R.string.pref_key_location)));
         bindPreferenceSummaryToValueAndSetListener(mDisplay.findPreference(getString(R.string.pref_key_use_device_location)));
+        bindPreferenceSummaryToValueAndSetListener(mDisplay.findPreference(getString(R.string.pref_key_widget_stop)));
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         currFixedLocationLatitude = sp.getFloat(getString(R.string.pref_key_location_latitude), Float.NaN);
@@ -113,6 +116,8 @@ public class PreferencesActivity extends AppCompatActivity
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         if ((key == getString(R.string.pref_key_use_device_location))) {
             currUseDeviceLocationOn = sp.getBoolean(key, false);
+        } else if ((key == getString(R.string.pref_key_widget_stop))) {
+            setPreferenceSummary(preference, sp.getString(getString(R.string.pref_key_widget_stop), ""));
         } else {
             setPreferenceSummary(preference, sp.getString(getString(R.string.pref_key_location), ""));
         }
@@ -189,8 +194,7 @@ public class PreferencesActivity extends AppCompatActivity
         }
     }
 
-    // This gets called after the preference is changed, which is important because we
-    // start our synchronization here
+    // This gets called after the preference is changed.
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.v(TAG, "onSharedPreferenceChanged - key: " + key);
@@ -292,7 +296,7 @@ public class PreferencesActivity extends AppCompatActivity
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_general);
-            ((PreferencesActivity)getActivity()).bindPreferencesSummaryToValue();
+            ((SettingsActivity)getActivity()).bindPreferencesSummaryToValue();
 //            setListFooter(mAttribution);
         }
 

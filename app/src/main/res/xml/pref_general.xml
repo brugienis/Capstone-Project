@@ -14,6 +14,14 @@
         android:defaultValue="true"
         android:summary="@string/pref_summary_use_device_location"/>
 
+    <au.com.kbrsolutions.melbournepublictransport.activities.WidgetStopEditTextPreference
+        android:key="@string/pref_key_widget_stop"
+        android:title="@string/pref_title_widget_stop"
+        android:defaultValue="@string/pref_widget_stop_default"
+        android:inputType="text"
+        android:singleLine="true"
+        />
+
     <!-- NOTE: EditTextPreference accepts EditText attributes. -->
     <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
     <EditTextPreference

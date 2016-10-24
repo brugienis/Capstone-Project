@@ -51,10 +51,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
-        <activity android:name=".activities.PreferencesActivity"
-                  android:parentActivityName=".activities.MainActivity"
-                  android:theme="@style/SettingsTheme">
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/SettingsTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MainActivity"/>
@@ -79,6 +79,8 @@
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS"/>
 
+        <activity android:name=".activities.WidgetStopsActivity">
+        </activity>
     </application>
 
 </manifest><!--

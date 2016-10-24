@@ -22,11 +22,16 @@
     <!-- Title for the location preference [CHAR LIMIT=30]  -->
     <string name="pref_title_location">Fixed location</string>
 
+    <!-- Key name for storing location in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_key_widget_stop" translatable="false">widget_stop</string>
+    <!-- Title for the location preference [CHAR LIMIT=30]  -->
+    <string name="pref_title_widget_stop">Widget stop</string>
+
     <!-- Key name for storing use fixed/device location in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_key_use_device_location">use_device_fixed_location</string>
     <string name="pref_title_use_device_location">Use device location</string>
     <string name="pref_err_use_device_location">\'fixed location\' not assigned</string>
-    <string name="pref_summary_use_device_location">Use real location to show stops
+    <string name="pref_summary_use_device_location">Use device location to show stops
         nearby, instead of fixed location.
     </string>
 
@@ -37,8 +42,14 @@
     <string name="pref_key_location_latitude" translatable="false">loc-latitude</string>
     <string name="pref_key_location_longitude" translatable="false">loc-longitude</string>
 
-    <!-- Default postal code for location preference [CHAR LIMIT=NONE] -->
+    <!-- Default postal text for location preference [CHAR LIMIT=NONE] -->
     <string name="pref_location_default" translatable="false">Not assigned</string>
+
+    <!-- Default text code for location preference [CHAR LIMIT=NONE] -->
+    <string name="pref_widget_stop_default" translatable="false">Not assigned</string>
+
+    <!-- Content description for the get current widhet stop button in the location preference -->
+    <string name="pref_current_widget_stop_desc">Show this stop on widget</string>
 
     <!-- Content description for the get current location button in the location preference -->
     <string name="pref_current_location_desc">Use my location</string>

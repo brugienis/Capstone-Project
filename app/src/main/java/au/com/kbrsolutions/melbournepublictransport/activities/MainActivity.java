@@ -527,6 +527,11 @@ public class MainActivity extends AppCompatActivity implements
         startService(intent);
     }
 
+    @Override
+    public void updateWidgetStopDetails(String stopId, String locationName) {
+        // this methd is used in SettingsActivity
+    }
+
     /**
      * Show favorite stops after user pressed Back or Up button.
      */
@@ -624,7 +629,7 @@ public class MainActivity extends AppCompatActivity implements
 
         if (id == R.id.action_settings) {
 //            startActivity(new Intent(this, SettingsActivity.class));
-            startActivity(new Intent(this, PreferencesActivity.class));
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
 

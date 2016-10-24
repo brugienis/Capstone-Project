@@ -1,7 +1,6 @@
 package au.com.kbrsolutions.melbournepublictransport.fragments;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -17,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -48,6 +48,7 @@ public class FavoriteStopsFragment
     private boolean isVisible;
     private FavoriteStopsAdapter mFavoriteStopDetailAdapter;
     private OnFavoriteStopsFragmentInteractionListener mListener;
+    private boolean isInSettingsActivity;
 
     private static final int STOP_DETAILS_LOADER = 0;
 
@@ -158,6 +159,14 @@ public class FavoriteStopsFragment
         mListView.setAdapter(mFavoriteStopDetailAdapter);
         mListView.setNestedScrollingEnabled(true);
 
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                handleRowSelected(adapterView, position);
+            }
+        });
+
         mEmptyView = (TextView) mRootView.findViewById(R.id.emptyView);
         setEmptyViewText();
         return mRootView;
@@ -209,9 +218,22 @@ public class FavoriteStopsFragment
         mFavoriteStopDetailAdapter.swapCursor(null);
     }
 
-//    public void showFavoriteStops() {
-//        showView();
-//    }
+    public void setIsInSettingsActivity() {
+        isInSettingsActivity = true;
+    }
+
+    private void handleRowSelected(AdapterView<?> adapterView, int position) {
+        // CursorAdapter returns a cursor at the correct position for getItem(), or null
+        // if it cannot seek to that position.
+        Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+        if (cursor != null) {
+            if (isInSettingsActivity) {
+                mListener.updateWidgetStopDetails(
+                        cursor.getString(COL_STOP_DETAILS_STOP_ID),
+                        cursor.getString(COL_STOP_DETAILS_LOCATION_NAME));
+            }
+        }
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -295,15 +317,16 @@ public class FavoriteStopsFragment
         void getDisruptionsDetails();
         void updateStopDetailRow(int id, String favoriteColumnValue);
         void reloadDatabase();
+        void updateWidgetStopDetails(String stopId, String locationName);
     }
 
 
-    public void removeSelectedStop(StopDetails stopDetails) {
-        ContentValues updatedValues = new ContentValues();
-        updatedValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, "n");
-        int count = getActivity().getContentResolver().update(
-                MptContract.StopDetailEntry.CONTENT_URI, updatedValues, MptContract.StopDetailEntry._ID + "= ?",
-                new String [] { String.valueOf(stopDetails.id)});
-    }
+//    public void removeSelectedStop(StopDetails stopDetails) {
+//        ContentValues updatedValues = new ContentValues();
+//        updatedValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, "n");
+//        int count = getActivity().getContentResolver().update(
+//                MptContract.StopDetailEntry.CONTENT_URI, updatedValues, MptContract.StopDetailEntry._ID + "= ?",
+//                new String [] { String.valueOf(stopDetails.id)});
+//    }
 
 }
