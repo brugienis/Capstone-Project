@@ -198,13 +198,13 @@ public class RemoteMptEndpointUtil {
                 String str = fmt.print(JodaDateTimeUtility.getLocalTimeFromUtcString(departureTimeUtc));
 
                 // FIXME: 10/10/2016 remove below lines after test
-                String realTimeUtc = oneBroadDeparturesValueObject.getString("time_realtime_utc");
-                String schedTimeUtc = oneBroadDeparturesValueObject.getString("time_timetable_utc");
-                if (!realTimeUtc.equals("null")) {
-                    Log.v(TAG, "getBroadNextDepartures - scheduled/real: " +
-                            fmt.print(JodaDateTimeUtility.getLocalTimeFromUtcString(schedTimeUtc)) + "/" +
-                            fmt.print(JodaDateTimeUtility.getLocalTimeFromUtcString(realTimeUtc)));
-                }
+//                String realTimeUtc = oneBroadDeparturesValueObject.getString("time_realtime_utc");
+//                String schedTimeUtc = oneBroadDeparturesValueObject.getString("time_timetable_utc");
+//                if (!realTimeUtc.equals("null")) {
+//                    Log.v(TAG, "getBroadNextDepartures - scheduled/real: " +
+//                            fmt.print(JodaDateTimeUtility.getLocalTimeFromUtcString(schedTimeUtc)) + "/" +
+//                            fmt.print(JodaDateTimeUtility.getLocalTimeFromUtcString(realTimeUtc)));
+//                }
                 // FIXME: 10/10/2016 remove above lines after test
 
                 JSONObject platform = oneBroadDeparturesValueObject.getJSONObject("platform");

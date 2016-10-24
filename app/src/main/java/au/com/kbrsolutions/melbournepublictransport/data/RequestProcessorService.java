@@ -68,7 +68,7 @@ public class RequestProcessorService extends IntentService {
         if (extras != null) {
             request = extras.getString(REQUEST);
         }
-        Log.v(TAG, "onHandleIntent - request: " + request);
+//        Log.v(TAG, "onHandleIntent - request: " + request);
 
         ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
@@ -130,7 +130,7 @@ public class RequestProcessorService extends IntentService {
 
                     case SHOW_NEXT_DEPARTURES:
                         StopDetails stopDetails = extras.getParcelable(STOP_DETAILS);
-                        Log.v(TAG, "onHandleIntent - stopDetails: " + stopDetails);
+//                        Log.v(TAG, "onHandleIntent - stopDetails: " + stopDetails);
 //                        getResources().getString(R.string.all_stops_train);
                         List<NextDepartureDetails> nextDepartureDetailsList =
                                 RemoteMptEndpointUtil.getBroadNextDepartures(
@@ -141,7 +141,7 @@ public class RequestProcessorService extends IntentService {
 
 //                        List<NextDepartureDetails> nextDepartureDetailsList =
 //                          buildSimulatedDepartureDetails();
-                        Log.v(TAG, "onHandleIntent - stopId: " + nextDepartureDetailsList.get(0));
+//                        Log.v(TAG, "onHandleIntent - stopId: " + nextDepartureDetailsList.get(0));
                         sendMessageToMainActivity(new MainActivityEvents.Builder(
                                 MainActivityEvents.MainEvents.NEXT_DEPARTURES_DETAILS)
                                 .setNextDepartureDetailsList(nextDepartureDetailsList)

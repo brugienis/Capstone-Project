@@ -720,6 +720,10 @@ public class MainActivity extends AppCompatActivity implements
     private void showTopFragment() {
 //        Log.v(TAG, "showTopFragment - start");
         Fragment topFragmment = null;
+        if (mFavoriteStopsFragment != null) {
+            mFavoriteStopsFragment.hideView();
+            topFragmment = mFavoriteStopsFragment;
+        }
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         String tag;
         for (int i = 0; i < cnt; i++) {
@@ -755,6 +759,9 @@ public class MainActivity extends AppCompatActivity implements
     private void showFragmentsOnBackStackVisibility() {
 //        Log.v(TAG, "showFragmentsOnBackStackVisibility - start");
         BaseFragment topFragmment;
+        if (mFavoriteStopsFragment != null) {
+            mFavoriteStopsFragment.isRootViewVisible();
+        }
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         String tag;
         for (int i = 0; i < cnt; i++) {
@@ -795,20 +802,21 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void findFragments() {
-        Log.v(TAG, "findFragments - start");
+//        Log.v(TAG, "findFragments - start");
 //        BaseFragment topFragmment = null;
         BaseFragment topFragmment = mFavoriteStopsFragment = (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
         if (topFragmment != null) {
+//            Log.v(TAG, "findFragments - hiding view: " + topFragmment);
             topFragmment.hideView();
         }
-        Log.v(TAG, "findFragments - mFavoriteStopsFragment: " + mFavoriteStopsFragment);
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
+//        Log.v(TAG, "findFragments - cnt/mFavoriteStopsFragment: " + cnt + "/" + mFavoriteStopsFragment);
         String tag;
-        for (int i = 1; i < cnt; i++) {
+        for (int i = 0; i < cnt; i++) {
             tag = getSupportFragmentManager().getBackStackEntryAt(i).getName();
             topFragmment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
             ((BaseFragment)topFragmment).hideView();
-            Log.v(TAG, "findFragments - cnt/topFragment: " + cnt + "/" + topFragmment);
+//            Log.v(TAG, "findFragments - cnt/tag/topFragment: " + cnt + "/"  + tag + "/" + topFragmment);
             switch (tag) {
 //                case FAVORITE_STOPS_TAG:
 ////                    mFavoriteStopsFragment = (FavoriteStopsFragment) topFragmment;
@@ -847,6 +855,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         if (topFragmment != null) {
             ((BaseFragment)topFragmment).showView();
+//            Log.v(TAG, "findFragments - showing view: " + topFragmment);
         }
 //        showFragmentsOnBackStackVisibility();
 //        Log.v(TAG, "findFragments - end");
