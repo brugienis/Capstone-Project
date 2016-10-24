@@ -216,7 +216,7 @@ public class SettingsActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.v(TAG, "onActivityResult - start");
+        Log.v(TAG, "onActivityResult - start - requestCode: " + requestCode);
         // Check to see if the result is from our Place Picker intent
         if (requestCode == PLACE_PICKER_REQUEST) {
             // Make sure the request was successful

@@ -1,5 +1,7 @@
 package au.com.kbrsolutions.melbournepublictransport.activities;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -16,6 +18,9 @@ public class WidgetStopsActivity
         implements FavoriteStopsFragment.OnFavoriteStopsFragmentInteractionListener {
 
     private FavoriteStopsFragment mFavoriteStopsFragment;
+
+    public static final String WIDGET_STOP_ID = "widget_stop_id";
+    public static final String WIDGET_LOCATION_NAME = "widget_location_name";
     private static final String FAVORITE_STOPS_TAG = "favorite_stops_tag";
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
@@ -49,6 +54,11 @@ public class WidgetStopsActivity
     @Override
     public void updateWidgetStopDetails(String stopId, String locationName) {
         Log.v(TAG, "updateWidgetStopDetails - stopId/locationName: " + stopId + "/" + locationName);
+        Intent intent = new Intent();
+        intent.putExtra(WIDGET_STOP_ID, stopId);
+        intent.putExtra(WIDGET_LOCATION_NAME, locationName);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 
 }

@@ -147,7 +147,8 @@ public class FavoriteStopsFragment
                 getActivity().getApplicationContext(),
                 null,
                 0,
-                mListener);
+                mListener,
+                isInSettingsActivity);
 
         // Inflate the layout for this fragment
         mRootView = inflater.inflate(R.layout.fragment_favorite_stops, container, false);

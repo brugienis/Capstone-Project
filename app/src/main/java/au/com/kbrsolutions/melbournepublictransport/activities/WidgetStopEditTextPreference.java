@@ -61,8 +61,12 @@ public class WidgetStopEditTextPreference extends EditTextPreference {
             @Override
             public void onClick(View v) {
                 Context context = getContext();
+//                Activity settingsActivity = (SettingsActivity) context;
+//                    settingsActivity.startActivityForResult(
+//                            new Intent(settingsActivity, WidgetStopsActivity.class),
+//                            SettingsActivity.WIDGET_STOP_REQUEST);
                 Activity settingsActivity = (SettingsActivity) context;
-                    settingsActivity.startActivityForResult(
+                settingsActivity.startActivityForResult(
                             new Intent(settingsActivity, WidgetStopsActivity.class),
                             SettingsActivity.WIDGET_STOP_REQUEST);
             }

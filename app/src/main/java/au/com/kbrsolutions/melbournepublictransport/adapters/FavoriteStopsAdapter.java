@@ -24,7 +24,7 @@ import static au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteSto
 
 public class FavoriteStopsAdapter extends CursorAdapter {
 
-    //    private FavoriteStopFragmentRv mFavoriteStopFragmentRv;
+    private static boolean mIsInSettingsActivity;
     private static FavoriteStopsFragment.OnFavoriteStopsFragmentInteractionListener mListener;
 
     private static final String TAG = FavoriteStopsAdapter.class.getSimpleName();
@@ -32,34 +32,39 @@ public class FavoriteStopsAdapter extends CursorAdapter {
     public static class ViewHolder {
         public final TextView locationNameView;
         public StopDetails stopDetails;
-//        FavoriteStopFragmentRv mFavoriteStopFragmentRv;
 
         public ViewHolder(View view) {
             locationNameView = (TextView) view.findViewById(R.id.locationNameId);
-
             ImageView mapImageId = (ImageView) view.findViewById(R.id.mapImageId);
-            mapImageId.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showSelectedStopOnMap(new LatLngDetails(stopDetails.latitude, stopDetails.longitude));
-                }
-            });
-
             ImageView departuresImageId = (ImageView) view.findViewById(R.id.departuresImageId);
-            departuresImageId.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startNextDeparturesSearch(stopDetails);
-                }
-            });
-
             ImageView garbageInfoImage = (ImageView) view.findViewById(R.id.garbageImageId);
-            garbageInfoImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    updateStopDetailRow(stopDetails);
-                }
-            });
+
+            if (mIsInSettingsActivity) {
+                mapImageId.setVisibility(View.GONE);
+                departuresImageId.setVisibility(View.GONE);
+                garbageInfoImage.setVisibility(View.GONE);
+            } else {
+                mapImageId.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showSelectedStopOnMap(new LatLngDetails(stopDetails.latitude, stopDetails.longitude));
+                    }
+                });
+
+                departuresImageId.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startNextDeparturesSearch(stopDetails);
+                    }
+                });
+
+                garbageInfoImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        updateStopDetailRow(stopDetails);
+                    }
+                });
+            }
         }
     }
 
@@ -77,9 +82,15 @@ public class FavoriteStopsAdapter extends CursorAdapter {
         mListener.updateStopDetailRow(stopDetails.id, NON_FAVORITE_VALUE);
     }
 
-    public FavoriteStopsAdapter(Context context, Cursor c, int flags, FavoriteStopsFragment.OnFavoriteStopsFragmentInteractionListener listener) {
+    public FavoriteStopsAdapter(
+            Context context,
+            Cursor c,
+            int flags,
+            FavoriteStopsFragment.OnFavoriteStopsFragmentInteractionListener listener,
+            boolean isInSettingsActivity) {
         super(context, c, flags);
         mListener = listener;
+        mIsInSettingsActivity = isInSettingsActivity;
     }
 
     @Override
