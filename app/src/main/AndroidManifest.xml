@@ -66,7 +66,7 @@
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-                <action android:name="au.com.kbrsolutions.melbournepublictransport.ACTION_DEPARTURES_UPDATED"/>
+                <action android:name="au.com.kbrsolutions.melbournepublictransport.WIDGET_STOP_UPDATED"/>
             </intent-filter>
 
             <meta-data

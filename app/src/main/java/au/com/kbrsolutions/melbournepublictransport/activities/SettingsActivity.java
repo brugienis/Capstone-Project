@@ -32,14 +32,17 @@ public class SettingsActivity extends AppCompatActivity
         implements Preference.OnPreferenceChangeListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    protected final static int PLACE_PICKER_REQUEST = 1000;
-    protected final static int WIDGET_STOP_REQUEST = 2000;
     private ImageView mAttribution;
     private SettingsFragment mDisplay;
 
     private boolean currUseDeviceLocationOn;
     private float currFixedLocationLatitude;
     private float currFixedLocationLongitude;
+
+    protected static final int PLACE_PICKER_REQUEST = 1000;
+    protected static final int WIDGET_STOP_REQUEST = 2000;
+    public static final String WIDGET_STOP_UPDATED =
+            "au.com.kbrsolutions.melbournepublictransport.WIDGET_STOP_UPDATED";
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
@@ -290,11 +293,24 @@ public class SettingsActivity extends AppCompatActivity
                 if (widgetStopPreference != null) {
                     setPreferenceSummary(widgetStopPreference, locationName);
                 }
+                sendBroadcastMessageToNextDeparturesWidget();
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
         Log.v(TAG, "onActivityResult - end");
+    }
+
+    /**
+     *
+     * When widget stop change send broadcast message to the Next Departures widget.
+     *
+     */
+    private void sendBroadcastMessageToNextDeparturesWidget() {
+        // Setting the package ensures that only components in our app will receive the broadcast
+        Intent dataUpdatedIntent = new Intent(WIDGET_STOP_UPDATED)
+                .setPackage(getApplicationContext().getPackageName());
+        sendBroadcast(dataUpdatedIntent);
     }
 
     // Registers a shared preference change listener that gets notified when preferences change

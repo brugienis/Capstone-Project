@@ -109,7 +109,7 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
          */
         @Override
         public RemoteViews getViewAt(int position) {
-            Log.v(TAG, "getViewAt - position: " + position);
+//            Log.v(TAG, "getViewAt - position: " + position);
             if (position == AdapterView.INVALID_POSITION ||
                     mNextDepartureDetails == null || mNextDepartureDetails.size() - 1 < position) {
                 Log.v(TAG, "getViewAt - INVALID_POSITION");
@@ -122,7 +122,7 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
             views.setTextViewText(R.id.directionName, mNextDepartureDetails.get(position).directionName);
             views.setTextViewText(R.id.runType, String.valueOf(mNextDepartureDetails.get(position).runType));
             views.setTextViewText(R.id.departureTimeId, String.valueOf(mNextDepartureDetails.get(position).utcDepartureTime));
-            Log.v(TAG, "getViewAt - populated podition: " + position);
+//            Log.v(TAG, "getViewAt - populated podition: " + position);
 
             final Intent fillInIntent = new Intent();
 
@@ -131,7 +131,7 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
 //            fillInIntent.putExtra(MainActivity.WIDGET_SELECTED_ROW_IDX, position);
 //            views.setOnClickFillInIntent(R.id.widget_scores_collection_list_item, fillInIntent);
             views.setOnClickFillInIntent(R.id.widgetDeparturesCollectionList, fillInIntent);
-            Log.v(TAG, "getViewAt - views: " + views.getLayoutId());
+//            Log.v(TAG, "getViewAt - views: " + views.getLayoutId());
             return views;
         }
 
@@ -148,7 +148,7 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
 
         @Override
         public long getItemId(int position) {
-            Log.v(TAG, "getItemId - start");
+//            Log.v(TAG, "getItemId - start");
 //            if (mCursor.moveToPosition(position))
 //                return mCursor.getLong(ID_IDX);
             return position;
