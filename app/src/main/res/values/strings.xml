@@ -13,19 +13,21 @@
     <string name="no_departures_detail">No departure details</string>
     <string name="express_train">Express</string>
     <string name="all_stops_train">All stops</string>
-    <string name="database_load_status">database_load_status</string>
-    <string name="widget_stop_id">widget_stop_id</string>
-    <string name="widget_stop_name">widget_stop_name</string>
+    <string name="database_load_status">database_load_status</string>≈
 
     <!-- Key name for storing location in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_key_location" translatable="false">location</string>
     <!-- Title for the location preference [CHAR LIMIT=30]  -->
     <string name="pref_title_location">Fixed location</string>
 
-    <!-- Key name for storing location in SharedPreferences [CHAR LIMIT=NONE] -->
-    <string name="pref_key_widget_stop" translatable="false">widget_stop</string>
+    <!-- Key name for storing widget stop id in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_key_widget_stop_id">widget_stop_id</string>
+
     <!-- Title for the location preference [CHAR LIMIT=30]  -->
     <string name="pref_title_widget_stop">Widget stop</string>
+
+    <!-- Key name for storing widget stop name in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_key_widget_stop_name">widget_stop_name</string>
 
     <!-- Key name for storing use fixed/device location in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_key_use_device_location">use_device_fixed_location</string>

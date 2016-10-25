@@ -51,7 +51,7 @@ public class DeparturesCollectionWidgetProvider extends AppWidgetProvider {
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
                 views.setOnClickPendingIntent(R.id.widget, pendingIntent);
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-                String stopName = sp.getString(context.getString(R.string.widget_stop_name), "-1");
+                String stopName = sp.getString(context.getString(R.string.pref_key_widget_stop_name), "-1");
                 Log.v(TAG, "onUpdate - start - stopName: " + stopName);
                 views.setTextViewText(R.id.widgetSelectedStopName, stopName);
 

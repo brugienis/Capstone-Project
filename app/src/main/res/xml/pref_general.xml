@@ -15,7 +15,7 @@
         android:summary="@string/pref_summary_use_device_location"/>
 
     <au.com.kbrsolutions.melbournepublictransport.activities.WidgetStopEditTextPreference
-        android:key="@string/pref_key_widget_stop"
+        android:key="@string/pref_key_widget_stop_name"
         android:title="@string/pref_title_widget_stop"
         android:defaultValue="@string/pref_widget_stop_default"
         android:inputType="text"

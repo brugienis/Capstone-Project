@@ -56,7 +56,7 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
             @Override
             public void onDataSetChanged() {
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                String stopId = sp.getString(getString(R.string.widget_stop_id), "-1");
+                String stopId = sp.getString(getString(R.string.pref_key_widget_stop_id), "-1");
                 Log.v(TAG, "onDataSetChanged - start - stopId: " + stopId);
 //                if (mCursor != null) {
 //                    mCursor.close();
