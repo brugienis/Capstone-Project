@@ -95,7 +95,7 @@ public class FavoriteStopsFragment
         if (mListener != null) {
             ((Activity) mListener).invalidateOptionsMenu();
         }
-        Log.v(TAG, "showView: " + String.format("0x%08X", this.hashCode()));
+//        Log.v(TAG, "showView: " + String.format("0x%08X", this.hashCode()));
     }
 
     public void isRootViewVisible() {
@@ -128,11 +128,11 @@ public class FavoriteStopsFragment
     public void databaseIsEmpty(boolean databaseIsEmpty) {
         mDatabaseIsEmpty = databaseIsEmpty;
         setEmptyViewText();
-        Log.v(TAG, "databaseIsEmpty - mDatabaseIsEmpty: " + mDatabaseIsEmpty);
+//        Log.v(TAG, "databaseIsEmpty - mDatabaseIsEmpty: " + mDatabaseIsEmpty);
     }
 
     private void setEmptyViewText() {
-        Log.v(TAG, "setEmptyViewText - mDatabaseIsEmpty: " + mDatabaseIsEmpty);
+//        Log.v(TAG, "setEmptyViewText - mDatabaseIsEmpty: " + mDatabaseIsEmpty);
         mEmptyView.setText(mDatabaseIsEmpty ?
                 getActivity().getResources().getString(R.string.database_is_empty) :
                 getActivity().getResources().getString(R.string.no_favorite_stops_selected)

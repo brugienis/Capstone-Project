@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
@@ -32,7 +31,7 @@ public class WidgetStopsActivity
         setContentView(R.layout.activity_main);
 
         if (mFavoriteStopsFragment == null) {
-            Log.v(TAG, "showFavoriteStops - adding new mFavoriteStopsFragment");
+//            Log.v(TAG, "showFavoriteStops - adding new mFavoriteStopsFragment");
             mFavoriteStopsFragment = new FavoriteStopsFragment();
             mFavoriteStopsFragment.setFragmentId(FAVORITE_STOPS);
             mFavoriteStopsFragment.setActionBarTitle(getResources().getString(R.string.title_favorite_stops));
@@ -53,7 +52,7 @@ public class WidgetStopsActivity
 
     @Override
     public void updateWidgetStopDetails(String stopId, String locationName) {
-        Log.v(TAG, "updateWidgetStopDetails - stopId/locationName: " + stopId + "/" + locationName);
+//        Log.v(TAG, "updateWidgetStopDetails - stopId/locationName: " + stopId + "/" + locationName);
         Intent intent = new Intent();
         intent.putExtra(WIDGET_STOP_ID, stopId);
         intent.putExtra(WIDGET_LOCATION_NAME, locationName);
