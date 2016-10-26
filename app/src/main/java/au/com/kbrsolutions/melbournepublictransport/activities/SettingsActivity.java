@@ -1,6 +1,5 @@
 package au.com.kbrsolutions.melbournepublictransport.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -16,7 +15,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -25,7 +23,6 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
-import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragment;
 import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
 import static au.com.kbrsolutions.melbournepublictransport.activities.WidgetStopsActivity.WIDGET_LOCATION_NAME;
@@ -37,6 +34,7 @@ public class SettingsActivity extends AppCompatActivity
 
     private ImageView mAttribution;
     private SettingsFragment mSettingsFragment;
+//    private PreferencesFragment mPreferencesFragment;
 
     private boolean currUseDeviceLocationOn;
     private float currFixedLocationLatitude;
@@ -60,6 +58,11 @@ public class SettingsActivity extends AppCompatActivity
                     .beginTransaction()
                     .add(android.R.id.content, mSettingsFragment)
                     .commit();
+//            mPreferencesFragment = new PreferencesFragment();
+//            getFragmentManager()
+//                    .beginTransaction()
+//                    .add(android.R.id.content, mPreferencesFragment)
+//                    .commit();
 
             // If we are using a PlacePicker location, we need to show attributions.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -114,37 +117,37 @@ public class SettingsActivity extends AppCompatActivity
         });
     }
 
-    void bindPreferencesSummaryToValue() {
-        bindPreferenceSummaryToValueAndSetListener(mSettingsFragment.findPreference(getString(R.string.pref_key_location)));
-        bindPreferenceSummaryToValueAndSetListener(mSettingsFragment.findPreference(getString(R.string.pref_key_use_device_location)));
-        bindPreferenceSummaryToValueAndSetListener(mSettingsFragment.findPreference(getString(R.string.pref_key_widget_stop_name)));
-
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        currFixedLocationLatitude = sp.getFloat(getString(R.string.pref_key_location_latitude), Float.NaN);
-        currFixedLocationLongitude = sp.getFloat(getString(R.string.pref_key_location_longitude), Float.NaN);
-    }
+//    void bindPreferencesSummaryToValue() {
+//        bindPreferenceSummaryToValueAndSetListener(mSettingsFragment.findPreference(getString(R.string.pref_key_location)));
+//        bindPreferenceSummaryToValueAndSetListener(mSettingsFragment.findPreference(getString(R.string.pref_key_use_device_location)));
+//        bindPreferenceSummaryToValueAndSetListener(mSettingsFragment.findPreference(getString(R.string.pref_key_widget_stop_name)));
+//
+//        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+//        currFixedLocationLatitude = sp.getFloat(getString(R.string.pref_key_location_latitude), Float.NaN);
+//        currFixedLocationLongitude = sp.getFloat(getString(R.string.pref_key_location_longitude), Float.NaN);
+//    }
 
     /**
      * Attaches a listener, so the summary is always updated with the preference value.
      * Also fires the listener once, to initialize the summary (so it shows up before the value
      * is changed.)
      */
-    private void bindPreferenceSummaryToValueAndSetListener(Preference preference) {
-        String key = preference.getKey();
-//        Log.v(TAG, "bindPreferenceSummaryToValueAndSetListener - key: " + key);
-        // Set the listener to watch for value changes.
-        preference.setOnPreferenceChangeListener(this);
-
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        if ((key == getString(R.string.pref_key_use_device_location))) {
-            currUseDeviceLocationOn = sp.getBoolean(key, false);
-        } else if ((key == getString(R.string.pref_key_widget_stop_name))) {
-//            Log.v(TAG, "bindPreferenceSummaryToValueAndSetListener - value: " + sp.getString(getString(R.string.pref_key_widget_stop_name), ""));
-            setPreferenceSummary(preference, sp.getString(getString(R.string.pref_key_widget_stop_name), ""));
-        } else {
-            setPreferenceSummary(preference, sp.getString(getString(R.string.pref_key_location), ""));
-        }
-    }
+//    private void bindPreferenceSummaryToValueAndSetListener(Preference preference) {
+//        String key = preference.getKey();
+////        Log.v(TAG, "bindPreferenceSummaryToValueAndSetListener - key: " + key);
+//        // Set the listener to watch for value changes.
+//        preference.setOnPreferenceChangeListener(this);
+//
+//        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+//        if ((key == getString(R.string.pref_key_use_device_location))) {
+//            currUseDeviceLocationOn = sp.getBoolean(key, false);
+//        } else if ((key == getString(R.string.pref_key_widget_stop_name))) {
+////            Log.v(TAG, "bindPreferenceSummaryToValueAndSetListener - value: " + sp.getString(getString(R.string.pref_key_widget_stop_name), ""));
+//            setPreferenceSummary(preference, sp.getString(getString(R.string.pref_key_widget_stop_name), ""));
+//        } else {
+//            setPreferenceSummary(preference, sp.getString(getString(R.string.pref_key_location), ""));
+//        }
+//    }
 
     /**
      *
@@ -161,7 +164,7 @@ public class SettingsActivity extends AppCompatActivity
     @Override
     public boolean onPreferenceChange(Preference preference, Object value) {
         String key = preference.getKey();
-//        Log.v(TAG, "onPreferenceChange - key: " + preference.getKey());
+        Log.v(TAG, "onPreferenceChange - key: " + preference.getKey());
         if ((key == getString(R.string.pref_key_use_device_location))) {
 //            Log.v(TAG, "onPreferenceChange - currUseDeviceLocationOn: " + currUseDeviceLocationOn);
             boolean validationOk = validateUseDeviceFixedLocationValue((boolean) value);
@@ -179,11 +182,11 @@ public class SettingsActivity extends AppCompatActivity
     }
 
     private boolean validateUseDeviceFixedLocationValue(boolean newUseDeviceLocationOn) {
-//        Log.v(TAG, "validateUseDeviceFixedLocationValue - currUseDeviceLocationOn/newUseDeviceLocationOn: " +
-//                currUseDeviceLocationOn + "/" +
-//                newUseDeviceLocationOn + "/" +
-//                currFixedLocationLatitude + "/" +
-//                currFixedLocationLongitude);
+        Log.v(TAG, "validateUseDeviceFixedLocationValue - currUseDeviceLocationOn/newUseDeviceLocationOn: " +
+                currUseDeviceLocationOn + "/" +
+                newUseDeviceLocationOn + "/" +
+                currFixedLocationLatitude + "/" +
+                currFixedLocationLongitude);
 
 //        currFixedLocationLatitude = Float.NaN;
 
@@ -200,7 +203,7 @@ public class SettingsActivity extends AppCompatActivity
     private void setPreferenceSummary(Preference preference, Object value) {
         String stringValue = value.toString();
         String key = preference.getKey();
-//        Log.v(TAG, "setPreferenceSummary - key/stringValue: " + key + "/" + stringValue);
+        Log.v(TAG, "setPreferenceSummary - key/stringValue: " + key + "/" + stringValue);
 
         if (preference instanceof ListPreference) {
 //            Log.v(TAG, "setPreferenceSummary - on ListPreference");
@@ -229,7 +232,7 @@ public class SettingsActivity extends AppCompatActivity
     // This gets called after the preference is changed.
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-//        Log.v(TAG, "onSharedPreferenceChanged - key: " + key);
+        Log.v(TAG, "onSharedPreferenceChanged - key: " + key);
         if ( key.equals(getString(R.string.pref_key_location)) ) {
 //            Log.v(TAG, "onSharedPreferenceChanged - in 'location'");
             // we've changed the location
@@ -278,7 +281,9 @@ public class SettingsActivity extends AppCompatActivity
                 editor.commit();
                 currFixedLocationLatitude = (float) latLong.latitude;
 
-                Preference locationPreference = mSettingsFragment.getPreference(getString(R.string.pref_key_location));
+//                Preference locationPreference = mSettingsFragment.getPreference(getString(R.string.pref_key_location));
+                Preference locationPreference = mSettingsFragment.findPreference(getString(R.string.pref_key_location));
+                //findPreference(key);
 //                Log.v(TAG, "onActivityResult - locationPreference: " + locationPreference);
                 if (locationPreference != null) {
                     setPreferenceSummary(locationPreference, address);
@@ -309,7 +314,7 @@ public class SettingsActivity extends AppCompatActivity
                 editor.putString(getString(R.string.pref_key_widget_stop_name), locationName);
                 editor.commit();
 //                Log.v(TAG, "onActivityResult - stopId: " + stopId + "/" + locationName);
-                Preference widgetStopPreference = mSettingsFragment.getPreference(getString(R.string.pref_key_widget_stop_name));
+                Preference widgetStopPreference = mSettingsFragment.findPreference(getString(R.string.pref_key_widget_stop_name));
 //                Log.v(TAG, "onActivityResult - widgetStopPreference: " + widgetStopPreference);
                 if (widgetStopPreference != null) {
                     setPreferenceSummary(widgetStopPreference, locationName);
@@ -357,49 +362,18 @@ public class SettingsActivity extends AppCompatActivity
     public static class SettingsFragment
             extends PreferenceFragment
             implements  Preference.OnPreferenceChangeListener,
-            SharedPreferences.OnSharedPreferenceChangeListener{
+            SharedPreferences.OnSharedPreferenceChangeListener {
 
-        private OnSettingsFragmentInteractionListener mListener;
         private boolean currUseDeviceLocationOn;
         private float currFixedLocationLatitude;
         private float currFixedLocationLongitude;
 
         private final String TAG = ((Object) this).getClass().getSimpleName();
 
-        @Override
-        public void onAttach(Context context) {
-            super.onAttach(context);
-            Log.v(TAG, "onAttach - start: ");
-            if (context instanceof FavoriteStopsFragment.OnFavoriteStopsFragmentInteractionListener) {
-                mListener = (OnSettingsFragmentInteractionListener) context;
-                mListener.bindPreferencesSummaryToValue();
-            } else {
-                throw new RuntimeException(context.toString()
-                        + " must implement OnSettingsFragmentInteractionListener");
-            }
-            Log.v(TAG, "onAttach - end: ");
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            Log.v(TAG, "onCreateView - start: ");
-            return super.onCreateView(inflater, container, savedInstanceState);
-        }
-
-        @Override
-        public void onViewCreated(View view, Bundle savedInstanceState) {
-            super.onViewCreated(view, savedInstanceState);
-        }
-
-        @Override
-        public void onActivityCreated(Bundle savedInstanceState) {
-            super.onActivityCreated(savedInstanceState);
-        }
-
         // Registers a shared preference change listener that gets notified when preferences change
         @Override
         public void onResume() {
-            Log.v(TAG, "onResume - start: ");
+//            Log.v(TAG, "onResume - start: ");
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
             sp.registerOnSharedPreferenceChangeListener(this);
             super.onResume();
@@ -408,23 +382,16 @@ public class SettingsActivity extends AppCompatActivity
         // Unregisters a shared preference change listener
         @Override
         public void onPause() {
-            Log.v(TAG, "onPause - start: ");
+//            Log.v(TAG, "onPause - start: ");
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
             sp.unregisterOnSharedPreferenceChangeListener(this);
             super.onPause();
         }
 
         @Override
-        public void onDetach() {
-            super.onDetach();
-            mListener = null;
-            Log.v(TAG, "onDetach - start: ");
-        }
-
-        @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            Log.v(TAG, "onCreate - start: ");
+//            Log.v(TAG, "onCreate - start: ");
             addPreferencesFromResource(R.xml.pref_general);
             
             // Get a reference to the application default shared preferences.
@@ -450,7 +417,7 @@ public class SettingsActivity extends AppCompatActivity
                 prefUseDeviceLocation.setSummary(getString(R.string.pref_summary_use_fixed_location));
             }
 
-            Log.v(TAG, "onCreate - end: ");
+//            Log.v(TAG, "onCreate - end: ");
             // FIXME: 25/10/2016 - make sure the parent activity implements this fragment interface method
             // to test change the device orientation
 //            mListener.bindPreferencesSummaryToValue();
@@ -472,7 +439,7 @@ public class SettingsActivity extends AppCompatActivity
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
             String key = preference.getKey();
-        Log.v(TAG, "onPreferenceChange - key: " + preference.getKey());
+            Log.v(TAG, "onPreferenceChange - key: " + preference.getKey());
             if ((key == getString(R.string.pref_key_use_device_location))) {
 //            Log.v(TAG, "onPreferenceChange - currUseDeviceLocationOn: " + currUseDeviceLocationOn);
                 boolean validationOk = validateUseDeviceFixedLocationValue((boolean) value);
@@ -496,13 +463,13 @@ public class SettingsActivity extends AppCompatActivity
 //                currFixedLocationLatitude + "/" +
 //                currFixedLocationLongitude);
 
-//        currFixedLocationLatitude = Float.NaN;
+//            currFixedLocationLatitude = Float.NaN;
 
             if (currUseDeviceLocationOn && !newUseDeviceLocationOn &&
                     (Float.isNaN(currFixedLocationLatitude) ||Float.isNaN(currFixedLocationLongitude) )) {
 //                View rootView = findViewById(android.R.id.content);
-//                Snackbar.make(rootView, getString(R.string.pref_err_use_device_location),
-//                        Snackbar.LENGTH_LONG).show();
+                Snackbar.make(getView(), getString(R.string.pref_err_use_device_location),
+                        Snackbar.LENGTH_LONG).show();
                 Log.v(TAG, "validateUseDeviceFixedLocationValue - fix location not assigned: ");
                 return false;
             }
@@ -512,7 +479,7 @@ public class SettingsActivity extends AppCompatActivity
         private void setPreferenceSummary(Preference preference, Object value) {
             String stringValue = value.toString();
             String key = preference.getKey();
-//        Log.v(TAG, "setPreferenceSummary - key/stringValue: " + key + "/" + stringValue);
+        Log.v(TAG, "setPreferenceSummary - key/stringValue: " + key + "/" + stringValue);
 
             if (preference instanceof ListPreference) {
 //            Log.v(TAG, "setPreferenceSummary - on ListPreference");
@@ -554,20 +521,16 @@ public class SettingsActivity extends AppCompatActivity
             }
         }
 
-        Preference getPreference(String key) {
-//            Log.v(TAG, "findPreference - key: " + key);
-            return findPreference(key);
-        }
+//        Preference getPreference(String key) {
+////            Log.v(TAG, "findPreference - key: " + key);
+//            return findPreference(key);
+//        }
 
         @Override
         public Preference findPreference(CharSequence key) {
             return super.findPreference(key);
         }
 
-
-        public interface OnSettingsFragmentInteractionListener {
-            void bindPreferencesSummaryToValue();
-        }
     }
 
 }

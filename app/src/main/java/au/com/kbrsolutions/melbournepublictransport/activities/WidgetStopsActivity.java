@@ -2,8 +2,15 @@ package au.com.kbrsolutions.melbournepublictransport.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.widget.ImageView;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
@@ -17,6 +24,11 @@ public class WidgetStopsActivity
         implements FavoriteStopsFragment.OnFavoriteStopsFragmentInteractionListener {
 
     private FavoriteStopsFragment mFavoriteStopsFragment;
+    ActionBar actionBar;
+    private Toolbar mToolbar;
+    CollapsingToolbarLayout mCollapsingToolbar;
+    private ImageView collapsingToolbarImage;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public static final String WIDGET_STOP_ID = "widget_stop_id";
     public static final String WIDGET_LOCATION_NAME = "widget_location_name";
@@ -29,6 +41,31 @@ public class WidgetStopsActivity
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_widget_stops);
         setContentView(R.layout.activity_main);
+
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            appBarLayout.setExpanded(true);
+        } else {
+            appBarLayout.setExpanded(false);
+        }
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        mCollapsingToolbar =
+                (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
+
+        mToolbar.setTitle(getResources().getString(R.string.title_favorite_stops));
+
+        setSupportActionBar(mToolbar);
+        actionBar = getSupportActionBar();
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                                                     @Override
+                                                     public void onRefresh() {
+                                                         handleRefresh();
+                                                     }
+                                                 }
+        );
 
         if (mFavoriteStopsFragment == null) {
 //            Log.v(TAG, "showFavoriteStops - adding new mFavoriteStopsFragment");
@@ -43,6 +80,11 @@ public class WidgetStopsActivity
 //                    .addToBackStack(FAVORITE_STOPS_TAG)
                 .commit();
     }
+
+    private void handleRefresh() {
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
     public void startNextDeparturesSearch(StopDetails stopDetails) {};
     public void showStopOnMap(LatLngDetails latLonDetails) {};
     public void startStopsNearbySearch(boolean trainsOnly) {};
