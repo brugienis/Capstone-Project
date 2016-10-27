@@ -2,6 +2,7 @@
     <string name="app_name">MelbournePublicTransport</string>
     <string name="title_activity_favorite_stops">FavoriteStopsActivity</string>
     <string name="action_settings">Settings</string>
+    <string name="action_clear_settings">Clear settings</string>
     <string name="action_train_stops_nearby">Train stops nearby</string>
     <string name="action_stops_nearby">Stops nearby</string>
     <string name="action_disruptions">Disruptions</string>
@@ -15,10 +16,10 @@
     <string name="all_stops_train">All stops</string>
     <string name="database_load_status">database_load_status</string>≈
 
-    <!-- Key name for storing location in SharedPreferences [CHAR LIMIT=NONE] -->
-    <string name="pref_key_location" translatable="false">location</string>
-    <!-- Title for the location preference [CHAR LIMIT=30]  -->
-    <string name="pref_title_location">Fixed location</string>
+    <!-- Key name for storing fixed location in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_key_fixed_location" translatable="false">fixed_location</string>
+    <!-- Title for the fixed location preference [CHAR LIMIT=30]  -->
+    <string name="pref_title_fixed_location">Fixed location</string>
 
     <!-- Key name for storing widget stop id in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_key_widget_stop_id">widget_stop_id</string>
@@ -31,7 +32,7 @@
 
     <!-- Key name for storing use fixed/device location in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_key_use_device_location">use_device_fixed_location</string>
-    <string name="pref_title_use_device_location">Use device location</string>
+    <string name="pref_title_use_device_fixed_location">Use device location</string>
     <string name="pref_err_use_device_location">\'fixed location\' not assigned</string>
     <string name="pref_summary_use_device_location">Use device location to show stops
         nearby, instead of \'fixed\' location.
@@ -48,7 +49,7 @@
     <string name="pref_key_location_longitude" translatable="false">loc-longitude</string>
 
     <!-- Default postal text for location preference [CHAR LIMIT=NONE] -->
-    <string name="pref_location_default" translatable="false">Not assigned</string>
+    <string name="pref_fixed_location_default" translatable="false">Not assigned</string>
 
     <!-- Default text code for location preference [CHAR LIMIT=NONE] -->
     <string name="pref_widget_stop_default" translatable="false">Not assigned</string>

@@ -1,16 +1,16 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <au.com.kbrsolutions.melbournepublictransport.activities.LocationEditTextPreference
-        android:key="@string/pref_key_location"
-        android:title="@string/pref_title_location"
-        android:defaultValue="@string/pref_location_default"
+    <au.com.kbrsolutions.melbournepublictransport.activities.FixedLocationEditTextPreference
+        android:key="@string/pref_key_fixed_location"
+        android:title="@string/pref_title_fixed_location"
+        android:defaultValue="@string/pref_fixed_location_default"
         android:inputType="text"
         android:singleLine="true"
         />
 
     <SwitchPreference
         android:key="@string/pref_key_use_device_location"
-        android:title="@string/pref_title_use_device_location"
+        android:title="@string/pref_title_use_device_fixed_location"
         android:defaultValue="true"
         android:summary="@string/pref_summary_use_device_location"/>
 

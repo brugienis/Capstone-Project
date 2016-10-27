@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -288,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void databaseLoadFinished() {
-//        Log.v(TAG, "databaseLoadFinished - start");
+        Log.v(TAG, "databaseLoadFinished - start");
         getSupportFragmentManager()
                 .beginTransaction()
                 .remove(mInitFragment)
@@ -301,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements
 //        editor.commit();
         editor.apply();
         showFavoriteStops();
-//        Log.v(TAG, "databaseLoadFinished - end");
+        Log.v(TAG, "databaseLoadFinished - end");
     }
 
     @Override
@@ -535,7 +536,7 @@ public class MainActivity extends AppCompatActivity implements
      * Show favorite stops after user pressed Back or Up button.
      */
     private void showFavoriteStops() {
-//        Log.v(TAG, "showFavoriteStops - start");
+        Log.v(TAG, "showFavoriteStops - start");
         if (mFavoriteStopsFragment == null) {
 //            Log.v(TAG, "showFavoriteStops - adding new mFavoriteStopsFragment");
             mFavoriteStopsFragment = new FavoriteStopsFragment();
@@ -629,6 +630,16 @@ public class MainActivity extends AppCompatActivity implements
         if (id == R.id.action_settings) {
 //            startActivity(new Intent(this, SettingsActivity.class));
             startActivity(new Intent(this, SettingsActivity.class));
+            return true;
+        } else if (id == R.id.action_clear_settings) {
+            SharedPreferences sharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove(getString(R.string.pref_key_location_latitude));
+            editor.remove(getString(R.string.pref_key_location_longitude));
+            editor.remove(getString(R.string.pref_key_fixed_location));
+            editor.apply();
+            Log.v(TAG, "onOptionsItemSelected - lat and lng removed: ");
             return true;
         }
 

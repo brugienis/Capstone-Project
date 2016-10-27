@@ -15,7 +15,7 @@
      limitations under the License.
  -->
 <resources>
-    <declare-styleable name="LocationEditTextPreference">
+    <declare-styleable name="FixedLocationEditTextPreference">
         <attr name="minLength" format="integer" />
     </declare-styleable>
     <declare-styleable name="WidgetStopEditTextPreference">

@@ -82,7 +82,9 @@ public class FavoriteStopsFragment
      */
     public void hideView() {
         isVisible = false;
-        mRootView.setVisibility(View.INVISIBLE);
+        if (mRootView != null) {
+            mRootView.setVisibility(View.INVISIBLE);
+        }
         if (mListener != null) {
             ((Activity) mListener).invalidateOptionsMenu();
         }
@@ -91,7 +93,9 @@ public class FavoriteStopsFragment
 
     public void showView() {
         isVisible = true;
-        mRootView.setVisibility(View.VISIBLE);
+        if (mRootView != null) {
+            mRootView.setVisibility(View.VISIBLE);
+        }
         if (mListener != null) {
             ((Activity) mListener).invalidateOptionsMenu();
         }

@@ -53,7 +53,7 @@ public class Utility {
 
     public static String getPreferredLocation(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getString(context.getString(R.string.pref_key_location),
-                context.getString(R.string.pref_location_default));
+        return prefs.getString(context.getString(R.string.pref_key_fixed_location),
+                context.getString(R.string.pref_fixed_location_default));
     }
 }

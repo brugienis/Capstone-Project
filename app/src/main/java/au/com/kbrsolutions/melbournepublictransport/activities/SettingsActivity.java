@@ -26,7 +26,6 @@ import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
 import static au.com.kbrsolutions.melbournepublictransport.activities.WidgetStopsActivity.WIDGET_LOCATION_NAME;
-import static au.com.kbrsolutions.melbournepublictransport.activities.WidgetStopsActivity.WIDGET_STOP_ID;
 
 public class SettingsActivity extends AppCompatActivity {
 //        implements Preference.OnPreferenceChangeListener,
@@ -34,10 +33,6 @@ public class SettingsActivity extends AppCompatActivity {
 
     private ImageView mAttribution;
     private SettingsFragment mSettingsFragment;
-
-    private boolean currUseDeviceLocationOn;
-    private float currFixedLocationLatitude;
-    private float currFixedLocationLongitude;
 
     protected static final int PLACE_PICKER_REQUEST = 1000;
     protected static final int WIDGET_STOP_REQUEST = 2000;
@@ -74,17 +69,17 @@ public class SettingsActivity extends AppCompatActivity {
         Log.v(TAG, "onCreate - end: ");
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Log.v(TAG, "onSaveInstanceState - after super");
-    }
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        Log.v(TAG, "onSaveInstanceState - after super");
+//    }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.v(TAG, "onRestoreInstanceState - start");
-        super.onRestoreInstanceState(savedInstanceState);
-    }
+//    @Override
+//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//        Log.v(TAG, "onRestoreInstanceState - start");
+//        super.onRestoreInstanceState(savedInstanceState);
+//    }
 
     /**
      *
@@ -100,6 +95,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
+//        LinearLayout root = (LinearLayout)findViewById(android.R.id.list).getParent().getParent().getParent();
         LinearLayout root = (LinearLayout)findViewById(android.R.id.list).getParent().getParent().getParent();
         Toolbar bar = (Toolbar) LayoutInflater.from(this).inflate(R.layout.settings_toolbar, root, false);
         root.addView(bar, 0); // insert at top
@@ -113,7 +109,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        Log.v(TAG, "onActivityResult - start - requestCode/resultCode: " + requestCode + "/" + resultCode);
+        Log.v(TAG, "onActivityResult - start - requestCode/resultCode: " + requestCode + "/" + resultCode);
         // Check to see if the result is from our Place Picker intent
         if (requestCode == PLACE_PICKER_REQUEST) {
             // Make sure the request was successful
@@ -131,7 +127,7 @@ public class SettingsActivity extends AppCompatActivity {
                 SharedPreferences sharedPreferences =
                         PreferenceManager.getDefaultSharedPreferences(this);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(getString(R.string.pref_key_location), address);
+                editor.putString(getString(R.string.pref_key_fixed_location), address);
 
                 // Also store the latitude and longitude so that we can use these to get a precise
                 // result from our stops nearby search.
@@ -140,12 +136,14 @@ public class SettingsActivity extends AppCompatActivity {
                 editor.putFloat(getString(R.string.pref_key_location_longitude),
                         (float) latLong.longitude);
                 editor.apply();
-                currFixedLocationLatitude = (float) latLong.latitude;
+                fixedLocationPreferenceSummaryNoUpdated = true;
+//                currFixedLocationLatitude = (float) latLong.latitude;
 
                 if (mSettingsFragment != null) {
-                    Preference locationPreference = mSettingsFragment.findPreference(getString(R.string.pref_key_location));
+                    Preference locationPreference = mSettingsFragment.findPreference(getString(R.string.pref_key_fixed_location));
                     if (locationPreference != null) {
                         mSettingsFragment.setPreferenceSummary(locationPreference, address);
+                        fixedLocationPreferenceSummaryNoUpdated = false;
                     }
                 }
 
@@ -165,19 +163,21 @@ public class SettingsActivity extends AppCompatActivity {
 //            Log.v(TAG, "onActivityResult - processing WIDGET_STOP_REQUEST");
             if (resultCode == RESULT_OK) {
                 // Make sure the request was successful
-                String stopId = data.getStringExtra(WIDGET_STOP_ID);
-                String locationName = data.getStringExtra(WIDGET_LOCATION_NAME);
+                mStopId = data.getStringExtra(WIDGET_STOP_ID);
+                mStopName = data.getStringExtra(WIDGET_LOCATION_NAME);
                 SharedPreferences sharedPreferences =
                         PreferenceManager.getDefaultSharedPreferences(this);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(getString(R.string.pref_key_widget_stop_id), stopId);
-                editor.putString(getString(R.string.pref_key_widget_stop_name), locationName);
+                editor.putString(getString(R.string.pref_key_widget_stop_id), mStopId);
+                editor.putString(getString(R.string.pref_key_widget_stop_name), mStopName);
                 editor.apply();
+                widgetStopPreferenceSummaryNoUpdated = true;
                 Log.v(TAG, "onActivityResult - after commit - mSettingsFragment: " + mSettingsFragment);
                 if (mSettingsFragment != null) {
                     Preference widgetStopPreference = mSettingsFragment.findPreference(getString(R.string.pref_key_widget_stop_name));
                     if (widgetStopPreference != null) {
-                        mSettingsFragment.setPreferenceSummary(widgetStopPreference, locationName);
+                        mSettingsFragment.setPreferenceSummary(widgetStopPreference, mStopName);
+                        widgetStopPreferenceSummaryNoUpdated = false;
                     }
                 }
                 Log.v(TAG, "onActivityResult - before sendBroadcastMessageToNextDeparturesWidget: ");
@@ -191,6 +191,13 @@ public class SettingsActivity extends AppCompatActivity {
         Log.v(TAG, "onActivityResult - end");
     }
 
+    private String mStopId;
+    private String mStopName;
+    private boolean widgetStopPreferenceSummaryNoUpdated;
+    private boolean fixedLocationPreferenceSummaryNoUpdated;
+
+    private static final String WIDGET_STOP_ID = "widget_stop_id";
+    private static final String WIDGET_STOP_NAME = "widget_stop_name";
     /**
      *
      * When widget stop change send broadcast message to the Next Departures widget.
@@ -201,6 +208,39 @@ public class SettingsActivity extends AppCompatActivity {
         Intent dataUpdatedIntent = new Intent(WIDGET_STOP_UPDATED)
                 .setPackage(getApplicationContext().getPackageName());
         sendBroadcast(dataUpdatedIntent);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.v(TAG, "onSaveInstanceState - after super");
+        if (fixedLocationPreferenceSummaryNoUpdated) {
+            outState.putString(WIDGET_STOP_ID, mStopId);
+            outState.putString(WIDGET_STOP_NAME, mStopName);
+        }
+    }
+
+
+    /**
+     * Retrieves saved data. If search for artist's data is not in progress, show retrieved
+     * on the screen.
+     */
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.v(TAG, "onRestoreInstanceState - start");
+
+        mStopId = savedInstanceState.getString(WIDGET_STOP_ID);
+        mStopName = savedInstanceState.getString(WIDGET_STOP_NAME);
+        Log.v(TAG, "onRestoreInstanceState - mStopName: " + mStopName + "/" + mSettingsFragment);
+        if (mSettingsFragment != null && mStopName != null) {
+            Preference widgetStopPreference = mSettingsFragment.findPreference(getString(R.string.pref_key_widget_stop_name));
+            if (widgetStopPreference != null) {
+                Log.v(TAG, "onRestoreInstanceState - calling setPreferenceSummary");
+                mSettingsFragment.setPreferenceSummary(widgetStopPreference, mStopName);
+                widgetStopPreferenceSummaryNoUpdated = false;
+            }
+        }
     }
 
     public static class SettingsFragment
@@ -223,8 +263,10 @@ public class SettingsActivity extends AppCompatActivity {
             // Get a reference to the application default shared preferences.
             SharedPreferences sp = getPreferenceScreen().getSharedPreferences();
 
-            String fixedLocationValue = sp.getString(getString(R.string.pref_key_location), "-1");
-            Preference prefFixedLocation = findPreference(getString(R.string.pref_key_location));
+            String fixedLocationValue = sp.getString(getString(R.string.pref_key_fixed_location), "-1");
+            Preference prefFixedLocation = findPreference(getString(R.string.pref_key_fixed_location));
+            // Set the listener to watch for value changes.
+            prefFixedLocation.setOnPreferenceChangeListener(this);
             prefFixedLocation.setSummary(fixedLocationValue);
 
             String stopNameValue = sp.getString(getString(R.string.pref_key_widget_stop_name), "-1");
@@ -254,6 +296,22 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         /**
+         * Attaches a listener so the summary is always updated with the preference value.
+         * Also fires the listener once, to initialize the summary (so it shows up before the value
+         * is changed.)
+         */
+        private void bindPreferenceSummaryToValue(Preference preference) {
+            // Set the listener to watch for value changes.
+            preference.setOnPreferenceChangeListener(this);
+
+            // Set the preference summaries
+            setPreferenceSummary(preference,
+                    PreferenceManager
+                            .getDefaultSharedPreferences(preference.getContext())
+                            .getString(preference.getKey(), ""));
+        }
+
+        /**
          *
          * This gets called before the preference is changed - do all required validation in this method.
          *
@@ -277,7 +335,7 @@ public class SettingsActivity extends AppCompatActivity {
                 Log.v(TAG, "onPreferenceChange - validation successful - currUseDeviceLocationOn: " + currUseDeviceLocationOn);
                 }
                 return validationOk;
-            } else if ((key == getString(R.string.pref_key_location))) {
+            } else if ((key == getString(R.string.pref_key_fixed_location))) {
                 setPreferenceSummary(preference, value);
             } else if ((key == getString(R.string.pref_key_widget_stop_name))) {
                 setPreferenceSummary(preference, value);
@@ -286,13 +344,21 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         private boolean validateUseDeviceFixedLocationValue(boolean newUseDeviceLocationOn) {
-        Log.v(TAG, "validateUseDeviceFixedLocationValue - currUseDeviceLocationOn/newUseDeviceLocationOn: " +
+            Log.v(TAG, "validateUseDeviceFixedLocationValue - currUseDeviceLocationOn/newUseDeviceLocationOn: " +
                 currUseDeviceLocationOn + "/" +
                 newUseDeviceLocationOn + "/" +
                 currFixedLocationLatitude + "/" +
                 currFixedLocationLongitude);
 
 //            currFixedLocationLatitude = Float.NaN;
+
+            Log.v(TAG, "validateUseDeviceFixedLocationValue - before getting lat/lng");
+//            SharedPreferences sharedPreferences =
+//                    PreferenceManager.getDefaultSharedPreferences(getContext());
+            SharedPreferences sp = getPreferenceScreen().getSharedPreferences();
+            currFixedLocationLatitude = sp.getFloat(getString(R.string.pref_key_location_latitude), Float.NaN);
+            currFixedLocationLongitude = sp.getFloat(getString(R.string.pref_key_location_longitude), Float.NaN);
+            Log.v(TAG, "validateUseDeviceFixedLocationValue - after  getting lat/lng");
 
             if (currUseDeviceLocationOn && !newUseDeviceLocationOn &&
                     (Float.isNaN(currFixedLocationLatitude) ||Float.isNaN(currFixedLocationLongitude) )) {
@@ -319,7 +385,7 @@ public class SettingsActivity extends AppCompatActivity {
                 if (prefIndex >= 0) {
                     preference.setSummary(listPreference.getEntries()[prefIndex]);
                 }
-            } else if (key.equals(getString(R.string.pref_key_location))) {
+            } else if (key.equals(getString(R.string.pref_key_fixed_location))) {
 //            Log.v(TAG, "setPreferenceSummary - on location");
                 preference.setSummary(stringValue);
 //            }
@@ -353,7 +419,7 @@ public class SettingsActivity extends AppCompatActivity {
         // Registers a shared preference change listener that gets notified when preferences change
         @Override
         public void onResume() {
-//            Log.v(TAG, "onResume - start: ");
+            Log.v(TAG, "onResume - start: ");
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
             sp.registerOnSharedPreferenceChangeListener(this);
             super.onResume();
@@ -362,7 +428,7 @@ public class SettingsActivity extends AppCompatActivity {
         // Unregisters a shared preference change listener
         @Override
         public void onPause() {
-//            Log.v(TAG, "onPause - start: ");
+            Log.v(TAG, "onPause - start: ");
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
             sp.unregisterOnSharedPreferenceChangeListener(this);
             super.onPause();
