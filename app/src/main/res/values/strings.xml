@@ -73,6 +73,8 @@
     <string name="united_nations">United Nations</string>
 
     <string name="title_favorite_stops">Favorite stops</string>
+    <string name="title_widget_stops">Widget stops</string>
+    <string name="title_settings">Settings</string>
     <string name="title_data_load">Loading MTV data</string>
     <string name="title_stops">Stops</string>
     <string name="title_train_stops_nearby">Train stops nearby</string>

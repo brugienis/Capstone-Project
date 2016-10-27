@@ -8,15 +8,17 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
@@ -33,6 +35,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     private ImageView mAttribution;
     private SettingsFragment mSettingsFragment;
+    ActionBar actionBar;
+    private Toolbar mToolbar;
+    CollapsingToolbarLayout mCollapsingToolbar;
+    private ImageView collapsingToolbarImage;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     protected static final int PLACE_PICKER_REQUEST = 1000;
     protected static final int WIDGET_STOP_REQUEST = 2000;
@@ -45,12 +52,40 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.v(TAG, "onCreate - start: ");
+        setContentView(R.layout.activity_main);
+
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            appBarLayout.setExpanded(true);
+        } else {
+            appBarLayout.setExpanded(false);
+        }
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        mCollapsingToolbar =
+                (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
+
+        mToolbar.setTitle(getResources().getString(R.string.title_settings));
+
+        setSupportActionBar(mToolbar);
+        actionBar = getSupportActionBar();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                                                     @Override
+                                                     public void onRefresh() {
+                                                         handleRefresh();
+                                                     }
+                                                 }
+        );
 
         if (getFragmentManager().findFragmentById(android.R.id.content) == null) {
             mSettingsFragment = new SettingsFragment();
             getFragmentManager()
                     .beginTransaction()
-                    .add(android.R.id.content, mSettingsFragment)
+//                    .add(android.R.id.content, mSettingsFragment)
+                    .add(R.id.left_dynamic_fragments_frame, mSettingsFragment)
                     .commit();
 
             // If we are using a PlacePicker location, we need to show attributions.
@@ -69,17 +104,9 @@ public class SettingsActivity extends AppCompatActivity {
         Log.v(TAG, "onCreate - end: ");
     }
 
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        Log.v(TAG, "onSaveInstanceState - after super");
-//    }
-
-//    @Override
-//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-//        Log.v(TAG, "onRestoreInstanceState - start");
-//        super.onRestoreInstanceState(savedInstanceState);
-//    }
+    private void handleRefresh() {
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
 
     /**
      *
@@ -89,23 +116,23 @@ public class SettingsActivity extends AppCompatActivity {
      *
      * http://stackoverflow.com/questions/17849193/how-to-add-action-bar-from-support-library-into-preferenceactivity?rq=1
      *
-     * @param savedInstanceState
+     * @param
      */
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-
-//        LinearLayout root = (LinearLayout)findViewById(android.R.id.list).getParent().getParent().getParent();
-        LinearLayout root = (LinearLayout)findViewById(android.R.id.list).getParent().getParent().getParent();
-        Toolbar bar = (Toolbar) LayoutInflater.from(this).inflate(R.layout.settings_toolbar, root, false);
-        root.addView(bar, 0); // insert at top
-        bar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-    }
+//    @Override
+//    protected void onPostCreate(Bundle savedInstanceState) {
+//        super.onPostCreate(savedInstanceState);
+//
+////        LinearLayout root = (LinearLayout)findViewById(android.R.id.list).getParent().getParent().getParent();
+//        ContentFrameLayout root = (ContentFrameLayout)findViewById(android.R.id.list).getParent().getParent().getParent();
+//        Toolbar bar = (Toolbar) LayoutInflater.from(this).inflate(R.layout.settings_toolbar, root, false);
+//        root.addView(bar, 0); // insert at top
+//        bar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                finish();
+//            }
+//        });
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -136,6 +163,7 @@ public class SettingsActivity extends AppCompatActivity {
                 editor.putFloat(getString(R.string.pref_key_location_longitude),
                         (float) latLong.longitude);
                 editor.apply();
+                // FIXME: 28/10/2016 - address and latLon should be handled as widget's stopId and name
                 fixedLocationPreferenceSummaryNoUpdated = true;
 //                currFixedLocationLatitude = (float) latLong.latitude;
 

@@ -10,6 +10,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.ImageView;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
@@ -53,10 +54,11 @@ public class WidgetStopsActivity
         mCollapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
 
-        mToolbar.setTitle(getResources().getString(R.string.title_favorite_stops));
+        mToolbar.setTitle(getResources().getString(R.string.title_widget_stops));
 
         setSupportActionBar(mToolbar);
         actionBar = getSupportActionBar();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -102,4 +104,10 @@ public class WidgetStopsActivity
         finish();
     }
 
+    @Override
+    public void onBackPressed() {
+        int cnt = getSupportFragmentManager().getBackStackEntryCount();
+        Log.v(TAG, "onBackPressed - cnt: " + cnt);
+        super.onBackPressed();
+    }
 }
