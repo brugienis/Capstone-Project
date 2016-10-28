@@ -51,6 +51,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activities.SettingsActivity"
             android:parentActivityName=".activities.MainActivity"
@@ -58,6 +59,14 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MainActivity"/>
+        </activity>
+
+        <activity android:name=".activities.WidgetStopsActivity">
+            android:parentActivityName=".activities.SettingsActivity"
+            android:launchMode="singleTop" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.SettingsActivity" />
         </activity>
 
         <!-- Departures Collection Widget -->
@@ -78,9 +87,6 @@
             android:name=".widget.DeparturesCollectionWidgetRemoteViewsService"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS"/>
-
-        <activity android:name=".activities.WidgetStopsActivity">
-        </activity>
     </application>
 
 </manifest><!--

@@ -74,7 +74,7 @@ public class WidgetStopsActivity
             mFavoriteStopsFragment = new FavoriteStopsFragment();
             mFavoriteStopsFragment.setFragmentId(FAVORITE_STOPS);
 //            mFavoriteStopsFragment.setActionBarTitle(getResources().getString(R.string.title_favorite_stops));
-//            mFavoriteStopsFragment.setIsInSettingsActivity();
+            mFavoriteStopsFragment.setIsInSettingsActivity();
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
@@ -96,33 +96,11 @@ public class WidgetStopsActivity
 
     @Override
     public void updateWidgetStopDetails(String stopId, String locationName) {
-//        Log.v(TAG, "updateWidgetStopDetails - stopId/locationName: " + stopId + "/" + locationName);
+        Log.v(TAG, "updateWidgetStopDetails - stopId/locationName: " + stopId + "/" + locationName);
         Intent intent = new Intent();
         intent.putExtra(WIDGET_STOP_ID, stopId);
         intent.putExtra(WIDGET_LOCATION_NAME, locationName);
         setResult(Activity.RESULT_OK, intent);
         finish();
-    }
-
-    /**
-     * Up button was pressed - remove to top entry Back Stack
-     */
-    @Override
-    public boolean onSupportNavigateUp() {
-        int cnt = getSupportFragmentManager().getBackStackEntryCount();
-        Log.v(TAG, "onSupportNavigateUp - cnt: " + cnt);
-        if (cnt == 0) {
-            finish();
-        } else {
-            getSupportFragmentManager().popBackStack();
-        }
-        return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        int cnt = getSupportFragmentManager().getBackStackEntryCount();
-        Log.v(TAG, "onBackPressed - cnt: " + cnt);
-        super.onBackPressed();
     }
 }

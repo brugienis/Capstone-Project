@@ -357,10 +357,18 @@ public class SettingsActivity extends AppCompatActivity {
             Log.v(TAG, "onPreferenceChange - key: " + preference.getKey());
             if ((key == getString(R.string.pref_key_use_device_location))) {
 //            Log.v(TAG, "onPreferenceChange - currUseDeviceLocationOn: " + currUseDeviceLocationOn);
-                boolean validationOk = validateUseDeviceFixedLocationValue((boolean) value);
+                boolean newUseDeviceSwitchValue = (boolean) value;
+                boolean validationOk = validateUseDeviceFixedLocationValue(newUseDeviceSwitchValue);
                 if (validationOk) {
-                    currUseDeviceLocationOn = (boolean) value;
-                Log.v(TAG, "onPreferenceChange - validation successful - currUseDeviceLocationOn: " + currUseDeviceLocationOn);
+//                    currUseDeviceLocationOn = (boolean) value;
+                    if (newUseDeviceSwitchValue) {
+                        // FIXME: 26/10/2016 - shoud set that in parent activity or what?
+//                        currUseDeviceLocationOn = true;
+                        setPreferenceSummary(preference, getString(R.string.pref_summary_use_device_location));
+                    } else {
+                        setPreferenceSummary(preference, getString(R.string.pref_summary_use_fixed_location));
+                    }
+                Log.v(TAG, "onPreferenceChange - validation successful - newUseDeviceSwitchValue: " + newUseDeviceSwitchValue);
                 }
                 return validationOk;
             } else if ((key == getString(R.string.pref_key_fixed_location))) {
@@ -380,13 +388,13 @@ public class SettingsActivity extends AppCompatActivity {
 
 //            currFixedLocationLatitude = Float.NaN;
 
-            Log.v(TAG, "validateUseDeviceFixedLocationValue - before getting lat/lng");
+//            Log.v(TAG, "validateUseDeviceFixedLocationValue - before getting lat/lng");
 //            SharedPreferences sharedPreferences =
 //                    PreferenceManager.getDefaultSharedPreferences(getContext());
             SharedPreferences sp = getPreferenceScreen().getSharedPreferences();
             currFixedLocationLatitude = sp.getFloat(getString(R.string.pref_key_location_latitude), Float.NaN);
             currFixedLocationLongitude = sp.getFloat(getString(R.string.pref_key_location_longitude), Float.NaN);
-            Log.v(TAG, "validateUseDeviceFixedLocationValue - after  getting lat/lng");
+//            Log.v(TAG, "validateUseDeviceFixedLocationValue - after  getting lat/lng");
 
             if (currUseDeviceLocationOn && !newUseDeviceLocationOn &&
                     (Float.isNaN(currFixedLocationLatitude) ||Float.isNaN(currFixedLocationLongitude) )) {
@@ -405,7 +413,7 @@ public class SettingsActivity extends AppCompatActivity {
             Log.v(TAG, "setPreferenceSummary - key/stringValue: " + key + "/" + stringValue);
 
             if (preference instanceof ListPreference) {
-//            Log.v(TAG, "setPreferenceSummary - on ListPreference");
+            Log.v(TAG, "setPreferenceSummary - on ListPreference");
                 // For list preferences, look up the correct display value in
                 // the preference's 'entries' list (since they have separate labels/values).
                 ListPreference listPreference = (ListPreference) preference;
@@ -414,15 +422,15 @@ public class SettingsActivity extends AppCompatActivity {
                     preference.setSummary(listPreference.getEntries()[prefIndex]);
                 }
             } else if (key.equals(getString(R.string.pref_key_fixed_location))) {
-//            Log.v(TAG, "setPreferenceSummary - on location");
+            Log.v(TAG, "setPreferenceSummary - on location");
                 preference.setSummary(stringValue);
 //            }
             } else if (key.equals(getString(R.string.pref_key_widget_stop_name))) {
-//            Log.v(TAG, "setPreferenceSummary - on location");
+            Log.v(TAG, "setPreferenceSummary - on location");
                 preference.setSummary(stringValue);
 //            }
             } else {
-//            Log.v(TAG, "setPreferenceSummary - on other");
+            Log.v(TAG, "setPreferenceSummary - on other");
                 // For other preferences, set the summary to the value's simple string representation.
                 preference.setSummary(stringValue);
             }
@@ -432,16 +440,16 @@ public class SettingsActivity extends AppCompatActivity {
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.v(TAG, "onSharedPreferenceChanged - key: " + key);
             Preference pref = findPreference(key);
-            if (key.equals(getString(R.string.pref_key_use_device_location)) ) {
-//                boolean useDeviceLocationValue = sp.getBoolean(getString(R.string.pref_key_use_device_location), true);
-                if (currUseDeviceLocationOn) {
-                    // FIXME: 26/10/2016 - shoud set that in parent activity or what?
-//                currUseDeviceLocationOn = sp.getBoolean(key, false);
-                    pref.setSummary(getString(R.string.pref_summary_use_device_location));
-                } else {
-                    pref.setSummary(getString(R.string.pref_summary_use_fixed_location));
-                }
-            }
+//            if (key.equals(getString(R.string.pref_key_use_device_location)) ) {
+////                boolean useDeviceLocationValue = sp.getBoolean(getString(R.string.pref_key_use_device_location), true);
+//                if (currUseDeviceLocationOn) {
+//                    // FIXME: 26/10/2016 - shoud set that in parent activity or what?
+////                currUseDeviceLocationOn = sp.getBoolean(key, false);
+//                    pref.setSummary(getString(R.string.pref_summary_use_device_location));
+//                } else {
+//                    pref.setSummary(getString(R.string.pref_summary_use_fixed_location));
+//                }
+//            }
         }
 
         // Registers a shared preference change listener that gets notified when preferences change
