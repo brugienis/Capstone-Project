@@ -69,18 +69,18 @@ public class WidgetStopsActivity
                                                  }
         );
 
+        mFavoriteStopsFragment = (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
         if (mFavoriteStopsFragment == null) {
-//            Log.v(TAG, "showFavoriteStops - adding new mFavoriteStopsFragment");
             mFavoriteStopsFragment = new FavoriteStopsFragment();
             mFavoriteStopsFragment.setFragmentId(FAVORITE_STOPS);
-            mFavoriteStopsFragment.setActionBarTitle(getResources().getString(R.string.title_favorite_stops));
-            mFavoriteStopsFragment.setIsInSettingsActivity();
-        }
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
+//            mFavoriteStopsFragment.setActionBarTitle(getResources().getString(R.string.title_favorite_stops));
+//            mFavoriteStopsFragment.setIsInSettingsActivity();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
 //                    .addToBackStack(FAVORITE_STOPS_TAG)
-                .commit();
+                    .commit();
+        }
     }
 
     private void handleRefresh() {
@@ -102,6 +102,21 @@ public class WidgetStopsActivity
         intent.putExtra(WIDGET_LOCATION_NAME, locationName);
         setResult(Activity.RESULT_OK, intent);
         finish();
+    }
+
+    /**
+     * Up button was pressed - remove to top entry Back Stack
+     */
+    @Override
+    public boolean onSupportNavigateUp() {
+        int cnt = getSupportFragmentManager().getBackStackEntryCount();
+        Log.v(TAG, "onSupportNavigateUp - cnt: " + cnt);
+        if (cnt == 0) {
+            finish();
+        } else {
+            getSupportFragmentManager().popBackStack();
+        }
+        return true;
     }
 
     @Override
