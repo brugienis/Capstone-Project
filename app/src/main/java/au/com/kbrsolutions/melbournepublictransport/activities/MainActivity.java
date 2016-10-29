@@ -27,7 +27,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -82,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private Toolbar mToolbar;
     CollapsingToolbarLayout mCollapsingToolbar;
-    private ImageView collapsingToolbarImage;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
 
@@ -631,6 +629,7 @@ public class MainActivity extends AppCompatActivity implements
 //            startActivity(new Intent(this, SettingsActivity.class));
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
+            // FIXME: 28/10/2016  - remove action_clear_settings after testings done
         } else if (id == R.id.action_clear_settings) {
             SharedPreferences sharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(this);
@@ -638,6 +637,8 @@ public class MainActivity extends AppCompatActivity implements
             editor.remove(getString(R.string.pref_key_location_latitude));
             editor.remove(getString(R.string.pref_key_location_longitude));
             editor.remove(getString(R.string.pref_key_fixed_location));
+            editor.remove(getString(R.string.pref_key_widget_stop_name));
+            editor.remove(getString(R.string.pref_key_widget_stop_id));
             editor.apply();
             Log.v(TAG, "onOptionsItemSelected - lat and lng removed: ");
             return true;

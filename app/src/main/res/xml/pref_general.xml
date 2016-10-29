@@ -3,7 +3,7 @@
     <au.com.kbrsolutions.melbournepublictransport.activities.FixedLocationEditTextPreference
         android:key="@string/pref_key_fixed_location"
         android:title="@string/pref_title_fixed_location"
-        android:defaultValue="@string/pref_fixed_location_default"
+        android:defaultValue="@string/pref_default_fixed_location"
         android:inputType="text"
         android:singleLine="true"
         />
@@ -16,35 +16,11 @@
 
     <au.com.kbrsolutions.melbournepublictransport.activities.WidgetStopEditTextPreference
         android:key="@string/pref_key_widget_stop_name"
-        android:title="@string/pref_title_widget_stop"
-        android:defaultValue="@string/pref_widget_stop_default"
+        android:title="@string/pref_title_widget_stop_name"
+        android:defaultValue="@string/pref_default_widget_stop_name"
         android:inputType="text"
         android:singleLine="true"
         />
-
-    <!-- NOTE: EditTextPreference accepts EditText attributes. -->
-    <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
-    <EditTextPreference
-        android:capitalize="words"
-        android:defaultValue="@string/pref_default_display_name"
-        android:inputType="textCapWords"
-        android:key="example_text"
-        android:maxLines="1"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:title="@string/pref_title_display_name"/>
-
-    <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
-         dismiss it. -->
-    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
-    <ListPreference
-        android:defaultValue="-1"
-        android:entries="@array/pref_example_list_titles"
-        android:entryValues="@array/pref_example_list_values"
-        android:key="example_list"
-        android:negativeButtonText="@null"
-        android:positiveButtonText="@null"
-        android:title="@string/pref_title_add_friends_to_messages"/>
 
 </PreferenceScreen>
 <!--

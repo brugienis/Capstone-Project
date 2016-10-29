@@ -37,23 +37,24 @@ public class Utility {
         return latLngDetails;
     }
 
-    public static float getLocationLatitude(Context context) {
-        SharedPreferences prefs
-                = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getFloat(context.getString(R.string.pref_key_location_latitude),
-                DEFAULT_LATLONG);
-    }
+    // FIXME: 29/10/2016 - add methods to get widget stop details and get/set 'database loaded'
+//    public static float getLocationLatitude(Context context) {
+//        SharedPreferences prefs
+//                = PreferenceManager.getDefaultSharedPreferences(context);
+//        return prefs.getFloat(context.getString(R.string.pref_key_location_latitude),
+//                DEFAULT_LATLONG);
+//    }
+//
+//    public static float getLocationLongitude(Context context) {
+//        SharedPreferences prefs
+//                = PreferenceManager.getDefaultSharedPreferences(context);
+//        return prefs.getFloat(context.getString(R.string.pref_key_location_longitude),
+//                DEFAULT_LATLONG);
+//    }
 
-    public static float getLocationLongitude(Context context) {
-        SharedPreferences prefs
-                = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getFloat(context.getString(R.string.pref_key_location_longitude),
-                DEFAULT_LATLONG);
-    }
-
-    public static String getPreferredLocation(Context context) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getString(context.getString(R.string.pref_key_fixed_location),
-                context.getString(R.string.pref_fixed_location_default));
-    }
+//    public static String getPreferredLocation(Context context) {
+//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+//        return prefs.getString(context.getString(R.string.pref_key_fixed_location),
+//                context.getString(R.string.pref_default_fixed_location));
+//    }
 }

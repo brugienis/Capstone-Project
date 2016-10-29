@@ -10,6 +10,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -27,6 +28,7 @@ import com.google.android.gms.maps.model.LatLng;
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
+import static au.com.kbrsolutions.melbournepublictransport.R.id.fab;
 import static au.com.kbrsolutions.melbournepublictransport.activities.WidgetStopsActivity.WIDGET_LOCATION_NAME;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -55,11 +57,8 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            appBarLayout.setExpanded(true);
-        } else {
-            appBarLayout.setExpanded(false);
-        }
+        appBarLayout.setExpanded(false);
+
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
         mCollapsingToolbar =
@@ -79,6 +78,10 @@ public class SettingsActivity extends AppCompatActivity {
                                                      }
                                                  }
         );
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(fab);
+        ((FloatingActionButton) findViewById(fab)).hide();
+
+        validatePreferenceSettings();
 
         if (getFragmentManager().findFragmentById(android.R.id.content) == null) {
             mSettingsFragment = new SettingsFragment();
@@ -108,31 +111,20 @@ public class SettingsActivity extends AppCompatActivity {
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
-    /**
-     *
-     * Show toolbar with Up button.
-     *
-     * From David Passmore
-     *
-     * http://stackoverflow.com/questions/17849193/how-to-add-action-bar-from-support-library-into-preferenceactivity?rq=1
-     *
-     * @param
-     */
-//    @Override
-//    protected void onPostCreate(Bundle savedInstanceState) {
-//        super.onPostCreate(savedInstanceState);
-//
-////        LinearLayout root = (LinearLayout)findViewById(android.R.id.list).getParent().getParent().getParent();
-//        ContentFrameLayout root = (ContentFrameLayout)findViewById(android.R.id.list).getParent().getParent().getParent();
-//        Toolbar bar = (Toolbar) LayoutInflater.from(this).inflate(R.layout.settings_toolbar, root, false);
-//        root.addView(bar, 0); // insert at top
-//        bar.setNavigationOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                finish();
-//            }
-//        });
-//    }
+    private void validatePreferenceSettings() {
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        boolean useDeviceLocationValue = sharedPreferences.getBoolean(getString(R.string.pref_key_use_device_location), true);
+        float currFixedLocationLatitude = sharedPreferences.getFloat(getString(R.string.pref_key_location_latitude), Float.NaN);
+        float currFixedLocationLongitude = sharedPreferences.getFloat(getString(R.string.pref_key_location_longitude), Float.NaN);
+        Log.v(TAG, "onCreate - useDeviceLocationValue: " + useDeviceLocationValue + "/" + currFixedLocationLatitude + "/" + currFixedLocationLongitude);
+        if (!useDeviceLocationValue && (Float.isNaN(currFixedLocationLatitude) || Float.isNaN(currFixedLocationLongitude))) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(getString(R.string.pref_key_use_device_location), true);
+            editor.apply();
+            Log.v(TAG, "onCreate - pref_key_use_device_location changed to true");
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -291,13 +283,18 @@ public class SettingsActivity extends AppCompatActivity {
             // Get a reference to the application default shared preferences.
             SharedPreferences sp = getPreferenceScreen().getSharedPreferences();
 
-            String fixedLocationValue = sp.getString(getString(R.string.pref_key_fixed_location), "-1");
+            currFixedLocationLatitude = sp.getFloat(getString(R.string.pref_key_location_latitude), Float.NaN);
+            currFixedLocationLongitude = sp.getFloat(getString(R.string.pref_key_location_longitude), Float.NaN);
+
+            String fixedLocationValue = sp.getString(getString(R.string.pref_key_fixed_location),
+                    getString(R.string.pref_default_fixed_location));
             Preference prefFixedLocation = findPreference(getString(R.string.pref_key_fixed_location));
             // Set the listener to watch for value changes.
             prefFixedLocation.setOnPreferenceChangeListener(this);
             prefFixedLocation.setSummary(fixedLocationValue);
 
-            String stopNameValue = sp.getString(getString(R.string.pref_key_widget_stop_name), "-1");
+            String stopNameValue = sp.getString(getString(R.string.pref_key_widget_stop_name),
+                    getString(R.string.pref_default_widget_stop_name));
             Preference prefStopName = findPreference(getString(R.string.pref_key_widget_stop_name));
             prefStopName.setSummary(stopNameValue);
 
@@ -305,6 +302,7 @@ public class SettingsActivity extends AppCompatActivity {
             // Set the listener to watch for value changes.
             prefUseDeviceLocation.setOnPreferenceChangeListener(this);
             boolean useDeviceLocationValue = sp.getBoolean(getString(R.string.pref_key_use_device_location), true);
+            Log.v(TAG, "onCreate - useDeviceLocationValue: " + useDeviceLocationValue + "/" + currFixedLocationLatitude + "/" + currFixedLocationLongitude);
             if (useDeviceLocationValue) {
                 // FIXME: 26/10/2016 - shoud set that in parent activity or what?
                 currUseDeviceLocationOn = true;
@@ -313,13 +311,9 @@ public class SettingsActivity extends AppCompatActivity {
                 prefUseDeviceLocation.setSummary(getString(R.string.pref_summary_use_fixed_location));
             }
 
-            currFixedLocationLatitude = sp.getFloat(getString(R.string.pref_key_location_latitude), Float.NaN);
-            currFixedLocationLongitude = sp.getFloat(getString(R.string.pref_key_location_longitude), Float.NaN);
 
             Log.v(TAG, "onCreate - end: ");
-            // FIXME: 25/10/2016 - make sure the parent activity implements this fragment interface method
-            // to test change the device orientation
-//            mListener.bindPreferencesSummaryToValue();
+            // FIXME: 25/10/2016 - research how to setListFooter(mAttribution); for PlacePicker
 //            setListFooter(mAttribution);
         }
 
@@ -362,8 +356,6 @@ public class SettingsActivity extends AppCompatActivity {
                 if (validationOk) {
 //                    currUseDeviceLocationOn = (boolean) value;
                     if (newUseDeviceSwitchValue) {
-                        // FIXME: 26/10/2016 - shoud set that in parent activity or what?
-//                        currUseDeviceLocationOn = true;
                         setPreferenceSummary(preference, getString(R.string.pref_summary_use_device_location));
                     } else {
                         setPreferenceSummary(preference, getString(R.string.pref_summary_use_fixed_location));
@@ -386,19 +378,14 @@ public class SettingsActivity extends AppCompatActivity {
                 currFixedLocationLatitude + "/" +
                 currFixedLocationLongitude);
 
-//            currFixedLocationLatitude = Float.NaN;
-
-//            Log.v(TAG, "validateUseDeviceFixedLocationValue - before getting lat/lng");
-//            SharedPreferences sharedPreferences =
-//                    PreferenceManager.getDefaultSharedPreferences(getContext());
             SharedPreferences sp = getPreferenceScreen().getSharedPreferences();
             currFixedLocationLatitude = sp.getFloat(getString(R.string.pref_key_location_latitude), Float.NaN);
             currFixedLocationLongitude = sp.getFloat(getString(R.string.pref_key_location_longitude), Float.NaN);
-//            Log.v(TAG, "validateUseDeviceFixedLocationValue - after  getting lat/lng");
+            currUseDeviceLocationOn = sp.getBoolean(getString(R.string.pref_key_use_device_location), true);
 
+//            TOMORROW  - instead of using currUseDeviceLocationOn get appropriate value from SharedPreferences
             if (currUseDeviceLocationOn && !newUseDeviceLocationOn &&
                     (Float.isNaN(currFixedLocationLatitude) ||Float.isNaN(currFixedLocationLongitude) )) {
-//                View rootView = findViewById(android.R.id.content);
                 Snackbar.make(getView(), getString(R.string.pref_err_use_device_location),
                         Snackbar.LENGTH_LONG).show();
                 Log.v(TAG, "validateUseDeviceFixedLocationValue - fix location not assigned: ");
