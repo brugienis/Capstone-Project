@@ -16,6 +16,7 @@ import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil;
+import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
 /**
  * Created by business on 15/10/2016.
@@ -56,11 +57,11 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
             @Override
             public void onDataSetChanged() {
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                String stopId = sp.getString(getString(R.string.pref_key_widget_stop_id), "-1");
-                Log.v(TAG, "onDataSetChanged - start - stopId: " + stopId);
-//                if (mCursor != null) {
-//                    mCursor.close();
-//                }
+//                String stopId = sp.getString(getString(R.string.pref_key_widget_stop_id),
+//                        getString(R.string.pref_default_widget_stop_id));
+                String stopId = Utility.getWidgetStopId(getApplication());
+                        Log.v(TAG, "onDataSetChanged - start - stopId: " + stopId);
+
                 final long identityToken = Binder.clearCallingIdentity();
 
 //                mNextDepartureDetails.add(new NextDepartureDetails(1, 1, "a", 1, 1, 1, "11:10"));
@@ -68,21 +69,16 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
 //                mNextDepartureDetails.add(new NextDepartureDetails(3, 3, "a", 3, 3, 3, "13:10"));
 //                mNextDepartureDetails.add(new NextDepartureDetails(4, 4, "a", 4, 4, 4, "14:10"));
 
-                mNextDepartureDetails =
-                        RemoteMptEndpointUtil.getBroadNextDepartures(
-                                NearbyStopsDetails.TRAIN_ROUTE_TYPE,
-                                stopId,
-                                limit, getResources());
-                Log.v(TAG, "onDataSetChanged - after getBroadNextDepartures - mNextDepartureDetails.size: " + mNextDepartureDetails.size());
-//                String currDate = MainActivity.getDefaultPageDayInMillis();
-//                mCursor = getContentResolver().query(DatabaseContract.scores_table.buildScoreWithDate(),
-//                        SCORE_COLUMNS,
-//                        null,
-//                        new String[] {currDate}, DatabaseContract.scores_table.TIME_COL +
-//                                ASC +
-//                                " ," +
-//                                DatabaseContract.scores_table.HOME_COL +
-//                                ASC);
+                if (stopId.equals(getString(R.string.pref_default_widget_stop_id))) {
+                    Log.v(TAG, "onDataSetChanged - no data to process");
+                } else {
+                    mNextDepartureDetails =
+                            RemoteMptEndpointUtil.getBroadNextDepartures(
+                                    NearbyStopsDetails.TRAIN_ROUTE_TYPE,
+                                    stopId,
+                                    limit, getResources());
+                    Log.v(TAG, "onDataSetChanged - after getBroadNextDepartures - mNextDepartureDetails.size: " + mNextDepartureDetails.size());
+                }
                 Binder.restoreCallingIdentity(identityToken);
             }
 

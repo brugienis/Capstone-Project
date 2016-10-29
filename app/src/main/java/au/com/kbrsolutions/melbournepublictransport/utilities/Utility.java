@@ -37,6 +37,26 @@ public class Utility {
         return latLngDetails;
     }
 
+    public static String getWidgetStopName(Context context) {
+        SharedPreferences prefs
+                = PreferenceManager.getDefaultSharedPreferences(context);
+        String stopName = prefs.getString(context.getString(R.string.pref_key_widget_stop_name),
+                context.getString(R.string.pref_default_widget_stop_name));
+        return stopName;
+    }
+
+    public static String getWidgetStopId(Context context) {
+        SharedPreferences prefs
+                = PreferenceManager.getDefaultSharedPreferences(context);
+        String stopId = prefs.getString(context.getString(R.string.pref_key_widget_stop_id),
+                context.getString(R.string.pref_default_widget_stop_id));
+        return stopId;
+    }
+
+    public static String getWidgetStopInstructions(Context context) {
+        return context.getString(R.string.pref_value_widget_stop_set_up_instructions);
+    }
+
     // FIXME: 29/10/2016 - add methods to get widget stop details and get/set 'database loaded'
 //    public static float getLocationLatitude(Context context) {
 //        SharedPreferences prefs

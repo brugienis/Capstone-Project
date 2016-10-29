@@ -7,10 +7,8 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -19,6 +17,7 @@ import android.widget.RemoteViews;
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.activities.MainActivity;
 import au.com.kbrsolutions.melbournepublictransport.activities.SettingsActivity;
+import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
 /**
  * Created by business on 15/10/2016.
@@ -45,15 +44,24 @@ public class DeparturesCollectionWidgetProvider extends AppWidgetProvider {
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int appWidgetId : appWidgetIds) {
             Log.v(TAG, "onUpdate - appWidgetId: " + appWidgetId);
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_departures_collection);
+//            String stopName = Utility.getWidgetStopInstructions(context);
+            String stopName = Utility.getWidgetStopName(context);
+            Log.v(TAG, "onUpdate - stopName: " + stopName);
+//            String s = context.getString(R.string.pref_default_widget_stop_set_up_instructions);
+            RemoteViews views;
+            if (stopName.equals(context.getString(R.string.pref_default_widget_stop_name))) {
+                Log.v(TAG, "onUpdate - showing view widget_departures_collection_instructions");
+                views = new RemoteViews(context.getPackageName(), R.layout.widget_departures_collection_instructions);
+            } else {
+                views = new RemoteViews(context.getPackageName(), R.layout.widget_departures_collection);
+                Log.v(TAG, "onUpdate - showing view widget_departures_collection");
+            }
+//            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_departures_collection);
 
             // Create an Intent to launch MainActivity
             Intent intent = new Intent(context, MainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
             views.setOnClickPendingIntent(R.id.widget, pendingIntent);
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-            String stopName = sp.getString(context.getString(R.string.pref_key_widget_stop_name), "-1");
-            Log.v(TAG, "onUpdate - start - stopName: " + stopName);
             views.setTextViewText(R.id.widgetSelectedStopName, stopName);
 
             // Set up the collection
