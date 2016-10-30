@@ -1,0 +1,28 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <au.com.kbrsolutions.melbournepublictransport.activities.FixedLocationEditTextPreference
+        android:key="@string/pref_key_fixed_location"
+        android:title="@string/pref_title_fixed_location"
+        android:defaultValue="@string/pref_default_fixed_location"
+        android:inputType="text"
+        android:singleLine="true"
+        />
+
+    <SwitchPreference
+        android:key="@string/pref_key_use_device_location"
+        android:title="@string/pref_title_use_device_fixed_location"
+        android:defaultValue="true"
+        android:summary="@string/pref_summary_use_device_location"/>
+
+    <au.com.kbrsolutions.melbournepublictransport.activities.WidgetStopEditTextPreference
+        android:key="@string/pref_key_widget_stop_name"
+        android:title="@string/pref_title_widget_stop_name"
+        android:defaultValue="@string/pref_default_widget_stop_name"
+        android:inputType="text"
+        android:singleLine="true"
+        />
+
+</PreferenceScreen>
+<!--
+custom:minLength="3"
+-->

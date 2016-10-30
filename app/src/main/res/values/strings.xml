@@ -1,7 +1,8 @@
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
     <string name="app_name">MelbournePublicTransport</string>
     <string name="title_activity_favorite_stops">FavoriteStopsActivity</string>
     <string name="action_settings">Settings</string>
+    <string name="action_clear_settings">Clear settings</string>
     <string name="action_train_stops_nearby">Train stops nearby</string>
     <string name="action_stops_nearby">Stops nearby</string>
     <string name="action_disruptions">Disruptions</string>
@@ -13,9 +14,75 @@
     <string name="no_departures_detail">No departure details</string>
     <string name="express_train">Express</string>
     <string name="all_stops_train">All stops</string>
-    <string name="database_load_status">database_load_status</string>
-    <string name="widget_stop_id">widget_stop_id</string>
-    <string name="widget_stop_name">widget_stop_name</string>
+    <string name="database_load_status">database_load_status</string>≈
+
+    <!-- Key name for storing fixed location in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_key_fixed_location" translatable="false">fixed_location</string>
+
+    <!-- Title for the fixed location preference [CHAR LIMIT=30]  -->
+    <string name="pref_title_fixed_location">Fixed location</string>
+
+    <!-- Default text text for fixed location preference [CHAR LIMIT=NONE] -->
+    <string name="pref_default_fixed_location">Not assigned</string>
+
+    <!-- Key name for storing widget stop name in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_key_widget_stop_name" translatable="false">widget_stop_name</string>
+
+    <!-- Key name for storing widget stop id in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_key_widget_stop_id">widget_stop_id</string>
+    <string name="pref_default_widget_stop_id">-1</string>
+
+    <!-- Key name for storing widget stop id in SharedPreferences [CHAR LIMIT=NONE] -->
+    <!--<string name="pref_key_widget_stop_set_up_instructions">widget_stop_instructions</string>-->
+
+    <!-- Key name for storing widget stop id in SharedPreferences [CHAR LIMIT=NONE] -->
+    <!--<string name="pref_default_widget_stop_set_up_instructions">No instructions available.</string>-->
+
+    <!-- Key name for storing widget stop id in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_value_widget_stop_set_up_instructions">The widget stop name is not assigned.
+    \n
+    To select or change the stop, follow these steps (make sure there is at least one Favorite Stop selected before you do the below):
+        \n
+        \n\t start the Melbourne Public Transport app
+        \n\t open the \'Settings\' menu
+        \n\t touch the icon in the \'Widget stop name\' row
+        \n\t touch one of the available stops
+    </string>
+
+    <!-- Title for the location preference [CHAR LIMIT=30]  -->
+    <string name="pref_title_widget_stop_name">Widget stop name</string>
+
+    <!-- Key name for storing use fixed/device location in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_key_use_device_location">use_device_fixed_location</string>
+    <string name="pref_title_use_device_fixed_location">Use device location</string>
+    <string name="pref_err_use_device_location">\'fixed location\' not assigned</string>
+    <string name="pref_summary_use_device_location">Use device location to show \'stops nearby\'.
+    </string>
+    <string name="pref_summary_use_fixed_location">Use \'fixed\' location to show \'stops nearby\'.
+    </string>
+
+    <!-- Key name for storing location status in SharedPreferences -->
+    <string name="pref_location_status_key" translatable="false">loc-status</string>
+
+    <!-- Key name for storing location latlong in SharedPreferences -->
+    <string name="pref_key_location_latitude" translatable="false">loc-latitude</string>
+    <string name="pref_key_location_longitude" translatable="false">loc-longitude</string>
+
+    <!-- Default text code for location preference [CHAR LIMIT=NONE] -->
+    <string name="pref_default_widget_stop_name" translatable="false">Not assigned</string>
+
+    <!-- Content description for the get current widhet stop button in the location preference -->
+    <string name="pref_current_widget_stop_desc">Show this stop on widget</string>
+
+    <!-- Content description for the get current location button in the location preference -->
+    <string name="pref_current_location_desc">Use my location</string>
+
+    <!-- Strings used when displaying the state of the Location in settings -->
+    <string name="pref_location_error_description">Invalid Location (<xliff:g id="location_setting">%1$s</xliff:g>)"</string>
+    <string name="pref_location_unknown_description">Validating Location... (<xliff:g id="location_setting">%1$s</xliff:g>)"</string>
+
+    <!-- For Google Places API Attributions -->
+    <string name="attribution_text">Powered by Google</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="no_maps">Google Maps V2 not available!</string>
@@ -23,6 +90,8 @@
     <string name="united_nations">United Nations</string>
 
     <string name="title_favorite_stops">Favorite stops</string>
+    <string name="title_widget_stops">Widget stops</string>
+    <string name="title_settings">Settings</string>
     <string name="title_data_load">Loading MTV data</string>
     <string name="title_stops">Stops</string>
     <string name="title_train_stops_nearby">Train stops nearby</string>
@@ -31,4 +100,75 @@
     <string name="title_disruptions">Disruptions</string>
     <string name="title_stop_on_map">Stop location</string>
     <string name="title_widget_departures">Departures</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+
+    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_default_display_name">John Smith</string>
+
+    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string-array name="pref_example_list_titles">
+        <item>Always</item>
+        <item>When possible</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+    <!-- Example settings for Data & Sync -->
+    <string name="pref_header_data_sync">Data &amp; sync</string>
+
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string-array name="pref_sync_frequency_titles">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+
+    <string-array name="list_preference_entries">
+        <item>Entry 1</item>
+        <item>Entry 2</item>
+        <item>Entry 3</item>
+    </string-array>
+
+    <string-array name="list_preference_entry_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="multi_select_list_preference_default_value"/>
+
+    <string name="pref_title_system_sync_settings">System sync settings</string>
+
+    <!-- Example settings for Notifications -->
+    <string name="pref_header_notifications">Notifications</string>
+
+    <string name="pref_title_new_message_notifications">New message notifications</string>
+
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+
+    <string name="pref_title_vibrate">Vibrate</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

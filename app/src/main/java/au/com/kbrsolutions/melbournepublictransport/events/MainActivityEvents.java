@@ -5,7 +5,7 @@ import java.util.List;
 import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
-import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 
 /**
@@ -29,7 +29,7 @@ public class MainActivityEvents {
     public final List<NextDepartureDetails> nextDepartureDetailsList;
     public final StopDetails stopDetails;
     public final List<DisruptionsDetails> disruptionsDetailsList;
-    public final LatLonDetails latLonDetails;
+    public final LatLngDetails latLonDetails;
     public final List<NearbyStopsDetails> nearbyStopsDetailsList;
     public final boolean forTrainsStopsNearby;
     public final boolean databaseEmpty;
@@ -61,7 +61,7 @@ public class MainActivityEvents {
         private List<NextDepartureDetails> nextDepartureDetailsList;
         private StopDetails stopDetails;
         private List<DisruptionsDetails> disruptionsDetailsList;
-        private LatLonDetails latLonDetails;
+        private LatLngDetails latLonDetails;
         private List<NearbyStopsDetails> nearbyStopsDetailsList;
         private boolean forTrainsStopsNearby;
         private boolean databaseEmpty;
@@ -88,7 +88,7 @@ public class MainActivityEvents {
             return this;
         }
 
-        public Builder setLatLonDetails(LatLonDetails latLonDetails) {
+        public Builder setLatLonDetails(LatLngDetails latLonDetails) {
             this.latLonDetails = latLonDetails;
             return this;
         }

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 
@@ -64,7 +64,7 @@ public class DbUtility {
         Log.v(TAG, "printContents - start");
     }
 
-    public List<NearbyStopsDetails> getNearbyTrainDetails(LatLonDetails latLonDetails, Context context) {
+    public List<NearbyStopsDetails> getNearbyTrainDetails(LatLngDetails latLonDetails, Context context) {
         Uri uri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.ANY_FAVORITE_FLAG);
         Cursor cursor = context.getContentResolver().query(
                 uri,
@@ -125,14 +125,19 @@ public class DbUtility {
         return nearbyStopsDetailsList;
     }
 
-    public void fillInStopNames(List<NearbyStopsDetails> nearbyStopsDetailsList, Context context) {
-//        Log.v(TAG, "fillInStopNames start");
+    private final static String STOP_ID = "Stop iD ";
+    public void fillInMissingDetails(List<NearbyStopsDetails> nearbyStopsDetailsList, Context context) {
+//    public List<NearbyStopsDetails> fillInMissingDetails(Map<Double, NearbyStopsDetails> nearbyStopsDetailsMap, Context context) {
+//        Log.v(TAG, "fillInMissingDetails start");
         String[] stopIds = new String[nearbyStopsDetailsList.size()];
         int cnt = 0;
         for (NearbyStopsDetails details : nearbyStopsDetailsList) {
             stopIds[cnt++] = details.stopId;
         }
-        String[] colNames = {MptContract.StopDetailEntry.COLUMN_STOP_ID, MptContract.StopDetailEntry.COLUMN_LOCATION_NAME};
+        String[] colNames = {
+                MptContract.StopDetailEntry.COLUMN_STOP_ID,
+                MptContract.StopDetailEntry.COLUMN_LOCATION_NAME,
+                MptContract.StopDetailEntry.COLUMN_SUBURB};
 //        String[] stopIds = {"101", "102", "103", "104", "107", "108"};
         String whereClause = MptContract.StopDetailEntry.COLUMN_STOP_ID +
                 " IN (" +
@@ -144,7 +149,7 @@ public class DbUtility {
 //        Log.v(TAG, "whereClause: " + whereClause);
 
 //        Uri uri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.ANY_FAVORITE_FLAG);
-        Uri uri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.NON_FAVORITE_FLAG);
+        Uri uri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.ANY_FAVORITE_FLAG);
         Cursor cursor = context.getContentResolver().query(
                 uri,
                 colNames,
@@ -152,21 +157,64 @@ public class DbUtility {
                 stopIds,
                 null
         );
-//        Log.v(TAG, "cursor count: " + cursor.getCount());
-        Map<String, String> map = new HashMap<>();
+        Log.v(TAG, "cursor count: " + cursor.getCount());
+        Map<String, MissingDetails> missingDetailsMap = new HashMap<>();
 
         int stopIdIdx;
         int locationNameIdx;
+        int suburbIdx;
         String locationName;
+        String suburb;
         while (cursor.moveToNext()) {
             stopIdIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_STOP_ID);
             locationNameIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LOCATION_NAME);
+            suburbIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_SUBURB);
             locationName = cursor.getString(locationNameIdx);
+            suburb = cursor.getString(suburbIdx);
 //            Log.v(TAG, cursor.getString(stopIdIdx) + "/" + cursor.getString(locationNameIdx));
-            if (locationName != null) {
-                map.put(cursor.getString(stopIdIdx), locationName);
+            if (locationName != null && suburb != null) {
+                missingDetailsMap.put(cursor.getString(stopIdIdx), new MissingDetails(
+                        cursor.getString(locationNameIdx),
+                        cursor.getString(suburbIdx)
+                ));
             }
         }
         cursor.close();
+        for (String key : missingDetailsMap.keySet()) {
+            MissingDetails missingDetails = missingDetailsMap.get(key);
+            Log.v(TAG, "fillInMissingDetails - locationName/suburb: " + missingDetails.locationName + "/" + missingDetails.suburb);
+        }
+
+        String stopId;
+        NearbyStopsDetails nearbyStopsDetails;
+        for (int i = 0; i < nearbyStopsDetailsList.size(); i++) {
+            stopId = nearbyStopsDetailsList.get(i).stopId;
+            nearbyStopsDetails = nearbyStopsDetailsList.get(i);
+            if (missingDetailsMap.containsKey(stopId)) {
+                nearbyStopsDetailsList.set(i, new NearbyStopsDetails(
+                        missingDetailsMap.get(stopId).locationName,
+                        nearbyStopsDetails.stopAddress,
+                        missingDetailsMap.get(stopId).suburb,
+                        nearbyStopsDetails.route_type,
+                        nearbyStopsDetails.stopId,
+                        nearbyStopsDetails.latitude,
+                        nearbyStopsDetails.longitude,
+                        nearbyStopsDetails.distance
+                ));
+            } else {
+
+            }
+        }
+    }
+
+    class MissingDetails {
+        final String locationName;
+        final String suburb;
+
+        MissingDetails(String locationName, String suburb) {
+            this.locationName = locationName;
+            this.suburb = suburb;
+        }
+
     }
 }

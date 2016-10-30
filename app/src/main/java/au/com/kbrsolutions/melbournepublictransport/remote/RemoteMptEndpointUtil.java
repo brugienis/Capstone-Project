@@ -32,7 +32,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
-import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
@@ -198,13 +198,13 @@ public class RemoteMptEndpointUtil {
                 String str = fmt.print(JodaDateTimeUtility.getLocalTimeFromUtcString(departureTimeUtc));
 
                 // FIXME: 10/10/2016 remove below lines after test
-                String realTimeUtc = oneBroadDeparturesValueObject.getString("time_realtime_utc");
-                String schedTimeUtc = oneBroadDeparturesValueObject.getString("time_timetable_utc");
-                if (!realTimeUtc.equals("null")) {
-                    Log.v(TAG, "getBroadNextDepartures - scheduled/real: " +
-                            fmt.print(JodaDateTimeUtility.getLocalTimeFromUtcString(schedTimeUtc)) + "/" +
-                            fmt.print(JodaDateTimeUtility.getLocalTimeFromUtcString(realTimeUtc)));
-                }
+//                String realTimeUtc = oneBroadDeparturesValueObject.getString("time_realtime_utc");
+//                String schedTimeUtc = oneBroadDeparturesValueObject.getString("time_timetable_utc");
+//                if (!realTimeUtc.equals("null")) {
+//                    Log.v(TAG, "getBroadNextDepartures - scheduled/real: " +
+//                            fmt.print(JodaDateTimeUtility.getLocalTimeFromUtcString(schedTimeUtc)) + "/" +
+//                            fmt.print(JodaDateTimeUtility.getLocalTimeFromUtcString(realTimeUtc)));
+//                }
                 // FIXME: 10/10/2016 remove above lines after test
 
                 JSONObject platform = oneBroadDeparturesValueObject.getJSONObject("platform");
@@ -277,8 +277,7 @@ public class RemoteMptEndpointUtil {
         return nextDisruptionsDetailsList;
     }
 
-    private final static String STOP_ID = "Stop iD ";
-    public static List<NearbyStopsDetails> getNearbyStops(LatLonDetails latLonDetails) {
+    public static List<NearbyStopsDetails> getNearbyStops(LatLngDetails latLonDetails) {
 //        Log.v(TAG, "getNearbyStops - latLonDetails: " + latLonDetails);
         final String uri = "/v2/nearme/latitude/" + latLonDetails.latitude + "/longitude/" + latLonDetails.longitude;
         String jsonString = processRemoteRequest(uri);
@@ -307,7 +306,8 @@ public class RemoteMptEndpointUtil {
                 longitude = resultObject.getDouble("lon");
 //                Log.v(TAG, "processJsonString - distance/suburb/route_type/stopId: " + distance + "/" + suburb + "/" + route_type + "/" + stopId);
                 nearbyStopsDetailsList.add(new NearbyStopsDetails(
-                        STOP_ID + stopId,
+//                        STOP_ID + stopId,
+                        stopId,
                         locationName,
                         null,
                         routeType,

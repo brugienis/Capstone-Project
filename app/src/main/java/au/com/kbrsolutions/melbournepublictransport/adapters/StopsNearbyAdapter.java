@@ -47,6 +47,7 @@ public class StopsNearbyAdapter extends RecyclerView.Adapter<StopsNearbyAdapter.
         if (nearbyStopsDetails.route_type == NearbyStopsDetails.TRAIN_ROUTE_TYPE) {
             holder.stopName.setText(nearbyStopsDetails.stopName);
             holder.stopAddress.setText(nearbyStopsDetails.suburb);
+            holder.transportImage.setImageResource(R.drawable.ic_stock_train_blue_500_48dp);
         } else {
             holder.stopName.setText(nearbyStopsDetails.stopName);
             holder.stopAddress.setText(nearbyStopsDetails.stopAddress);
@@ -108,8 +109,8 @@ public class StopsNearbyAdapter extends RecyclerView.Adapter<StopsNearbyAdapter.
                                 nearbyStopsDetails.route_type,
                                 nearbyStopsDetails.stopId,
                                 nearbyStopsDetails.stopName,
-                                nearbyStopsDetails.stopLat,
-                                nearbyStopsDetails.stopLon,
+                                nearbyStopsDetails.latitude,
+                                nearbyStopsDetails.longitude,
                                 "n"
                         ));
                     }

@@ -21,7 +21,7 @@ import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.adapters.StopsAdapter;
-import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 
@@ -222,7 +222,7 @@ public class StopsFragment extends BaseFragment implements LoaderManager.LoaderC
      */
     public interface OnStopFragmentInteractionListener {
         void showUpdatedFavoriteStops();
-        void showStopOnMap(LatLonDetails latLonDetails);
+        void showStopOnMap(LatLngDetails latLonDetails);
         void updateStopDetailRow(int id, String favoriteColumnValue);  // activity should send the removeSelectedStop() below
         void startNextDeparturesSearch(StopDetails stopDetails);
         // to IntentService

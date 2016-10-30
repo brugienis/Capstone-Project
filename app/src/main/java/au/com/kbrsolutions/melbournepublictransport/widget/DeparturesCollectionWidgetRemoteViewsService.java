@@ -16,12 +16,16 @@ import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil;
+import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
 /**
  * Created by business on 15/10/2016.
  */
 
 public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsService {
+    {
+//        Log.v(TAG, "instance initializer - start");
+    }
 
     private final static String TAG = DeparturesCollectionWidgetRemoteViewsService.class.getSimpleName();
 
@@ -48,29 +52,32 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
              * The data from DB is sorted by time and hone columns in ascending order.
              *
              */
+//            private String stopId = "1035";
+            private int limit = 5;
             @Override
             public void onDataSetChanged() {
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                String stopId = sp.getString(getString(R.string.widget_stop_id), "-1");
-                Log.v(TAG, "onDataSetChanged - start - stopId: " + stopId);
-                int limit = 5;
+                String stopId = Utility.getWidgetStopId(getApplication());
+//                Log.v(TAG, "onDataSetChanged - start - stopId: " + stopId);
 
                 final long identityToken = Binder.clearCallingIdentity();
 
+//                if (stopId.equals(getString(R.string.pref_default_widget_stop_id))) {
+//                    Log.v(TAG, "onDataSetChanged - no data to process");
+//                } else {
                 mNextDepartureDetails =
                         RemoteMptEndpointUtil.getBroadNextDepartures(
                                 NearbyStopsDetails.TRAIN_ROUTE_TYPE,
                                 stopId,
                                 limit, getResources());
+//                    Log.v(TAG, "onDataSetChanged - after getBroadNextDepartures - mNextDepartureDetails.size: " + mNextDepartureDetails.size());
+//                }
                 Binder.restoreCallingIdentity(identityToken);
             }
 
             @Override
-            public void onDestroy() {
-            }
-
-            @Override
             public int getCount() {
+//                Log.v(TAG, "onCreate - getCount - count: " + mNextDepartureDetails.size());
                 return mNextDepartureDetails.size();
             }
 
@@ -82,29 +89,32 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
              */
             @Override
             public RemoteViews getViewAt(int position) {
+//            Log.v(TAG, "getViewAt - position: " + position);
                 if (position == AdapterView.INVALID_POSITION ||
                         mNextDepartureDetails == null || mNextDepartureDetails.size() - 1 < position) {
+                    Log.v(TAG, "getViewAt - INVALID_POSITION");
                     return null;
                 }
 
                 RemoteViews views = new RemoteViews(getPackageName(),
                         R.layout.widget_departures_collection_list);
-                views.setTextViewText(R.id.runType,
-                        String.valueOf(mNextDepartureDetails.get(position).routeType));
-                views.setTextViewText(R.id.directionName,
-                        mNextDepartureDetails.get(position).directionName);
-                views.setTextViewText(R.id.runType,
-                        String.valueOf(mNextDepartureDetails.get(position).runType));
-                views.setTextViewText(R.id.departureTimeId,
-                        String.valueOf(mNextDepartureDetails.get(position).utcDepartureTime));
+                views.setTextViewText(R.id.runType, String.valueOf(mNextDepartureDetails.get(position).routeType));
+                views.setTextViewText(R.id.directionName, mNextDepartureDetails.get(position).directionName);
+                views.setTextViewText(R.id.runType, String.valueOf(mNextDepartureDetails.get(position).runType));
+                views.setTextViewText(R.id.departureTimeId, String.valueOf(mNextDepartureDetails.get(position).utcDepartureTime));
+//            Log.v(TAG, "getViewAt - populated podition: " + position);
 
                 final Intent fillInIntent = new Intent();
+
+                // FIXME: 15/10/2016 - handle below
                 views.setOnClickFillInIntent(R.id.widgetDeparturesCollectionList, fillInIntent);
+//            Log.v(TAG, "getViewAt - views: " + views.getLayoutId());
                 return views;
             }
 
             @Override
             public RemoteViews getLoadingView() {
+//            Log.v(TAG, "getLoadingView - start");
                 return new RemoteViews(getPackageName(), R.layout.widget_departures_collection_list);
             }
 
@@ -122,8 +132,12 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
             public boolean hasStableIds() {
                 return true;
             }
+
+            @Override
+            public void onDestroy() {
+
+            }
         };
     }
 
 }
-

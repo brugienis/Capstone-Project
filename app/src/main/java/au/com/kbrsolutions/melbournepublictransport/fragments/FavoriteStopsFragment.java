@@ -1,7 +1,6 @@
 package au.com.kbrsolutions.melbournepublictransport.fragments;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -17,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.adapters.FavoriteStopsAdapter;
-import au.com.kbrsolutions.melbournepublictransport.data.LatLonDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 
@@ -48,6 +48,7 @@ public class FavoriteStopsFragment
     private boolean isVisible;
     private FavoriteStopsAdapter mFavoriteStopDetailAdapter;
     private OnFavoriteStopsFragmentInteractionListener mListener;
+    private boolean isInSettingsActivity;
 
     private static final int STOP_DETAILS_LOADER = 0;
 
@@ -81,7 +82,9 @@ public class FavoriteStopsFragment
      */
     public void hideView() {
         isVisible = false;
-        mRootView.setVisibility(View.INVISIBLE);
+        if (mRootView != null) {
+            mRootView.setVisibility(View.INVISIBLE);
+        }
         if (mListener != null) {
             ((Activity) mListener).invalidateOptionsMenu();
         }
@@ -90,11 +93,13 @@ public class FavoriteStopsFragment
 
     public void showView() {
         isVisible = true;
-        mRootView.setVisibility(View.VISIBLE);
+        if (mRootView != null) {
+            mRootView.setVisibility(View.VISIBLE);
+        }
         if (mListener != null) {
             ((Activity) mListener).invalidateOptionsMenu();
         }
-        Log.v(TAG, "showView: " + String.format("0x%08X", this.hashCode()));
+//        Log.v(TAG, "showView: " + String.format("0x%08X", this.hashCode()));
     }
 
     public void isRootViewVisible() {
@@ -127,11 +132,11 @@ public class FavoriteStopsFragment
     public void databaseIsEmpty(boolean databaseIsEmpty) {
         mDatabaseIsEmpty = databaseIsEmpty;
         setEmptyViewText();
-        Log.v(TAG, "databaseIsEmpty - mDatabaseIsEmpty: " + mDatabaseIsEmpty);
+//        Log.v(TAG, "databaseIsEmpty - mDatabaseIsEmpty: " + mDatabaseIsEmpty);
     }
 
     private void setEmptyViewText() {
-        Log.v(TAG, "setEmptyViewText - mDatabaseIsEmpty: " + mDatabaseIsEmpty);
+//        Log.v(TAG, "setEmptyViewText - mDatabaseIsEmpty: " + mDatabaseIsEmpty);
         mEmptyView.setText(mDatabaseIsEmpty ?
                 getActivity().getResources().getString(R.string.database_is_empty) :
                 getActivity().getResources().getString(R.string.no_favorite_stops_selected)
@@ -146,7 +151,8 @@ public class FavoriteStopsFragment
                 getActivity().getApplicationContext(),
                 null,
                 0,
-                mListener);
+                mListener,
+                isInSettingsActivity);
 
         // Inflate the layout for this fragment
         mRootView = inflater.inflate(R.layout.fragment_favorite_stops, container, false);
@@ -157,6 +163,14 @@ public class FavoriteStopsFragment
         mListView = (NestedScrollingListView) mRootView.findViewById(R.id.favoriteStopsListView);
         mListView.setAdapter(mFavoriteStopDetailAdapter);
         mListView.setNestedScrollingEnabled(true);
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                handleRowSelected(adapterView, position);
+            }
+        });
 
         mEmptyView = (TextView) mRootView.findViewById(R.id.emptyView);
         setEmptyViewText();
@@ -209,9 +223,22 @@ public class FavoriteStopsFragment
         mFavoriteStopDetailAdapter.swapCursor(null);
     }
 
-//    public void showFavoriteStops() {
-//        showView();
-//    }
+    public void setIsInSettingsActivity() {
+        isInSettingsActivity = true;
+    }
+
+    private void handleRowSelected(AdapterView<?> adapterView, int position) {
+        // CursorAdapter returns a cursor at the correct position for getItem(), or null
+        // if it cannot seek to that position.
+        Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+        if (cursor != null) {
+            if (isInSettingsActivity) {
+                mListener.updateWidgetStopDetails(
+                        cursor.getString(COL_STOP_DETAILS_STOP_ID),
+                        cursor.getString(COL_STOP_DETAILS_LOCATION_NAME));
+            }
+        }
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -290,20 +317,21 @@ public class FavoriteStopsFragment
      */
     public interface OnFavoriteStopsFragmentInteractionListener {
         void startNextDeparturesSearch(StopDetails stopDetails);
-        void showStopOnMap(LatLonDetails latLonDetails);
+        void showStopOnMap(LatLngDetails latLonDetails);
         void startStopsNearbySearch(boolean trainsOnly);
         void getDisruptionsDetails();
         void updateStopDetailRow(int id, String favoriteColumnValue);
         void reloadDatabase();
+        void updateWidgetStopDetails(String stopId, String locationName);
     }
 
 
-    public void removeSelectedStop(StopDetails stopDetails) {
-        ContentValues updatedValues = new ContentValues();
-        updatedValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, "n");
-        int count = getActivity().getContentResolver().update(
-                MptContract.StopDetailEntry.CONTENT_URI, updatedValues, MptContract.StopDetailEntry._ID + "= ?",
-                new String [] { String.valueOf(stopDetails.id)});
-    }
+//    public void removeSelectedStop(StopDetails stopDetails) {
+//        ContentValues updatedValues = new ContentValues();
+//        updatedValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, "n");
+//        int count = getActivity().getContentResolver().update(
+//                MptContract.StopDetailEntry.CONTENT_URI, updatedValues, MptContract.StopDetailEntry._ID + "= ?",
+//                new String [] { String.valueOf(stopDetails.id)});
+//    }
 
 }
