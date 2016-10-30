@@ -43,19 +43,12 @@ public class DeparturesCollectionWidgetProvider extends AppWidgetProvider {
         Log.v(TAG, "onUpdate - start");
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int appWidgetId : appWidgetIds) {
-            Log.v(TAG, "onUpdate - appWidgetId: " + appWidgetId);
-//            String stopName = Utility.getWidgetStopInstructions(context);
+//            Log.v(TAG, "onUpdate - appWidgetId: " + appWidgetId);
             String stopName = Utility.getWidgetStopName(context);
-            Log.v(TAG, "onUpdate - stopName: " + stopName);
-//            String s = context.getString(R.string.pref_default_widget_stop_set_up_instructions);
-//            RemoteViews views;
+//            Log.v(TAG, "onUpdate - stopName: " + stopName);
             if (stopName.equals(context.getString(R.string.pref_default_widget_stop_name))) {
-                Log.v(TAG, "onUpdate - showing view widget_departures_collection_instructions");
-//                views = new RemoteViews(context.getPackageName(), R.layout.widget_departures_collection_instructions);
-//                views = new RemoteViews(context.getPackageName(), R.layout.widget_departures_collection);
                 stopName = context.getString(R.string.pref_value_widget_stop_set_up_instructions);
             } else {
-//                views = new RemoteViews(context.getPackageName(), R.layout.widget_departures_collection);
                 Log.v(TAG, "onUpdate - showing view widget_departures_collection");
             }
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_departures_collection);
@@ -73,7 +66,6 @@ public class DeparturesCollectionWidgetProvider extends AppWidgetProvider {
                 setRemoteAdapterV11(context, views);
             }
             Intent clickIntentTemplate = new Intent(context, MainActivity.class);
-//                Intent clickIntentTemplate = new Intent(context, DeparturesCollectionWidgetRemoteViewsService.class);
             PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
                     .addNextIntentWithParentStack(clickIntentTemplate)
                     .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -98,7 +90,7 @@ public class DeparturesCollectionWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         super.onReceive(context, intent);
-        Log.v(TAG, "onReceive - intent action: " + intent.getAction());
+//        Log.v(TAG, "onReceive - intent action: " + intent.getAction());
         if (SettingsActivity.WIDGET_STOP_UPDATED.equals(intent.getAction())) {
             Log.v(TAG, "onReceive - got WIDGET_STOP_UPDATED");
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
@@ -116,7 +108,7 @@ public class DeparturesCollectionWidgetProvider extends AppWidgetProvider {
      */
 //        @Override
     public void onUpdateFromBook(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        Log.v(TAG, "onUpdateFromBook - start");
+//        Log.v(TAG, "onUpdateFromBook - start");
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int i=0; i<appWidgetIds.length; i++) {
             Intent svcIntent=new Intent(context, DeparturesCollectionWidgetRemoteViewsService.class);
@@ -141,7 +133,7 @@ public class DeparturesCollectionWidgetProvider extends AppWidgetProvider {
             appWidgetManager.updateAppWidget(appWidgetIds[i], widget);
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds);
-        Log.v(TAG, "onUpdateFromBook - end");
+//        Log.v(TAG, "onUpdateFromBook - end");
     }
 
     /**

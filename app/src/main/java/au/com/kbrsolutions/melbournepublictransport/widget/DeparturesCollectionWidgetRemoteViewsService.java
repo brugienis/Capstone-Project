@@ -24,7 +24,7 @@ import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
 public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsService {
     {
-        Log.v(TAG, "instance initializer - start");
+//        Log.v(TAG, "instance initializer - start");
     }
 
     private final static String TAG = DeparturesCollectionWidgetRemoteViewsService.class.getSimpleName();
@@ -57,105 +57,88 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
             @Override
             public void onDataSetChanged() {
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//                String stopId = sp.getString(getString(R.string.pref_key_widget_stop_id),
-//                        getString(R.string.pref_default_widget_stop_id));
                 String stopId = Utility.getWidgetStopId(getApplication());
-                        Log.v(TAG, "onDataSetChanged - start - stopId: " + stopId);
+//                Log.v(TAG, "onDataSetChanged - start - stopId: " + stopId);
 
                 final long identityToken = Binder.clearCallingIdentity();
 
-//                mNextDepartureDetails.add(new NextDepartureDetails(1, 1, "a", 1, 1, 1, "11:10"));
-//                mNextDepartureDetails.add(new NextDepartureDetails(2, 2, "a", 2, 2, 2, "12:10"));
-//                mNextDepartureDetails.add(new NextDepartureDetails(3, 3, "a", 3, 3, 3, "13:10"));
-//                mNextDepartureDetails.add(new NextDepartureDetails(4, 4, "a", 4, 4, 4, "14:10"));
-
-                if (stopId.equals(getString(R.string.pref_default_widget_stop_id))) {
-                    Log.v(TAG, "onDataSetChanged - no data to process");
-                } else {
-                    mNextDepartureDetails =
-                            RemoteMptEndpointUtil.getBroadNextDepartures(
-                                    NearbyStopsDetails.TRAIN_ROUTE_TYPE,
-                                    stopId,
-                                    limit, getResources());
-                    Log.v(TAG, "onDataSetChanged - after getBroadNextDepartures - mNextDepartureDetails.size: " + mNextDepartureDetails.size());
-                }
+//                if (stopId.equals(getString(R.string.pref_default_widget_stop_id))) {
+//                    Log.v(TAG, "onDataSetChanged - no data to process");
+//                } else {
+                mNextDepartureDetails =
+                        RemoteMptEndpointUtil.getBroadNextDepartures(
+                                NearbyStopsDetails.TRAIN_ROUTE_TYPE,
+                                stopId,
+                                limit, getResources());
+//                    Log.v(TAG, "onDataSetChanged - after getBroadNextDepartures - mNextDepartureDetails.size: " + mNextDepartureDetails.size());
+//                }
                 Binder.restoreCallingIdentity(identityToken);
             }
 
             @Override
-            public void onDestroy() {
-                Log.v(TAG, "onDestroy - start");
-//                if (mCursor != null) {
-//                    mCursor.close();
-//                    mCursor = null;
-//                }
-            }
-
-            @Override
             public int getCount() {
-                Log.v(TAG, "onCreate - getCount - count: " + mNextDepartureDetails.size());
+//                Log.v(TAG, "onCreate - getCount - count: " + mNextDepartureDetails.size());
                 return mNextDepartureDetails.size();
             }
 
 
             /**
-         *
-         * @param   position - index of the ListView row that has to be prepared for display
-         * @return  RemoteViews
-         */
-        @Override
-        public RemoteViews getViewAt(int position) {
+             *
+             * @param   position - index of the ListView row that has to be prepared for display
+             * @return  RemoteViews
+             */
+            @Override
+            public RemoteViews getViewAt(int position) {
 //            Log.v(TAG, "getViewAt - position: " + position);
-            if (position == AdapterView.INVALID_POSITION ||
-                    mNextDepartureDetails == null || mNextDepartureDetails.size() - 1 < position) {
-                Log.v(TAG, "getViewAt - INVALID_POSITION");
-                return null;
-            }
+                if (position == AdapterView.INVALID_POSITION ||
+                        mNextDepartureDetails == null || mNextDepartureDetails.size() - 1 < position) {
+                    Log.v(TAG, "getViewAt - INVALID_POSITION");
+                    return null;
+                }
 
-            RemoteViews views = new RemoteViews(getPackageName(),
-                    R.layout.widget_departures_collection_list);
-            views.setTextViewText(R.id.runType, String.valueOf(mNextDepartureDetails.get(position).routeType));
-            views.setTextViewText(R.id.directionName, mNextDepartureDetails.get(position).directionName);
-            views.setTextViewText(R.id.runType, String.valueOf(mNextDepartureDetails.get(position).runType));
-            views.setTextViewText(R.id.departureTimeId, String.valueOf(mNextDepartureDetails.get(position).utcDepartureTime));
+                RemoteViews views = new RemoteViews(getPackageName(),
+                        R.layout.widget_departures_collection_list);
+                views.setTextViewText(R.id.runType, String.valueOf(mNextDepartureDetails.get(position).routeType));
+                views.setTextViewText(R.id.directionName, mNextDepartureDetails.get(position).directionName);
+                views.setTextViewText(R.id.runType, String.valueOf(mNextDepartureDetails.get(position).runType));
+                views.setTextViewText(R.id.departureTimeId, String.valueOf(mNextDepartureDetails.get(position).utcDepartureTime));
 //            Log.v(TAG, "getViewAt - populated podition: " + position);
 
-            final Intent fillInIntent = new Intent();
+                final Intent fillInIntent = new Intent();
 
-            // FIXME: 15/10/2016 - handle below
-//            fillInIntent.putExtra(MainActivity.WIDGET_SELECTED_MATCH_ID, mCursor.getDouble(MATCH_ID_IDX));
-//            fillInIntent.putExtra(MainActivity.WIDGET_SELECTED_ROW_IDX, position);
-//            views.setOnClickFillInIntent(R.id.widget_scores_collection_list_item, fillInIntent);
-            views.setOnClickFillInIntent(R.id.widgetDeparturesCollectionList, fillInIntent);
+                // FIXME: 15/10/2016 - handle below
+                views.setOnClickFillInIntent(R.id.widgetDeparturesCollectionList, fillInIntent);
 //            Log.v(TAG, "getViewAt - views: " + views.getLayoutId());
-            return views;
-        }
+                return views;
+            }
 
-        @Override
-        public RemoteViews getLoadingView() {
-            Log.v(TAG, "getLoadingView - start");
-            return new RemoteViews(getPackageName(), R.layout.widget_departures_collection_list);
-        }
+            @Override
+            public RemoteViews getLoadingView() {
+//            Log.v(TAG, "getLoadingView - start");
+                return new RemoteViews(getPackageName(), R.layout.widget_departures_collection_list);
+            }
 
-        @Override
-        public int getViewTypeCount() {
-            return 1;
-        }
+            @Override
+            public int getViewTypeCount() {
+                return 1;
+            }
 
-        @Override
-        public long getItemId(int position) {
-//            Log.v(TAG, "getItemId - start");
-//            if (mCursor.moveToPosition(position))
-//                return mCursor.getLong(ID_IDX);
-            return position;
-        }
+            @Override
+            public long getItemId(int position) {
+                return position;
+            }
 
-        @Override
-        public boolean hasStableIds() {
-            return true;
-        }
-    };
-}
+            @Override
+            public boolean hasStableIds() {
+                return true;
+            }
+
+            @Override
+            public void onDestroy() {
+
+            }
+        };
+    }
 
 }
 
