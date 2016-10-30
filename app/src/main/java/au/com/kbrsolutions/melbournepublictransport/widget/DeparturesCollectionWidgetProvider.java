@@ -48,15 +48,17 @@ public class DeparturesCollectionWidgetProvider extends AppWidgetProvider {
             String stopName = Utility.getWidgetStopName(context);
             Log.v(TAG, "onUpdate - stopName: " + stopName);
 //            String s = context.getString(R.string.pref_default_widget_stop_set_up_instructions);
-            RemoteViews views;
+//            RemoteViews views;
             if (stopName.equals(context.getString(R.string.pref_default_widget_stop_name))) {
                 Log.v(TAG, "onUpdate - showing view widget_departures_collection_instructions");
-                views = new RemoteViews(context.getPackageName(), R.layout.widget_departures_collection_instructions);
+//                views = new RemoteViews(context.getPackageName(), R.layout.widget_departures_collection_instructions);
+//                views = new RemoteViews(context.getPackageName(), R.layout.widget_departures_collection);
+                stopName = context.getString(R.string.pref_value_widget_stop_set_up_instructions);
             } else {
-                views = new RemoteViews(context.getPackageName(), R.layout.widget_departures_collection);
+//                views = new RemoteViews(context.getPackageName(), R.layout.widget_departures_collection);
                 Log.v(TAG, "onUpdate - showing view widget_departures_collection");
             }
-//            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_departures_collection);
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_departures_collection);
 
             // Create an Intent to launch MainActivity
             Intent intent = new Intent(context, MainActivity.class);
@@ -81,6 +83,7 @@ public class DeparturesCollectionWidgetProvider extends AppWidgetProvider {
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_list);
+            Log.v(TAG, "onUpdate - after the end if last statement in the loop");
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds);
         Log.v(TAG, "onUpdate - end");
