@@ -47,6 +47,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected static final int WIDGET_STOP_REQUEST = 2000;
     public static final String WIDGET_STOP_UPDATED =
             "au.com.kbrsolutions.melbournepublictransport.WIDGET_STOP_UPDATED";
+    private static final String SETTINGS_TAG = "favorite_stops_tag";
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
@@ -83,12 +84,14 @@ public class SettingsActivity extends AppCompatActivity {
 
         validatePreferenceSettings();
 
-        if (getFragmentManager().findFragmentById(android.R.id.content) == null) {
+//        if (getFragmentManager().findFragmentById(android.R.id.content) == null) {
+        mSettingsFragment = (SettingsFragment) getFragmentManager().findFragmentByTag(SETTINGS_TAG);
+        if (mSettingsFragment == null) {
             mSettingsFragment = new SettingsFragment();
             getFragmentManager()
                     .beginTransaction()
-//                    .add(android.R.id.content, mSettingsFragment)
                     .add(R.id.left_dynamic_fragments_frame, mSettingsFragment)
+//                    .addToBackStack(SETTINGS_TAG)
                     .commit();
 
             // If we are using a PlacePicker location, we need to show attributions.
@@ -111,6 +114,14 @@ public class SettingsActivity extends AppCompatActivity {
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
+    /**
+     *
+     * I 'use fixed location' enabled and its latitude and longitude do not contain valid values,
+     * change switch to 'use device location.
+     *
+     * It has to be done before SettingsFragment is added.
+     *
+     */
     private void validatePreferenceSettings() {
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
@@ -177,7 +188,7 @@ public class SettingsActivity extends AppCompatActivity {
                             Snackbar.LENGTH_LONG).show();
                 }
             } else {
-                // FIXME: 25/10/2016 - handle the resulot not OK
+                // FIXME: 25/10/2016 - handle the result not OK
             }
         } else if (requestCode == WIDGET_STOP_REQUEST) {
 //            Log.v(TAG, "onActivityResult - processing WIDGET_STOP_REQUEST");
@@ -203,7 +214,7 @@ public class SettingsActivity extends AppCompatActivity {
                 Log.v(TAG, "onActivityResult - before sendBroadcastMessageToNextDeparturesWidget: ");
                 sendBroadcastMessageToNextDeparturesWidget();
             } else {
-                // FIXME: 25/10/2016 - handle the resulot not OK
+                // FIXME: 25/10/2016 - handle the result not OK
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -238,6 +249,25 @@ public class SettingsActivity extends AppCompatActivity {
             outState.putString(WIDGET_STOP_ID, mStopId);
             outState.putString(WIDGET_STOP_NAME, mStopName);
         }
+    }
+
+    /**
+     * Up button was pressed - remove to top entry Back Stack
+     */
+    @Override
+    public boolean onSupportNavigateUp() {
+        int cnt = getSupportFragmentManager().getBackStackEntryCount();
+        Log.v(TAG, "onSupportNavigateUp - start - cnt: " + cnt);
+        getSupportFragmentManager().popBackStack();
+        onBackPressed();
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        int cnt = getSupportFragmentManager().getBackStackEntryCount();
+        Log.v(TAG, "onBackPressed - start - cnt: " + cnt);
+        super.onBackPressed();
     }
 
 

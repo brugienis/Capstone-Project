@@ -101,6 +101,25 @@ public class WidgetStopsActivity
         intent.putExtra(WIDGET_STOP_ID, stopId);
         intent.putExtra(WIDGET_LOCATION_NAME, locationName);
         setResult(Activity.RESULT_OK, intent);
-        finish();
+//        finish();
+//        onBackPressed();
+//        getSupportFragmentManager().popBackStack();
+        onSupportNavigateUp();
+    }
+
+    /**
+     * Up button was pressed - remove to top entry Back Stack
+     */
+    @Override
+    public boolean onSupportNavigateUp() {
+        getSupportFragmentManager().popBackStack();
+        onBackPressed();
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.v(TAG, "onBackPressed - start: ");
+        super.onBackPressed();
     }
 }

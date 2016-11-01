@@ -1,11 +1,13 @@
 package au.com.kbrsolutions.melbournepublictransport.activities;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.text.Editable;
@@ -39,15 +41,7 @@ public class WidgetStopEditTextPreference extends EditTextPreference {
             a.recycle();
         }
 
-        // Check to see if Google Play services is available. The Place Picker API is available
-        // through Google Play services, so if this is false, we'll just carry on as though this
-        // feature does not exist. If it is true, however, we can add a widget to our preference.
-//        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-//        int resultCode = apiAvailability.isGooglePlayServicesAvailable(getContext());
-//        if (resultCode == ConnectionResult.SUCCESS) {
-            // Add the get current location widget to our location preference
-            setWidgetLayoutResource(R.layout.pref_current_widget_stop);
-//        }
+        setWidgetLayoutResource(R.layout.pref_current_widget_stop);
     }
 
     @Override
@@ -59,9 +53,20 @@ public class WidgetStopEditTextPreference extends EditTextPreference {
             public void onClick(View v) {
                 Context context = getContext();
                 Activity settingsActivity = (SettingsActivity) context;
-                settingsActivity.startActivityForResult(
-                            new Intent(settingsActivity, WidgetStopsActivity.class),
+//                settingsActivity.startActivityForResult(
+//                            new Intent(settingsActivity, WidgetStopsActivity.class),
+//                            SettingsActivity.WIDGET_STOP_REQUEST);
+
+                Intent intent = new Intent(settingsActivity, WidgetStopsActivity.class);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    settingsActivity.startActivityForResult(intent,
+                            SettingsActivity.WIDGET_STOP_REQUEST,
+                            ActivityOptions.makeSceneTransitionAnimation(settingsActivity).toBundle());
+                } else {
+                    settingsActivity.startActivityForResult(
+                            intent,
                             SettingsActivity.WIDGET_STOP_REQUEST);
+                }
             }
         });
 

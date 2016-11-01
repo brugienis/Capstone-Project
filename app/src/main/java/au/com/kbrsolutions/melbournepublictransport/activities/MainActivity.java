@@ -1,5 +1,6 @@
 package au.com.kbrsolutions.melbournepublictransport.activities;
 
+import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -228,6 +229,9 @@ public class MainActivity extends AppCompatActivity implements
 ////        editor.commit();
 //        editor.apply();
         // FIXME: 17/10/2016 - move above to settings - end
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            getWindow().setReenterTransition(new Explode());
+//        }
         Log.v(TAG, "onCreate - end");
     }
 
@@ -627,7 +631,14 @@ public class MainActivity extends AppCompatActivity implements
 
         if (id == R.id.action_settings) {
 //            startActivity(new Intent(this, SettingsActivity.class));
-            startActivity(new Intent(this, SettingsActivity.class));
+//            startActivity(new Intent(this, SettingsActivity.class));
+            Intent intent = new Intent(this, SettingsActivity.class);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                startActivity(intent,
+                        ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+            } else {
+                startActivity(intent);
+            }
             return true;
             // FIXME: 28/10/2016  - remove action_clear_settings after testings done
         } else if (id == R.id.action_clear_settings) {
