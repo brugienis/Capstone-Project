@@ -8,7 +8,10 @@
     <string name="action_disruptions">Disruptions</string>
     <string name="action_reload_database">Reload data</string>
 
-    <string name="no_favorite_stops_selected">No favorite stops selected</string>
+    <string name="no_favorite_stops_selected">No favorite stops selected.</string>
+    <string name="no_favorite_stops_selected_in_settings">No \'favorite\' stops selected. Exit Settings,
+        add some \'favorite\' stops and go to Settings again. Select \'widget\' stop.
+    </string>
     <string name="database_is_empty">Database is empty (select \'menu/reload\' to load it)</string>
     <string name="no_stops_to_add">There are no stops to add</string>
     <string name="no_departures_detail">No departure details</string>

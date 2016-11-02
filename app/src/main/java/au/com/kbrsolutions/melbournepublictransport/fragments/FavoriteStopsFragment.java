@@ -129,18 +129,32 @@ public class FavoriteStopsFragment
     }
 
     private boolean mDatabaseIsEmpty;
+
     public void databaseIsEmpty(boolean databaseIsEmpty) {
         mDatabaseIsEmpty = databaseIsEmpty;
-        setEmptyViewText();
+        setEmptyViewText("databaseIsEmpty");
 //        Log.v(TAG, "databaseIsEmpty - mDatabaseIsEmpty: " + mDatabaseIsEmpty);
     }
 
-    private void setEmptyViewText() {
-//        Log.v(TAG, "setEmptyViewText - mDatabaseIsEmpty: " + mDatabaseIsEmpty);
+    private void setEmptyViewText(String source) {
+        Log.v(TAG, "setEmptyViewText - source/mDatabaseIsEmpty: " + source + "/" + mDatabaseIsEmpty);
         mEmptyView.setText(mDatabaseIsEmpty ?
                 getActivity().getResources().getString(R.string.database_is_empty) :
                 getActivity().getResources().getString(R.string.no_favorite_stops_selected)
         );
+        if (mDatabaseIsEmpty) {
+            mEmptyView.setText(getActivity().getResources().getString(R.string.database_is_empty));
+        } else {
+            if (isInSettingsActivity) {
+                mEmptyView.setText(getActivity().getResources().getString(R.string.no_favorite_stops_selected_in_settings));
+            } else {
+                mEmptyView.setText(getActivity().getResources().getString(R.string.no_favorite_stops_selected));
+            }
+        }
+    }
+
+    private void clearEmptyViewText() {
+        mEmptyView.setText("");
     }
 
     @Override
@@ -173,7 +187,7 @@ public class FavoriteStopsFragment
         });
 
         mEmptyView = (TextView) mRootView.findViewById(R.id.emptyView);
-        setEmptyViewText();
+        setEmptyViewText("onCreateView");
         return mRootView;
     }
 
@@ -202,10 +216,13 @@ public class FavoriteStopsFragment
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-//        Log.v(TAG, "onLoadFinished - start - rows cnt: " + data.getCount());
+        Log.v(TAG, "onLoadFinished - start - rows cnt: " + data.getCount());
         mFavoriteStopDetailAdapter.swapCursor(data);
         if (data.getCount() > 0) {
+//            databaseIsEmpty(false);
+            clearEmptyViewText();
             mEmptyView.setVisibility(View.GONE);
+            Log.v(TAG, "onLoadFinished - after GONE");
         } else {
             mEmptyView.setVisibility(View.VISIBLE);
         }
