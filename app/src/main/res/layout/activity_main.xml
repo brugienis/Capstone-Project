@@ -27,7 +27,7 @@
                 android:id="@+id/collapsingToolbarImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="fitCenter"
+                android:scaleType="centerCrop"
                 android:fitsSystemWindows="true"
                 android:src="@drawable/flinders_street_station_mel"
                 android:contentDescription="@string/app_name"
@@ -74,6 +74,8 @@
 
     <!--
 
+                android:src="@drawable/flinders_street_station_mel_1460109_924_583"
+                android:scaleType="fitCenter"
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
