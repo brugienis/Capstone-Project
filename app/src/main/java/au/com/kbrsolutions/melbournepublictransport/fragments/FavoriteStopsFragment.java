@@ -137,11 +137,7 @@ public class FavoriteStopsFragment
     }
 
     private void setEmptyViewText(String source) {
-        Log.v(TAG, "setEmptyViewText - source/mDatabaseIsEmpty: " + source + "/" + mDatabaseIsEmpty);
-        mEmptyView.setText(mDatabaseIsEmpty ?
-                getActivity().getResources().getString(R.string.database_is_empty) :
-                getActivity().getResources().getString(R.string.no_favorite_stops_selected)
-        );
+//        Log.v(TAG, "setEmptyViewText - source/mDatabaseIsEmpty: " + source + "/" + mDatabaseIsEmpty);
         if (mDatabaseIsEmpty) {
             mEmptyView.setText(getActivity().getResources().getString(R.string.database_is_empty));
         } else {
@@ -216,13 +212,12 @@ public class FavoriteStopsFragment
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.v(TAG, "onLoadFinished - start - rows cnt: " + data.getCount());
+//        Log.v(TAG, "onLoadFinished - start - rows cnt: " + data.getCount());
         mFavoriteStopDetailAdapter.swapCursor(data);
         if (data.getCount() > 0) {
-//            databaseIsEmpty(false);
             clearEmptyViewText();
             mEmptyView.setVisibility(View.GONE);
-            Log.v(TAG, "onLoadFinished - after GONE");
+//            Log.v(TAG, "onLoadFinished - after GONE");
         } else {
             mEmptyView.setVisibility(View.VISIBLE);
         }
