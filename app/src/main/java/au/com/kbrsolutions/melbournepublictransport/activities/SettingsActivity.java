@@ -90,7 +90,7 @@ public class SettingsActivity extends AppCompatActivity {
             mSettingsFragment = new SettingsFragment();
             getFragmentManager()
                     .beginTransaction()
-                    .add(R.id.left_dynamic_fragments_frame, mSettingsFragment)
+                    .add(R.id.left_dynamic_fragments_frame, mSettingsFragment, SETTINGS_TAG)
 //                    .addToBackStack(SETTINGS_TAG)
                     .commit();
 
@@ -326,6 +326,8 @@ public class SettingsActivity extends AppCompatActivity {
             String stopNameValue = sp.getString(getString(R.string.pref_key_widget_stop_name),
                     getString(R.string.pref_default_widget_stop_name));
             Preference prefStopName = findPreference(getString(R.string.pref_key_widget_stop_name));
+            Log.v(TAG, "onCreate - prev summary: " + prefStopName.getSummary());
+
             prefStopName.setSummary(stopNameValue);
 
             Preference prefUseDeviceLocation = findPreference(getString(R.string.pref_key_use_device_location));
@@ -444,6 +446,7 @@ public class SettingsActivity extends AppCompatActivity {
 //            }
             } else if (key.equals(getString(R.string.pref_key_widget_stop_name))) {
 //            Log.v(TAG, "setPreferenceSummary - on location");
+                Log.v(TAG, "onCreate - prev summary: " + preference.getSummary());
                 preference.setSummary(stringValue);
 //            }
             } else {
