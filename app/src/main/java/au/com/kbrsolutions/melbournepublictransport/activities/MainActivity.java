@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
@@ -77,11 +78,12 @@ public class MainActivity extends AppCompatActivity implements
     private NextDeparturesFragment mNextDeparturesFragment;
     private DisruptionsFragment mDisruptionsFragment;
     private StopsNearbyFragment mStopsNearbyFragment;
-    ActionBar actionBar;
-    private View mCoordinatorlayout;
+    private ActionBar actionBar;
+    private AppBarLayout mAppBarLayout;
+    private CoordinatorLayout mCoordinatorlayout;
 
     private Toolbar mToolbar;
-    CollapsingToolbarLayout mCollapsingToolbar;
+    private CollapsingToolbarLayout mCollapsingToolbar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
 
@@ -126,13 +128,18 @@ public class MainActivity extends AppCompatActivity implements
         if (!eventBus.isRegistered(this)) {
             eventBus.register(this);
         }
-        mCoordinatorlayout = findViewById(R.id.coordinatedLayout);
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            appBarLayout.setExpanded(true);
-        } else {
-            appBarLayout.setExpanded(false);
+        mCoordinatorlayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
+        mAppBarLayout = (AppBarLayout) findViewById(R.id.appbar);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            mAppBarLayout.setExpanded(false);
         }
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                saveAppBarVerticalOffset(verticalOffset);
+            }
+        });
+
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
         mCollapsingToolbar =
@@ -221,18 +228,52 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         }
-        // FIXME: 17/10/2016 - move below to settings - start
-//        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-//        SharedPreferences.Editor editor = sp.edit();
-//        editor.putString(getString(R.string.pref_key_widget_stop_id), "1035");
-//        editor.putString(getString(R.string.pref_key_widget_stop_name), "Carrum");
-////        editor.commit();
-//        editor.apply();
-        // FIXME: 17/10/2016 - move above to settings - end
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            getWindow().setReenterTransition(new Explode());
-//        }
         Log.v(TAG, "onCreate - end");
+    }
+
+    private int mVerticalOffset;
+    private void saveAppBarVerticalOffset(int verticalOffset) {
+        mVerticalOffset = verticalOffset;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Utility.setAppBarVerticalOffset(getApplicationContext(), mVerticalOffset);
+        Log.v(TAG, "onPause - mVerticalOffset: " + mVerticalOffset);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        int verticalOffset = Utility.getAppBarVerticalOffset(getApplicationContext());
+        Log.v(TAG, "onResume - mVerticalOffset/verticalOffset: " + mVerticalOffset + "/" + verticalOffset);
+        if (mVerticalOffset != verticalOffset) {
+            mVerticalOffset = verticalOffset;
+//            adjustAppBarVertivalOffset(verticalOffset);
+            adjustAppBarVertivalOffset(verticalOffset * -1);
+        }
+    }
+
+    private void adjustAppBarVertivalOffset(final int verticalOffset) {
+//        mCoordinatorLayour = (CoordinatorLayout) findViewById(R.id.root_coordinator);
+//        mAppBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
+
+        mAppBarLayout.post(new Runnable() {
+            @Override
+            public void run() {
+//                int heightPx = findViewById(R.id.iv_header).getHeight();
+//                setAppBarOffset(heightPx/2);
+                setAppBarOffset(verticalOffset);
+            }
+        });
+    }
+
+    private void setAppBarOffset(int offsetPx){
+        Log.v(TAG, "setAppBarOffset - offsetPx: " + offsetPx);
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams();
+        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
+        behavior.onNestedPreScroll(mCoordinatorlayout, mAppBarLayout, null, 0, offsetPx, new int[]{0, 0});
     }
 
     private void handleRefresh() {
@@ -284,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(getString(R.string.database_load_status), false);
-        editor.commit();
+        editor.apply();
 
         loadDatabase();
 //        Log.v(TAG, "reloadDatabase - end");
@@ -298,6 +339,7 @@ public class MainActivity extends AppCompatActivity implements
                 .commit();
         getSupportFragmentManager().popBackStack();
 
+        // FIXME: 4/11/2016 - use Utility to save new value
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(getString(R.string.database_load_status), true);

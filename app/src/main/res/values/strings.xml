@@ -35,6 +35,10 @@
     <string name="pref_key_widget_stop_id">widget_stop_id</string>
     <string name="pref_default_widget_stop_id">-1</string>
 
+    <!-- Key name for storing AppBar vertical offset in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_key_appbar_vertical_offset" translatable="false">appbar_vertical_offset</string>
+    <string name="pref_default_appbar_vertical_offset">9999</string>
+
     <!-- Key name for storing widget stop id in SharedPreferences [CHAR LIMIT=NONE] -->
     <!--<string name="pref_key_widget_stop_set_up_instructions">widget_stop_instructions</string>-->
 

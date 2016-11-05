@@ -10,6 +10,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -37,11 +38,14 @@ public class SettingsActivity extends AppCompatActivity {
 
     private ImageView mAttribution;
     private SettingsFragment mSettingsFragment;
-    ActionBar actionBar;
+    private CoordinatorLayout mCoordinatorlayout;
+    private ActionBar actionBar;
     private Toolbar mToolbar;
-    CollapsingToolbarLayout mCollapsingToolbar;
+    private CollapsingToolbarLayout mCollapsingToolbar;
     private ImageView collapsingToolbarImage;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private AppBarLayout mAppBarLayout;
+    private int mVerticalOffset;
 
     protected static final int PLACE_PICKER_REQUEST = 1000;
     protected static final int WIDGET_STOP_REQUEST = 2000;
@@ -57,8 +61,22 @@ public class SettingsActivity extends AppCompatActivity {
 //        Log.v(TAG, "onCreate - start: ");
         setContentView(R.layout.activity_main);
 
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-        appBarLayout.setExpanded(false);
+        mCoordinatorlayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
+        mAppBarLayout = (AppBarLayout) findViewById(R.id.appbar);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+//            Log.v(TAG, "onCreate - mVerticalOffset: " + mVerticalOffset);
+//            mAppBarLayout.setExpanded(true);
+//        } else {
+            mAppBarLayout.setExpanded(false);
+        }
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+//                Log.v(TAG, "onOffsetChanged - verticalOffset: " + verticalOffset);
+                saveAppBarVerticalOffset(verticalOffset);
+            }
+        });
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -110,13 +128,61 @@ public class SettingsActivity extends AppCompatActivity {
 //        Log.v(TAG, "onCreate - end: ");
     }
 
+    private void saveAppBarVerticalOffset(int verticalOffset) {
+        mVerticalOffset = verticalOffset;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Utility.setAppBarVerticalOffset(getApplicationContext(), mVerticalOffset);
+        Log.v(TAG, "onPause - mVerticalOffset: " + mVerticalOffset);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        int verticalOffset = Utility.getAppBarVerticalOffset(getApplicationContext());
+        Log.v(TAG, "onResume - mVerticalOffset/verticalOffset: " + mVerticalOffset + "/" + verticalOffset);
+        if (mVerticalOffset != verticalOffset) {
+            mVerticalOffset = verticalOffset;
+            adjustAppBarVertivalOffset(verticalOffset * -1);
+        }
+    }
+
+    /**
+     * Based on http://stackoverflow.com/questions/33058496/set-starting-height-of-collapsingtoolbarlayout
+     *
+     * @param verticalOffset
+     */
+    private void adjustAppBarVertivalOffset(final int verticalOffset) {
+        mAppBarLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                setAppBarOffset(verticalOffset);
+            }
+        });
+    }
+
+    /**
+     * Based on http://stackoverflow.com/questions/33058496/set-starting-height-of-collapsingtoolbarlayout
+     *
+     * @param offsetPx
+     */
+    private void setAppBarOffset(int offsetPx) {
+        Log.v(TAG, "setAppBarOffset - offsetPx: " + offsetPx);
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams();
+        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
+        behavior.onNestedPreScroll(mCoordinatorlayout, mAppBarLayout, null, 0, offsetPx, new int[]{0, 0});
+    }
+
     private void handleRefresh() {
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
     /**
      *
-     * I 'use fixed location' enabled and its latitude and longitude do not contain valid values,
+     * If 'use fixed location' enabled and its latitude and longitude do not contain valid values,
      * change switch to 'use device location.
      *
      * It has to be done before SettingsFragment is added.

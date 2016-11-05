@@ -57,6 +57,23 @@ public class Utility {
         return context.getString(R.string.pref_value_widget_stop_set_up_instructions);
     }
 
+    public static int getAppBarVerticalOffset(Context context) {
+        SharedPreferences prefs
+                = PreferenceManager.getDefaultSharedPreferences(context);
+         return prefs.getInt(context.getString(R.string.pref_key_appbar_vertical_offset),
+                Integer.parseInt(context.getString(R.string.pref_default_appbar_vertical_offset)));
+    }
+
+    public static void setAppBarVerticalOffset(Context context, int verticalOffset) {
+        SharedPreferences prefs
+                = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(String.valueOf(
+                context.getString(R.string.pref_key_appbar_vertical_offset)),
+                verticalOffset);
+        editor.apply();
+    }
+
     // FIXME: 29/10/2016 - add methods to get widget stop details and get/set 'database loaded'
 //    public static float getLocationLatitude(Context context) {
 //        SharedPreferences prefs

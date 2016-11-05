@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -18,6 +19,7 @@ import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragment;
+import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
 import static au.com.kbrsolutions.melbournepublictransport.activities.MainActivity.FragmentsId.FAVORITE_STOPS;
 
@@ -26,11 +28,14 @@ public class WidgetStopsActivity
         implements FavoriteStopsFragment.OnFavoriteStopsFragmentInteractionListener {
 
     private FavoriteStopsFragment mFavoriteStopsFragment;
+    private CoordinatorLayout mCoordinatorlayout;
     ActionBar actionBar;
+    private AppBarLayout mAppBarLayout;
     private Toolbar mToolbar;
     CollapsingToolbarLayout mCollapsingToolbar;
     private ImageView collapsingToolbarImage;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private int mVerticalOffset;
 
     public static final String WIDGET_STOP_ID = "widget_stop_id";
     public static final String WIDGET_LOCATION_NAME = "widget_location_name";
@@ -41,15 +46,20 @@ public class WidgetStopsActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_widget_stops);
         setContentView(R.layout.activity_main);
 
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            appBarLayout.setExpanded(true);
-        } else {
-            appBarLayout.setExpanded(false);
+        mCoordinatorlayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
+        mAppBarLayout = (AppBarLayout) findViewById(R.id.appbar);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            mAppBarLayout.setExpanded(false);
         }
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                saveAppBarVerticalOffset(verticalOffset);
+            }
+        });
+
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
         mCollapsingToolbar =
@@ -75,14 +85,50 @@ public class WidgetStopsActivity
         if (mFavoriteStopsFragment == null) {
             mFavoriteStopsFragment = new FavoriteStopsFragment();
             mFavoriteStopsFragment.setFragmentId(FAVORITE_STOPS);
-//            mFavoriteStopsFragment.setActionBarTitle(getResources().getString(R.string.title_favorite_stops));
             mFavoriteStopsFragment.setIsInSettingsActivity();
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
-//                    .addToBackStack(FAVORITE_STOPS_TAG)
                     .commit();
         }
+    }
+
+    private void saveAppBarVerticalOffset(int verticalOffset) {
+        mVerticalOffset = verticalOffset;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Utility.setAppBarVerticalOffset(getApplicationContext(), mVerticalOffset);
+        Log.v(TAG, "onPause - mVerticalOffset: " + mVerticalOffset);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        int verticalOffset = Utility.getAppBarVerticalOffset(getApplicationContext());
+        Log.v(TAG, "onResume - mVerticalOffset/verticalOffset: " + mVerticalOffset + "/" + verticalOffset);
+        if (mVerticalOffset != verticalOffset) {
+            mVerticalOffset = verticalOffset;
+            adjustAppBarVertivalOffset(verticalOffset * -1);
+        }
+    }
+
+    private void adjustAppBarVertivalOffset(final int verticalOffset) {
+        mAppBarLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                setAppBarOffset(verticalOffset);
+            }
+        });
+    }
+
+    private void setAppBarOffset(int offsetPx) {
+        Log.v(TAG, "setAppBarOffset - offsetPx: " + offsetPx);
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams();
+        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
+        behavior.onNestedPreScroll(mCoordinatorlayout, mAppBarLayout, null, 0, offsetPx, new int[]{0, 0});
     }
 
     private void handleRefresh() {

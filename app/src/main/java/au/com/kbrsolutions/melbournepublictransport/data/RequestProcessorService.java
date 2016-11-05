@@ -122,8 +122,16 @@ public class RequestProcessorService extends IntentService {
 //                                    MainActivityEvents.MainEvents.DATABASE_STATUS)
 //                                    .setDatabaseEmpty(databaseEmpty)
 //                                    .build());
+                            Log.v(TAG, "onHandleIntent - real load - databaseEmpty: " + databaseEmpty);
                             if (databaseEmpty || !extras.getBoolean(REFRESH_DATA_IF_TABLES_EMPTY)) {
                                 DatabaseContentRefresher.refreshDatabase(getContentResolver());
+                            } else {
+                                /* database is not empty - pretend the load has finished */
+                                sendMessageToMainActivity(new MainActivityEvents.Builder(
+                                        MainActivityEvents.MainEvents.DATABASE_LOAD_PROGRESS)
+                                        .setDatabaseLoadTarget(1)
+                                        .setDatabaseLoadProgress(1)
+                                        .build());
                             }
                         }
                         break;
