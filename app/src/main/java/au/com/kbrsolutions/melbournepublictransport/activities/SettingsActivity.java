@@ -5,10 +5,10 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.SwitchPreference;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -213,12 +213,12 @@ public class SettingsActivity extends AppCompatActivity {
         boolean useDeviceLocationValue = sharedPreferences.getBoolean(getString(R.string.pref_key_use_device_location), true);
         float currFixedLocationLatitude = sharedPreferences.getFloat(getString(R.string.pref_key_location_latitude), Float.NaN);
         float currFixedLocationLongitude = sharedPreferences.getFloat(getString(R.string.pref_key_location_longitude), Float.NaN);
-//        Log.v(TAG, "onCreate - useDeviceLocationValue: " + useDeviceLocationValue + "/" + currFixedLocationLatitude + "/" + currFixedLocationLongitude);
+        Log.v(TAG, "onCreate - useDeviceLocationValue: " + useDeviceLocationValue + "/" + currFixedLocationLatitude + "/" + currFixedLocationLongitude);
         if (!useDeviceLocationValue && (Float.isNaN(currFixedLocationLatitude) || Float.isNaN(currFixedLocationLongitude))) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean(getString(R.string.pref_key_use_device_location), true);
             editor.apply();
-//            Log.v(TAG, "onCreate - pref_key_use_device_location changed to true");
+            Log.v(TAG, "onCreate - pref_key_use_device_location changed to true");
         }
     }
 
@@ -354,6 +354,7 @@ public class SettingsActivity extends AppCompatActivity {
      * The SettingsFragment's onCreate(...) is called before SettingsActivity's onCreate(...).
      *
      */
+    // FIXME: 7/11/2016 test it
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
@@ -431,32 +432,33 @@ public class SettingsActivity extends AppCompatActivity {
             currFixedLocationLatitude = sp.getFloat(getString(R.string.pref_key_location_latitude), Float.NaN);
             currFixedLocationLongitude = sp.getFloat(getString(R.string.pref_key_location_longitude), Float.NaN);
 
-            String fixedLocationValue = sp.getString(getString(R.string.pref_key_fixed_location),
-                    getString(R.string.pref_default_fixed_location));
-            Preference prefFixedLocation = findPreference(getString(R.string.pref_key_fixed_location));
+//            Preference prefFixedLocation = findPreference(getString(R.string.pref_key_fixed_location));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_fixed_location)));
+//            String fixedLocationValue = sp.getString(getString(R.string.pref_key_fixed_location),
+//                    getString(R.string.pref_default_fixed_location));
+//            prefFixedLocation.setOnPreferenceChangeListener(this);
+//            prefFixedLocation.setSummary(fixedLocationValue);
+
+//            Preference prefStopName = findPreference(getString(R.string.pref_key_widget_stop_name));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_widget_stop_name)));
+//            String stopNameValue = sp.getString(getString(R.string.pref_key_widget_stop_name),
+//                    getString(R.string.pref_default_widget_stop_name));
+//            Log.v(TAG, "onCreate - prev summary: " + prefStopName.getSummary());
+//            prefStopName.setSummary(stopNameValue);
+
+//            Preference prefUseDeviceLocation = findPreference(getString(R.string.pref_key_use_device_location));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_use_device_location)));
             // Set the listener to watch for value changes.
-            prefFixedLocation.setOnPreferenceChangeListener(this);
-            prefFixedLocation.setSummary(fixedLocationValue);
-
-            String stopNameValue = sp.getString(getString(R.string.pref_key_widget_stop_name),
-                    getString(R.string.pref_default_widget_stop_name));
-            Preference prefStopName = findPreference(getString(R.string.pref_key_widget_stop_name));
-            Log.v(TAG, "onCreate - prev summary: " + prefStopName.getSummary());
-
-            prefStopName.setSummary(stopNameValue);
-
-            Preference prefUseDeviceLocation = findPreference(getString(R.string.pref_key_use_device_location));
-            // Set the listener to watch for value changes.
-            prefUseDeviceLocation.setOnPreferenceChangeListener(this);
-            boolean useDeviceLocationValue = sp.getBoolean(getString(R.string.pref_key_use_device_location), true);
+//            prefUseDeviceLocation.setOnPreferenceChangeListener(this);
+//            boolean useDeviceLocationValue = sp.getBoolean(getString(R.string.pref_key_use_device_location), true);
 //            Log.v(TAG, "onCreate - useDeviceLocationValue: " + useDeviceLocationValue + "/" + currFixedLocationLatitude + "/" + currFixedLocationLongitude);
-            if (useDeviceLocationValue) {
-                // FIXME: 26/10/2016 - shoud set that in parent activity or what?
-                currUseDeviceLocationOn = true;
-                prefUseDeviceLocation.setSummary(getString(R.string.pref_summary_use_device_location));
-            } else {
-                prefUseDeviceLocation.setSummary(getString(R.string.pref_summary_use_fixed_location));
-            }
+//            if (useDeviceLocationValue) {
+//                // FIXME: 26/10/2016 - shoud set that in parent activity or what?
+//                currUseDeviceLocationOn = true;
+//                prefUseDeviceLocation.setSummary(getString(R.string.pref_summary_use_device_location));
+//            } else {
+//                prefUseDeviceLocation.setSummary(getString(R.string.pref_summary_use_fixed_location));
+//            }
 
 
 //            Log.v(TAG, "onCreate - end: ");
@@ -544,26 +546,41 @@ public class SettingsActivity extends AppCompatActivity {
         private void setPreferenceSummary(Preference preference, Object value) {
             String stringValue = value.toString();
             String key = preference.getKey();
-//            Log.v(TAG, "setPreferenceSummary - key/stringValue: " + key + "/" + stringValue);
+            Log.v(TAG, "setPreferenceSummary - key/stringValue: " + key + "/" + stringValue);
 
-            if (preference instanceof ListPreference) {
-//            Log.v(TAG, "setPreferenceSummary - on ListPreference");
-                // For list preferences, look up the correct display value in
-                // the preference's 'entries' list (since they have separate labels/values).
-                ListPreference listPreference = (ListPreference) preference;
-                int prefIndex = listPreference.findIndexOfValue(stringValue);
-                if (prefIndex >= 0) {
-                    preference.setSummary(listPreference.getEntries()[prefIndex]);
+//            if (preference instanceof ListPreference) {
+////            Log.v(TAG, "setPreferenceSummary - on ListPreference");
+//                // For list preferences, look up the correct display value in
+//                // the preference's 'entries' list (since they have separate labels/values).
+//                ListPreference listPreference = (ListPreference) preference;
+//                int prefIndex = listPreference.findIndexOfValue(stringValue);
+//                if (prefIndex >= 0) {
+//                    preference.setSummary(listPreference.getEntries()[prefIndex]);
+//                }
+//            } else
+//            if (key.equals(getString(R.string.pref_key_fixed_location))) {
+////            Log.v(TAG, "setPreferenceSummary - on location");
+//                preference.setSummary(stringValue);
+////            }
+//            } else
+//            if (key.equals(getString(R.string.pref_key_widget_stop_name))) {
+////            Log.v(TAG, "setPreferenceSummary - on location");
+//                Log.v(TAG, "onCreate - prev summary: " + preference.getSummary());
+//                preference.setSummary(stringValue);
+////            }
+            if (preference instanceof SwitchPreference) {
+                if ( key.equals(getString(R.string.pref_key_use_device_location))) {
+//                    boolean useDeviceLocationValue = sp.getBoolean(getString(R.string.pref_key_use_device_location), true);
+                    boolean useDeviceLocationValue = Boolean.parseBoolean(stringValue);
+//            Log.v(TAG, "onCreate - useDeviceLocationValue: " + useDeviceLocationValue + "/" + currFixedLocationLatitude + "/" + currFixedLocationLongitude);
+                    if (useDeviceLocationValue) {
+                        // FIXME: 26/10/2016 - shoud set that in parent activity or what?
+                        currUseDeviceLocationOn = true;
+                        preference.setSummary(getString(R.string.pref_summary_use_device_location));
+                    } else {
+                        preference.setSummary(getString(R.string.pref_summary_use_fixed_location));
+                    }
                 }
-            } else if (key.equals(getString(R.string.pref_key_fixed_location))) {
-//            Log.v(TAG, "setPreferenceSummary - on location");
-                preference.setSummary(stringValue);
-//            }
-            } else if (key.equals(getString(R.string.pref_key_widget_stop_name))) {
-//            Log.v(TAG, "setPreferenceSummary - on location");
-                Log.v(TAG, "onCreate - prev summary: " + preference.getSummary());
-                preference.setSummary(stringValue);
-//            }
             } else {
 //            Log.v(TAG, "setPreferenceSummary - on other");
                 // For other preferences, set the summary to the value's simple string representation.
