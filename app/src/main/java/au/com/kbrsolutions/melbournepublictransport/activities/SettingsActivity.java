@@ -144,14 +144,16 @@ public class SettingsActivity extends AppCompatActivity {
         super.onResume();
         int verticalOffset = Utility.getAppBarVerticalOffset(getApplicationContext());
         Log.v(TAG, "onResume - mVerticalOffset/verticalOffset: " + mVerticalOffset + "/" + verticalOffset);
-        if (mVerticalOffset != verticalOffset) {
+//        if (mVerticalOffset != verticalOffset) {
             mVerticalOffset = verticalOffset;
             adjustAppBarVertivalOffset(verticalOffset * -1);
-        }
+//        }
     }
 
     /**
      * Based on http://stackoverflow.com/questions/33058496/set-starting-height-of-collapsingtoolbarlayout
+     *
+     * DmitryArc
      *
      * @param verticalOffset
      */
@@ -159,6 +161,8 @@ public class SettingsActivity extends AppCompatActivity {
         mAppBarLayout.post(new Runnable() {
             @Override
             public void run() {
+                int heightPx = findViewById(R.id.appbar).getHeight();
+                Log.v(TAG, "run - heightPx: " + heightPx);
                 setAppBarOffset(verticalOffset);
             }
         });

@@ -248,11 +248,11 @@ public class MainActivity extends AppCompatActivity implements
         super.onResume();
         int verticalOffset = Utility.getAppBarVerticalOffset(getApplicationContext());
         Log.v(TAG, "onResume - mVerticalOffset/verticalOffset: " + mVerticalOffset + "/" + verticalOffset);
-        if (mVerticalOffset != verticalOffset) {
+//        if (mVerticalOffset != verticalOffset) {
             mVerticalOffset = verticalOffset;
 //            adjustAppBarVertivalOffset(verticalOffset);
             adjustAppBarVertivalOffset(verticalOffset * -1);
-        }
+//        }
     }
 
     private void adjustAppBarVertivalOffset(final int verticalOffset) {
