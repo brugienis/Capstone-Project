@@ -3,7 +3,6 @@ package au.com.kbrsolutions.melbournepublictransport.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +39,7 @@ public class FavoriteStopsAdapter extends CursorAdapter {
             ImageView departuresImageId = (ImageView) view.findViewById(R.id.departuresImageId);
             ImageView garbageInfoImage = (ImageView) view.findViewById(R.id.garbageImageId);
 
-            Log.v(TAG, "ViewHolder - mIsInSettingsActivityFlag: " + mIsInSettingsActivityFlag);
+//            Log.v(TAG, "ViewHolder - mIsInSettingsActivityFlag: " + mIsInSettingsActivityFlag);
             if (mIsInSettingsActivityFlag) {
                 mapImageId.setVisibility(View.GONE);
                 departuresImageId.setVisibility(View.GONE);

@@ -225,6 +225,9 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.v(TAG, "onActivityResult - start - requestCode/resultCode: " + requestCode + "/" + resultCode);
+        if (resultCode == RESULT_CANCELED) {
+            return;
+        }
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 processPlacePickerData(data);
@@ -244,7 +247,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void processPlacePickerData(Intent data) {
-        Place place = PlacePicker.getPlace(data, this);
+//        Place place = PlacePicker.getPlace(data, this);
+        Place place = PlacePicker.getPlace(this, data);
         mFixedLocationAddress = place.getAddress().toString();
         mLatLng = place.getLatLng();
 
@@ -266,7 +270,6 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putFloat(getString(R.string.pref_key_location_longitude),
                 (float) mLatLng.longitude);
         editor.apply();
-        // FIXME: 28/10/2016 - address and latLon should be handled as widget's stopId and name
         mFixedLocationPreferenceSummaryNotUpdated = true;
 //                currFixedLocationLatitude = (float) latLong.latitude;
 
@@ -300,7 +303,7 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putString(getString(R.string.pref_key_widget_stop_name), mStopName);
         editor.apply();
         mWidgetStopPreferenceSummaryNotUpdated = true;
-        Log.v(TAG, "onActivityResult - after commit - mSettingsFragment: " + mSettingsFragment);
+//        Log.v(TAG, "onActivityResult - after commit - mSettingsFragment: " + mSettingsFragment);
         if (mSettingsFragment != null) {
             Preference widgetStopPreference = mSettingsFragment.findPreference(getString(R.string.pref_key_widget_stop_name));
             if (widgetStopPreference != null) {
@@ -308,7 +311,7 @@ public class SettingsActivity extends AppCompatActivity {
                 mWidgetStopPreferenceSummaryNotUpdated = false;
             }
         }
-        Log.v(TAG, "onActivityResult - before sendBroadcastMessageToNextDeparturesWidget: ");
+//        Log.v(TAG, "onActivityResult - before sendBroadcastMessageToNextDeparturesWidget: ");
         sendBroadcastMessageToNextDeparturesWidget();
     }
 
@@ -362,7 +365,7 @@ public class SettingsActivity extends AppCompatActivity {
             if (fixedLocationPreference != null) {
                 Log.v(TAG, "onRestoreInstanceState - calling setPreferenceSummary");
                 mSettingsFragment.setPreferenceSummary(fixedLocationPreference, mFixedLocationAddress);
-                mWidgetStopPreferenceSummaryNotUpdated = false;
+                mFixedLocationPreferenceSummaryNotUpdated = false;
             }
         }
         mWidgetStopPreferenceSummaryNotUpdated = savedInstanceState.getBoolean(WIDGET_STOP_PREFERENCE_SUMMARY_NOT_UPDATED);
