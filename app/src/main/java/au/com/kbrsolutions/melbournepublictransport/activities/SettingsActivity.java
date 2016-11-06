@@ -2,6 +2,7 @@ package au.com.kbrsolutions.melbournepublictransport.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -46,12 +47,26 @@ public class SettingsActivity extends AppCompatActivity {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private AppBarLayout mAppBarLayout;
     private int mVerticalOffset;
+    private String mFixedLocationAddress;
+    private LatLng mLatLng;
+    private String mStopId;
+    private String mStopName;
+    private boolean mFixedLocationPreferenceSummaryNotUpdated;
+    private boolean mWidgetStopPreferenceSummaryNotUpdated;
 
     protected static final int PLACE_PICKER_REQUEST = 1000;
     protected static final int WIDGET_STOP_REQUEST = 2000;
     public static final String WIDGET_STOP_UPDATED =
             "au.com.kbrsolutions.melbournepublictransport.WIDGET_STOP_UPDATED";
     private static final String SETTINGS_TAG = "favorite_stops_tag";
+
+    private static final String WIDGET_STOP_ID = "widget_stop_id";
+    private static final String WIDGET_STOP_NAME = "widget_stop_name";
+    private static final String FIXED_ADDRESS = "fixed_address";
+    private static final String FIXED_LOCATION_PREFERENCE_SUMMARY_NOT_UPDATED = "fixed_location_preference_summary_not_updated";
+    private static final String WIDGET_STOP_PREFERENCE_SUMMARY_NOT_UPDATED = "widget_stop_preference_summary_not_updated";
+//    private static final String FIXED_LATITUDE = "fixed_latitude";
+//    private static final String FIXED_LONGITUDE = "fixed_longitude";
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
@@ -136,18 +151,18 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         Utility.setAppBarVerticalOffset(getApplicationContext(), mVerticalOffset);
-        Log.v(TAG, "onPause - mVerticalOffset: " + mVerticalOffset);
+//        Log.v(TAG, "onPause - mVerticalOffset: " + mVerticalOffset);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         int verticalOffset = Utility.getAppBarVerticalOffset(getApplicationContext());
-        Log.v(TAG, "onResume - mVerticalOffset/verticalOffset: " + mVerticalOffset + "/" + verticalOffset);
-//        if (mVerticalOffset != verticalOffset) {
+//        Log.v(TAG, "onResume - mVerticalOffset/verticalOffset: " + mVerticalOffset + "/" + verticalOffset);
+        if (mVerticalOffset != verticalOffset) {
             mVerticalOffset = verticalOffset;
             adjustAppBarVertivalOffset(verticalOffset * -1);
-//        }
+        }
     }
 
     /**
@@ -161,8 +176,8 @@ public class SettingsActivity extends AppCompatActivity {
         mAppBarLayout.post(new Runnable() {
             @Override
             public void run() {
-                int heightPx = findViewById(R.id.appbar).getHeight();
-                Log.v(TAG, "run - heightPx: " + heightPx);
+//                int heightPx = findViewById(R.id.appbar).getHeight();
+//                Log.v(TAG, "run - heightPx: " + heightPx);
                 setAppBarOffset(verticalOffset);
             }
         });
@@ -174,7 +189,7 @@ public class SettingsActivity extends AppCompatActivity {
      * @param offsetPx
      */
     private void setAppBarOffset(int offsetPx) {
-        Log.v(TAG, "setAppBarOffset - offsetPx: " + offsetPx);
+//        Log.v(TAG, "setAppBarOffset - offsetPx: " + offsetPx);
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams();
         AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
         behavior.onNestedPreScroll(mCoordinatorlayout, mAppBarLayout, null, 0, offsetPx, new int[]{0, 0});
@@ -210,81 +225,17 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.v(TAG, "onActivityResult - start - requestCode/resultCode: " + requestCode + "/" + resultCode);
-        // Check to see if the result is from our Place Picker intent
         if (requestCode == PLACE_PICKER_REQUEST) {
-            // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(data, this);
-                String address = place.getAddress().toString();
-                LatLng latLong = place.getLatLng();
-
-                // If the provided place doesn't have an address, we'll form a display-friendly
-                // string from the latlng values.
-                if (TextUtils.isEmpty(address)) {
-                    address = String.format("(%.2f, %.2f)", latLong.latitude, latLong.longitude);
-                }
-
-                SharedPreferences sharedPreferences =
-                        PreferenceManager.getDefaultSharedPreferences(this);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(getString(R.string.pref_key_fixed_location), address);
-
-                // Also store the latitude and longitude so that we can use these to get a precise
-                // result from our stops nearby search.
-                editor.putFloat(getString(R.string.pref_key_location_latitude),
-                        (float) latLong.latitude);
-                editor.putFloat(getString(R.string.pref_key_location_longitude),
-                        (float) latLong.longitude);
-                editor.apply();
-                // FIXME: 28/10/2016 - address and latLon should be handled as widget's stopId and name
-                fixedLocationPreferenceSummaryNoUpdated = true;
-//                currFixedLocationLatitude = (float) latLong.latitude;
-
-                if (mSettingsFragment != null) {
-                    Preference locationPreference = mSettingsFragment.findPreference(getString(R.string.pref_key_fixed_location));
-                    if (locationPreference != null) {
-                        mSettingsFragment.setPreferenceSummary(locationPreference, address);
-                        fixedLocationPreferenceSummaryNoUpdated = false;
-                    }
-                }
-
-                // Add attributions for our new PlacePicker location.
-                if (mAttribution != null) {
-                    mAttribution.setVisibility(View.VISIBLE);
-                } else {
-                    // For pre-Honeycomb devices, we cannot add a footer, so we will use a snackbar
-                    View rootView = findViewById(android.R.id.content);
-                    Snackbar.make(rootView, getString(R.string.attribution_text),
-                            Snackbar.LENGTH_LONG).show();
-                }
+                processPlacePickerData(data);
             } else {
-                // FIXME: 25/10/2016 - handle the result not OK
+                showSnackBar(R.string.fixed_location_could_not_select, false);
             }
         } else if (requestCode == WIDGET_STOP_REQUEST) {
-//            Log.v(TAG, "onActivityResult - processing WIDGET_STOP_REQUEST");
             if (resultCode == RESULT_OK) {
-                // Make sure the request was successful
-                mStopId = data.getStringExtra(WIDGET_STOP_ID);
-                mStopName = data.getStringExtra(WIDGET_LOCATION_NAME);
-                SharedPreferences sharedPreferences =
-                        PreferenceManager.getDefaultSharedPreferences(this);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(getString(R.string.pref_key_widget_stop_id), mStopId);
-                editor.putString(getString(R.string.pref_key_widget_stop_name), mStopName);
-                editor.apply();
-                widgetStopPreferenceSummaryNoUpdated = true;
-                Log.v(TAG, "onActivityResult - after commit - mSettingsFragment: " + mSettingsFragment);
-                if (mSettingsFragment != null) {
-                    Preference widgetStopPreference = mSettingsFragment.findPreference(getString(R.string.pref_key_widget_stop_name));
-                    if (widgetStopPreference != null) {
-                        mSettingsFragment.setPreferenceSummary(widgetStopPreference, mStopName);
-                        widgetStopPreferenceSummaryNoUpdated = false;
-                    }
-                }
-                Log.v(TAG, "onActivityResult - before sendBroadcastMessageToNextDeparturesWidget: ");
-                sendBroadcastMessageToNextDeparturesWidget();
+                processWidgetStopDetails(data);
             } else {
-                // FIXME: 25/10/2016 - handle the result not OK
+                showSnackBar(R.string.widget_stop_could_not_select, false);
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -292,13 +243,75 @@ public class SettingsActivity extends AppCompatActivity {
         Log.v(TAG, "onActivityResult - end");
     }
 
-    private String mStopId;
-    private String mStopName;
-    private boolean widgetStopPreferenceSummaryNoUpdated;
-    private boolean fixedLocationPreferenceSummaryNoUpdated;
+    private void processPlacePickerData(Intent data) {
+        Place place = PlacePicker.getPlace(data, this);
+        mFixedLocationAddress = place.getAddress().toString();
+        mLatLng = place.getLatLng();
 
-    private static final String WIDGET_STOP_ID = "widget_stop_id";
-    private static final String WIDGET_STOP_NAME = "widget_stop_name";
+        // If the provided place doesn't have an address, we'll form a display-friendly
+        // string from the latlng values.
+        if (TextUtils.isEmpty(mFixedLocationAddress)) {
+            mFixedLocationAddress = String.format("(%.2f, %.2f)", mLatLng.latitude, mLatLng.longitude);
+        }
+
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(getString(R.string.pref_key_fixed_location), mFixedLocationAddress);
+
+        // Also store the latitude and longitude so that we can use these to get a precise
+        // result from our stops nearby search.
+        editor.putFloat(getString(R.string.pref_key_location_latitude),
+                (float) mLatLng.latitude);
+        editor.putFloat(getString(R.string.pref_key_location_longitude),
+                (float) mLatLng.longitude);
+        editor.apply();
+        // FIXME: 28/10/2016 - address and latLon should be handled as widget's stopId and name
+        mFixedLocationPreferenceSummaryNotUpdated = true;
+//                currFixedLocationLatitude = (float) latLong.latitude;
+
+        if (mSettingsFragment != null) {
+            Preference locationPreference = mSettingsFragment.findPreference(getString(R.string.pref_key_fixed_location));
+            if (locationPreference != null) {
+                mSettingsFragment.setPreferenceSummary(locationPreference, mFixedLocationAddress);
+                mFixedLocationPreferenceSummaryNotUpdated = false;
+            }
+        }
+
+        // Add attributions for our new PlacePicker location.
+        if (mAttribution != null) {
+            mAttribution.setVisibility(View.VISIBLE);
+        } else {
+            // For pre-Honeycomb devices, we cannot add a footer, so we will use a snackbar
+            View rootView = findViewById(android.R.id.content);
+            Snackbar.make(rootView, getString(R.string.attribution_text),
+                    Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    private void processWidgetStopDetails(Intent data) {
+        // Make sure the request was successful
+        mStopId = data.getStringExtra(WIDGET_STOP_ID);
+        mStopName = data.getStringExtra(WIDGET_LOCATION_NAME);
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(getString(R.string.pref_key_widget_stop_id), mStopId);
+        editor.putString(getString(R.string.pref_key_widget_stop_name), mStopName);
+        editor.apply();
+        mWidgetStopPreferenceSummaryNotUpdated = true;
+        Log.v(TAG, "onActivityResult - after commit - mSettingsFragment: " + mSettingsFragment);
+        if (mSettingsFragment != null) {
+            Preference widgetStopPreference = mSettingsFragment.findPreference(getString(R.string.pref_key_widget_stop_name));
+            if (widgetStopPreference != null) {
+                mSettingsFragment.setPreferenceSummary(widgetStopPreference, mStopName);
+                mWidgetStopPreferenceSummaryNotUpdated = false;
+            }
+        }
+        Log.v(TAG, "onActivityResult - before sendBroadcastMessageToNextDeparturesWidget: ");
+        sendBroadcastMessageToNextDeparturesWidget();
+    }
+
     /**
      *
      * When widget stop change send broadcast message to the Next Departures widget.
@@ -311,18 +324,63 @@ public class SettingsActivity extends AppCompatActivity {
         sendBroadcast(dataUpdatedIntent);
     }
 
+    /**
+     *
+     * Save 'fixed' location and 'widget' stop details.
+     *
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 //        Log.v(TAG, "onSaveInstanceState - after super");
-        if (fixedLocationPreferenceSummaryNoUpdated) {
+        if (mFixedLocationPreferenceSummaryNotUpdated) {
+            outState.putBoolean(FIXED_LOCATION_PREFERENCE_SUMMARY_NOT_UPDATED, mFixedLocationPreferenceSummaryNotUpdated);
+            outState.putString(FIXED_ADDRESS, mFixedLocationAddress);
+        }
+        if (mWidgetStopPreferenceSummaryNotUpdated) {
+            outState.putBoolean(WIDGET_STOP_PREFERENCE_SUMMARY_NOT_UPDATED, mWidgetStopPreferenceSummaryNotUpdated);
             outState.putString(WIDGET_STOP_ID, mStopId);
             outState.putString(WIDGET_STOP_NAME, mStopName);
         }
     }
 
     /**
-     * Up button was pressed - remove to top entry Back Stack
+     *
+     * Retrieves saved data. If necessary create up to date summaries.
+     *
+     * The SettingsFragment's onCreate(...) is called before SettingsActivity's onCreate(...).
+     *
+     */
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.v(TAG, "onRestoreInstanceState - start");
+        mFixedLocationPreferenceSummaryNotUpdated = savedInstanceState.getBoolean(FIXED_LOCATION_PREFERENCE_SUMMARY_NOT_UPDATED);
+        mFixedLocationAddress = savedInstanceState.getString(FIXED_ADDRESS);
+        if (mFixedLocationPreferenceSummaryNotUpdated && mSettingsFragment != null) {
+            Preference fixedLocationPreference = mSettingsFragment.findPreference(getString(R.string.pref_key_fixed_location));
+            if (fixedLocationPreference != null) {
+                Log.v(TAG, "onRestoreInstanceState - calling setPreferenceSummary");
+                mSettingsFragment.setPreferenceSummary(fixedLocationPreference, mFixedLocationAddress);
+                mWidgetStopPreferenceSummaryNotUpdated = false;
+            }
+        }
+        mWidgetStopPreferenceSummaryNotUpdated = savedInstanceState.getBoolean(WIDGET_STOP_PREFERENCE_SUMMARY_NOT_UPDATED);
+        mStopId = savedInstanceState.getString(WIDGET_STOP_ID);
+        mStopName = savedInstanceState.getString(WIDGET_STOP_NAME);
+        Log.v(TAG, "onRestoreInstanceState - mStopName: " + mStopName + "/" + mSettingsFragment);
+        if (mWidgetStopPreferenceSummaryNotUpdated && mSettingsFragment != null && mStopName != null) {
+            Preference widgetStopPreference = mSettingsFragment.findPreference(getString(R.string.pref_key_widget_stop_name));
+            if (widgetStopPreference != null) {
+                Log.v(TAG, "onRestoreInstanceState - calling setPreferenceSummary");
+                mSettingsFragment.setPreferenceSummary(widgetStopPreference, mStopName);
+                mWidgetStopPreferenceSummaryNotUpdated = false;
+            }
+        }
+    }
+
+    /**
+     * Up button was pressed - remove the top entry Back Stack
      */
     @Override
     public boolean onSupportNavigateUp() {
@@ -340,27 +398,11 @@ public class SettingsActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-
-    /**
-     * Retrieves saved data. If search for artist's data is not in progress, show retrieved
-     * on the screen.
-     */
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        Log.v(TAG, "onRestoreInstanceState - start");
-
-        mStopId = savedInstanceState.getString(WIDGET_STOP_ID);
-        mStopName = savedInstanceState.getString(WIDGET_STOP_NAME);
-        Log.v(TAG, "onRestoreInstanceState - mStopName: " + mStopName + "/" + mSettingsFragment);
-        if (mSettingsFragment != null && mStopName != null) {
-            Preference widgetStopPreference = mSettingsFragment.findPreference(getString(R.string.pref_key_widget_stop_name));
-            if (widgetStopPreference != null) {
-                Log.v(TAG, "onRestoreInstanceState - calling setPreferenceSummary");
-                mSettingsFragment.setPreferenceSummary(widgetStopPreference, mStopName);
-                widgetStopPreferenceSummaryNoUpdated = false;
-            }
-        }
+    public void showSnackBar(int msg, boolean showIndefinite) {
+        Snackbar
+                .make(mCoordinatorlayout, msg, (showIndefinite ? Snackbar.LENGTH_INDEFINITE : Snackbar.LENGTH_LONG))
+                .setActionTextColor(Color.RED)
+                .show(); // Don’t forget to show!
     }
 
     public static class SettingsFragment

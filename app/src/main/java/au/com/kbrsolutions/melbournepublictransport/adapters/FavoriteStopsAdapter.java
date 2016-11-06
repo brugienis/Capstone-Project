@@ -3,6 +3,7 @@ package au.com.kbrsolutions.melbournepublictransport.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,7 @@ import static au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteSto
 
 public class FavoriteStopsAdapter extends CursorAdapter {
 
-    private static boolean mIsInSettingsActivity;
+    private static boolean mIsInSettingsActivityFlag;
     private static FavoriteStopsFragment.OnFavoriteStopsFragmentInteractionListener mListener;
 
     private static final String TAG = FavoriteStopsAdapter.class.getSimpleName();
@@ -39,7 +40,8 @@ public class FavoriteStopsAdapter extends CursorAdapter {
             ImageView departuresImageId = (ImageView) view.findViewById(R.id.departuresImageId);
             ImageView garbageInfoImage = (ImageView) view.findViewById(R.id.garbageImageId);
 
-            if (mIsInSettingsActivity) {
+            Log.v(TAG, "ViewHolder - mIsInSettingsActivityFlag: " + mIsInSettingsActivityFlag);
+            if (mIsInSettingsActivityFlag) {
                 mapImageId.setVisibility(View.GONE);
                 departuresImageId.setVisibility(View.GONE);
                 garbageInfoImage.setVisibility(View.GONE);
@@ -73,7 +75,6 @@ public class FavoriteStopsAdapter extends CursorAdapter {
     }
 
     private static void startNextDeparturesSearch(StopDetails stopDetails) {
-//        Log.v(TAG, "startNextDeparturesSearch - mListener: " + mListener);
         mListener.startNextDeparturesSearch(stopDetails);
     }
 
@@ -87,10 +88,15 @@ public class FavoriteStopsAdapter extends CursorAdapter {
             Cursor c,
             int flags,
             FavoriteStopsFragment.OnFavoriteStopsFragmentInteractionListener listener,
-            boolean isInSettingsActivity) {
+            boolean isInSettingsActivityFlag) {
         super(context, c, flags);
-        mListener = listener;
-        mIsInSettingsActivity = isInSettingsActivity;
+
+        /* if parent is WidgetStopsActivity, the listener is not needed. mListener is static and */
+        /* points to MainActivity - do not change it.                                            */
+        if (!isInSettingsActivityFlag) {
+            mListener = listener;
+        }
+        mIsInSettingsActivityFlag = isInSettingsActivityFlag;
     }
 
     @Override

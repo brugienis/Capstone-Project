@@ -74,6 +74,10 @@ public class Utility {
         editor.apply();
     }
 
+    public static String getClassHashCode(Object o) {
+        return String.format("0x%08X", o.hashCode());
+    }
+
     // FIXME: 29/10/2016 - add methods to get widget stop details and get/set 'database loaded'
 //    public static float getLocationLatitude(Context context) {
 //        SharedPreferences prefs

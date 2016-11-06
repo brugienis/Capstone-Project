@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements
 //                        printBackStackFragments();
                         int cnt = getSupportFragmentManager().getBackStackEntryCount();
                         BaseFragment bf = getTopFragment();
-                        boolean backButtonPressed;
+//                        boolean backButtonPressed;
                         if (cnt > mPrevBackStackEntryCount) {
                             Log.v(TAG, "onCreate.onBackStackChanged - going forward  - cnt/top: " + cnt + "/" + bf.getFragmentId());
 //                            backButtonPressed = false;
@@ -240,37 +240,31 @@ public class MainActivity extends AppCompatActivity implements
     protected void onPause() {
         super.onPause();
         Utility.setAppBarVerticalOffset(getApplicationContext(), mVerticalOffset);
-        Log.v(TAG, "onPause - mVerticalOffset: " + mVerticalOffset);
+//        Log.v(TAG, "onPause - mVerticalOffset: " + mVerticalOffset);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         int verticalOffset = Utility.getAppBarVerticalOffset(getApplicationContext());
-        Log.v(TAG, "onResume - mVerticalOffset/verticalOffset: " + mVerticalOffset + "/" + verticalOffset);
-//        if (mVerticalOffset != verticalOffset) {
+//        Log.v(TAG, "onResume - mVerticalOffset/verticalOffset: " + mVerticalOffset + "/" + verticalOffset);
+        if (mVerticalOffset != verticalOffset) {
             mVerticalOffset = verticalOffset;
-//            adjustAppBarVertivalOffset(verticalOffset);
             adjustAppBarVertivalOffset(verticalOffset * -1);
-//        }
+        }
     }
 
     private void adjustAppBarVertivalOffset(final int verticalOffset) {
-//        mCoordinatorLayour = (CoordinatorLayout) findViewById(R.id.root_coordinator);
-//        mAppBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
-
         mAppBarLayout.post(new Runnable() {
             @Override
             public void run() {
-//                int heightPx = findViewById(R.id.iv_header).getHeight();
-//                setAppBarOffset(heightPx/2);
                 setAppBarOffset(verticalOffset);
             }
         });
     }
 
     private void setAppBarOffset(int offsetPx){
-        Log.v(TAG, "setAppBarOffset - offsetPx: " + offsetPx);
+//        Log.v(TAG, "setAppBarOffset - offsetPx: " + offsetPx);
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams();
         AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
         behavior.onNestedPreScroll(mCoordinatorlayout, mAppBarLayout, null, 0, offsetPx, new int[]{0, 0});
@@ -279,14 +273,6 @@ public class MainActivity extends AppCompatActivity implements
     private void handleRefresh() {
         mSwipeRefreshLayout.setRefreshing(false);
     }
-
-//    private void checkIfDatabaseEmpty() {
-//        Log.v(TAG, "checkIfDatabaseEmpty - start");
-//        Intent intent = new Intent(this, RequestProcessorService.class);
-//        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_GET_DATABASE_STATUS);
-//        Log.v(TAG, "checkIfDatabaseEmpty - request sent");
-//        startService(intent);
-//    }
 
     private void loadDatabase() {
 //        Log.v(TAG, "loadDatabase - start");
@@ -587,11 +573,13 @@ public class MainActivity extends AppCompatActivity implements
             mFavoriteStopsFragment.setFragmentId(FAVORITE_STOPS);
             mFavoriteStopsFragment.setActionBarTitle(getResources().getString(R.string.title_favorite_stops));
         }
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
+//        mFavoriteStopsFragment.setIsInSettingsActivityFlag(false);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
 //                    .addToBackStack(FAVORITE_STOPS_TAG)
-                    .commit();
+                .commit();
+//        Log.v(TAG, "showFavoriteStops - mFavoriteStopsFragment hashCode: " + Utility.getClassHashCode(mFavoriteStopsFragment));
     }
 
     /**

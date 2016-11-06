@@ -48,7 +48,7 @@ public class FavoriteStopsFragment
     private boolean isVisible;
     private FavoriteStopsAdapter mFavoriteStopDetailAdapter;
     private OnFavoriteStopsFragmentInteractionListener mListener;
-    private boolean isInSettingsActivity;
+    private boolean mIsInSettingsActivityFlag;
 
     private static final int STOP_DETAILS_LOADER = 0;
 
@@ -141,7 +141,7 @@ public class FavoriteStopsFragment
         if (mDatabaseIsEmpty) {
             mEmptyView.setText(getActivity().getResources().getString(R.string.database_is_empty));
         } else {
-            if (isInSettingsActivity) {
+            if (mIsInSettingsActivityFlag) {
                 mEmptyView.setText(getActivity().getResources().getString(R.string.no_favorite_stops_selected_in_settings));
             } else {
                 mEmptyView.setText(getActivity().getResources().getString(R.string.no_favorite_stops_selected));
@@ -157,12 +157,13 @@ public class FavoriteStopsFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        Log.v(TAG, "onCreateView - start: ");
         mFavoriteStopDetailAdapter = new FavoriteStopsAdapter(
                 getActivity().getApplicationContext(),
                 null,
                 0,
                 mListener,
-                isInSettingsActivity);
+                mIsInSettingsActivityFlag);
 
         // Inflate the layout for this fragment
         mRootView = inflater.inflate(R.layout.fragment_favorite_stops, container, false);
@@ -235,8 +236,11 @@ public class FavoriteStopsFragment
         mFavoriteStopDetailAdapter.swapCursor(null);
     }
 
-    public void setIsInSettingsActivity() {
-        isInSettingsActivity = true;
+    public void setIsInSettingsActivityFlag(boolean value) {
+        mIsInSettingsActivityFlag = value;
+//        if (mFavoriteStopDetailAdapter != null) {
+//            mFavoriteStopDetailAdapter.setIsInSettingsActivityFlag(value);
+//        }
     }
 
     private void handleRowSelected(AdapterView<?> adapterView, int position) {
@@ -244,7 +248,7 @@ public class FavoriteStopsFragment
         // if it cannot seek to that position.
         Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
         if (cursor != null) {
-            if (isInSettingsActivity) {
+            if (mIsInSettingsActivityFlag) {
                 mListener.updateWidgetStopDetails(
                         cursor.getString(COL_STOP_DETAILS_STOP_ID),
                         cursor.getString(COL_STOP_DETAILS_LOCATION_NAME));

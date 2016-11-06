@@ -85,12 +85,14 @@ public class WidgetStopsActivity
         if (mFavoriteStopsFragment == null) {
             mFavoriteStopsFragment = new FavoriteStopsFragment();
             mFavoriteStopsFragment.setFragmentId(FAVORITE_STOPS);
-            mFavoriteStopsFragment.setIsInSettingsActivity();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
-                    .commit();
+            Log.v(TAG, "onCreate - creating new instance");
         }
+        mFavoriteStopsFragment.setIsInSettingsActivityFlag(true);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
+                .commit();
+        Log.v(TAG, "onCreate - mFavoriteStopsFragment hashCode: " + Utility.getClassHashCode(mFavoriteStopsFragment));
     }
 
     private void saveAppBarVerticalOffset(int verticalOffset) {
@@ -101,18 +103,18 @@ public class WidgetStopsActivity
     protected void onPause() {
         super.onPause();
         Utility.setAppBarVerticalOffset(getApplicationContext(), mVerticalOffset);
-        Log.v(TAG, "onPause - mVerticalOffset: " + mVerticalOffset);
+//        Log.v(TAG, "onPause - mVerticalOffset: " + mVerticalOffset);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         int verticalOffset = Utility.getAppBarVerticalOffset(getApplicationContext());
-        Log.v(TAG, "onResume - mVerticalOffset/verticalOffset: " + mVerticalOffset + "/" + verticalOffset);
-//        if (mVerticalOffset != verticalOffset) {
+//        Log.v(TAG, "onResume - mVerticalOffset/verticalOffset: " + mVerticalOffset + "/" + verticalOffset);
+        if (mVerticalOffset != verticalOffset) {
             mVerticalOffset = verticalOffset;
             adjustAppBarVertivalOffset(verticalOffset * -1);
-//        }
+        }
     }
 
     private void adjustAppBarVertivalOffset(final int verticalOffset) {
@@ -125,7 +127,7 @@ public class WidgetStopsActivity
     }
 
     private void setAppBarOffset(int offsetPx) {
-        Log.v(TAG, "setAppBarOffset - offsetPx: " + offsetPx);
+//        Log.v(TAG, "setAppBarOffset - offsetPx: " + offsetPx);
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams();
         AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
         behavior.onNestedPreScroll(mCoordinatorlayout, mAppBarLayout, null, 0, offsetPx, new int[]{0, 0});
@@ -160,6 +162,7 @@ public class WidgetStopsActivity
      */
     @Override
     public boolean onSupportNavigateUp() {
+//        mFavoriteStopsFragment.setIsInSettingsActivityFlag(false);
         getSupportFragmentManager().popBackStack();
         onBackPressed();
         return true;

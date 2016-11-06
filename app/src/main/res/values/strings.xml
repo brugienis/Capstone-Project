@@ -8,6 +8,8 @@
     <string name="action_disruptions">Disruptions</string>
     <string name="action_reload_database">Reload data</string>
 
+    <string name="fixed_location_could_not_select">Could not select \'fixed\' location - try again.</string>
+    <string name="widget_stop_could_not_select">Could not select \'widget\' stop - try again.</string>
     <string name="no_favorite_stops_selected">No favorite stops selected.</string>
     <string name="no_favorite_stops_selected_in_settings">No \'favorite\' stops selected. Exit Settings,
         add some \'favorite\' stops and go to Settings again. Select \'widget\' stop.
