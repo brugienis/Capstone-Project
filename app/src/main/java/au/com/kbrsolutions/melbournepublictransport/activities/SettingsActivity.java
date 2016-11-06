@@ -34,8 +34,6 @@ import static au.com.kbrsolutions.melbournepublictransport.R.id.fab;
 import static au.com.kbrsolutions.melbournepublictransport.activities.WidgetStopsActivity.WIDGET_LOCATION_NAME;
 
 public class SettingsActivity extends AppCompatActivity {
-//        implements Preference.OnPreferenceChangeListener,
-//        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private ImageView mAttribution;
     private SettingsFragment mSettingsFragment;
@@ -65,8 +63,6 @@ public class SettingsActivity extends AppCompatActivity {
     private static final String FIXED_ADDRESS = "fixed_address";
     private static final String FIXED_LOCATION_PREFERENCE_SUMMARY_NOT_UPDATED = "fixed_location_preference_summary_not_updated";
     private static final String WIDGET_STOP_PREFERENCE_SUMMARY_NOT_UPDATED = "widget_stop_preference_summary_not_updated";
-//    private static final String FIXED_LATITUDE = "fixed_latitude";
-//    private static final String FIXED_LONGITUDE = "fixed_longitude";
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
@@ -112,7 +108,6 @@ public class SettingsActivity extends AppCompatActivity {
                                                      }
                                                  }
         );
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(fab);
         ((FloatingActionButton) findViewById(fab)).hide();
 
         validatePreferenceSettings();
@@ -176,8 +171,6 @@ public class SettingsActivity extends AppCompatActivity {
         mAppBarLayout.post(new Runnable() {
             @Override
             public void run() {
-//                int heightPx = findViewById(R.id.appbar).getHeight();
-//                Log.v(TAG, "run - heightPx: " + heightPx);
                 setAppBarOffset(verticalOffset);
             }
         });
@@ -189,7 +182,6 @@ public class SettingsActivity extends AppCompatActivity {
      * @param offsetPx
      */
     private void setAppBarOffset(int offsetPx) {
-//        Log.v(TAG, "setAppBarOffset - offsetPx: " + offsetPx);
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams();
         AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
         behavior.onNestedPreScroll(mCoordinatorlayout, mAppBarLayout, null, 0, offsetPx, new int[]{0, 0});
@@ -213,18 +205,18 @@ public class SettingsActivity extends AppCompatActivity {
         boolean useDeviceLocationValue = sharedPreferences.getBoolean(getString(R.string.pref_key_use_device_location), true);
         float currFixedLocationLatitude = sharedPreferences.getFloat(getString(R.string.pref_key_location_latitude), Float.NaN);
         float currFixedLocationLongitude = sharedPreferences.getFloat(getString(R.string.pref_key_location_longitude), Float.NaN);
-        Log.v(TAG, "onCreate - useDeviceLocationValue: " + useDeviceLocationValue + "/" + currFixedLocationLatitude + "/" + currFixedLocationLongitude);
+//        Log.v(TAG, "onCreate - useDeviceLocationValue: " + useDeviceLocationValue + "/" + currFixedLocationLatitude + "/" + currFixedLocationLongitude);
         if (!useDeviceLocationValue && (Float.isNaN(currFixedLocationLatitude) || Float.isNaN(currFixedLocationLongitude))) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean(getString(R.string.pref_key_use_device_location), true);
             editor.apply();
-            Log.v(TAG, "onCreate - pref_key_use_device_location changed to true");
+//            Log.v(TAG, "onCreate - pref_key_use_device_location changed to true");
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.v(TAG, "onActivityResult - start - requestCode/resultCode: " + requestCode + "/" + resultCode);
+//        Log.v(TAG, "onActivityResult - start - requestCode/resultCode: " + requestCode + "/" + resultCode);
         if (resultCode == RESULT_CANCELED) {
             return;
         }
@@ -243,7 +235,7 @@ public class SettingsActivity extends AppCompatActivity {
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
-        Log.v(TAG, "onActivityResult - end");
+//        Log.v(TAG, "onActivityResult - end");
     }
 
     private void processPlacePickerData(Intent data) {
@@ -293,7 +285,6 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void processWidgetStopDetails(Intent data) {
-        // Make sure the request was successful
         mStopId = data.getStringExtra(WIDGET_STOP_ID);
         mStopName = data.getStringExtra(WIDGET_LOCATION_NAME);
         SharedPreferences sharedPreferences =
@@ -411,10 +402,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     public static class SettingsFragment
             extends PreferenceFragment
-            implements  Preference.OnPreferenceChangeListener,
-            SharedPreferences.OnSharedPreferenceChangeListener {
+            implements  Preference.OnPreferenceChangeListener {
+//            SharedPreferences.OnSharedPreferenceChangeListener {
 
-        private boolean currUseDeviceLocationOn;
+//        private boolean currUseDeviceLocationOn;
         private float currFixedLocationLatitude;
         private float currFixedLocationLongitude;
 
@@ -432,34 +423,9 @@ public class SettingsActivity extends AppCompatActivity {
             currFixedLocationLatitude = sp.getFloat(getString(R.string.pref_key_location_latitude), Float.NaN);
             currFixedLocationLongitude = sp.getFloat(getString(R.string.pref_key_location_longitude), Float.NaN);
 
-//            Preference prefFixedLocation = findPreference(getString(R.string.pref_key_fixed_location));
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_fixed_location)));
-//            String fixedLocationValue = sp.getString(getString(R.string.pref_key_fixed_location),
-//                    getString(R.string.pref_default_fixed_location));
-//            prefFixedLocation.setOnPreferenceChangeListener(this);
-//            prefFixedLocation.setSummary(fixedLocationValue);
-
-//            Preference prefStopName = findPreference(getString(R.string.pref_key_widget_stop_name));
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_widget_stop_name)));
-//            String stopNameValue = sp.getString(getString(R.string.pref_key_widget_stop_name),
-//                    getString(R.string.pref_default_widget_stop_name));
-//            Log.v(TAG, "onCreate - prev summary: " + prefStopName.getSummary());
-//            prefStopName.setSummary(stopNameValue);
-
-//            Preference prefUseDeviceLocation = findPreference(getString(R.string.pref_key_use_device_location));
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_use_device_location)));
-            // Set the listener to watch for value changes.
-//            prefUseDeviceLocation.setOnPreferenceChangeListener(this);
-//            boolean useDeviceLocationValue = sp.getBoolean(getString(R.string.pref_key_use_device_location), true);
-//            Log.v(TAG, "onCreate - useDeviceLocationValue: " + useDeviceLocationValue + "/" + currFixedLocationLatitude + "/" + currFixedLocationLongitude);
-//            if (useDeviceLocationValue) {
-//                // FIXME: 26/10/2016 - shoud set that in parent activity or what?
-//                currUseDeviceLocationOn = true;
-//                prefUseDeviceLocation.setSummary(getString(R.string.pref_summary_use_device_location));
-//            } else {
-//                prefUseDeviceLocation.setSummary(getString(R.string.pref_summary_use_fixed_location));
-//            }
-
 
 //            Log.v(TAG, "onCreate - end: ");
             // FIXME: 25/10/2016 - research how to setListFooter(mAttribution); for PlacePicker
@@ -521,18 +487,10 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         private boolean validateUseDeviceFixedLocationValue(boolean newUseDeviceLocationOn) {
-//            Log.v(TAG, "validateUseDeviceFixedLocationValue - currUseDeviceLocationOn/newUseDeviceLocationOn: " +
-//                currUseDeviceLocationOn + "/" +
-//                newUseDeviceLocationOn + "/" +
-//                currFixedLocationLatitude + "/" +
-//                currFixedLocationLongitude);
-
             SharedPreferences sp = getPreferenceScreen().getSharedPreferences();
             currFixedLocationLatitude = sp.getFloat(getString(R.string.pref_key_location_latitude), Float.NaN);
             currFixedLocationLongitude = sp.getFloat(getString(R.string.pref_key_location_longitude), Float.NaN);
-            currUseDeviceLocationOn = sp.getBoolean(getString(R.string.pref_key_use_device_location), true);
-
-//            TOMORROW  - instead of using currUseDeviceLocationOn get appropriate value from SharedPreferences
+            boolean currUseDeviceLocationOn = sp.getBoolean(getString(R.string.pref_key_use_device_location), true);
             if (currUseDeviceLocationOn && !newUseDeviceLocationOn &&
                     (Float.isNaN(currFixedLocationLatitude) ||Float.isNaN(currFixedLocationLongitude) )) {
                 Snackbar.make(getView(), getString(R.string.pref_err_use_device_location),
@@ -546,36 +504,15 @@ public class SettingsActivity extends AppCompatActivity {
         private void setPreferenceSummary(Preference preference, Object value) {
             String stringValue = value.toString();
             String key = preference.getKey();
-            Log.v(TAG, "setPreferenceSummary - key/stringValue: " + key + "/" + stringValue);
+//            Log.v(TAG, "setPreferenceSummary - key/stringValue: " + key + "/" + stringValue);
 
-//            if (preference instanceof ListPreference) {
-////            Log.v(TAG, "setPreferenceSummary - on ListPreference");
-//                // For list preferences, look up the correct display value in
-//                // the preference's 'entries' list (since they have separate labels/values).
-//                ListPreference listPreference = (ListPreference) preference;
-//                int prefIndex = listPreference.findIndexOfValue(stringValue);
-//                if (prefIndex >= 0) {
-//                    preference.setSummary(listPreference.getEntries()[prefIndex]);
-//                }
-//            } else
-//            if (key.equals(getString(R.string.pref_key_fixed_location))) {
-////            Log.v(TAG, "setPreferenceSummary - on location");
-//                preference.setSummary(stringValue);
-////            }
-//            } else
-//            if (key.equals(getString(R.string.pref_key_widget_stop_name))) {
-////            Log.v(TAG, "setPreferenceSummary - on location");
-//                Log.v(TAG, "onCreate - prev summary: " + preference.getSummary());
-//                preference.setSummary(stringValue);
-////            }
             if (preference instanceof SwitchPreference) {
                 if ( key.equals(getString(R.string.pref_key_use_device_location))) {
-//                    boolean useDeviceLocationValue = sp.getBoolean(getString(R.string.pref_key_use_device_location), true);
                     boolean useDeviceLocationValue = Boolean.parseBoolean(stringValue);
 //            Log.v(TAG, "onCreate - useDeviceLocationValue: " + useDeviceLocationValue + "/" + currFixedLocationLatitude + "/" + currFixedLocationLongitude);
                     if (useDeviceLocationValue) {
                         // FIXME: 26/10/2016 - shoud set that in parent activity or what?
-                        currUseDeviceLocationOn = true;
+//                        currUseDeviceLocationOn = true;
                         preference.setSummary(getString(R.string.pref_summary_use_device_location));
                     } else {
                         preference.setSummary(getString(R.string.pref_summary_use_fixed_location));
@@ -588,46 +525,29 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
 
-        // FIXME: 2/11/2016 - do I need onSharedPreferenceChanged
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-//        Log.v(TAG, "onSharedPreferenceChanged - key: " + key);
-            Preference pref = findPreference(key);
-//            if (key.equals(getString(R.string.pref_key_use_device_location)) ) {
-////                boolean useDeviceLocationValue = sp.getBoolean(getString(R.string.pref_key_use_device_location), true);
-//                if (currUseDeviceLocationOn) {
-//                    // FIXME: 26/10/2016 - shoud set that in parent activity or what?
-////                currUseDeviceLocationOn = sp.getBoolean(key, false);
-//                    pref.setSummary(getString(R.string.pref_summary_use_device_location));
-//                } else {
-//                    pref.setSummary(getString(R.string.pref_summary_use_fixed_location));
-//                }
-//            }
-        }
-
-        // Registers a shared preference change listener that gets notified when preferences change
-        @Override
-        public void onResume() {
-//            Log.v(TAG, "onResume - start: ");
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            sp.registerOnSharedPreferenceChangeListener(this);
-            super.onResume();
-        }
-
-        // Unregisters a shared preference change listener
-        @Override
-        public void onPause() {
-//            Log.v(TAG, "onPause - start: ");
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            sp.unregisterOnSharedPreferenceChangeListener(this);
-            super.onPause();
-        }
-
 //        @Override
-//        public Preference findPreference(CharSequence key) {
-//            return super.findPreference(key);
+//        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+////        Log.v(TAG, "onSharedPreferenceChanged - key: " + key);
+//            Preference pref = findPreference(key);
 //        }
 
+        // Registers a shared preference change listener that gets notified when preferences change
+//        @Override
+//        public void onResume() {
+////            Log.v(TAG, "onResume - start: ");
+//            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+//            sp.registerOnSharedPreferenceChangeListener(this);
+//            super.onResume();
+//        }
+
+        // Unregisters a shared preference change listener
+//        @Override
+//        public void onPause() {
+////            Log.v(TAG, "onPause - start: ");
+//            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+//            sp.unregisterOnSharedPreferenceChangeListener(this);
+//            super.onPause();
+//        }
     }
 
 }
