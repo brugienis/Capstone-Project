@@ -25,6 +25,7 @@ import android.preference.EditTextPreference;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -41,6 +42,8 @@ import au.com.kbrsolutions.melbournepublictransport.R;
 public class FixedLocationEditTextPreference extends EditTextPreference {
     static final private int DEFAULT_MINIMUM_LOCATION_LENGTH = 2;
     private int mMinLength;
+    private boolean isGoogleApiAvailable;
+    private final String TAG = ((Object) this).getClass().getSimpleName();
 
     public FixedLocationEditTextPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -60,9 +63,12 @@ public class FixedLocationEditTextPreference extends EditTextPreference {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
         int resultCode = apiAvailability.isGooglePlayServicesAvailable(getContext());
         if (resultCode == ConnectionResult.SUCCESS) {
+            isGoogleApiAvailable = true;
             // Add the get current location widget to our location preference
-            setWidgetLayoutResource(R.layout.pref_current_location);
+        } else {
+            Log.v(TAG, "FixedLocationEditTextPreference - resultCode: " + resultCode);
         }
+        setWidgetLayoutResource(R.layout.pref_current_location);
     }
 
     @Override

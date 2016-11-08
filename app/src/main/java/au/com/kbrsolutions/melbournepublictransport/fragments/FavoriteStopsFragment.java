@@ -174,6 +174,7 @@ public class FavoriteStopsFragment
         mListView = (NestedScrollingListView) mRootView.findViewById(R.id.favoriteStopsListView);
         mListView.setAdapter(mFavoriteStopDetailAdapter);
         mListView.setNestedScrollingEnabled(true);
+        mListView.setItemsCanFocus(true);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
