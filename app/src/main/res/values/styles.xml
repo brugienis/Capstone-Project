@@ -24,5 +24,6 @@
 </resources>
 <!--
 
+        <item name="colorPrimaryLight">@color/deep_orange_100</item>
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
  -->

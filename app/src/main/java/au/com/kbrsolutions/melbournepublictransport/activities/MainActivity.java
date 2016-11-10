@@ -26,6 +26,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -916,6 +917,42 @@ public class MainActivity extends AppCompatActivity implements
         }
 //        showFragmentsOnBackStackVisibility();
 //        Log.v(TAG, "findFragments - end");
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        Log.v(TAG, "onKeyDown - keyCode: " + keyCode);
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                mFavoriteStopsFragment.handleKeyCodeDpadRight();
+                return true;
+//                if (currentSelectView != null) {
+//                    DpadListAdapter.ViewHolder holder =
+//                            (FavoriteStopsAdapter.ViewHolder)      currentSelectView.getTag();
+//                    mDpadListView.clearFocus();
+//                    holder.shortCut.setFocusable(true);
+//                    holder.shortCut.requestFocus();
+//                    return true;
+//                }
+//                break;
+//            case KeyEvent.KEYCODE_DPAD_LEFT:
+//            case KeyEvent.KEYCODE_DPAD_UP:
+//            case KeyEvent.KEYCODE_DPAD_DOWN:
+//                if (currentSelectView != null) {
+//                    DpadListAdapter.ViewHolder holder =
+//                            (FavoriteStopsAdapter.ViewHolder) currentSelectView.getTag();
+//                    if (holder.shortCut.hasFocus()) {
+//                        holder.shortCut.clearFocus();
+//                        holder.shortCut.setFocusable(false);
+//                        mDpadView.requestFocus();
+//                        return true;
+//                    }
+//                }
+//                break;
+            default:
+                break;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override

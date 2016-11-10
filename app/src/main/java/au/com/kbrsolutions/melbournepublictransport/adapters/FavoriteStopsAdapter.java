@@ -16,8 +16,6 @@ import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragm
 
 import static au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragment.COL_STOP_DETAILS_LOCATION_NAME;
 
-//import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopAdapterRv;
-
 /**
  * Created by business on 1/10/2016.
  */
@@ -31,13 +29,17 @@ public class FavoriteStopsAdapter extends CursorAdapter {
 
     public static class ViewHolder {
         public final TextView locationNameView;
+        public ImageView mapImageId;
+        public ImageView departuresImageId;
+        public ImageView garbageInfoImage;
         public StopDetails stopDetails;
+        private int selectedImagePos = 0;
 
         public ViewHolder(View view) {
             locationNameView = (TextView) view.findViewById(R.id.locationNameId);
-            ImageView mapImageId = (ImageView) view.findViewById(R.id.mapImageId);
-            ImageView departuresImageId = (ImageView) view.findViewById(R.id.departuresImageId);
-            ImageView garbageInfoImage = (ImageView) view.findViewById(R.id.garbageImageId);
+            departuresImageId = (ImageView) view.findViewById(R.id.departuresImageId);
+            mapImageId = (ImageView) view.findViewById(R.id.mapImageId);
+            garbageInfoImage = (ImageView) view.findViewById(R.id.garbageImageId);
 
 //            Log.v(TAG, "ViewHolder - mIsInSettingsActivityFlag: " + mIsInSettingsActivityFlag);
             if (mIsInSettingsActivityFlag) {
@@ -66,6 +68,10 @@ public class FavoriteStopsAdapter extends CursorAdapter {
                     }
                 });
             }
+        }
+
+        public void selectImageView(boolean next) {
+
         }
     }
 

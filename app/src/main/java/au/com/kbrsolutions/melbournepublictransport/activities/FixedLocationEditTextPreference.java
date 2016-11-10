@@ -78,6 +78,7 @@ public class FixedLocationEditTextPreference extends EditTextPreference {
         currentLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // FIXME: 8/11/2016 - add code to show message (Google services) not available when isGoogleApiAvailable is true
                 Context context = getContext();
 
                 // Launch the Place Picker so that the user can specify their location, and then

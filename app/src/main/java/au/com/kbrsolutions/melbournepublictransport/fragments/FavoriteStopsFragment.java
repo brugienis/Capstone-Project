@@ -154,9 +154,9 @@ public class FavoriteStopsFragment
     }
 
     @Override
+    // FIXME: 8/11/2016 http://stackoverflow.com/questions/14392356/how-to-use-d-pad-navigate-switch-between-listviews-row-and-its-decendants-goo
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         Log.v(TAG, "onCreateView - start: ");
         mFavoriteStopDetailAdapter = new FavoriteStopsAdapter(
                 getActivity().getApplicationContext(),
@@ -184,9 +184,69 @@ public class FavoriteStopsFragment
             }
         });
 
+        mListView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.v(TAG, "onItemSelected - position/view: " + position + "/" + view);
+                if (view.getTag() != null) {
+                    currentSelectView = view;
+                    FavoriteStopsAdapter.ViewHolder holder = (FavoriteStopsAdapter.ViewHolder) view.getTag();
+//                    Log.v(TAG, "onItemSelected - departuresImageId/isShown: " + holder.departuresImageId + holder.departuresImageId.isShown());
+//                    Log.v(TAG, "onItemSelected - locationNameView/isShown: " + holder.locationNameView + holder.locationNameView.isShown());
+//                    Log.v(TAG, "onItemSelected - garbageInfoImage/isShown: " + holder.garbageInfoImage + holder.garbageInfoImage.isShown());
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                Log.v(TAG, "onNothingSelected - position: " + parent);
+            }
+        });
+
         mEmptyView = (TextView) mRootView.findViewById(R.id.emptyView);
         setEmptyViewText("onCreateView");
         return mRootView;
+    }
+
+    private View currentSelectView;
+    private int selectableViewsCnt = 3;
+    private int selectedViewNo = -1;
+
+    public void handleKeyCodeDpadRight() {
+        Log.v(TAG, "handleKeyCodeDpadRight - start - currentSelectView: " + currentSelectView   );
+        if (currentSelectView != null) {
+            Log.v(TAG, "handleKeyCodeDpadRight - selectedViewNo: " + selectedViewNo);
+            selectedViewNo = selectedViewNo == (selectableViewsCnt - 1) ? 0 : selectedViewNo + 1;
+            FavoriteStopsAdapter.ViewHolder holder = (FavoriteStopsAdapter.ViewHolder) currentSelectView.getTag();
+            mListView.clearFocus();
+            switch (selectedViewNo) {
+                case 0:
+                    holder.departuresImageId.setFocusable(true);
+                    holder.departuresImageId.requestFocus();
+                    Log.v(TAG, "handleKeyCodeDpadRight - departuresImageId in focus");
+                    break;
+
+                case 1:
+                    holder.mapImageId.setFocusable(true);
+                    holder.mapImageId.requestFocus();
+                    Log.v(TAG, "handleKeyCodeDpadRight - mapImageId in focus");
+                    break;
+
+                case 2:
+                    holder.garbageInfoImage.setFocusable(true);
+                    holder.garbageInfoImage.requestFocus();
+                    Log.v(TAG, "handleKeyCodeDpadRight - garbageInfoImage in focus");
+                    break;
+
+                default:
+                    throw new RuntimeException(TAG + ".handleKeyCodeDpadRight - case '" +
+                            selectedViewNo + "' not handled");
+            }
+
+        }
+//        Log.v(TAG, "handleKeyCodeDpadRight - end: ");
     }
 
     @Override
@@ -342,13 +402,5 @@ public class FavoriteStopsFragment
         void updateWidgetStopDetails(String stopId, String locationName);
     }
 
-
-//    public void removeSelectedStop(StopDetails stopDetails) {
-//        ContentValues updatedValues = new ContentValues();
-//        updatedValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, "n");
-//        int count = getActivity().getContentResolver().update(
-//                MptContract.StopDetailEntry.CONTENT_URI, updatedValues, MptContract.StopDetailEntry._ID + "= ?",
-//                new String [] { String.valueOf(stopDetails.id)});
-//    }
 
 }
