@@ -27,6 +27,7 @@ import au.com.kbrsolutions.melbournepublictransport.adapters.FavoriteStopsAdapte
 import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
+import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
 /**
  *
@@ -189,14 +190,17 @@ public class FavoriteStopsFragment
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
-                Log.v(TAG, "onItemSelected - position/view: " + position + "/" + view);
-                if (view.getTag() != null) {
-                    currentSelectView = view;
-                    FavoriteStopsAdapter.ViewHolder holder = (FavoriteStopsAdapter.ViewHolder) view.getTag();
+                Log.v(TAG, "onItemSelected - position/view: " + position + "/" + Utility.getClassHashCode(view));
+                handleItemSelected(view, position);
+//                if (view.getTag() != null) {
+//                    mCurrentSelectedView = view;
+//                    mCurrentSelectedRow = position;
+//                    selectedViewNo = -1;
+//                    FavoriteStopsAdapter.ViewHolder holder = (FavoriteStopsAdapter.ViewHolder) view.getTag();
 //                    Log.v(TAG, "onItemSelected - departuresImageId/isShown: " + holder.departuresImageId + holder.departuresImageId.isShown());
 //                    Log.v(TAG, "onItemSelected - locationNameView/isShown: " + holder.locationNameView + holder.locationNameView.isShown());
 //                    Log.v(TAG, "onItemSelected - garbageInfoImage/isShown: " + holder.garbageInfoImage + holder.garbageInfoImage.isShown());
-                }
+//                }
             }
 
             @Override
@@ -210,43 +214,94 @@ public class FavoriteStopsFragment
         return mRootView;
     }
 
-    private View currentSelectView;
+    private int mCursorRowCnt;
+    private View mCurrentSelectedView;
+    private int mCurrentSelectedRow;
     private int selectableViewsCnt = 3;
     private int selectedViewNo = -1;
 
-    public void handleKeyCodeDpadRight() {
-        Log.v(TAG, "handleKeyCodeDpadRight - start - currentSelectView: " + currentSelectView   );
-        if (currentSelectView != null) {
-            Log.v(TAG, "handleKeyCodeDpadRight - selectedViewNo: " + selectedViewNo);
-            selectedViewNo = selectedViewNo == (selectableViewsCnt - 1) ? 0 : selectedViewNo + 1;
-            FavoriteStopsAdapter.ViewHolder holder = (FavoriteStopsAdapter.ViewHolder) currentSelectView.getTag();
+    private void handleItemSelected(View view, int position) {
+        if (view.getTag() != null) {
+            mCurrentSelectedView = view;
+            mCurrentSelectedRow = position;
+            selectedViewNo = 0;
+            FavoriteStopsAdapter.ViewHolder holder = (FavoriteStopsAdapter.ViewHolder) mCurrentSelectedView.getTag();
+            mListView.clearFocus();
+            holder.departuresImageId.setFocusable(true);
+            holder.departuresImageId.requestFocus();
+            Log.v(TAG, "handleItemSelected - departuresImageId in focus");
+        }
+    }
+
+    public boolean handleVerticalDpadKeys(boolean upKeyPressed) {
+//        if (mCurrentSelectedView != null) {
+//            FavoriteStopsAdapter.ViewHolder holder = (FavoriteStopsAdapter.ViewHolder) mCurrentSelectedView.getTag();
+//            if (holder.departuresImageId.hasFocus()) {
+//                holder.departuresImageId.clearFocus();
+//                holder.departuresImageId.setFocusable(false);
+//                mListView.requestFocus();
+//                return true;
+//            }
+//        }
+        Log.v(TAG, "handleVerticalDpadKeys - start - mCurrentSelectedRow/mCursorRowCnt: " + mCurrentSelectedRow + "/" + mCursorRowCnt);
+        if (upKeyPressed && mCurrentSelectedRow == 0 ||
+                !upKeyPressed && mCurrentSelectedRow == mCursorRowCnt - 1) {
+            mCurrentSelectedRow = -1;
+            mCurrentSelectedView = null;
+            Log.v(TAG, "handleVerticalDpadKeys - moved above 1st. row");
+        }
+        return false;
+    }
+
+    public boolean handleHorizontalDpadKeys(boolean rightKeyPressed) {
+        Log.v(TAG, "handleHorizontalDpadKeys - start - mCurrentSelectedView: " + mCurrentSelectedView);
+        boolean resultOk = false;
+        if (mCurrentSelectedView != null) { // && mCurrentSelectedView.hasFocus()) {
+            int prevSelectedViewNo = selectedViewNo;
+            if (rightKeyPressed) {
+                Log.v(TAG, "handleHorizontalDpadKeys - > before prev/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
+                selectedViewNo = selectedViewNo == (selectableViewsCnt - 1) ? 0 : selectedViewNo + 1;
+                Log.v(TAG, "handleHorizontalDpadKeys - > after  prev/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
+            } else {
+                Log.v(TAG, "handleHorizontalDpadKeys - < before prev/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
+                selectedViewNo = selectedViewNo < 1 ? selectableViewsCnt - 1 : selectedViewNo - 1;
+                Log.v(TAG, "handleHorizontalDpadKeys - < after  prev/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
+            }
+            Log.v(TAG, "handleHorizontalDpadKeys - prevSelectedViewNo/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
+            FavoriteStopsAdapter.ViewHolder holder = (FavoriteStopsAdapter.ViewHolder) mCurrentSelectedView.getTag();
             mListView.clearFocus();
             switch (selectedViewNo) {
                 case 0:
                     holder.departuresImageId.setFocusable(true);
                     holder.departuresImageId.requestFocus();
-                    Log.v(TAG, "handleKeyCodeDpadRight - departuresImageId in focus");
+                    Log.v(TAG, "handleHorizontalDpadKeys - departuresImageId in focus");
                     break;
 
                 case 1:
                     holder.mapImageId.setFocusable(true);
                     holder.mapImageId.requestFocus();
-                    Log.v(TAG, "handleKeyCodeDpadRight - mapImageId in focus");
+                    Log.v(TAG, "handleHorizontalDpadKeys - mapImageId in focus");
                     break;
 
                 case 2:
                     holder.garbageInfoImage.setFocusable(true);
                     holder.garbageInfoImage.requestFocus();
-                    Log.v(TAG, "handleKeyCodeDpadRight - garbageInfoImage in focus");
+                    Log.v(TAG, "handleHorizontalDpadKeys - garbageInfoImage in focus");
                     break;
 
                 default:
-                    throw new RuntimeException(TAG + ".handleKeyCodeDpadRight - case '" +
+                    throw new RuntimeException(TAG + ".handleHorizontalDpadKeys - case '" +
                             selectedViewNo + "' not handled");
             }
-
+            resultOk = true;
+        } else {
+            if (mCurrentSelectedView == null) {
+                Log.v(TAG, "handleHorizontalDpadKeys - mCurrentSelectedView is null");
+            } else {
+                Log.v(TAG, "handleHorizontalDpadKeys - mCurrentSelectedView NOT in focus");
+            }
         }
-//        Log.v(TAG, "handleKeyCodeDpadRight - end: ");
+        return resultOk;
     }
 
     @Override
@@ -276,7 +331,8 @@ public class FavoriteStopsFragment
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 //        Log.v(TAG, "onLoadFinished - start - rows cnt: " + data.getCount());
         mFavoriteStopDetailAdapter.swapCursor(data);
-        if (data.getCount() > 0) {
+        mCursorRowCnt = data.getCount();
+        if (mCursorRowCnt > 0) {
             clearEmptyViewText();
             mEmptyView.setVisibility(View.GONE);
 //            Log.v(TAG, "onLoadFinished - after GONE");

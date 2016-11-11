@@ -922,10 +922,42 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.v(TAG, "onKeyDown - keyCode: " + keyCode);
+        boolean resultOk;
         switch (keyCode) {
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                resultOk = mFavoriteStopsFragment.handleHorizontalDpadKeys(false);
+                if (resultOk) {
+                    return true;
+                }
+                break;
+
             case KeyEvent.KEYCODE_DPAD_RIGHT:
-                mFavoriteStopsFragment.handleKeyCodeDpadRight();
-                return true;
+                resultOk = mFavoriteStopsFragment.handleHorizontalDpadKeys(true);
+                if (resultOk) {
+                    return true;
+                }
+                break;
+
+            case KeyEvent.KEYCODE_DPAD_UP:
+                resultOk = mFavoriteStopsFragment.handleVerticalDpadKeys(true);
+                if (resultOk) {
+                    return true;
+                }
+//                return true;
+                break;
+
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                resultOk = mFavoriteStopsFragment.handleVerticalDpadKeys(false);
+                if (resultOk) {
+                    return true;
+                }
+//                return true;
+                break;
+//
+//            case KeyEvent.KEYCODE_DPAD_DOWN:
+//                mFavoriteStopsFragment.handleVerticalDpadKeys(false);
+//                break;
+
 //                if (currentSelectView != null) {
 //                    DpadListAdapter.ViewHolder holder =
 //                            (FavoriteStopsAdapter.ViewHolder)      currentSelectView.getTag();
@@ -952,6 +984,7 @@ public class MainActivity extends AppCompatActivity implements
             default:
                 break;
         }
+        Log.v(TAG, "onKeyDown - default processing");
         return super.onKeyDown(keyCode, event);
     }
 
