@@ -21,34 +21,17 @@
         android:textColor="@android:color/black"
         android:textSize="14sp"/>
 
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/disruptionsList"
+    <ListView
+        android:id="@+id/nextDeparturesList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:descendantFocusability="afterDescendants"
-        android:scrollbars="vertical"
-        app:layoutManager="LinearLayoutManager"
-        tools:context=".fragments.NextDeparturesFragment"
-        tools:listitem="@layout/fragment_next_departure_list"
-        android:paddingBottom="@dimen/list_view_bottom_padding"
-        android:clipToPadding="false" />
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/emptyView"
+        android:text="Empty"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        />
 
 </LinearLayout>
-
-<!--
-
-<android.support.v7.widget.RecyclerView
-    android:id="@+id/list"
-    android:name="au.com.kbrsolutions.melbournepublictransport.fragments.ItemFragment"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    app:layoutManager="LinearLayoutManager"
-    tools:context=".fragments.NextDeparturesFragment"
-    tools:listitem="@layout/fragment_next_departure_list"/>
--->
