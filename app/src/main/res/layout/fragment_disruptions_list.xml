@@ -18,7 +18,8 @@
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:paddingBottom="2dp"
-            android:id="@+id/disruptionsTitle"/>
+            android:id="@+id/disruptionsTitle"
+            android:background="@drawable/today_touch_selector"/>
 
         <TextView
             android:text="Description"

@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,6 +85,21 @@ public class NextDeparturesFragment extends BaseFragment {
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.disruptionsList);
 
+//        recyclerView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view,
+//                                       int position, long id) {
+//                Log.v(TAG, "onItemSelected - position/view: " + position + "/" + Utility.getClassHashCode(view));
+//                handleItemSelected(view, position);
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//                Log.v(TAG, "onNothingSelected - position: " + parent);
+//            }
+//        });
+
         selectedStopNameTv = (TextView) view.findViewById(R.id.selectedStopName);
         selectedStopNameTv.setText(mSelectedStopName);
 
@@ -95,6 +111,18 @@ public class NextDeparturesFragment extends BaseFragment {
         recyclerView.setAdapter(mRecyclerViewAdapter);
         recyclerView.requestLayout();
         return view;
+    }
+
+    @Override
+    public boolean handleHorizontalDpadKeys(boolean rightKeyPressed) {
+        Log.v(TAG, "handleHorizontalDpadKeys - : ");
+        return false;
+    }
+
+    @Override
+    public boolean handleVerticalDpadKeys(boolean upKeyPressed) {
+        Log.v(TAG, "handleVerticalDpadKeys - : ");
+        return false;
     }
 
     public void setNewContent(

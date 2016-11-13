@@ -26,6 +26,8 @@
         android:id="@+id/disruptionsList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:descendantFocusability="afterDescendants"
+        android:scrollbars="vertical"
         app:layoutManager="LinearLayoutManager"
         tools:context=".fragments.NextDeparturesFragment"
         tools:listitem="@layout/fragment_next_departure_list"

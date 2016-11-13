@@ -919,68 +919,51 @@ public class MainActivity extends AppCompatActivity implements
 //        Log.v(TAG, "findFragments - end");
     }
 
+    /**
+     *
+     * Based on henry74918
+     *
+     *  http://stackoverflow.com/questions/14392356/how-to-use-d-pad-navigate-switch-between-listviews-row-and-its-decendants-goo
+     *
+     * @param keyCode
+     * @param event
+     * @return
+     */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.v(TAG, "onKeyDown - keyCode: " + keyCode);
+        BaseFragment baseFragment = getTopFragment();
         boolean resultOk;
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_LEFT:
-                resultOk = mFavoriteStopsFragment.handleHorizontalDpadKeys(false);
+//                resultOk = mFavoriteStopsFragment.handleHorizontalDpadKeys(false);
+                resultOk = baseFragment.handleHorizontalDpadKeys(false);
                 if (resultOk) {
                     return true;
                 }
                 break;
 
             case KeyEvent.KEYCODE_DPAD_RIGHT:
-                resultOk = mFavoriteStopsFragment.handleHorizontalDpadKeys(true);
+                resultOk = baseFragment.handleHorizontalDpadKeys(true);
                 if (resultOk) {
                     return true;
                 }
                 break;
 
             case KeyEvent.KEYCODE_DPAD_UP:
-                resultOk = mFavoriteStopsFragment.handleVerticalDpadKeys(true);
+                resultOk = baseFragment.handleVerticalDpadKeys(true);
                 if (resultOk) {
                     return true;
                 }
-//                return true;
                 break;
 
             case KeyEvent.KEYCODE_DPAD_DOWN:
-                resultOk = mFavoriteStopsFragment.handleVerticalDpadKeys(false);
+                resultOk = baseFragment.handleVerticalDpadKeys(false);
                 if (resultOk) {
                     return true;
                 }
-//                return true;
                 break;
-//
-//            case KeyEvent.KEYCODE_DPAD_DOWN:
-//                mFavoriteStopsFragment.handleVerticalDpadKeys(false);
-//                break;
 
-//                if (currentSelectView != null) {
-//                    DpadListAdapter.ViewHolder holder =
-//                            (FavoriteStopsAdapter.ViewHolder)      currentSelectView.getTag();
-//                    mDpadListView.clearFocus();
-//                    holder.shortCut.setFocusable(true);
-//                    holder.shortCut.requestFocus();
-//                    return true;
-//                }
-//                break;
-//            case KeyEvent.KEYCODE_DPAD_LEFT:
-//            case KeyEvent.KEYCODE_DPAD_UP:
-//            case KeyEvent.KEYCODE_DPAD_DOWN:
-//                if (currentSelectView != null) {
-//                    DpadListAdapter.ViewHolder holder =
-//                            (FavoriteStopsAdapter.ViewHolder) currentSelectView.getTag();
-//                    if (holder.shortCut.hasFocus()) {
-//                        holder.shortCut.clearFocus();
-//                        holder.shortCut.setFocusable(false);
-//                        mDpadView.requestFocus();
-//                        return true;
-//                    }
-//                }
-//                break;
             default:
                 break;
         }

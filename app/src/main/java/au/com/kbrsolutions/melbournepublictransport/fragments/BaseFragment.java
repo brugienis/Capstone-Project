@@ -35,7 +35,7 @@ public abstract class BaseFragment extends Fragment {
 
     public void setActionBarTitle(String actionBarTitle) {
         mActionBarTitle = actionBarTitle;
-        Log.v(TAG, "setActionBarTitle - title: " + actionBarTitle);
+//        Log.v(TAG, "setActionBarTitle - title: " + actionBarTitle);
     }
 
     public MainActivity.FragmentsId getFragmentId() {
@@ -44,6 +44,14 @@ public abstract class BaseFragment extends Fragment {
     public void setFragmentId(MainActivity.FragmentsId fragmentd) {
         this.mFragmentsId = fragmentd;
 //        Log.v(TAG, "setFragmentId - fragmentd: " + fragmentd);
+    }
+
+    public boolean handleVerticalDpadKeys(boolean upKeyPressed) {
+        throw new RuntimeException(TAG + ".handleVerticalDpadKeys(...) method not implemented");
+    }
+
+    public boolean handleHorizontalDpadKeys(boolean rightKeyPressed) {
+        throw new RuntimeException(TAG + ".handleHorizontalDpadKeys(...) method not implemented");
     }
 
 }

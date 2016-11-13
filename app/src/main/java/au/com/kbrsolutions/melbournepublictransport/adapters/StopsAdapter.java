@@ -27,6 +27,7 @@ public class StopsAdapter extends CursorAdapter {
     public static class ViewHolder {
         public final TextView locationNameView;
         public final ImageView departuresImageId;
+        public final ImageView mapImageId;
         public StopDetails stopDetails;
 
         public ViewHolder(View view) {
@@ -44,7 +45,7 @@ public class StopsAdapter extends CursorAdapter {
                 }
             });
 
-            ImageView mapImageId = (ImageView) view.findViewById(R.id.mapImageId);
+            mapImageId = (ImageView) view.findViewById(R.id.mapImageId);
             mapImageId.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

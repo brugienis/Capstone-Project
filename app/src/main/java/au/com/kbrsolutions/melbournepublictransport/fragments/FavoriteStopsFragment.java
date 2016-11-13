@@ -192,15 +192,6 @@ public class FavoriteStopsFragment
                                        int position, long id) {
                 Log.v(TAG, "onItemSelected - position/view: " + position + "/" + Utility.getClassHashCode(view));
                 handleItemSelected(view, position);
-//                if (view.getTag() != null) {
-//                    mCurrentSelectedView = view;
-//                    mCurrentSelectedRow = position;
-//                    selectedViewNo = -1;
-//                    FavoriteStopsAdapter.ViewHolder holder = (FavoriteStopsAdapter.ViewHolder) view.getTag();
-//                    Log.v(TAG, "onItemSelected - departuresImageId/isShown: " + holder.departuresImageId + holder.departuresImageId.isShown());
-//                    Log.v(TAG, "onItemSelected - locationNameView/isShown: " + holder.locationNameView + holder.locationNameView.isShown());
-//                    Log.v(TAG, "onItemSelected - garbageInfoImage/isShown: " + holder.garbageInfoImage + holder.garbageInfoImage.isShown());
-//                }
             }
 
             @Override
@@ -234,15 +225,6 @@ public class FavoriteStopsFragment
     }
 
     public boolean handleVerticalDpadKeys(boolean upKeyPressed) {
-//        if (mCurrentSelectedView != null) {
-//            FavoriteStopsAdapter.ViewHolder holder = (FavoriteStopsAdapter.ViewHolder) mCurrentSelectedView.getTag();
-//            if (holder.departuresImageId.hasFocus()) {
-//                holder.departuresImageId.clearFocus();
-//                holder.departuresImageId.setFocusable(false);
-//                mListView.requestFocus();
-//                return true;
-//            }
-//        }
         Log.v(TAG, "handleVerticalDpadKeys - start - mCurrentSelectedRow/mCursorRowCnt: " + mCurrentSelectedRow + "/" + mCursorRowCnt);
         if (upKeyPressed && mCurrentSelectedRow == 0 ||
                 !upKeyPressed && mCurrentSelectedRow == mCursorRowCnt - 1) {
@@ -253,6 +235,16 @@ public class FavoriteStopsFragment
         return false;
     }
 
+
+    /**
+     *
+     * Based on henry74918
+     *
+     *  http://stackoverflow.com/questions/14392356/how-to-use-d-pad-navigate-switch-between-listviews-row-and-its-decendants-goo
+     *
+     * @param rightKeyPressed
+     * @return
+     */
     public boolean handleHorizontalDpadKeys(boolean rightKeyPressed) {
         Log.v(TAG, "handleHorizontalDpadKeys - start - mCurrentSelectedView: " + mCurrentSelectedView);
         boolean resultOk = false;

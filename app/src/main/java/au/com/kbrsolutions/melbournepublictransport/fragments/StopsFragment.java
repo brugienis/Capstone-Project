@@ -24,6 +24,7 @@ import au.com.kbrsolutions.melbournepublictransport.adapters.StopsAdapter;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
+import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -124,12 +125,112 @@ public class StopsFragment extends BaseFragment implements LoaderManager.LoaderC
             }
         });
 
+        mListView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.v(TAG, "onItemSelected - position/view: " + position + "/" + Utility.getClassHashCode(view));
+                handleItemSelected(view, position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                Log.v(TAG, "onNothingSelected - position: " + parent);
+            }
+        });
+
         if (mFolderItemList.size() == 0) {
             mEmptyView = (TextView) mRootView.findViewById(R.id.emptyView);
             mEmptyView.setText(getActivity().getResources()
                     .getString(R.string.no_stops_to_add));
         }
         return mRootView;
+    }
+
+    private int mCursorRowCnt;
+    private View mCurrentSelectedView;
+    private int mCurrentSelectedRow;
+    private int selectableViewsCnt = 2;
+    private int selectedViewNo = -1;
+
+    private void handleItemSelected(View view, int position) {
+        if (view.getTag() != null) {
+            mCurrentSelectedView = view;
+            mCurrentSelectedRow = position;
+            selectedViewNo = 0;
+            StopsAdapter.ViewHolder holder = (StopsAdapter.ViewHolder) mCurrentSelectedView.getTag();
+            mListView.clearFocus();
+            holder.departuresImageId.setFocusable(true);
+            holder.departuresImageId.requestFocus();
+            Log.v(TAG, "handleItemSelected - departuresImageId in focus");
+        }
+    }
+
+    public boolean handleVerticalDpadKeys(boolean upKeyPressed) {
+        Log.v(TAG, "handleVerticalDpadKeys - start - mCurrentSelectedRow/mCursorRowCnt: " + mCurrentSelectedRow + "/" + mCursorRowCnt);
+        if (upKeyPressed && mCurrentSelectedRow == 0 ||
+                !upKeyPressed && mCurrentSelectedRow == mCursorRowCnt - 1) {
+            mCurrentSelectedRow = -1;
+            mCurrentSelectedView = null;
+            Log.v(TAG, "handleVerticalDpadKeys - moved above 1st. row");
+        }
+        return false;
+    }
+
+
+    /**
+     *
+     * Based on henry74918
+     *
+     *  http://stackoverflow.com/questions/14392356/how-to-use-d-pad-navigate-switch-between-listviews-row-and-its-decendants-goo
+     *
+     * @param rightKeyPressed
+     * @return
+     */
+    public boolean handleHorizontalDpadKeys(boolean rightKeyPressed) {
+        Log.v(TAG, "handleHorizontalDpadKeys - start - mCurrentSelectedView: " + mCurrentSelectedView);
+        boolean resultOk = false;
+        if (mCurrentSelectedView != null) { // && mCurrentSelectedView.hasFocus()) {
+            int prevSelectedViewNo = selectedViewNo;
+            if (rightKeyPressed) {
+                Log.v(TAG, "handleHorizontalDpadKeys - > before prev/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
+                selectedViewNo = selectedViewNo == (selectableViewsCnt - 1) ? 0 : selectedViewNo + 1;
+                Log.v(TAG, "handleHorizontalDpadKeys - > after  prev/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
+            } else {
+                Log.v(TAG, "handleHorizontalDpadKeys - < before prev/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
+                selectedViewNo = selectedViewNo < 1 ? selectableViewsCnt - 1 : selectedViewNo - 1;
+                Log.v(TAG, "handleHorizontalDpadKeys - < after  prev/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
+            }
+            Log.v(TAG, "handleHorizontalDpadKeys - prevSelectedViewNo/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
+            StopsAdapter.ViewHolder holder = (StopsAdapter.ViewHolder) mCurrentSelectedView.getTag();
+            mListView.clearFocus();
+            switch (selectedViewNo) {
+                case 0:
+                    holder.departuresImageId.setFocusable(true);
+                    holder.departuresImageId.requestFocus();
+                    Log.v(TAG, "handleHorizontalDpadKeys - departuresImageId in focus");
+                    break;
+
+                case 1:
+                    holder.mapImageId.setFocusable(true);
+                    holder.mapImageId.requestFocus();
+                    Log.v(TAG, "handleHorizontalDpadKeys - mapImageId in focus");
+                    break;
+
+                default:
+                    throw new RuntimeException(TAG + ".handleHorizontalDpadKeys - case '" +
+                            selectedViewNo + "' not handled");
+            }
+            resultOk = true;
+        } else {
+            if (mCurrentSelectedView == null) {
+                Log.v(TAG, "handleHorizontalDpadKeys - mCurrentSelectedView is null");
+            } else {
+                Log.v(TAG, "handleHorizontalDpadKeys - mCurrentSelectedView NOT in focus");
+            }
+        }
+        return resultOk;
     }
 
     @Override
@@ -158,8 +259,9 @@ public class StopsFragment extends BaseFragment implements LoaderManager.LoaderC
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 //        Log.v(TAG, "onLoadFinished - start - rows cnt: " + data.getCount());
+        mCursorRowCnt = data.getCount();
         mStopDetailAdapter.swapCursor(data);
-        if (data.getCount() > 0) {
+        if (mCursorRowCnt > 0) {
             mEmptyView.setVisibility(View.GONE);
         }
         // FIXME: 30/08/2016 below add correct code
