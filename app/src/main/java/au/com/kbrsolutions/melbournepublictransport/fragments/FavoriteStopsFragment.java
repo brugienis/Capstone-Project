@@ -235,7 +235,6 @@ public class FavoriteStopsFragment
         return false;
     }
 
-
     /**
      *
      * Based on henry74918

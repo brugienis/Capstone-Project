@@ -50,11 +50,11 @@
             android:id="@+id/departureTimeId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/view_not_in_focus"
             android:text="hh:mm"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@android:color/black"
-            android:textSize="14sp"/>
+            android:textSize="14sp"
+            android:background="@drawable/today_touch_selector"/>
 
     </LinearLayout>
 </FrameLayout>

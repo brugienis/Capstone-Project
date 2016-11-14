@@ -9,7 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import android.view.ViewTreeObserver;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -22,17 +23,19 @@ import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.RequestProcessorService;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.utilities.HorizontalDividerItemDecoration;
+import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
 /**
  * A fragment representing a list of Items.
  * <p/>
  */
-public class NextDeparturesFragment extends BaseFragment {
+public class NextDeparturesFragment extends BaseFragment
+        implements ViewTreeObserver.OnGlobalFocusChangeListener {
 
     private static final String ARG_SELECTED_STOP_NAME = "arg_selected_stop_name";
     private static final String ARG_NEXT_DEPARTURE_DATA = "next_departure_data";
     private List<NextDepartureDetails> mNextDepartureDetailsList;
-    private ListView mListView;
+    private NestedScrollingListView mListView;
     private TextView mEmptyView;
     private NextDeparturesAdapterRv mRecyclerViewAdapter;
     private String mSelectedStopName;
@@ -83,43 +86,35 @@ public class NextDeparturesFragment extends BaseFragment {
     }
 
     private NextDeparturesAdapter mNextDeparturesAdapter;
-    @Override
+//    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        View rootView = inflater.inflate(R.layout.fragment_next_departure_rv, container, false);
         View rootView = inflater.inflate(R.layout.fragment_next_departure, container, false);
 
-//        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.disruptionsList);
-//        List<NextDepartureDetails> artistsItemsList = new ArrayList<>();
         mNextDeparturesAdapter = new NextDeparturesAdapter(getActivity(), mNextDepartureDetailsList);
-        mListView = (ListView) rootView.findViewById(R.id.nextDeparturesList);
+        mListView = (NestedScrollingListView) rootView.findViewById(R.id.nextDeparturesList);
         mListView.setAdapter(mNextDeparturesAdapter);
-//        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-//                handleArtistRowClicked(position);
-//            }
-//        });
         mEmptyView = (TextView) rootView.findViewById(R.id.emptyView);
         mEmptyView = (TextView) rootView.findViewById(R.id.emptyView);
         mEmptyView.setText(getActivity().getResources()
                 .getString(R.string.no_favorite_stops_selected));
 
-//        recyclerView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view,
-//                                       int position, long id) {
-//                Log.v(TAG, "onItemSelected - position/view: " + position + "/" + Utility.getClassHashCode(view));
-//                handleItemSelected(view, position);
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//                Log.v(TAG, "onNothingSelected - position: " + parent);
-//            }
-//        });
+        mNextDepartureDetailsCnt = mNextDepartureDetailsList.size();
+
+        mListView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.v(TAG, "onItemSelected - position/view: " + position + "/" + Utility.getClassHashCode(view));
+                handleItemSelected(view, position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                Log.v(TAG, "onNothingSelected - position: " + parent);
+            }
+        });
 
         selectedStopNameTv = (TextView) rootView.findViewById(R.id.selectedStopName);
         selectedStopNameTv.setText(mSelectedStopName);
@@ -127,32 +122,55 @@ public class NextDeparturesFragment extends BaseFragment {
         return rootView;
     }
 
-    /**
-     * Show artists details or empty view if no data found.
-     */
-//    public void showArtistsDetails() {
-////        mSearchText.setText(mArtistName);
-////        mSearchText.requestFocus();
-////        if (mArtistName != null) {
-////            mSearchText.setSelection(mArtistName.length());
-////        }
-//        mNextDeparturesAdapter.clear();
-//        if (mArtistsDetailsList != null) {
-//            mArtistArrayAdapter.addAll(mArtistsDetailsList);
-//            mListView.clearChoices();    /* will clear previously selected artist row */
-//            mArtistArrayAdapter.notifyDataSetChanged(); /* call after clearChoices above */
-//            mListView.setSelection(mArtistsListViewFirstVisiblePosition);
-//            if (mArtistArrayAdapter.isEmpty()) {
-//                mEmptyView.setVisibility(View.VISIBLE);
-////                mEmptyView.setText();
-//            } else {
-//                mEmptyView.setVisibility(View.GONE);
-//            }
-//        }
-//    }
+    private int mNextDepartureDetailsCnt;
+    private View mCurrentSelectedView;
+    private int mCurrentSelectedRow;
+    private int selectableViewsCnt = 0;
+    private int selectedViewNo = -1;
 
+    private void handleItemSelected(View view, int position) {
+        if (view.getTag() != null) {
+            mCurrentSelectedView = view;
+            mCurrentSelectedRow = position;
+            selectedViewNo = 0;
+            NextDeparturesAdapter.ViewHolder holder = (NextDeparturesAdapter.ViewHolder) mCurrentSelectedView.getTag();
+            mListView.clearFocus();
+            holder.departureTimeId.setFocusable(true);
+            holder.departureTimeId.requestFocus();
+            Log.v(TAG, "handleItemSelected - departureTimeId in focus");
+        }
+    }
+
+    public boolean handleVerticalDpadKeys(boolean upKeyPressed) {
+        Log.v(TAG, "handleVerticalDpadKeys - start - mCurrentSelectedRow/mNextDepartureDetailsCnt: " + mCurrentSelectedRow + "/" + mNextDepartureDetailsCnt);
+        if (upKeyPressed && mCurrentSelectedRow == 0 ||
+                !upKeyPressed && mCurrentSelectedRow == mNextDepartureDetailsCnt - 1) {
+            mCurrentSelectedRow = -1;
+            mCurrentSelectedView = null;
+            Log.v(TAG, "handleVerticalDpadKeys - moved above 1st. row");
+        }
+        Log.v(TAG, "handleVerticalDpadKeys - end - mCurrentSelectedRow/mNextDepartureDetailsCnt: " + mCurrentSelectedRow + "/" + mNextDepartureDetailsCnt);
+        return false;
+    }
+
+    /**
+     *
+     * Based on henry74918
+     *
+     *  http://stackoverflow.com/questions/14392356/how-to-use-d-pad-navigate-switch-between-listviews-row-and-its-decendants-goo
+     *
+     * @param rightKeyPressed
+     * @return
+     */
+    public boolean handleHorizontalDpadKeys(boolean rightKeyPressed) {
+        Log.v(TAG, "handleHorizontalDpadKeys - start - mCurrentSelectedView: " + mCurrentSelectedView);
+        return false;
+    }
+
+    // https://www.bignerdranch.com/blog/recyclerview-part-1-fundamentals-for-listview-experts/
+    // https://github.com/vganin/dpad-aware-recycler-view/blob/master/lib/src/main/java/net/ganin/darv/DpadAwareRecyclerView.java
 //    @Override
-    public View onCreateViewOld(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView_UseWithRececleViewAdapter(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_next_departure_rv, container, false);
 
@@ -186,37 +204,38 @@ public class NextDeparturesFragment extends BaseFragment {
         return view;
     }
 
-    @Override
-    public boolean handleHorizontalDpadKeys(boolean rightKeyPressed) {
-        Log.v(TAG, "handleHorizontalDpadKeys - : ");
-        return false;
-    }
-
-    @Override
-    public boolean handleVerticalDpadKeys(boolean upKeyPressed) {
-        Log.v(TAG, "handleVerticalDpadKeys - : ");
-        return false;
-    }
-
     public void setNewContent(
             String selectedStopName,
             List<NextDepartureDetails> nextDepartureDetailsList,
             StopDetails stopDetails) {
         mSelectedStopName = selectedStopName;
         selectedStopNameTv.setText(selectedStopName);
-//        mRecyclerViewAdapter.swap(nextDepartureDetailsList);
-        swap(nextDepartureDetailsList);
+//        mRecyclerViewAdapter.swapNextDeparturesDetails(nextDepartureDetailsList);
+        Log.v(TAG, "setNewContent - size: " + nextDepartureDetailsList.size());
+        swapNextDeparturesDetails(nextDepartureDetailsList);
         mSearchStopDetails = stopDetails;
     }
 
-    private void swap(List<NextDepartureDetails> nextDepartureDetailsList) {
+
+    /**
+     * Show departures details or show empty view if no data found.
+     */
+    private void swapNextDeparturesDetails(List<NextDepartureDetails> nextDepartureDetailsList) {
+        mNextDepartureDetailsCnt = nextDepartureDetailsList.size();
+        int cnt0 = mNextDeparturesAdapter.getCount();
         mNextDeparturesAdapter.clear();
+        int cnt1 = mNextDeparturesAdapter.getCount();
+        Log.v(TAG, "swapNextDeparturesDetails - cnt0/cnt1: " + cnt0 + "/" + cnt1);
         if (mNextDepartureDetailsList != null) {
-//            mNextDeparturesAdapter.addAll(mNextDepartureDetailsList);
-            mListView.clearChoices();    /* will clear previously selected artist row */
-            mNextDeparturesAdapter.addAll(mNextDepartureDetailsList);
+            mNextDeparturesAdapter.addAll(nextDepartureDetailsList);
+            Log.v(TAG, "swapNextDeparturesDetails - added rows cnt: " + nextDepartureDetailsList.size());
+//            mListView.clearChoices();    /* will clear previously selected artist row */
+            int cntB = mNextDeparturesAdapter.getCount();
             mNextDeparturesAdapter.notifyDataSetChanged(); /* call after clearChoices above */
-            mListView.setSelection(0);
+            int cntA = mNextDeparturesAdapter.getCount();
+            Log.v(TAG, "swapNextDeparturesDetails - cntB/cntA: " + cntA + "/" + cntA);
+//            mNextDeparturesAdapter.
+//            mListView.setSelection(0);
             if (mNextDeparturesAdapter.isEmpty()) {
                 mEmptyView.setVisibility(View.VISIBLE);
 //                mEmptyView.setText();
@@ -235,4 +254,12 @@ public class NextDeparturesFragment extends BaseFragment {
     public void showView() {
 
     }
+
+    @Override
+    public void onGlobalFocusChanged(View view, View view1) {
+
+    }
+
+    AdapterView.OnItemSelectedListener mOnItemSelectedListener;
+
 }

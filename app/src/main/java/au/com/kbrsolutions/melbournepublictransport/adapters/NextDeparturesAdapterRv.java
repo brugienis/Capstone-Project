@@ -4,6 +4,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,14 +19,23 @@ import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 /**
  * {@link RecyclerView.Adapter} that can display a {@link NextDepartureDetails}.
  */
-public class NextDeparturesAdapterRv extends RecyclerView.Adapter<NextDeparturesAdapterRv.ViewHolder> {
+public class NextDeparturesAdapterRv
+        extends RecyclerView.Adapter<NextDeparturesAdapterRv.ViewHolder>
+        implements ViewTreeObserver.OnGlobalFocusChangeListener {
 
     private final List<NextDepartureDetails> mValues;
     // FIXME: 20/09/2016 - move strings to values
     private static final String ALL_STOPS = "All stops";
     private static final String EXPRESS = "Express";
 
+    AdapterView.OnItemSelectedListener mOnItemSelectedListener;
+
     private static final String TAG = NextDeparturesAdapterRv.class.getSimpleName();
+
+    @Override
+    public void onGlobalFocusChanged(View view, View view1) {
+
+    }
 
     public NextDeparturesAdapterRv(List<NextDepartureDetails> items) {
         mValues = items;

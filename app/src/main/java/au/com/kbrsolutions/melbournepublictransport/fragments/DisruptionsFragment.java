@@ -65,6 +65,7 @@ public class DisruptionsFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_disruptions, container, false);
 
         recyclerView = (RecyclerView) view.findViewById(disruptionsList);
+
 //        recyclerView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 //            @Override
 //            public void onFocusChange(View v, boolean hasFocus) {
