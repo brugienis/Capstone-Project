@@ -1,10 +1,11 @@
 package au.com.kbrsolutions.melbournepublictransport.adapters;
 
-
-import android.support.v7.widget.RecyclerView;
+import android.app.Activity;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.List;
@@ -13,57 +14,53 @@ import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
 
 /**
- * {@link RecyclerView.Adapter} that can display a 
- * {@link au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails}.
+ * Created by business on 15/11/2016.
  */
-public class DisruptionsAdapter extends RecyclerView.Adapter<DisruptionsAdapter.ViewHolder> {
+
+public class DisruptionsAdapter<T> extends ArrayAdapter<DisruptionsDetails> {
 
     private final List<DisruptionsDetails> mValues;
 
-    private static final String TAG = DisruptionsAdapter.class.getSimpleName();
+    private static final String TAG = DisruptionsAdapterRv.class.getSimpleName();
 
-    public DisruptionsAdapter(List<DisruptionsDetails> items) {
+    public DisruptionsAdapter(Activity activity, List<DisruptionsDetails> items) {
+        super(activity.getApplicationContext(), -1, items);
         mValues = items;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_disruptions_list, parent, false);
-        return new ViewHolder(view);
-    }
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View v = convertView;
+        final ViewHolder holder;
+        if (v == null) {
+            LayoutInflater inflater =
+                    (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            v = inflater.inflate(R.layout.fragment_disruptions_list, parent, false);
 
-    @Override
-    public void onBindViewHolder(final DisruptionsAdapter.ViewHolder holder, int position) {
+            holder = new ViewHolder();
+            holder.title = (TextView) v.findViewById(R.id.disruptionsTitle);
+            holder.description = (TextView) v.findViewById(R.id.disruptionsDescription);
+
+            v.setTag(holder);
+        } else {
+            holder = (ViewHolder) v.getTag();
+        }
+
         DisruptionsDetails disruptionsDetails = mValues.get(position);
         holder.title.setText(disruptionsDetails.title);
         holder.description.setText(disruptionsDetails.description);
+
+        return v;
     }
 
-    public void swap(List<DisruptionsDetails> disruptionsDetailsList){
+    public void swap(List<DisruptionsDetails> disruptionsDetails){
         mValues.clear();
-        mValues.addAll(disruptionsDetailsList);
+        mValues.addAll(disruptionsDetails);
         notifyDataSetChanged();
     }
 
-    @Override
-    public int getItemCount() {
-        return mValues.size();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public final TextView title;
-        public final TextView description;
-
-        public ViewHolder(View view) {
-            super(view);
-            title = (TextView) view.findViewById(R.id.disruptionsTitle);
-            description = (TextView) view.findViewById(R.id.disruptionsDescription);
-        }
-
-        @Override
-        public String toString() {
-            return super.toString() + title + "/" + description;
-        }
+    public static class ViewHolder {
+        public TextView title;
+        public TextView description;
     }
 }

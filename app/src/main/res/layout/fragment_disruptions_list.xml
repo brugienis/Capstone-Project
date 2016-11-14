@@ -19,14 +19,17 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:paddingBottom="2dp"
             android:id="@+id/disruptionsTitle"
-            android:background="@drawable/today_touch_selector"/>
+            android:background="@drawable/today_touch_selector"
+            android:textColor="@android:color/black"/>
 
         <TextView
             android:text="Description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:id="@+id/disruptionsDescription"/>
+            android:id="@+id/disruptionsDescription"
+            android:background="@color/view_not_in_focus"
+            android:textColor="@android:color/black"/>
 
     </LinearLayout>
 

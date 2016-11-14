@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:name="au.com.kbrsolutions.melbournepublictransport.fragments.ItemFragment"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/selectedStopName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/view_not_in_focus"
+        android:minHeight="25dp"
+        android:paddingTop="5dp"
+        android:text="file name ..."
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        android:nextFocusDown="@+id/disruptionsList"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/disruptionsList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:descendantFocusability="afterDescendants"
+        android:scrollbars="vertical"
+        app:layoutManager="LinearLayoutManager"
+        tools:context=".fragments.DisruptionsFragment"
+        tools:listitem="@layout/fragment_disruptions_list"/>
+
+</LinearLayout>
+
+<!--
+<android.support.v7.widget.RecyclerView
+    android:name="au.com.kbrsolutions.melbournepublictransport.fragments.ItemFragment"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/disruptionsList"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="afterDescendants"
+    android:scrollbars="vertical"
+    app:layoutManager="LinearLayoutManager"
+    tools:context=".fragments.DisruptionsFragment"
+    tools:listitem="@layout/fragment_disruptions_list"/>
+-->
