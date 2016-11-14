@@ -933,12 +933,10 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.v(TAG, "onKeyDown - keyCode: " + keyCode);
         BaseFragment baseFragment = getTopFragment();
         boolean resultOk;
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_LEFT:
-//                resultOk = mFavoriteStopsFragment.handleHorizontalDpadKeys(false);
                 resultOk = baseFragment.handleHorizontalDpadKeys(false);
                 if (resultOk) {
                     return true;
@@ -969,7 +967,6 @@ public class MainActivity extends AppCompatActivity implements
             default:
                 break;
         }
-        Log.v(TAG, "onKeyDown - default processing");
         return super.onKeyDown(keyCode, event);
     }
 

@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +22,9 @@ import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.RequestProcessorService;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.utilities.HorizontalDividerItemDecoration;
-import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
 /**
- * A fragment representing a list of Items.
+ * A fragment representing a list of NextDepartureDetails.
  * <p/>
  */
 public class NextDeparturesFragment extends BaseFragment
@@ -75,7 +73,6 @@ public class NextDeparturesFragment extends BaseFragment
             mNextDepartureDetailsList = (ArrayList)getArguments().getParcelableArrayList(ARG_NEXT_DEPARTURE_DATA);
             mSelectedStopName = getArguments().getString(ARG_SELECTED_STOP_NAME);
             mSearchStopDetails = getArguments().getParcelable(RequestProcessorService.STOP_DETAILS);
-//            Log.v(TAG, "onCreate - stopDetails: " + mSearchStopDetails);
             newInstanceArgsRetrieved = true;
         }
         setRetainInstance(true);
@@ -107,13 +104,11 @@ public class NextDeparturesFragment extends BaseFragment
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
-                Log.v(TAG, "onItemSelected - position/view: " + position + "/" + Utility.getClassHashCode(view));
                 handleItemSelected(view, position);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                Log.v(TAG, "onNothingSelected - position: " + parent);
             }
         });
 
@@ -126,31 +121,24 @@ public class NextDeparturesFragment extends BaseFragment
     private int mNextDepartureDetailsCnt;
     private View mCurrentSelectedView;
     private int mCurrentSelectedRow;
-    private int selectableViewsCnt = 0;
-    private int selectedViewNo = -1;
 
     private void handleItemSelected(View view, int position) {
         if (view.getTag() != null) {
             mCurrentSelectedView = view;
             mCurrentSelectedRow = position;
-            selectedViewNo = 0;
             NextDeparturesAdapter.ViewHolder holder = (NextDeparturesAdapter.ViewHolder) mCurrentSelectedView.getTag();
             mListView.clearFocus();
             holder.departureTimeId.setFocusable(true);
             holder.departureTimeId.requestFocus();
-            Log.v(TAG, "handleItemSelected - departureTimeId in focus");
         }
     }
 
     public boolean handleVerticalDpadKeys(boolean upKeyPressed) {
-        Log.v(TAG, "handleVerticalDpadKeys - start - mCurrentSelectedRow/mNextDepartureDetailsCnt: " + mCurrentSelectedRow + "/" + mNextDepartureDetailsCnt);
         if (upKeyPressed && mCurrentSelectedRow == 0 ||
                 !upKeyPressed && mCurrentSelectedRow == mNextDepartureDetailsCnt - 1) {
             mCurrentSelectedRow = -1;
             mCurrentSelectedView = null;
-            Log.v(TAG, "handleVerticalDpadKeys - moved above 1st. row");
         }
-        Log.v(TAG, "handleVerticalDpadKeys - end - mCurrentSelectedRow/mNextDepartureDetailsCnt: " + mCurrentSelectedRow + "/" + mNextDepartureDetailsCnt);
         return false;
     }
 
@@ -164,12 +152,25 @@ public class NextDeparturesFragment extends BaseFragment
      * @return
      */
     public boolean handleHorizontalDpadKeys(boolean rightKeyPressed) {
-        Log.v(TAG, "handleHorizontalDpadKeys - start - mCurrentSelectedView: " + mCurrentSelectedView);
         return false;
     }
 
-    // https://www.bignerdranch.com/blog/recyclerview-part-1-fundamentals-for-listview-experts/
-    // https://github.com/vganin/dpad-aware-recycler-view/blob/master/lib/src/main/java/net/ganin/darv/DpadAwareRecyclerView.java
+    /**
+     *
+     * This onCreateView is using RecyclerView.Adapter.
+     *
+     * Use this method in the future when you have more information about how to handle D-pad
+     * navigation.
+     *
+     * see:
+     *      https://github.com/vganin/dpad-aware-recycler-view/blob/master/app/src/main/java/net/ganin/darv/sample/SampleActivity.java
+     *      https://www.bignerdranch.com/blog/recyclerview-part-1-fundamentals-for-listview-experts/
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
 //    @Override
     public View onCreateView_UseWithRececleViewAdapter(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -212,39 +213,8 @@ public class NextDeparturesFragment extends BaseFragment
         mSelectedStopName = selectedStopName;
         selectedStopNameTv.setText(selectedStopName);
 //        mRecyclerViewAdapter.swapNextDeparturesDetails(nextDepartureDetailsList);
-        Log.v(TAG, "setNewContent - size: " + nextDepartureDetailsList.size());
-        swapNextDeparturesDetails(nextDepartureDetailsList);
+        mNextDeparturesAdapter.swap(nextDepartureDetailsList);
         mSearchStopDetails = stopDetails;
-    }
-
-
-    /**
-     * Show departures details or show empty view if no data found.
-     */
-    // FIXME: 14/11/2016 move below method to adapter
-    private void swapNextDeparturesDetails(List<NextDepartureDetails> nextDepartureDetailsList) {
-        mNextDepartureDetailsCnt = nextDepartureDetailsList.size();
-        int cnt0 = mNextDeparturesAdapter.getCount();
-        mNextDeparturesAdapter.clear();
-        int cnt1 = mNextDeparturesAdapter.getCount();
-        Log.v(TAG, "swapNextDeparturesDetails - cnt0/cnt1: " + cnt0 + "/" + cnt1);
-        if (mNextDepartureDetailsList != null) {
-            mNextDeparturesAdapter.addAll(nextDepartureDetailsList);
-            Log.v(TAG, "swapNextDeparturesDetails - added rows cnt: " + nextDepartureDetailsList.size());
-//            mListView.clearChoices();    /* will clear previously selected artist row */
-            int cntB = mNextDeparturesAdapter.getCount();
-            mNextDeparturesAdapter.notifyDataSetChanged(); /* call after clearChoices above */
-            int cntA = mNextDeparturesAdapter.getCount();
-            Log.v(TAG, "swapNextDeparturesDetails - cntB/cntA: " + cntA + "/" + cntA);
-//            mNextDeparturesAdapter.
-//            mListView.setSelection(0);
-            if (mNextDeparturesAdapter.isEmpty()) {
-                mEmptyView.setVisibility(View.VISIBLE);
-//                mEmptyView.setText();
-            } else {
-                mEmptyView.setVisibility(View.GONE);
-            }
-        }
     }
 
     @Override

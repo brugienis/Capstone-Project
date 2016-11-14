@@ -128,7 +128,9 @@ public class DisruptionsFragment extends BaseFragment {
      * Use this method in the future when you have more information about how to handle D-pad
      * navigation.
      *
-     * see https://github.com/vganin/dpad-aware-recycler-view/blob/master/app/src/main/java/net/ganin/darv/sample/SampleActivity.java
+     * see:
+     *      https://github.com/vganin/dpad-aware-recycler-view/blob/master/app/src/main/java/net/ganin/darv/sample/SampleActivity.java
+     *      https://www.bignerdranch.com/blog/recyclerview-part-1-fundamentals-for-listview-experts/
      *
      * @param inflater
      * @param container

@@ -74,6 +74,12 @@ public class NextDeparturesAdapter<T> extends ArrayAdapter<NextDepartureDetails>
         return v;
     }
 
+    public void swap(List<NextDepartureDetails> nextDepartureDetails){
+        mValues.clear();
+        mValues.addAll(nextDepartureDetails);
+        notifyDataSetChanged();
+    }
+
     public static class ViewHolder {
         public ImageView transportImage;
         public TextView directionName;
