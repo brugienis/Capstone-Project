@@ -496,7 +496,9 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void startStopsNearbySearch(boolean forTrainsOnly) {
-        LatLngDetails latLngDetails = Utility.getLatLng(this);
+//        LatLngDetails latLngDetails = Utility.getLatLng(this);
+        // FIXME: 14/11/2016 - ALDI Carrum location - remove after testing
+        LatLngDetails latLngDetails = new LatLngDetails(-38.0763325, 145.12348046875);
         if (latLngDetails == null) {
             Log.v(TAG, "startStopsNearbySearch - using device location");
             if (mCurrentGeoPositionFinder == null) {

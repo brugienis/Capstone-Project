@@ -16,6 +16,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.location.places.Place;
@@ -224,6 +225,7 @@ public class SettingsActivity extends AppCompatActivity {
                 (float) mLatLng.longitude);
         editor.apply();
         mFixedLocationPreferenceSummaryNotUpdated = true;
+        Log.v(TAG, "processPlacePickerData - : " + mLatLng.latitude + "/" + mLatLng.longitude);
 
         if (mSettingsFragment != null) {
             Preference locationPreference = mSettingsFragment.findPreference(getString(R.string.pref_key_fixed_location));

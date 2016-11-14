@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
-import au.com.kbrsolutions.melbournepublictransport.adapters.NextDeparturesAdapter;
 import au.com.kbrsolutions.melbournepublictransport.adapters.StopsNearbyAdapter;
 import au.com.kbrsolutions.melbournepublictransport.adapters.StopsNearbyAdapterRv;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
@@ -114,7 +113,7 @@ public class StopsNearbyFragment extends BaseFragment {
     private int mNextDepartureDetailsCnt;
     private View mCurrentSelectedView;
     private int mCurrentSelectedRow;
-    private int selectableViewsCnt = 0;
+    private int selectableViewsCnt = 2;
     private int selectedViewNo = -1;
 
     private void handleItemSelected(View view, int position) {
@@ -122,10 +121,10 @@ public class StopsNearbyFragment extends BaseFragment {
             mCurrentSelectedView = view;
             mCurrentSelectedRow = position;
             selectedViewNo = 0;
-            NextDeparturesAdapter.ViewHolder holder = (NextDeparturesAdapter.ViewHolder) mCurrentSelectedView.getTag();
+            StopsNearbyAdapter.ViewHolder holder = (StopsNearbyAdapter.ViewHolder) mCurrentSelectedView.getTag();
             mListView.clearFocus();
-            holder.departureTimeId.setFocusable(true);
-            holder.departureTimeId.requestFocus();
+            holder.departuresImageId.setFocusable(true);
+            holder.departuresImageId.requestFocus();
             Log.v(TAG, "handleItemSelected - departureTimeId in focus");
         }
     }
@@ -140,6 +139,60 @@ public class StopsNearbyFragment extends BaseFragment {
         }
         Log.v(TAG, "handleVerticalDpadKeys - end - mCurrentSelectedRow/mNextDepartureDetailsCnt: " + mCurrentSelectedRow + "/" + mNextDepartureDetailsCnt);
         return false;
+    }
+
+    /**
+     *
+     * Based on henry74918
+     *
+     *  http://stackoverflow.com/questions/14392356/how-to-use-d-pad-navigate-switch-between-listviews-row-and-its-decendants-goo
+     *
+     * @param rightKeyPressed
+     * @return
+     */
+    public boolean handleHorizontalDpadKeys(boolean rightKeyPressed) {
+        Log.v(TAG, "handleHorizontalDpadKeys - start - mCurrentSelectedView: " + mCurrentSelectedView);
+        boolean resultOk = false;
+        if (mCurrentSelectedView != null) { // && mCurrentSelectedView.hasFocus()) {
+            int prevSelectedViewNo = selectedViewNo;
+            if (rightKeyPressed) {
+                Log.v(TAG, "handleHorizontalDpadKeys - > before prev/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
+                selectedViewNo = selectedViewNo == (selectableViewsCnt - 1) ? 0 : selectedViewNo + 1;
+                Log.v(TAG, "handleHorizontalDpadKeys - > after  prev/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
+            } else {
+                Log.v(TAG, "handleHorizontalDpadKeys - < before prev/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
+                selectedViewNo = selectedViewNo < 1 ? selectableViewsCnt - 1 : selectedViewNo - 1;
+                Log.v(TAG, "handleHorizontalDpadKeys - < after  prev/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
+            }
+            Log.v(TAG, "handleHorizontalDpadKeys - prevSelectedViewNo/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
+            StopsNearbyAdapter.ViewHolder holder = (StopsNearbyAdapter.ViewHolder) mCurrentSelectedView.getTag();
+            mListView.clearFocus();
+            switch (selectedViewNo) {
+                case 0:
+                    holder.departuresImageId.setFocusable(true);
+                    holder.departuresImageId.requestFocus();
+                    Log.v(TAG, "handleHorizontalDpadKeys - departuresImageId in focus");
+                    break;
+
+                case 1:
+                    holder.mapImageId.setFocusable(true);
+                    holder.mapImageId.requestFocus();
+                    Log.v(TAG, "handleHorizontalDpadKeys - mapImageId in focus");
+                    break;
+
+                default:
+                    throw new RuntimeException(TAG + ".handleHorizontalDpadKeys - case '" +
+                            selectedViewNo + "' not handled");
+            }
+            resultOk = true;
+        } else {
+            if (mCurrentSelectedView == null) {
+                Log.v(TAG, "handleHorizontalDpadKeys - mCurrentSelectedView is null");
+            } else {
+                Log.v(TAG, "handleHorizontalDpadKeys - mCurrentSelectedView NOT in focus");
+            }
+        }
+        return resultOk;
     }
 
 //    @Override
