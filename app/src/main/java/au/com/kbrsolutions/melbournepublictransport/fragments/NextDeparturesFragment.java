@@ -86,6 +86,7 @@ public class NextDeparturesFragment extends BaseFragment
     }
 
     private NextDeparturesAdapter mNextDeparturesAdapter;
+
 //    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -220,6 +221,7 @@ public class NextDeparturesFragment extends BaseFragment
     /**
      * Show departures details or show empty view if no data found.
      */
+    // FIXME: 14/11/2016 move below method to adapter
     private void swapNextDeparturesDetails(List<NextDepartureDetails> nextDepartureDetailsList) {
         mNextDepartureDetailsCnt = nextDepartureDetailsList.size();
         int cnt0 = mNextDeparturesAdapter.getCount();

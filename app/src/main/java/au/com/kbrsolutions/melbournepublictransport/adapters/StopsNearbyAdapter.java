@@ -1,9 +1,11 @@
 package au.com.kbrsolutions.melbournepublictransport.adapters;
 
-import android.support.v7.widget.RecyclerView;
+import android.app.Activity;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,38 +14,81 @@ import java.util.List;
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
-import au.com.kbrsolutions.melbournepublictransport.fragments.StopsNearbyFragment.OnNearbyStopsFragmentInteractionListener;
+import au.com.kbrsolutions.melbournepublictransport.fragments.StopsNearbyFragment;
+
+import static au.com.kbrsolutions.melbournepublictransport.R.id.departuresImageId;
+import static au.com.kbrsolutions.melbournepublictransport.R.id.mapImageId;
+import static au.com.kbrsolutions.melbournepublictransport.R.id.stopAddress;
+import static au.com.kbrsolutions.melbournepublictransport.R.id.stopName;
 
 /**
- * {@link RecyclerView.Adapter} that can display a
- * {@link au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails}.
+ * Created by business on 14/11/2016.
  */
-public class StopsNearbyAdapter extends RecyclerView.Adapter<StopsNearbyAdapter.ViewHolder> {
+
+public class StopsNearbyAdapter<T> extends ArrayAdapter<NearbyStopsDetails> {
 
     private final List<NearbyStopsDetails> mValues;
-    private final OnNearbyStopsFragmentInteractionListener mListener;
+    private final StopsNearbyFragment.OnNearbyStopsFragmentInteractionListener mListener;
 
-    private static final String TAG = StopsNearbyAdapter.class.getSimpleName();
+    private static final String TAG = StopsNearbyAdapterRv.class.getSimpleName();
 
-    public StopsNearbyAdapter(
-            List<NearbyStopsDetails> items,
-            OnNearbyStopsFragmentInteractionListener listener) {
+    public StopsNearbyAdapter(Activity activity, List<NearbyStopsDetails> items, StopsNearbyFragment.OnNearbyStopsFragmentInteractionListener listener) {
+        super(activity.getApplicationContext(), -1, items);
         mValues = items;
         mListener = listener;
     }
 
     @Override
-    public StopsNearbyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_nearby_stops_list, parent, false);
-        return new StopsNearbyAdapter.ViewHolder(view);
-    }
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View v = convertView;
+        final ViewHolder holder;
+        if (v == null) {
+            LayoutInflater inflater =
+                    (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            v = inflater.inflate(R.layout.fragment_nearby_stops_list, parent, false);
 
-    @Override
-    public void onBindViewHolder(final StopsNearbyAdapter.ViewHolder holder, int position) {
+            holder = new ViewHolder();
+            holder.transportImage = (ImageView) v.findViewById(R.id.transportImageId);
+            holder.stopName = (TextView) v.findViewById(stopName);
+            holder.stopAddress = (TextView) v.findViewById(stopAddress);
+            holder.mapImageId = (ImageView) v.findViewById(mapImageId);
+            holder.mapImageId.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (null != mListener) {
+                        // Notify the active callbacks interface (the activity, if the
+                        // fragment is attached to one) that a map image was touched.
+                        mListener.onNearbyStopsFragmentMapClicked(holder.nearbyStopsDetails);
+                    }
+                }
+            });
+            holder.departuresImageId = (ImageView) v.findViewById(departuresImageId);
+            holder.departuresImageId.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    Log.v(TAG, "ViewHolder - onClick");
+                    if (null != mListener) {
+                        // Notify the active callbacks interface (the activity, if the
+                        // fragment is attached to one) that a map image was touched.
+                        mListener.startNextDeparturesSearch(new StopDetails(
+                                -1,
+                                holder.nearbyStopsDetails.route_type,
+                                holder.nearbyStopsDetails.stopId,
+                                holder.nearbyStopsDetails.stopName,
+                                holder.nearbyStopsDetails.latitude,
+                                holder.nearbyStopsDetails.longitude,
+                                "n"
+                        ));
+                    }
+                }
+            });
+
+            v.setTag(holder);
+        } else {
+            holder = (ViewHolder) v.getTag();
+        }
+
         NearbyStopsDetails nearbyStopsDetails = mValues.get(position);
-//        Log.v(TAG, "onBindViewHolder - nearbyStopsDetails: " + nearbyStopsDetails);
-//        if (nearbyStopsDetails.route_type.equals("train")) {
         if (nearbyStopsDetails.route_type == NearbyStopsDetails.TRAIN_ROUTE_TYPE) {
             holder.stopName.setText(nearbyStopsDetails.stopName);
             holder.stopAddress.setText(nearbyStopsDetails.suburb);
@@ -59,6 +104,8 @@ public class StopsNearbyAdapter extends RecyclerView.Adapter<StopsNearbyAdapter.
 
         }
         holder.nearbyStopsDetails = mValues.get(position);
+
+        return v;
     }
 
     public void swap(List<NearbyStopsDetails> nearbyStopsDetails){
@@ -67,60 +114,12 @@ public class StopsNearbyAdapter extends RecyclerView.Adapter<StopsNearbyAdapter.
         notifyDataSetChanged();
     }
 
-    @Override
-    public int getItemCount() {
-        return mValues.size();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public final ImageView transportImage;
-        public final TextView stopName;
-        public final TextView stopAddress;
-        public final ImageView mapImageId;
-        public final ImageView departuresImageId;
+    public static class ViewHolder {
+        public ImageView transportImage;
+        public TextView stopName;
+        public TextView stopAddress;
+        public ImageView mapImageId;
+        public ImageView departuresImageId;
         private NearbyStopsDetails nearbyStopsDetails;
-
-        public ViewHolder(View view) {
-            super(view);
-            transportImage = (ImageView) view.findViewById(R.id.transportImageId);
-            stopName = (TextView) view.findViewById(R.id.stopName);
-            stopAddress = (TextView) view.findViewById(R.id.stopAddress);
-            mapImageId = (ImageView) view.findViewById(R.id.mapImageId);
-            mapImageId.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (null != mListener) {
-                        // Notify the active callbacks interface (the activity, if the
-                        // fragment is attached to one) that a map image was touched.
-                        mListener.onNearbyStopsFragmentMapClicked(nearbyStopsDetails);
-                    }
-                }
-            });
-            departuresImageId = (ImageView) view.findViewById(R.id.departuresImageId);
-            departuresImageId.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    Log.v(TAG, "ViewHolder - onClick");
-                    if (null != mListener) {
-                        // Notify the active callbacks interface (the activity, if the
-                        // fragment is attached to one) that a map image was touched.
-                        mListener.startNextDeparturesSearch(new StopDetails(
-                                -1,
-                                nearbyStopsDetails.route_type,
-                                nearbyStopsDetails.stopId,
-                                nearbyStopsDetails.stopName,
-                                nearbyStopsDetails.latitude,
-                                nearbyStopsDetails.longitude,
-                                "n"
-                        ));
-                    }
-                }
-            });
-        }
-
-        @Override
-        public String toString() {
-            return super.toString() + stopName + "/" + stopAddress;
-        }
     }
 }

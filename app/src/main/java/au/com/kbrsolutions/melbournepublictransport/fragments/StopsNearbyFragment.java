@@ -5,18 +5,24 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
+import au.com.kbrsolutions.melbournepublictransport.adapters.NextDeparturesAdapter;
 import au.com.kbrsolutions.melbournepublictransport.adapters.StopsNearbyAdapter;
+import au.com.kbrsolutions.melbournepublictransport.adapters.StopsNearbyAdapterRv;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.utilities.HorizontalDividerItemDecoration;
+import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
 /**
  * A fragment representing a list of Items.
@@ -28,10 +34,13 @@ public class StopsNearbyFragment extends BaseFragment {
 
     private static final String ARG_NEARBY_DATA = "arg_nearby_data";
     private List<NearbyStopsDetails> mNearbyStopsDetailsList;
-    private StopsNearbyAdapter mRecyclerViewAdapter;
+    private StopsNearbyAdapterRv mRecyclerViewAdapter;
+    private StopsNearbyAdapter mStopsNearbyAdapter;
     private boolean newInstanceArgsRetrieved;
     private View mRootView;
     private OnNearbyStopsFragmentInteractionListener mListener;
+    private NestedScrollingListView mListView;
+    private TextView mEmptyView;
 
     private static final String TAG = StopsNearbyFragment.class.getSimpleName();
 
@@ -72,20 +81,88 @@ public class StopsNearbyFragment extends BaseFragment {
 
         mRootView = inflater.inflate(R.layout.fragment_nearby_stops, container, false);
 
+//        View rootView = (RecyclerView) mRootView.findViewById(R.id.nearbyStopsList);
+
+        mStopsNearbyAdapter = new StopsNearbyAdapter(getActivity(),
+                mNearbyStopsDetailsList, mListener);
+        mListView = (NestedScrollingListView) mRootView.findViewById(R.id.stopsNearbyList);
+        mListView.setAdapter(mStopsNearbyAdapter);
+        mEmptyView = (TextView) mRootView.findViewById(R.id.emptyView);
+        mEmptyView = (TextView) mRootView.findViewById(R.id.emptyView);
+        mEmptyView.setText(getActivity().getResources()
+                .getString(R.string.no_favorite_stops_selected));
+
+        mNextDepartureDetailsCnt = mNearbyStopsDetailsList.size();
+
+        mListView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.v(TAG, "onItemSelected - position/view: " + position + "/" + Utility.getClassHashCode(view));
+                handleItemSelected(view, position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                Log.v(TAG, "onNothingSelected - position: " + parent);
+            }
+        });
+        return mRootView;
+    }
+
+    private int mNextDepartureDetailsCnt;
+    private View mCurrentSelectedView;
+    private int mCurrentSelectedRow;
+    private int selectableViewsCnt = 0;
+    private int selectedViewNo = -1;
+
+    private void handleItemSelected(View view, int position) {
+        if (view.getTag() != null) {
+            mCurrentSelectedView = view;
+            mCurrentSelectedRow = position;
+            selectedViewNo = 0;
+            NextDeparturesAdapter.ViewHolder holder = (NextDeparturesAdapter.ViewHolder) mCurrentSelectedView.getTag();
+            mListView.clearFocus();
+            holder.departureTimeId.setFocusable(true);
+            holder.departureTimeId.requestFocus();
+            Log.v(TAG, "handleItemSelected - departureTimeId in focus");
+        }
+    }
+
+    public boolean handleVerticalDpadKeys(boolean upKeyPressed) {
+        Log.v(TAG, "handleVerticalDpadKeys - start - mCurrentSelectedRow/mNextDepartureDetailsCnt: " + mCurrentSelectedRow + "/" + mNextDepartureDetailsCnt);
+        if (upKeyPressed && mCurrentSelectedRow == 0 ||
+                !upKeyPressed && mCurrentSelectedRow == mNextDepartureDetailsCnt - 1) {
+            mCurrentSelectedRow = -1;
+            mCurrentSelectedView = null;
+            Log.v(TAG, "handleVerticalDpadKeys - moved above 1st. row");
+        }
+        Log.v(TAG, "handleVerticalDpadKeys - end - mCurrentSelectedRow/mNextDepartureDetailsCnt: " + mCurrentSelectedRow + "/" + mNextDepartureDetailsCnt);
+        return false;
+    }
+
+//    @Override
+    public View onCreateView_UseWithRececleViewAdapter(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        mRootView = inflater.inflate(R.layout.fragment_nearby_stops_rv, container, false);
+
         RecyclerView recyclerView = (RecyclerView) mRootView.findViewById(R.id.nearbyStopsList);
 
         Context context = recyclerView.getContext();
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         Drawable divider = getResources().getDrawable(R.drawable.item_divider);
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration(divider));
-        mRecyclerViewAdapter = new StopsNearbyAdapter(mNearbyStopsDetailsList, mListener);
+        mRecyclerViewAdapter = new StopsNearbyAdapterRv(mNearbyStopsDetailsList, mListener);
         recyclerView.setAdapter(mRecyclerViewAdapter);
         recyclerView.requestLayout();
         return mRootView;
     }
 
     public void setNewContent(List<NearbyStopsDetails> nearbyStopsDetailsList) {
-        mRecyclerViewAdapter.swap(nearbyStopsDetailsList);
+//        mRecyclerViewAdapter.swap(nearbyStopsDetailsList);
+        mStopsNearbyAdapter.swap(nearbyStopsDetailsList);
     }
 
     @Override
