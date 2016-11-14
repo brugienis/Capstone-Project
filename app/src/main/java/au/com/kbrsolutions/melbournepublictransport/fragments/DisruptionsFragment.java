@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,6 @@ import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.adapters.DisruptionsAdapter;
 import au.com.kbrsolutions.melbournepublictransport.adapters.DisruptionsAdapterRv;
 import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
-import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
 import static au.com.kbrsolutions.melbournepublictransport.R.id.disruptionsList;
 
@@ -38,6 +36,9 @@ public class DisruptionsFragment extends BaseFragment {
     private TextView mEmptyView;
     private DisruptionsAdapterRv mRecyclerViewAdapter;
     private boolean newInstanceArgsRetrieved;
+    private int mDisruptionDetailsCnt;
+    private View mCurrentSelectedView;
+    private int mCurrentSelectedRow;
 
     private static final String TAG = DisruptionsFragment.class.getSimpleName();
 
@@ -64,8 +65,6 @@ public class DisruptionsFragment extends BaseFragment {
         setRetainInstance(true);
     }
 
-    // FIXME: 12/11/2016  - see https://github.com/vganin/dpad-aware-recycler-view/blob/master/app/src/main/java/net/ganin/darv/sample/SampleActivity.java
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,54 +87,54 @@ public class DisruptionsFragment extends BaseFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
-                Log.v(TAG, "onItemSelected - position/view: " + position + "/" + Utility.getClassHashCode(view));
                 handleItemSelected(view, position);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                Log.v(TAG, "onNothingSelected - position: " + parent);
             }
         });
         return mRootView;
     }
 
-    private int mDisruptionDetailsCnt;
-    private View mCurrentSelectedView;
-    private int mCurrentSelectedRow;
-    private int selectableViewsCnt = 2;
-    private int selectedViewNo = -1;
-
     private void handleItemSelected(View view, int position) {
         if (view.getTag() != null) {
             mCurrentSelectedView = view;
             mCurrentSelectedRow = position;
-            selectedViewNo = 0;
             DisruptionsAdapter.ViewHolder holder = (DisruptionsAdapter.ViewHolder) mCurrentSelectedView.getTag();
             mListView.clearFocus();
             holder.title.setFocusable(true);
             holder.title.requestFocus();
-            Log.v(TAG, "handleItemSelected - title in focus");
         }
     }
 
     public boolean handleVerticalDpadKeys(boolean upKeyPressed) {
-        Log.v(TAG, "handleVerticalDpadKeys - start - mCurrentSelectedRow/mNextDepartureDetailsCnt: " + mCurrentSelectedRow + "/" + mDisruptionDetailsCnt);
         if (upKeyPressed && mCurrentSelectedRow == 0 ||
                 !upKeyPressed && mCurrentSelectedRow == mDisruptionDetailsCnt - 1) {
             mCurrentSelectedRow = -1;
             mCurrentSelectedView = null;
-            Log.v(TAG, "handleVerticalDpadKeys - moved above 1st. row");
         }
-        Log.v(TAG, "handleVerticalDpadKeys - end - mCurrentSelectedRow/mNextDepartureDetailsCnt: " + mCurrentSelectedRow + "/" + mDisruptionDetailsCnt);
         return false;
     }
     @Override
     public boolean handleHorizontalDpadKeys(boolean rightKeyPressed) {
-        Log.v(TAG, "handleHorizontalDpadKeys - : ");
         return false;
     }
 
+    /**
+     *
+     * This onCreateView is using RecyclerView.Adapter.
+     *
+     * Use this method in the future when you have more information about how to handle D-pad
+     * navigation.
+     *
+     * see https://github.com/vganin/dpad-aware-recycler-view/blob/master/app/src/main/java/net/ganin/darv/sample/SampleActivity.java
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
 //    @Override
     public View onCreateView_UseWithRececleViewAdapter(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -171,25 +170,5 @@ public class DisruptionsFragment extends BaseFragment {
 //        mRecyclerViewAdapter.swap(disruptionDetailsList);
         mDisruptionsAdapter.swap(disruptionDetailsList);
     }
-
-//    @Override
-//    public boolean handleVerticalDpadKeys(boolean upKeyPressed) {
-//        Log.v(TAG, "handleVerticalDpadKeys - has focus/currPosition: " + currPosition + "/" + mDisruptionDetailsList.size() + "/" + recyclerView.hasFocus());
-////        if (recyclerView.hasFocus() && currPosition == 0) {
-////            mLinearLayoutManager.scrollToPosition(currPosition++);
-////        }
-////        if (recyclerView.hasFocus()) {
-//            if (upKeyPressed) {
-//                if (currPosition > 0) {
-//                    mLinearLayoutManager.scrollToPosition(currPosition--);
-//                }
-//            } else {
-//                if (currPosition < mDisruptionDetailsList.size()) {
-//                    mLinearLayoutManager.scrollToPosition(currPosition++);
-//                }
-//            }
-////        }
-//        return false;
-//    }
 
 }
