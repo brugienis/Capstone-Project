@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,6 @@ import au.com.kbrsolutions.melbournepublictransport.adapters.StopsNearbyAdapterR
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.utilities.HorizontalDividerItemDecoration;
-import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
 /**
  * A fragment representing a list of Items.
@@ -80,8 +78,6 @@ public class StopsNearbyFragment extends BaseFragment {
 
         mRootView = inflater.inflate(R.layout.fragment_nearby_stops, container, false);
 
-//        View rootView = (RecyclerView) mRootView.findViewById(R.id.nearbyStopsList);
-
         mStopsNearbyAdapter = new StopsNearbyAdapter(getActivity(),
                 mNearbyStopsDetailsList, mListener);
         mListView = (NestedScrollingListView) mRootView.findViewById(R.id.stopsNearbyList);
@@ -98,13 +94,11 @@ public class StopsNearbyFragment extends BaseFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
-                Log.v(TAG, "onItemSelected - position/view: " + position + "/" + Utility.getClassHashCode(view));
                 handleItemSelected(view, position);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                Log.v(TAG, "onNothingSelected - position: " + parent);
             }
         });
         return mRootView;
@@ -125,19 +119,17 @@ public class StopsNearbyFragment extends BaseFragment {
             mListView.clearFocus();
             holder.departuresImageId.setFocusable(true);
             holder.departuresImageId.requestFocus();
-            Log.v(TAG, "handleItemSelected - departureTimeId in focus");
         }
     }
 
     public boolean handleVerticalDpadKeys(boolean upKeyPressed) {
-        Log.v(TAG, "handleVerticalDpadKeys - start - mCurrentSelectedRow/mNextDepartureDetailsCnt: " + mCurrentSelectedRow + "/" + mNextDepartureDetailsCnt);
         if (upKeyPressed && mCurrentSelectedRow == 0 ||
                 !upKeyPressed && mCurrentSelectedRow == mNextDepartureDetailsCnt - 1) {
             mCurrentSelectedRow = -1;
-            mCurrentSelectedView = null;
-            Log.v(TAG, "handleVerticalDpadKeys - moved above 1st. row");
+        } else {
+            mCurrentSelectedView.setFocusable(true);
+            mCurrentSelectedView.requestFocus();
         }
-        Log.v(TAG, "handleVerticalDpadKeys - end - mCurrentSelectedRow/mNextDepartureDetailsCnt: " + mCurrentSelectedRow + "/" + mNextDepartureDetailsCnt);
         return false;
     }
 
@@ -151,33 +143,25 @@ public class StopsNearbyFragment extends BaseFragment {
      * @return
      */
     public boolean handleHorizontalDpadKeys(boolean rightKeyPressed) {
-        Log.v(TAG, "handleHorizontalDpadKeys - start - mCurrentSelectedView: " + mCurrentSelectedView);
         boolean resultOk = false;
-        if (mCurrentSelectedView != null) { // && mCurrentSelectedView.hasFocus()) {
+        if (mCurrentSelectedView != null && mCurrentSelectedView.hasFocus()) {
             int prevSelectedViewNo = selectedViewNo;
             if (rightKeyPressed) {
-                Log.v(TAG, "handleHorizontalDpadKeys - > before prev/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
                 selectedViewNo = selectedViewNo == (selectableViewsCnt - 1) ? 0 : selectedViewNo + 1;
-                Log.v(TAG, "handleHorizontalDpadKeys - > after  prev/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
             } else {
-                Log.v(TAG, "handleHorizontalDpadKeys - < before prev/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
                 selectedViewNo = selectedViewNo < 1 ? selectableViewsCnt - 1 : selectedViewNo - 1;
-                Log.v(TAG, "handleHorizontalDpadKeys - < after  prev/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
             }
-            Log.v(TAG, "handleHorizontalDpadKeys - prevSelectedViewNo/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
             StopsNearbyAdapter.ViewHolder holder = (StopsNearbyAdapter.ViewHolder) mCurrentSelectedView.getTag();
             mListView.clearFocus();
             switch (selectedViewNo) {
                 case 0:
                     holder.departuresImageId.setFocusable(true);
                     holder.departuresImageId.requestFocus();
-                    Log.v(TAG, "handleHorizontalDpadKeys - departuresImageId in focus");
                     break;
 
                 case 1:
                     holder.mapImageId.setFocusable(true);
                     holder.mapImageId.requestFocus();
-                    Log.v(TAG, "handleHorizontalDpadKeys - mapImageId in focus");
                     break;
 
                 default:
@@ -185,12 +169,6 @@ public class StopsNearbyFragment extends BaseFragment {
                             selectedViewNo + "' not handled");
             }
             resultOk = true;
-        } else {
-            if (mCurrentSelectedView == null) {
-                Log.v(TAG, "handleHorizontalDpadKeys - mCurrentSelectedView is null");
-            } else {
-                Log.v(TAG, "handleHorizontalDpadKeys - mCurrentSelectedView NOT in focus");
-            }
         }
         return resultOk;
     }
@@ -246,7 +224,6 @@ public class StopsNearbyFragment extends BaseFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnNearbyStopsFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onNearbyStopsFragmentMapClicked(NearbyStopsDetails nearbyStopsDetails);
         void startNextDeparturesSearch(StopDetails stopDetails);
     }
