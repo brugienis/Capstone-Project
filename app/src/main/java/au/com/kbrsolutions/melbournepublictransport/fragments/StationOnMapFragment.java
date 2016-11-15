@@ -122,4 +122,12 @@ public class StationOnMapFragment extends BaseFragment implements OnMapReadyCall
                 .title(getString(title))
                 .snippet(getString(snippet)));
     }
+
+    public boolean handleVerticalDpadKeys(boolean upKeyPressed) {
+        return false;
+    }
+
+    public boolean handleHorizontalDpadKeys(boolean rightKeyPressed) {
+        return false;
+    }
 }

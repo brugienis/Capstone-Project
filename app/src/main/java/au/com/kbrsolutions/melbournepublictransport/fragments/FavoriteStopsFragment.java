@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -208,10 +207,9 @@ public class FavoriteStopsFragment
     }
 
     public boolean handleVerticalDpadKeys(boolean upKeyPressed) {
-        Log.v(TAG, "handleVerticalDpadKeys - hasFocus: " + mCurrentSelectedView.hasFocus());
         if (upKeyPressed && mCurrentSelectedRow == 0 ||
                 !upKeyPressed && mCurrentSelectedRow == mCursorRowCnt - 1) {
-            mCurrentSelectedRow = -1;
+//            mCurrentSelectedRow = -1;
         } else {
             mCurrentSelectedView.setFocusable(true);
             mCurrentSelectedView.requestFocus();
@@ -233,34 +231,26 @@ public class FavoriteStopsFragment
         if (mCurrentSelectedView != null && mCurrentSelectedView.hasFocus()) {
             int prevSelectedViewNo = selectedViewNo;
             if (rightKeyPressed) {
-                Log.v(TAG, "handleHorizontalDpadKeys - > before prev/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
                 selectedViewNo = selectedViewNo == (selectableViewsCnt - 1) ? 0 : selectedViewNo + 1;
-                Log.v(TAG, "handleHorizontalDpadKeys - > after  prev/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
             } else {
-                Log.v(TAG, "handleHorizontalDpadKeys - < before prev/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
                 selectedViewNo = selectedViewNo < 1 ? selectableViewsCnt - 1 : selectedViewNo - 1;
-                Log.v(TAG, "handleHorizontalDpadKeys - < after  prev/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
             }
-            Log.v(TAG, "handleHorizontalDpadKeys - prevSelectedViewNo/selectedViewNo/hasFocus: " + prevSelectedViewNo + "/" + selectedViewNo + "/" + mCurrentSelectedView.hasFocus());
             FavoriteStopsAdapter.ViewHolder holder = (FavoriteStopsAdapter.ViewHolder) mCurrentSelectedView.getTag();
             mListView.clearFocus();
             switch (selectedViewNo) {
                 case 0:
                     holder.departuresImageId.setFocusable(true);
                     holder.departuresImageId.requestFocus();
-                    Log.v(TAG, "handleHorizontalDpadKeys - departuresImageId in focus");
                     break;
 
                 case 1:
                     holder.mapImageId.setFocusable(true);
                     holder.mapImageId.requestFocus();
-                    Log.v(TAG, "handleHorizontalDpadKeys - mapImageId in focus");
                     break;
 
                 case 2:
                     holder.garbageInfoImage.setFocusable(true);
                     holder.garbageInfoImage.requestFocus();
-                    Log.v(TAG, "handleHorizontalDpadKeys - garbageInfoImage in focus");
                     break;
 
                 default:
@@ -268,12 +258,6 @@ public class FavoriteStopsFragment
                             selectedViewNo + "' not handled");
             }
             resultOk = true;
-        } else {
-            if (mCurrentSelectedView == null) {
-                Log.v(TAG, "handleHorizontalDpadKeys - mCurrentSelectedView is null");
-            } else {
-                Log.v(TAG, "handleHorizontalDpadKeys - mCurrentSelectedView NOT in focus");
-            }
         }
         return resultOk;
     }
