@@ -27,7 +27,6 @@ import au.com.kbrsolutions.melbournepublictransport.adapters.FavoriteStopsAdapte
 import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
-import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
 /**
  *
@@ -40,8 +39,6 @@ public class FavoriteStopsFragment
         extends BaseFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
 
-//    private OnFavoriteStopsFragmentInteractionListener mCallbacks;
-//    private ListView mListView;
     private NestedScrollingListView mListView;
     private List<StopDetails> mStopDetailsList;
     private TextView mEmptyView;
@@ -50,6 +47,11 @@ public class FavoriteStopsFragment
     private FavoriteStopsAdapter mFavoriteStopDetailAdapter;
     private OnFavoriteStopsFragmentInteractionListener mListener;
     private boolean mIsInSettingsActivityFlag;
+    private int mCursorRowCnt;
+    private View mCurrentSelectedView;
+    private int mCurrentSelectedRow;
+    private int selectableViewsCnt = 3;
+    private int selectedViewNo = -1;
 
     private static final int STOP_DETAILS_LOADER = 0;
 
@@ -89,7 +91,6 @@ public class FavoriteStopsFragment
         if (mListener != null) {
             ((Activity) mListener).invalidateOptionsMenu();
         }
-//        Log.v(TAG, "hideView: " + String.format("0x%08X", this.hashCode()));
     }
 
     public void showView() {
@@ -100,25 +101,6 @@ public class FavoriteStopsFragment
         if (mListener != null) {
             ((Activity) mListener).invalidateOptionsMenu();
         }
-//        Log.v(TAG, "showView: " + String.format("0x%08X", this.hashCode()));
-    }
-
-    public void isRootViewVisible() {
-        if (mRootView.getVisibility() == View.VISIBLE) {
-            Log.v(TAG, "isVisible - is visible");
-        } else {
-            Log.v(TAG, "isVisible - is NOT visible");
-        }
-    }
-
-    // FIXME: 3/10/2016 - remove below
-    @Override
-    public void onResume() {
-        super.onResume();
-//        Log.v(TAG, "onResume - isVisible/confChanged: " + isVisible + "/" + ((MainActivity) mListener).confChanged);
-//        if (((MainActivity) mListener).confChanged) {
-//            throw new RuntimeException("BR conf changed");
-//        }
     }
 
     @Override
@@ -133,12 +115,11 @@ public class FavoriteStopsFragment
 
     public void databaseIsEmpty(boolean databaseIsEmpty) {
         mDatabaseIsEmpty = databaseIsEmpty;
+        // FIXME: 15/11/2016 - move to strings. Check the usage.
         setEmptyViewText("databaseIsEmpty");
-//        Log.v(TAG, "databaseIsEmpty - mDatabaseIsEmpty: " + mDatabaseIsEmpty);
     }
 
     private void setEmptyViewText(String source) {
-//        Log.v(TAG, "setEmptyViewText - source/mDatabaseIsEmpty: " + source + "/" + mDatabaseIsEmpty);
         if (mDatabaseIsEmpty) {
             mEmptyView.setText(getActivity().getResources().getString(R.string.database_is_empty));
         } else {
@@ -154,11 +135,23 @@ public class FavoriteStopsFragment
         mEmptyView.setText("");
     }
 
+    /**
+     *
+     * Followed henry74918's advice of how to navigate between items on a list's row.
+     *
+     * see:
+     *
+     *      http://stackoverflow.com/questions/14392356/how-to-use-d-pad-navigate-switch-between-listviews-row-and-its-decendants-goo
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     // FIXME: 8/11/2016 http://stackoverflow.com/questions/14392356/how-to-use-d-pad-navigate-switch-between-listviews-row-and-its-decendants-goo
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.v(TAG, "onCreateView - start: ");
         mFavoriteStopDetailAdapter = new FavoriteStopsAdapter(
                 getActivity().getApplicationContext(),
                 null,
@@ -190,26 +183,17 @@ public class FavoriteStopsFragment
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
-                Log.v(TAG, "onItemSelected - position/view: " + position + "/" + Utility.getClassHashCode(view));
                 handleItemSelected(view, position);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                Log.v(TAG, "onNothingSelected - position: " + parent);
             }
         });
 
         mEmptyView = (TextView) mRootView.findViewById(R.id.emptyView);
-        setEmptyViewText("onCreateView");
         return mRootView;
     }
-
-    private int mCursorRowCnt;
-    private View mCurrentSelectedView;
-    private int mCurrentSelectedRow;
-    private int selectableViewsCnt = 3;
-    private int selectedViewNo = -1;
 
     private void handleItemSelected(View view, int position) {
         if (view.getTag() != null) {
@@ -220,17 +204,17 @@ public class FavoriteStopsFragment
             mListView.clearFocus();
             holder.departuresImageId.setFocusable(true);
             holder.departuresImageId.requestFocus();
-            Log.v(TAG, "handleItemSelected - departuresImageId in focus");
         }
     }
 
     public boolean handleVerticalDpadKeys(boolean upKeyPressed) {
-        Log.v(TAG, "handleVerticalDpadKeys - start - mCurrentSelectedRow/mCursorRowCnt: " + mCurrentSelectedRow + "/" + mCursorRowCnt);
+        Log.v(TAG, "handleVerticalDpadKeys - hasFocus: " + mCurrentSelectedView.hasFocus());
         if (upKeyPressed && mCurrentSelectedRow == 0 ||
                 !upKeyPressed && mCurrentSelectedRow == mCursorRowCnt - 1) {
             mCurrentSelectedRow = -1;
-            mCurrentSelectedView = null;
-            Log.v(TAG, "handleVerticalDpadKeys - moved above 1st. row");
+        } else {
+            mCurrentSelectedView.setFocusable(true);
+            mCurrentSelectedView.requestFocus();
         }
         return false;
     }
@@ -245,9 +229,8 @@ public class FavoriteStopsFragment
      * @return
      */
     public boolean handleHorizontalDpadKeys(boolean rightKeyPressed) {
-        Log.v(TAG, "handleHorizontalDpadKeys - start - mCurrentSelectedView: " + mCurrentSelectedView);
         boolean resultOk = false;
-        if (mCurrentSelectedView != null) { // && mCurrentSelectedView.hasFocus()) {
+        if (mCurrentSelectedView != null && mCurrentSelectedView.hasFocus()) {
             int prevSelectedViewNo = selectedViewNo;
             if (rightKeyPressed) {
                 Log.v(TAG, "handleHorizontalDpadKeys - > before prev/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
@@ -258,7 +241,7 @@ public class FavoriteStopsFragment
                 selectedViewNo = selectedViewNo < 1 ? selectableViewsCnt - 1 : selectedViewNo - 1;
                 Log.v(TAG, "handleHorizontalDpadKeys - < after  prev/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
             }
-            Log.v(TAG, "handleHorizontalDpadKeys - prevSelectedViewNo/selectedViewNo: " + prevSelectedViewNo + "/" + selectedViewNo);
+            Log.v(TAG, "handleHorizontalDpadKeys - prevSelectedViewNo/selectedViewNo/hasFocus: " + prevSelectedViewNo + "/" + selectedViewNo + "/" + mCurrentSelectedView.hasFocus());
             FavoriteStopsAdapter.ViewHolder holder = (FavoriteStopsAdapter.ViewHolder) mCurrentSelectedView.getTag();
             mListView.clearFocus();
             switch (selectedViewNo) {
@@ -383,7 +366,6 @@ public class FavoriteStopsFragment
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-//        Log.v(TAG, "onPrepareOptionsMenu - isVisible: " + isVisible);
         if (isVisible) {
             menu.findItem(R.id.action_train_stops_nearby).setVisible(true);
             menu.findItem(R.id.action_stops_nearby).setVisible(true);
