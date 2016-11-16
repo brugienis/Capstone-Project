@@ -80,12 +80,6 @@
     <!-- Default text code for location preference [CHAR LIMIT=NONE] -->
     <string name="pref_default_widget_stop_name" translatable="false">Not assigned</string>
 
-    <!-- Content description for the get current widhet stop button in the location preference -->
-    <string name="pref_current_widget_stop_desc">Show this stop on widget</string>
-
-    <!-- Content description for the get current location button in the location preference -->
-    <string name="pref_current_location_desc">Use my location</string>
-
     <!-- Strings used when displaying the state of the Location in settings -->
     <string name="pref_location_error_description">Invalid Location (<xliff:g id="location_setting">%1$s</xliff:g>)"</string>
     <string name="pref_location_unknown_description">Validating Location... (<xliff:g id="location_setting">%1$s</xliff:g>)"</string>
@@ -110,6 +104,30 @@
     <string name="title_stop_on_map">Stop location</string>
     <string name="title_widget_departures">Departures</string>
     <string name="title_activity_settings">Settings</string>
+
+
+    <!-- Strings related to content descriptions -->
+    <string name="pref_desc_disruptions_title">
+        Visit us at <xliff:g id="application_homepage">%1$s</xliff:g>
+    </string>
+    <string name="pref_desc_disruptions_more_info">Disruptions details</string>
+    <string name="pref_desc_main_add_favorite_stop">Add favorite_stop</string>
+    <string name="pref_desc_main_refresh_next_departures">Show next departures</string>
+
+    <!-- Content description for the get 'fixed' location button in the location preference -->
+    <string name="pref_desc_fixed_location">Touch to select fixed location</string>
+
+    <!-- Content description for the get current widhet stop button in the location preference -->
+    <string name="pref_desc_current_widget_stop">Show this stop on widget</string>
+
+
+    <!-- Strings related to content descriptions shared betweeen different layouts -->
+    <string name="content_desc_bus_transport_type">Bus</string>
+    <string name="content_desc_tram_transport_type">Tram</string>
+    <string name="content_desc_train_transport_type">Train</string>
+    <string name="content_desc_show_departures">Show departures</string>
+    <string name="content_desc_show_map">Show stop on map</string>
+    <string name="content_desc_remove_from_favorites">Remove stop from favorites</string>
 
     <!-- Strings related to Settings -->
 

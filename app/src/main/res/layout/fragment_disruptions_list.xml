@@ -29,7 +29,8 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:id="@+id/disruptionsDescription"
             android:background="@color/view_not_in_focus"
-            android:textColor="@android:color/black"/>
+            android:textColor="@android:color/black"
+            android:contentDescription="@string/pref_desc_disruptions_more_info"/>
 
     </LinearLayout>
 

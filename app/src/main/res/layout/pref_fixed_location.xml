@@ -20,8 +20,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_current_location"
-        android:contentDescription="@string/pref_current_location_desc"
         android:layout_gravity="end|center_vertical"
-        android:tint="@color/material_deep_teal_500"/>
+        android:tint="@color/material_deep_teal_500"
+        android:contentDescription="@string/pref_desc_fixed_location" />
 
 </FrameLayout>

@@ -48,6 +48,7 @@ public class DisruptionsAdapter<T> extends ArrayAdapter<DisruptionsDetails> {
 
         DisruptionsDetails disruptionsDetails = mValues.get(position);
         holder.title.setText(disruptionsDetails.title);
+        holder.title.setContentDescription(disruptionsDetails.title);
         holder.description.setText(disruptionsDetails.description);
 
         return v;

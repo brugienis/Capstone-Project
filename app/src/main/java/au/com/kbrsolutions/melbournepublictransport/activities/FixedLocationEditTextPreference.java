@@ -68,7 +68,7 @@ public class FixedLocationEditTextPreference extends EditTextPreference {
         } else {
             Log.v(TAG, "FixedLocationEditTextPreference - resultCode: " + resultCode);
         }
-        setWidgetLayoutResource(R.layout.pref_current_location);
+        setWidgetLayoutResource(R.layout.pref_fixed_location);
     }
 
     @Override

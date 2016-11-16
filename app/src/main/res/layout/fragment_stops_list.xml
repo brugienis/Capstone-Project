@@ -15,48 +15,37 @@
             android:scaleType="center"
             android:layout_width="@dimen/list_icon_size"
             android:layout_height="@dimen/list_icon_size"
+            android:background="@color/view_not_in_focus"
             android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
             android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
-            android:background="@color/view_not_in_focus"
-            android:src="@drawable/ic_stock_train_blue_500_48dp" />
+            android:src="@drawable/ic_stock_train_blue_500_48dp"
+            android:contentDescription="@string/content_desc_train_transport_type" />
 
-        <LinearLayout
-            android:layout_height="wrap_content"
+        <TextView
+            android:id="@+id/locationNameId"
             android:layout_width="0dp"
             android:layout_weight="7"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/locationNameId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Location name"
-                android:background="@color/view_not_in_focus"
-                android:textColor="@android:color/black" />
-
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:text="Location name"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@android:color/black"
+            android:background="@color/view_not_in_focus" />
 
         <ImageView
             android:id="@+id/departuresImageId"
             android:layout_width="@dimen/list_icon_size"
             android:layout_height="@dimen/list_icon_size"
-            android:adjustViewBounds="true"
-            android:background="@drawable/today_touch_selector"
-            android:src="@drawable/ic_stock_forward_10_green_500_48dp" />
+            android:background="@color/view_not_in_focus"
+            android:src="@drawable/ic_stock_forward_10_green_500_48dp"
+            android:contentDescription="@string/content_desc_show_departures" />
 
         <ImageView
             android:id="@+id/mapImageId"
             android:layout_width="@dimen/list_icon_size"
             android:layout_height="@dimen/list_icon_size"
-            android:background="@drawable/today_touch_selector"
-            android:src="@drawable/ic_stock_place_green_500_48dp" />
-
-        <ImageView
-            android:id="@+id/garbageImageId"
-            android:layout_width="@dimen/list_icon_size"
-            android:layout_height="@dimen/list_icon_size"
-            android:background="@drawable/today_touch_selector"
-            android:src="@drawable/ic_stock_delete_green_500_48dp" />
+            android:background="@color/view_not_in_focus"
+            android:src="@drawable/ic_stock_place_green_500_48dp"
+            android:contentDescription="@string/content_desc_show_map" />
 
     </LinearLayout>
 </FrameLayout>

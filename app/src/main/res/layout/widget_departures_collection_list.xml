@@ -21,7 +21,8 @@
             android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
-            android:src="@drawable/ic_stock_train_blue_500_48dp" />
+            android:src="@drawable/ic_stock_train_blue_500_48dp"
+            android:contentDescription="@string/content_desc_train_transport_type" />
 
         <LinearLayout
             android:layout_height="wrap_content"

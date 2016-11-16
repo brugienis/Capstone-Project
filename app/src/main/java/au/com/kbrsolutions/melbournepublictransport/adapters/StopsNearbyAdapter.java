@@ -27,6 +27,7 @@ import static au.com.kbrsolutions.melbournepublictransport.R.id.stopName;
 
 public class StopsNearbyAdapter<T> extends ArrayAdapter<NearbyStopsDetails> {
 
+    private Activity mActivity;
     private final List<NearbyStopsDetails> mValues;
     private final StopsNearbyFragment.OnNearbyStopsFragmentInteractionListener mListener;
 
@@ -34,6 +35,7 @@ public class StopsNearbyAdapter<T> extends ArrayAdapter<NearbyStopsDetails> {
 
     public StopsNearbyAdapter(Activity activity, List<NearbyStopsDetails> items, StopsNearbyFragment.OnNearbyStopsFragmentInteractionListener listener) {
         super(activity.getApplicationContext(), -1, items);
+        mActivity = activity;
         mValues = items;
         mListener = listener;
     }
@@ -89,17 +91,22 @@ public class StopsNearbyAdapter<T> extends ArrayAdapter<NearbyStopsDetails> {
         }
 
         NearbyStopsDetails nearbyStopsDetails = mValues.get(position);
+        holder.stopName.setText(nearbyStopsDetails.stopName);
         if (nearbyStopsDetails.route_type == NearbyStopsDetails.TRAIN_ROUTE_TYPE) {
-            holder.stopName.setText(nearbyStopsDetails.stopName);
             holder.stopAddress.setText(nearbyStopsDetails.suburb);
             holder.transportImage.setImageResource(R.drawable.ic_stock_train_blue_500_48dp);
+            holder.transportImage.setContentDescription(mActivity.getResources().
+                    getString(R.string.content_desc_train_transport_type));
         } else {
-            holder.stopName.setText(nearbyStopsDetails.stopName);
             holder.stopAddress.setText(nearbyStopsDetails.stopAddress);
             if (nearbyStopsDetails.route_type == NearbyStopsDetails.TRAM_ROUTE_TYPE) {
                 holder.transportImage.setImageResource(R.drawable.ic_stock_tram_amber_500_48dp);
+                holder.transportImage.setContentDescription(mActivity.getResources().
+                        getString(R.string.content_desc_tram_transport_type));
             } else {
                 holder.transportImage.setImageResource(R.drawable.ic_stock_directions_bus_green_500_48dp);
+                holder.transportImage.setContentDescription(mActivity.getResources().
+                        getString(R.string.content_desc_bus_transport_type));
             }
 
         }

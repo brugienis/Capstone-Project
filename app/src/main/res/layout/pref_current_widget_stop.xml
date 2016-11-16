@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_current_location"
-        android:contentDescription="@string/pref_current_widget_stop_desc"
+        android:contentDescription="@string/pref_desc_current_widget_stop"
         android:layout_gravity="end|center_vertical"
         android:tint="@color/material_deep_teal_500"/>
 

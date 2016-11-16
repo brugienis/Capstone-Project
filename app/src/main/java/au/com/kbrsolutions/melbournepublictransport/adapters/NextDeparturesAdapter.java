@@ -22,6 +22,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 public class NextDeparturesAdapter<T> extends ArrayAdapter<NextDepartureDetails> {
 
     private final List<NextDepartureDetails> mValues;
+    private Activity mActivity;
     // FIXME: 20/09/2016 - move strings to values
     private static final String ALL_STOPS = "All stops";
     private static final String EXPRESS = "Express";
@@ -30,6 +31,7 @@ public class NextDeparturesAdapter<T> extends ArrayAdapter<NextDepartureDetails>
 
     public NextDeparturesAdapter(Activity activity, List<NextDepartureDetails> items) {
         super(activity.getApplicationContext(), -1, items);
+        mActivity = activity;
         mValues = items;
     }
 
@@ -56,7 +58,6 @@ public class NextDeparturesAdapter<T> extends ArrayAdapter<NextDepartureDetails>
         NextDepartureDetails nextDepartureDetails = mValues.get(position);
         String directionName = String.valueOf(nextDepartureDetails.directionName);
         String departureTime = String.valueOf(nextDepartureDetails.utcDepartureTime);
-        // FIXME: 20/09/2016 - move strings to values
         String runTypeText = nextDepartureDetails.runType;
 
         if (nextDepartureDetails != null) {
@@ -66,8 +67,12 @@ public class NextDeparturesAdapter<T> extends ArrayAdapter<NextDepartureDetails>
 
             if (nextDepartureDetails.routeType == NearbyStopsDetails.TRAM_ROUTE_TYPE) {
                 holder.transportImage.setImageResource(R.drawable.ic_stock_tram_amber_500_48dp);
+                holder.transportImage.setContentDescription(mActivity.getResources().
+                        getString(R.string.content_desc_tram_transport_type));
             } else if (nextDepartureDetails.routeType  == NearbyStopsDetails.BUS_ROUTE_TYPE) {
                 holder.transportImage.setImageResource(R.drawable.ic_stock_directions_bus_green_500_48dp);
+                holder.transportImage.setContentDescription(mActivity.getResources().
+                        getString(R.string.content_desc_bus_transport_type));
             }
         }
 
