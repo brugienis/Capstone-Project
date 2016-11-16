@@ -108,11 +108,11 @@
 
     <!-- Strings related to content descriptions -->
     <string name="pref_desc_disruptions_title">
-        Visit us at <xliff:g id="application_homepage">%1$s</xliff:g>
+        Visit us at <xliff:g id="disruptions_title">%1$s</xliff:g>
     </string>
     <string name="pref_desc_disruptions_more_info">Disruptions details</string>
-    <string name="pref_desc_main_add_favorite_stop">Add favorite_stop</string>
-    <string name="pref_desc_main_refresh_next_departures">Show next departures</string>
+    <string name="pref_desc_main_add_favorite_stop">Add favorite stop</string>
+    <string name="pref_desc_main_refresh_next_departures">Refresh next departures</string>
 
     <!-- Content description for the get 'fixed' location button in the location preference -->
     <string name="pref_desc_fixed_location">Touch to select fixed location</string>

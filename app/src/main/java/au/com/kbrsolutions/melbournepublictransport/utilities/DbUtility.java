@@ -195,7 +195,7 @@ public class DbUtility {
                         missingDetailsMap.get(stopId).locationName,
                         nearbyStopsDetails.stopAddress,
                         missingDetailsMap.get(stopId).suburb,
-                        nearbyStopsDetails.route_type,
+                        nearbyStopsDetails.routeType,
                         nearbyStopsDetails.stopId,
                         nearbyStopsDetails.latitude,
                         nearbyStopsDetails.longitude,

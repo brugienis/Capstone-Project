@@ -43,15 +43,15 @@ public class StopsNearbyAdapterRv extends RecyclerView.Adapter<StopsNearbyAdapte
     public void onBindViewHolder(final StopsNearbyAdapterRv.ViewHolder holder, int position) {
         NearbyStopsDetails nearbyStopsDetails = mValues.get(position);
 //        Log.v(TAG, "onBindViewHolder - nearbyStopsDetails: " + nearbyStopsDetails);
-//        if (nearbyStopsDetails.route_type.equals("train")) {
-        if (nearbyStopsDetails.route_type == NearbyStopsDetails.TRAIN_ROUTE_TYPE) {
+//        if (nearbyStopsDetails.routeType.equals("train")) {
+        if (nearbyStopsDetails.routeType == NearbyStopsDetails.TRAIN_ROUTE_TYPE) {
             holder.stopName.setText(nearbyStopsDetails.stopName);
             holder.stopAddress.setText(nearbyStopsDetails.suburb);
             holder.transportImage.setImageResource(R.drawable.ic_stock_train_blue_500_48dp);
         } else {
             holder.stopName.setText(nearbyStopsDetails.stopName);
             holder.stopAddress.setText(nearbyStopsDetails.stopAddress);
-            if (nearbyStopsDetails.route_type == NearbyStopsDetails.TRAM_ROUTE_TYPE) {
+            if (nearbyStopsDetails.routeType == NearbyStopsDetails.TRAM_ROUTE_TYPE) {
                 holder.transportImage.setImageResource(R.drawable.ic_stock_tram_amber_500_48dp);
             } else {
                 holder.transportImage.setImageResource(R.drawable.ic_stock_directions_bus_green_500_48dp);
@@ -106,7 +106,7 @@ public class StopsNearbyAdapterRv extends RecyclerView.Adapter<StopsNearbyAdapte
                         // fragment is attached to one) that a map image was touched.
                         mListener.startNextDeparturesSearch(new StopDetails(
                                 -1,
-                                nearbyStopsDetails.route_type,
+                                nearbyStopsDetails.routeType,
                                 nearbyStopsDetails.stopId,
                                 nearbyStopsDetails.stopName,
                                 nearbyStopsDetails.latitude,

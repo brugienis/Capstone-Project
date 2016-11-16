@@ -35,7 +35,7 @@ public class MptDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         Log.v(TAG, "onCreate - start");
         /*
-        table line_detail has no column named line_name (code 1): , while compiling: INSERT INTO line_detail(route_type,line_name_short,line_name,line_id) VALUES (?,?,?,?)
+        table line_detail has no column named line_name (code 1): , while compiling: INSERT INTO line_detail(routeType,line_name_short,line_name,line_id) VALUES (?,?,?,?)
          */
         // Create a table to hold lines details.
         final String CREATE_LINE_DETAIL_TABLE = "CREATE TABLE " +

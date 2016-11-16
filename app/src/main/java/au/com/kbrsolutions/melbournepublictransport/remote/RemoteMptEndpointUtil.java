@@ -304,7 +304,7 @@ public class RemoteMptEndpointUtil {
                 stopId = resultObject.getString("stop_id");
                 latitude = resultObject.getDouble("lat");
                 longitude = resultObject.getDouble("lon");
-//                Log.v(TAG, "processJsonString - distance/suburb/route_type/stopId: " + distance + "/" + suburb + "/" + route_type + "/" + stopId);
+//                Log.v(TAG, "processJsonString - distance/suburb/routeType/stopId: " + distance + "/" + suburb + "/" + routeType + "/" + stopId);
                 nearbyStopsDetailsList.add(new NearbyStopsDetails(
 //                        STOP_ID + stopId,
                         stopId,

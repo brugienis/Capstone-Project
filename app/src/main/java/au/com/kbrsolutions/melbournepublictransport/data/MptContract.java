@@ -47,7 +47,7 @@ public class MptContract {
         // route_type - Integer. 0 Train, etc.
         public static final String COLUMN_ROUTE_TYPE = "route_type";
 
-        // route_type - numeric string
+        // stop_id - numeric string
         public static final String COLUMN_STOP_ID = "stop_id";
 
         // line_id - numeric string

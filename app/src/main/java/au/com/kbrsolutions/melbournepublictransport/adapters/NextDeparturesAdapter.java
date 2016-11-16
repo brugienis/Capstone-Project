@@ -65,7 +65,11 @@ public class NextDeparturesAdapter<T> extends ArrayAdapter<NextDepartureDetails>
             holder.runType.setText(runTypeText);
             holder.departureTimeId.setText(departureTime);
 
-            if (nextDepartureDetails.routeType == NearbyStopsDetails.TRAM_ROUTE_TYPE) {
+            if (nextDepartureDetails.routeType == NearbyStopsDetails.TRAIN_ROUTE_TYPE) {
+                holder.transportImage.setImageResource(R.drawable.ic_stock_train_blue_500_48dp);
+                holder.transportImage.setContentDescription(mActivity.getResources().
+                        getString(R.string.content_desc_train_transport_type));
+            } else if (nextDepartureDetails.routeType == NearbyStopsDetails.TRAM_ROUTE_TYPE) {
                 holder.transportImage.setImageResource(R.drawable.ic_stock_tram_amber_500_48dp);
                 holder.transportImage.setContentDescription(mActivity.getResources().
                         getString(R.string.content_desc_tram_transport_type));

@@ -74,7 +74,7 @@ public class StopsNearbyAdapter<T> extends ArrayAdapter<NearbyStopsDetails> {
                         // fragment is attached to one) that a map image was touched.
                         mListener.startNextDeparturesSearch(new StopDetails(
                                 -1,
-                                holder.nearbyStopsDetails.route_type,
+                                holder.nearbyStopsDetails.routeType,
                                 holder.nearbyStopsDetails.stopId,
                                 holder.nearbyStopsDetails.stopName,
                                 holder.nearbyStopsDetails.latitude,
@@ -92,14 +92,15 @@ public class StopsNearbyAdapter<T> extends ArrayAdapter<NearbyStopsDetails> {
 
         NearbyStopsDetails nearbyStopsDetails = mValues.get(position);
         holder.stopName.setText(nearbyStopsDetails.stopName);
-        if (nearbyStopsDetails.route_type == NearbyStopsDetails.TRAIN_ROUTE_TYPE) {
+
+        if (nearbyStopsDetails.routeType == NearbyStopsDetails.TRAIN_ROUTE_TYPE) {
             holder.stopAddress.setText(nearbyStopsDetails.suburb);
             holder.transportImage.setImageResource(R.drawable.ic_stock_train_blue_500_48dp);
             holder.transportImage.setContentDescription(mActivity.getResources().
                     getString(R.string.content_desc_train_transport_type));
         } else {
             holder.stopAddress.setText(nearbyStopsDetails.stopAddress);
-            if (nearbyStopsDetails.route_type == NearbyStopsDetails.TRAM_ROUTE_TYPE) {
+            if (nearbyStopsDetails.routeType == NearbyStopsDetails.TRAM_ROUTE_TYPE) {
                 holder.transportImage.setImageResource(R.drawable.ic_stock_tram_amber_500_48dp);
                 holder.transportImage.setContentDescription(mActivity.getResources().
                         getString(R.string.content_desc_tram_transport_type));

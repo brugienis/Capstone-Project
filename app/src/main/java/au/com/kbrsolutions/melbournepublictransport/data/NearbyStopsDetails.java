@@ -8,7 +8,7 @@ public class NearbyStopsDetails implements Parcelable {
     public String stopName;
     public final String stopAddress;
     public final String suburb;
-    public final int route_type;
+    public final int routeType;
     public final String stopId;
     public final double latitude;
     public final double longitude;
@@ -30,7 +30,7 @@ public class NearbyStopsDetails implements Parcelable {
         this.stopName = stopName;
         this.stopAddress = stopAddress;
         this.suburb = suburb;
-        this.route_type = route_type;
+        this.routeType = route_type;
         this.stopId = stopId;
         this.latitude = stopLat;
         this.longitude = stopLon;
@@ -41,7 +41,7 @@ public class NearbyStopsDetails implements Parcelable {
         stopName = input.readString();
         stopAddress = input.readString();
         suburb = input.readString();
-        route_type = input.readInt();
+        routeType = input.readInt();
         stopId = input.readString();
         latitude = input.readDouble();
         longitude = input.readDouble();
@@ -54,7 +54,7 @@ public class NearbyStopsDetails implements Parcelable {
                 "; stopName: " + stopName +
                 "; stopAddress: " + stopAddress +
                 "; suburb: " + suburb +
-                "; route_type: " + route_type +
+                "; routeType: " + routeType +
                 "; latitude: " + latitude +
                 "; longitude: " + longitude;
     }
@@ -69,7 +69,7 @@ public class NearbyStopsDetails implements Parcelable {
         dest.writeString(stopName);
         dest.writeString(stopAddress);
         dest.writeString(suburb);
-        dest.writeInt(route_type);
+        dest.writeInt(routeType);
         dest.writeString(stopId);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
