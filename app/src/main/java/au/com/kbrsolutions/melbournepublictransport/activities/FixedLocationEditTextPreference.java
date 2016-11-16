@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
+import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -43,10 +44,13 @@ public class FixedLocationEditTextPreference extends EditTextPreference {
     static final private int DEFAULT_MINIMUM_LOCATION_LENGTH = 2;
     private int mMinLength;
     private boolean isGoogleApiAvailable;
+    Context mContext;
+
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
     public FixedLocationEditTextPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mContext = context;
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
                 R.styleable.FixedLocationEditTextPreference,
@@ -74,13 +78,18 @@ public class FixedLocationEditTextPreference extends EditTextPreference {
     @Override
     protected View onCreateView(ViewGroup parent) {
         View view = super.onCreateView(parent);
-        View currentLocation = view.findViewById(R.id.current_location);
+        final View currentLocation = view.findViewById(R.id.current_location);
         currentLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // FIXME: 8/11/2016 - add code to show message (Google services) not available when isGoogleApiAvailable is true
-                Context context = getContext();
+                if (!isGoogleApiAvailable) {
+                    Snackbar.make(currentLocation, mContext.getString(
+                            R.string.pref_google_services_not_available_fixed_location),
+                            Snackbar.LENGTH_LONG).show();
+                    return;
+                }
 
+                Context context = getContext();
                 // Launch the Place Picker so that the user can specify their location, and then
                 // return the result to SettingsActivity.
                 PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();

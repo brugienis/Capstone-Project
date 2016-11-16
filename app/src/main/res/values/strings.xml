@@ -26,6 +26,7 @@
 
     <!-- Title for the fixed location preference [CHAR LIMIT=30]  -->
     <string name="pref_title_fixed_location">Fixed location</string>
+    <string name="pref_google_services_not_available_fixed_location">Google Services not available</string>
 
     <!-- Default text text for fixed location preference [CHAR LIMIT=NONE] -->
     <string name="pref_default_fixed_location">Not assigned</string>
@@ -80,10 +81,10 @@
     <!-- Default text code for location preference [CHAR LIMIT=NONE] -->
     <string name="pref_default_widget_stop_name" translatable="false">Not assigned</string>
 
-    <!-- Strings used when displaying the state of the Location in settings -->
+    <!-- Strings used when displaying the state of the Location in settings
     <string name="pref_location_error_description">Invalid Location (<xliff:g id="location_setting">%1$s</xliff:g>)"</string>
     <string name="pref_location_unknown_description">Validating Location... (<xliff:g id="location_setting">%1$s</xliff:g>)"</string>
-
+-->
     <!-- For Google Places API Attributions -->
     <string name="attribution_text">Powered by Google</string>
 
