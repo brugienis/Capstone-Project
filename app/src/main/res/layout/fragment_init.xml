@@ -18,7 +18,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/init_about"
-        android:layout_weight="10"/>
+        android:layout_weight="10"
+        android:textColor="@android:color/black" />
 
 </LinearLayout>
 <!--

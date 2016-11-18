@@ -4,6 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".fragments.NextDeparturesFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -14,24 +15,29 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@color/view_not_in_focus"
-        android:minHeight="25dp"
-        android:paddingTop="5dp"
-        android:text="file name ..."
-        android:textAppearance="?attr/textAppearanceListItem"
+        tools:text="Stop name"
+        android:textAppearance="?android:textAppearanceLarge"
         android:textColor="@android:color/black"
-        android:textSize="14sp"/>
+        android:textSize="@dimen/text_size" />
 
     <au.com.kbrsolutions.melbournepublictransport.fragments.NestedScrollingListView
         android:id="@+id/nextDeparturesList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:listitem="@layout/fragment_next_departure_list"
+        android:paddingBottom="@dimen/list_view_bottom_padding" />
 
     <TextView
         android:id="@+id/emptyView"
-        android:text="Empty"
+        tools:text="Empty"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:gravity="center"
-        />
+        android:textColor="@android:color/black" />
 
 </LinearLayout>
+<!--
+
+        android:minHeight="@dimen/text_min_height"
+        android:paddingTop="@dimen/text_padding_top"
+-->

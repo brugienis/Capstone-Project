@@ -19,10 +19,18 @@
     <dimen name="expanded_title_margin_end">64dp</dimen>
     <dimen name="recycler_view_padding_top_and_bottom">5dp</dimen>
 
+    <dimen name="text_min_height">25dp</dimen>
+    <dimen name="text_padding_top">5dp</dimen>
+    <dimen name="text_size">14sp</dimen>
+
+    <dimen name="widget_col_margin_start">5dp</dimen>
+    <dimen name="widget_col_margin_end">5dp</dimen>
+
     <dimen name="widget_departures_default_height">146dp</dimen>
     <dimen name="widget_departures_default_width">286dp</dimen>
-    <!-- from XYZReader - start -->
-    <!-- from XYZReader - end -->
+
+    <dimen name="cardview_margin_top">4dp</dimen>
+    <dimen name="cardview_card_corner_radius">4dp</dimen>
 
     <integer name="anim_duration_very_long">1500</integer>
     <integer name="anim_duration_long">500</integer>

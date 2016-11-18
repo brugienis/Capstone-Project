@@ -10,28 +10,3 @@
     app:layoutManager="LinearLayoutManager"
     tools:context=".fragments.StopsNearbyFragment"
     tools:listitem="@layout/fragment_nearby_stops_list"/>
-
-<!--
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context=".fragments.FavoriteStopsFragment">
-
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/nearbyStopsListView"
-        android:layout_gravity="center_horizontal"
-        android:paddingTop="20dp" />
-
-    <TextView
-        android:id="@+id/emptyView"
-        android:text="Empty"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:gravity="center"
-        />
-
-</FrameLayout>
--->

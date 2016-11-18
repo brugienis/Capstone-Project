@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="wrap_content" >
 
@@ -13,8 +14,8 @@
         <ImageView
             android:id="@+id/transportImageId"
             android:scaleType="center"
-            android:layout_width="@dimen/list_icon_size"
-            android:layout_height="@dimen/list_icon_size"
+            android:layout_width="@dimen/touchable_size"
+            android:layout_height="@dimen/touchable_size"
             android:background="@color/view_not_in_focus"
             android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
             android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
@@ -26,23 +27,23 @@
             android:layout_width="0dp"
             android:layout_weight="7"
             android:layout_height="wrap_content"
-            android:text="Location name"
+            tools:text="Location name"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@android:color/black"
             android:background="@color/view_not_in_focus" />
 
         <ImageView
             android:id="@+id/departuresImageId"
-            android:layout_width="@dimen/list_icon_size"
-            android:layout_height="@dimen/list_icon_size"
+            android:layout_width="@dimen/touchable_size"
+            android:layout_height="@dimen/touchable_size"
             android:background="@color/view_not_in_focus"
             android:src="@drawable/ic_stock_forward_10_green_500_48dp"
             android:contentDescription="@string/content_desc_show_departures" />
 
         <ImageView
             android:id="@+id/mapImageId"
-            android:layout_width="@dimen/list_icon_size"
-            android:layout_height="@dimen/list_icon_size"
+            android:layout_width="@dimen/touchable_size"
+            android:layout_height="@dimen/touchable_size"
             android:background="@color/view_not_in_focus"
             android:src="@drawable/ic_stock_place_green_500_48dp"
             android:contentDescription="@string/content_desc_show_map" />

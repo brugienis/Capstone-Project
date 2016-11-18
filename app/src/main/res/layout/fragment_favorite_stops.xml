@@ -8,7 +8,8 @@
         android:id="@+id/emptyView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:gravity="center" />
+        android:gravity="center"
+        android:textColor="@android:color/black" />
 
     <au.com.kbrsolutions.melbournepublictransport.fragments.NestedScrollingListView
         android:layout_width="match_parent"
@@ -19,7 +20,3 @@
         android:clipToPadding="false" />
 
 </FrameLayout>
-<!--
-
-        android:text="Empty"
--->

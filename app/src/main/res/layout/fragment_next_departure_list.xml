@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="wrap_content" >
 
@@ -13,8 +14,8 @@
         <ImageView
             android:id="@+id/transportImageId"
             android:scaleType="center"
-            android:layout_width="@dimen/list_icon_size"
-            android:layout_height="@dimen/list_icon_size"
+            android:layout_width="@dimen/touchable_size"
+            android:layout_height="@dimen/touchable_size"
             android:background="@color/view_not_in_focus"
             android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
             android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
@@ -31,15 +32,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/view_not_in_focus"
-            android:text="Direction"
+            tools:text="Direction"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@android:color/black"/>
+            android:textColor="@android:color/black" />
 
         <TextView
             android:id="@+id/runType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Run type"
+            tools:text="Run type"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/secondary_text"
             android:background="@color/view_not_in_focus" />
@@ -50,16 +51,11 @@
             android:id="@+id/departureTimeId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="hh:mm"
+            tools:text="hh:mm"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@android:color/black"
-            android:textSize="14sp"
+            android:textSize="@dimen/text_size"
             android:background="@drawable/today_touch_selector"/>
 
     </LinearLayout>
 </FrameLayout>
-
-    <!--
-
-                android:layout_margin="@dimen/text_margin"
-    -->

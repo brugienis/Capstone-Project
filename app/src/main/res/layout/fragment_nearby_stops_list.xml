@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="wrap_content" >
 
@@ -13,8 +14,8 @@
         <ImageView
             android:id="@+id/transportImageId"
             android:scaleType="center"
-            android:layout_width="@dimen/list_icon_size"
-            android:layout_height="@dimen/list_icon_size"
+            android:layout_width="@dimen/touchable_size"
+            android:layout_height="@dimen/touchable_size"
             android:background="@color/view_not_in_focus"
             android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
             android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
@@ -26,13 +27,12 @@
             android:layout_weight="7"
             android:orientation="vertical">
 
-
             <TextView
                 android:id="@+id/stopName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/view_not_in_focus"
-                android:text="Stop name"
+                tools:text="Stop name"
                 android:textAppearance="?attr/textAppearanceListItem"
                 android:textColor="@android:color/black" />
 
@@ -40,7 +40,7 @@
                 android:id="@+id/stopAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Stop address"
+                tools:text="Stop address"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textColor="@color/secondary_text"
                 android:background="@color/view_not_in_focus" />
@@ -49,36 +49,31 @@
 
         <ImageView
             android:id="@+id/departuresImageId"
-            android:layout_width="@dimen/list_icon_size"
-            android:layout_height="@dimen/list_icon_size"
+            android:layout_width="@dimen/touchable_size"
+            android:layout_height="@dimen/touchable_size"
             android:adjustViewBounds="true"
             android:background="@drawable/today_touch_selector"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
             android:src="@drawable/ic_stock_forward_10_green_500_48dp"
             android:contentDescription="@string/content_desc_show_departures" />
 
         <ImageView
             android:id="@+id/mapImageId"
-            android:layout_width="@dimen/list_icon_size"
-            android:layout_height="@dimen/list_icon_size"
+            android:layout_width="@dimen/touchable_size"
+            android:layout_height="@dimen/touchable_size"
             android:adjustViewBounds="true"
             android:background="@drawable/today_touch_selector"
-            android:paddingLeft="5dp"
             android:src="@drawable/ic_stock_place_green_500_48dp"
             android:contentDescription="@string/content_desc_show_map" />
 
     </LinearLayout>
 </FrameLayout>
+<!--
 
-    <!--<RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/list_icon_size"
-        android:layout_toRightOf="@+id/transportImageId"
-        android:layout_toLeftOf="@+id/departuresImageId">
+            android:paddingLeft="5dp"
+            android:paddingStart="5dp"
+            android:paddingRight="5dp"
+            android:paddingEnd="5dp"
 
-    </RelativeLayout>
-
-                android:layout_margin="@dimen/text_margin"
-    -->
+            android:paddingLeft="5dp"
+            android:paddingStart="5dp"
+-->
