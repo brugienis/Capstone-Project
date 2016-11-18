@@ -9,7 +9,8 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:minHeight="?android:attr/listPreferredItemHeight"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@drawable/today_touch_selector" >
 
         <ImageView
             android:id="@+id/transportImageId"
@@ -18,7 +19,6 @@
             android:layout_height="@dimen/touchable_size"
             android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
             android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
-            android:background="@color/view_not_in_focus"
             android:src="@drawable/ic_stock_train_blue_500_48dp"
             android:contentDescription="@string/content_desc_train_transport_type" />
 
@@ -33,7 +33,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="Location name"
-                android:background="@color/view_not_in_focus"
                 android:textColor="@android:color/black" />
 
         </LinearLayout>

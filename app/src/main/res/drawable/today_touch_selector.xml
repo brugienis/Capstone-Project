@@ -24,11 +24,12 @@
     <item android:state_focused="true"
         android:drawable="@color/deep_orange_100"/>
 
-    <item android:drawable="@color/view_not_in_focus" />
+    <item android:drawable="@color/deep_orange_50" />
 </selector>
 <!--
 
 
+    <item android:drawable="@color/view_not_in_focus" />
     <item android:state_selected="true"
         android:drawable="@color/deep_orange_100"/>
 -->
