@@ -21,7 +21,8 @@
         android:layout_height="match_parent"
         android:id="@+id/widget_list"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textColor="@color/primary_text" />
+        android:textColor="@color/primary_text"
+        android:background="@drawable/today_touch_selector" />
 
 
 </FrameLayout>

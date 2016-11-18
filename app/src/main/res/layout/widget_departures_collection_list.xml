@@ -10,14 +10,15 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:minHeight="?android:attr/listPreferredItemHeight"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@drawable/today_touch_selector" >
 
         <ImageView
             android:id="@+id/transportImageId"
             android:scaleType="center"
             android:layout_width="@dimen/list_icon_size"
             android:layout_height="@dimen/list_icon_size"
-            android:background="@color/view_not_in_focus"
+            android:background="@drawable/today_touch_selector"
             android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
             android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
             android:layout_marginLeft="@dimen/widget_col_margin_start"
@@ -35,7 +36,7 @@
                 android:id="@+id/directionName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/view_not_in_focus"
+                android:background="@drawable/today_touch_selector"
                 tools:text="Direction"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textColor="@android:color/black"/>
@@ -44,10 +45,10 @@
                 android:id="@+id/runType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Run type"
+                tools:text="Run type"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textColor="@color/secondary_text"
-                android:background="@color/view_not_in_focus" />
+                android:background="@drawable/today_touch_selector" />
 
         </LinearLayout>
 
@@ -55,8 +56,8 @@
             android:id="@+id/departureTimeId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/view_not_in_focus"
-            android:text="hh:mm"
+            android:background="@drawable/today_touch_selector"
+            tools:text="hh:mm"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@android:color/black"
             android:textSize="@dimen/text_size"

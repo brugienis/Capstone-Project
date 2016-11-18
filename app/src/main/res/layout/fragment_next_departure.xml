@@ -17,8 +17,7 @@
         android:background="@drawable/today_touch_selector"
         tools:text="Stop name"
         android:textAppearance="?android:textAppearanceLarge"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/text_size" />
+        android:textColor="@android:color/black" />
 
     <au.com.kbrsolutions.melbournepublictransport.fragments.NestedScrollingListView
         android:id="@+id/nextDeparturesList"
@@ -38,6 +37,7 @@
 </LinearLayout>
 <!--
 
+        android:textSize="@dimen/text_size"
         android:minHeight="@dimen/text_min_height"
         android:paddingTop="@dimen/text_padding_top"
 -->
