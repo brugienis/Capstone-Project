@@ -16,7 +16,7 @@
             android:scaleType="center"
             android:layout_width="@dimen/touchable_size"
             android:layout_height="@dimen/touchable_size"
-            android:background="@color/view_not_in_focus"
+            android:background="@drawable/today_touch_selector"
             android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
             android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
             android:src="@drawable/ic_stock_train_blue_500_48dp" />
@@ -31,7 +31,7 @@
             android:id="@+id/directionName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/view_not_in_focus"
+            android:background="@drawable/today_touch_selector"
             tools:text="Direction"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@android:color/black" />
@@ -43,7 +43,7 @@
             tools:text="Run type"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/secondary_text"
-            android:background="@color/view_not_in_focus" />
+            android:background="@drawable/today_touch_selector" />
 
         </LinearLayout>
 

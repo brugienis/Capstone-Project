@@ -9,14 +9,14 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:minHeight="?android:attr/listPreferredItemHeight"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@drawable/today_touch_selector">
 
         <ImageView
             android:id="@+id/transportImageId"
             android:scaleType="center"
             android:layout_width="@dimen/touchable_size"
             android:layout_height="@dimen/touchable_size"
-            android:background="@color/view_not_in_focus"
             android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
             android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
             android:src="@drawable/ic_stock_train_blue_500_48dp"
@@ -29,14 +29,13 @@
             android:layout_height="wrap_content"
             tools:text="Location name"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@android:color/black"
-            android:background="@color/view_not_in_focus" />
+            android:textColor="@android:color/black" />
 
         <ImageView
             android:id="@+id/departuresImageId"
             android:layout_width="@dimen/touchable_size"
             android:layout_height="@dimen/touchable_size"
-            android:background="@color/view_not_in_focus"
+            android:background="@drawable/today_touch_selector"
             android:src="@drawable/ic_stock_forward_10_green_500_48dp"
             android:contentDescription="@string/content_desc_show_departures" />
 
@@ -44,7 +43,7 @@
             android:id="@+id/mapImageId"
             android:layout_width="@dimen/touchable_size"
             android:layout_height="@dimen/touchable_size"
-            android:background="@color/view_not_in_focus"
+            android:background="@drawable/today_touch_selector"
             android:src="@drawable/ic_stock_place_green_500_48dp"
             android:contentDescription="@string/content_desc_show_map" />
 

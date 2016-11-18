@@ -65,6 +65,7 @@ import static au.com.kbrsolutions.melbournepublictransport.activities.MainActivi
 // git push -u origin
 // ^((?!GLHudOverlay).)*$
 // ^((?!OpenGLRenderer).)*$
+// https://material.google.com/style/color.html#color-color-palette
 
 public class MainActivity extends AppCompatActivity implements
         InitFragment.OnInitFragmentInteractionListener,

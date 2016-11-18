@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@color/view_not_in_focus"
+        android:background="@drawable/today_touch_selector"
         tools:text="Stop name"
         android:textAppearance="?android:textAppearanceLarge"
         android:textColor="@android:color/black"
