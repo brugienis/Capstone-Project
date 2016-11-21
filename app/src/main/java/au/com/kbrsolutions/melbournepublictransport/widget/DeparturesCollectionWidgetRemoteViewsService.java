@@ -58,7 +58,7 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
             public void onDataSetChanged() {
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 String stopId = Utility.getWidgetStopId(getApplication());
-                Log.v(TAG, "onDataSetChanged - start - stopId: " + stopId);
+//                Log.v(TAG, "onDataSetChanged - start - stopId: " + stopId);
 
                 final long identityToken = Binder.clearCallingIdentity();
 
@@ -77,7 +77,7 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
 
             @Override
             public int getCount() {
-                Log.v(TAG, "onCreate - getCount - count: " + mNextDepartureDetails.size());
+//                Log.v(TAG, "onCreate - getCount - count: " + mNextDepartureDetails.size());
                 return mNextDepartureDetails.size();
             }
 
@@ -102,7 +102,7 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
                 views.setTextViewText(R.id.directionName, mNextDepartureDetails.get(position).directionName);
                 views.setTextViewText(R.id.runType, String.valueOf(mNextDepartureDetails.get(position).runType));
                 views.setTextViewText(R.id.departureTimeId, String.valueOf(mNextDepartureDetails.get(position).utcDepartureTime));
-            Log.v(TAG, "getViewAt - populated podition: " + position);
+//            Log.v(TAG, "getViewAt - populated podition: " + position);
 
                 final Intent fillInIntent = new Intent();
 

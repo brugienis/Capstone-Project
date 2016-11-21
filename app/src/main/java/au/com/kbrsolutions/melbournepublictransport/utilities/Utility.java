@@ -3,6 +3,8 @@ package au.com.kbrsolutions.melbournepublictransport.utilities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
+import android.util.TypedValue;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
@@ -12,7 +14,9 @@ import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
  */
 
 public class Utility {
-    public static float DEFAULT_LATLONG = 0F;
+//    public static float DEFAULT_LATLONG = 0F;
+
+    private static final String TAG = Utility.class.getSimpleName();
 
     public static boolean isLocationLatLonAvailable(Context context) {
         SharedPreferences prefs
@@ -21,6 +25,49 @@ public class Utility {
                 && prefs.contains(context.getString(R.string.pref_key_location_longitude));
     }
 
+    /**
+     *
+     * Set default values.
+     *
+     * @param context
+     * @return
+     */
+    public static void init(Context context) {
+        SharedPreferences prefs
+                = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if (Double.isNaN(prefs.getFloat(context.getString(R.string.pref_key_location_latitude),
+                Float.NaN)) ||
+                Double.isNaN(prefs.getFloat(context.getString(R.string.pref_key_location_latitude),
+                        Float.NaN))) {
+            TypedValue typedValue = new TypedValue();
+            context.getResources().getValue(R.dimen.default_fixed_location_latitude, typedValue, true);
+            float latitude = typedValue.getFloat();
+            context.getResources().getValue(R.dimen.default_fixed_location_longitude, typedValue, true);
+            float longitude = typedValue.getFloat();
+            SharedPreferences.Editor editor = prefs.edit();
+            /* Store default address - Flinders Street, Melbourne.                            */
+            editor.putString(context.getString(R.string.pref_key_fixed_location),
+                    context.getString(R.string.pref_default_fixed_location_address));
+            /* Also store the latitude and longitude so that we can use these to get a precise */
+            /* result from our stops nearby search.                                            */
+            editor.putFloat(context.getString(R.string.pref_key_location_latitude),
+                    (float) latitude);
+            editor.putFloat(context.getString(R.string.pref_key_location_longitude),
+                    (float) longitude);
+            editor.apply();
+            Log.v(TAG, "init - done");
+//        processPlacePickerData - : -37.817682500000004/144.96726171874994
+        }
+    }
+
+    /**
+     *
+     * If 'fixed' location is not assigned, return Flinders station latitude and longitude.
+     *
+     * @param context
+     * @return
+     */
     public static LatLngDetails getLatLng(Context context) {
         LatLngDetails latLngDetails = null;
         SharedPreferences prefs
@@ -29,12 +76,14 @@ public class Utility {
                 prefs.getBoolean(context.getString(R.string.pref_key_use_device_location), true);
         if (!useDeviceLocationOn) {
             latLngDetails = new LatLngDetails(
-                    prefs.getFloat(context.getString(R.string.pref_key_location_latitude), Float.NaN),
-                    prefs.getFloat(context.getString(R.string.pref_key_location_longitude), Float.NaN)
-
+                    prefs.getFloat(context.getString(R.string.pref_key_location_latitude),
+                            Float.NaN),
+                    prefs.getFloat(context.getString(R.string.pref_key_location_longitude),
+                            Float.NaN)
             );
         }
         return latLngDetails;
+//        processPlacePickerData - : -37.817682500000004/144.96726171874994
     }
 
     public static String getWidgetStopName(Context context) {

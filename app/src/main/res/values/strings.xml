@@ -30,6 +30,7 @@
 
     <!-- Default text text for fixed location preference [CHAR LIMIT=NONE] -->
     <string name="pref_default_fixed_location">Not assigned</string>
+    <string name="pref_default_fixed_location_address">233 Flinders St, Melbourne 3000, Australia</string>
 
     <!-- Key name for storing widget stop name in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_key_widget_stop_name" translatable="false">widget_stop_name</string>
