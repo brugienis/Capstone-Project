@@ -46,11 +46,11 @@ public class DeparturesCollectionWidgetProvider extends AppWidgetProvider {
 //            Log.v(TAG, "onUpdate - appWidgetId: " + appWidgetId);
             String stopName = Utility.getWidgetStopName(context);
 //            Log.v(TAG, "onUpdate - stopName: " + stopName);
-            if (stopName.equals(context.getString(R.string.pref_default_widget_stop_name))) {
-                stopName = context.getString(R.string.pref_value_widget_stop_set_up_instructions);
-            } else {
-                Log.v(TAG, "onUpdate - showing view widget_departures_collection");
-            }
+//            if (stopName.equals(context.getString(R.string.pref_default_widget_stop_name))) {
+//                stopName = context.getString(R.string.pref_value_widget_stop_set_up_instructions);
+//            } else {
+//                Log.v(TAG, "onUpdate - showing view widget_departures_collection");
+//            }
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_departures_collection);
 
             // Create an Intent to launch MainActivity

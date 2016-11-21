@@ -37,7 +37,8 @@
 
     <!-- Key name for storing widget stop id in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_key_widget_stop_id">widget_stop_id</string>
-    <string name="pref_default_widget_stop_id">-1</string>
+    <string name="pref_default_widget_stop_id">1071</string>
+    <string name="pref_default_widget_stop_name">Flinders Street Station</string>
 
     <!-- Key name for storing AppBar vertical offset in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_key_appbar_vertical_offset" translatable="false">appbar_vertical_offset</string>
@@ -72,9 +73,6 @@
     <!-- Key name for storing location latlong in SharedPreferences -->
     <string name="pref_key_location_latitude" translatable="false">loc-latitude</string>
     <string name="pref_key_location_longitude" translatable="false">loc-longitude</string>
-
-    <!-- Default text code for location preference [CHAR LIMIT=NONE] -->
-    <string name="pref_default_widget_stop_name" translatable="false">Not assigned</string>
 
     <!-- Strings used when displaying the state of the Location in settings
     <string name="pref_location_error_description">Invalid Location (<xliff:g id="location_setting">%1$s</xliff:g>)"</string>

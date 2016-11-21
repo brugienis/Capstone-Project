@@ -55,6 +55,13 @@ public class Utility {
                     (float) latitude);
             editor.putFloat(context.getString(R.string.pref_key_location_longitude),
                     (float) longitude);
+
+            /* Store default stopId and locationName : 1071, Flinders Street Station           */
+            editor.putString(context.getString(R.string.pref_key_widget_stop_id),
+                    context.getString(R.string.pref_default_widget_stop_id));
+            editor.putString(context.getString(R.string.pref_key_widget_stop_name),
+                    context.getString(R.string.pref_default_widget_stop_name));
+
             editor.apply();
             Log.v(TAG, "init - done");
 //        processPlacePickerData - : -37.817682500000004/144.96726171874994
@@ -89,8 +96,12 @@ public class Utility {
     public static String getWidgetStopName(Context context) {
         SharedPreferences prefs
                 = PreferenceManager.getDefaultSharedPreferences(context);
-        String stopName = prefs.getString(context.getString(R.string.pref_key_widget_stop_name),
-                context.getString(R.string.pref_default_widget_stop_name));
+//        String stopName = prefs.getString(context.getString(R.string.pref_key_widget_stop_name), context.getString(R.string.pref_default_widget_stop_name));
+        String stopName = prefs.getString(context.getString(R.string.pref_key_widget_stop_name), "");
+        if (stopName.length() == 0) {
+            init(context);
+            stopName = prefs.getString(context.getString(R.string.pref_key_widget_stop_name), "");
+        }
         return stopName;
     }
 
