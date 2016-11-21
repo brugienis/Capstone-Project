@@ -382,17 +382,17 @@ public class RemoteMptEndpointUtil {
             }
             jsonString = buffer.toString();
 //            processJsonString(mTaskId, jsonString);
+            // FIXME: 21/11/2016 - for all exceptions show a message in SnackBar and ask to try later
         } catch (IOException e) {
             Log.e(TAG, "processRemoteRequest - Error ", e);
             // If the code didn't successfully get the weather data, there's no point in attempting
             // to parse it.
 //            setLocationStatus(getContext(), LOCATION_STATUS_SERVER_DOWN);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+            e.printStackTrace();
+//            setLocationStatus(getContext(), LOCATION_STATUS_SERVER_INVALID);
         }
-//        catch (JSONException e) {
-//            Log.e(TAG, e.getMessage(), e);
-//            e.printStackTrace();
-////            setLocationStatus(getContext(), LOCATION_STATUS_SERVER_INVALID);
-//        }
         finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();

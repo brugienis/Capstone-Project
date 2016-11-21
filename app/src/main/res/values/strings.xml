@@ -50,13 +50,7 @@
 
     <!-- Key name for storing widget stop id in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_value_widget_stop_set_up_instructions">The widget stop name is not assigned.
-    \n
-    To select or change the stop, follow these steps (make sure there is at least one Favorite Stop selected before you do the below):
-        \n
-        \n\t start the Melbourne Public Transport app
-        \n\t open the \'Settings\' menu
-        \n\t touch the icon in the \'Widget stop name\' row
-        \n\t touch one of the available stops
+        \n\nStart the app > open the \'Settings\' menu > touch the icon in the \'Widget stop name\' row > select stop
     </string>
 
     <!-- Title for the location preference [CHAR LIMIT=30]  -->
