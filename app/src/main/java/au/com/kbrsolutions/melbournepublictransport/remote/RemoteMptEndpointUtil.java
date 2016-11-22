@@ -45,6 +45,44 @@ public class RemoteMptEndpointUtil {
     private final static String PRIVATE_KEY = "8d3c3f43-4244-11e6-a0ce-06f54b901f07";
     private final static String PTV_BASE_URL = "http://timetableapi.ptv.vic.gov.au";
 
+    private static final String V2_HEALTHCHECK = "/v2/healthcheck?timestamp=";
+    private static final String V2_LINES = "/v2/lines/mode/";
+
+    private static final String DATABASE_OK = "databaseOK";
+//    private static final String SECURITY_TOKEN_OK = "securityTokenOK";
+//    private static final String CLIENT_CLOCK_OK = "clientClockOK";
+//    private static final String MEM_CACHE_OK = "memcacheOK";
+    private static final String ROUTE_TYPE = "route_type";
+    private static final String LINE_ID = "line_id";
+    private static final String LINE_NAME = "line_name";
+    private static final String LINE_NAME_SHORT = "line_name_short";
+    private static final String V2_MODE = "/v2/mode/";
+    private static final String LINE = "/line/";
+    private static final String STOPS_FOR_LINE = "/stops-for-line";
+    private static final String STOP_ID = "stop_id";
+    private static final String LOCATION_NAME = "location_name";
+    private static final String SUBURB = "suburb";
+    private static final String LAT = "lat";
+    private static final String LON = "lon";
+    private static final String STOP = "/stop/";
+    private static final String DEPARTURES_BY_DESTINATION = "/departures/by-destination/limit/";
+    private static final String VALUES = "values";
+    private static final String NULL = "null";
+    private static final String TIME_REALTIME_UTC = "time_realtime_utc";
+    private static final String TIME_TIMETABLE_UTC = "time_timetable_utc";
+    private static final String PLATFORM = "platform";
+    private static final String DIRECTION = "direction";
+    private static final String DIRECTION_ID = "direction_id";
+    private static final String RUN_ID = "run_id";
+    private static final String DESTINATION_ID = "destination_id";
+    private static final String NUM_SKIPPED = "num_skipped";
+    private static final String V2_DISRUPTIONS_MODES = "/v2/disruptions/modes/";
+    private static final String METRO_TRAIN = "metro-train";
+    private static final String TITLE = "title";
+    private static final String DESCRIPTION = "description";
+    private static final String RESULT = "result";
+    private static final String DISTANCE = "distance";
+
     private static Map<Integer, String> directionMap = new ArrayMap<>();
 
     static {
@@ -60,10 +98,6 @@ public class RemoteMptEndpointUtil {
 
     public static boolean performHealthCheck(Context context) {
         boolean databaseOK = false;
-        final String SECURITY_TOKEN_OK = "securityTokenOK";
-        final String CLIENT_CLOCK_OK = "clientClockOK";
-        final String MEM_CACHE_OK = "memcacheOK";
-        final String DATABASE_OK = "databaseOK";
 
         try {
             DateTime dateTime = getCurrentDateTime();
@@ -71,15 +105,14 @@ public class RemoteMptEndpointUtil {
 //            Log.v(TAG, "performHealthCheck - before throw isReleaseVersion: " + Utility.isReleaseVersion(context));
 //            if (true) throw new Exception("BR");
 
-            final String uri = "/v2/healthcheck?timestamp=" + JodaDateTimeUtility.getUtcTime(dateTime);
+            final String uri = V2_HEALTHCHECK + JodaDateTimeUtility.getUtcTime(dateTime);
             String jsonString = processRemoteRequest(uri);
 
-            JSONObject forecastJson;
-            forecastJson = new JSONObject(jsonString);
+            JSONObject jsonObject = new JSONObject(jsonString);
 //            boolean securityTokenOk = forecastJson.getBoolean(SECURITY_TOKEN_OK);
 //            boolean clientClockOK = forecastJson.getBoolean(CLIENT_CLOCK_OK);
 //            boolean memcacheOK = forecastJson.getBoolean(MEM_CACHE_OK);
-            databaseOK = forecastJson.getBoolean(DATABASE_OK);
+            databaseOK = jsonObject.getBoolean(DATABASE_OK);
         } catch (Exception e) {
             if (!Utility.isReleaseVersion(context)) {
                 e.printStackTrace();
@@ -92,7 +125,7 @@ public class RemoteMptEndpointUtil {
 
     public static List<ContentValues> getLineDetails(int mode, Context context) {
         List<ContentValues> lineDetailsContentValuesList = new ArrayList<>();
-        final String uri = "/v2/lines/mode/" + mode;
+        final String uri = V2_LINES + mode;
 
         int routeType;
         String lineId;
@@ -104,10 +137,10 @@ public class RemoteMptEndpointUtil {
             lineArray = new JSONArray(jsonString);
             for(int i = 0; i < lineArray.length(); i++) {
                 JSONObject oneLineObject = lineArray.getJSONObject(i);
-                routeType = oneLineObject.getInt("route_type");
-                lineId = oneLineObject.getString("line_id");
-                lineName = oneLineObject.getString("line_name_short");
-                lineNameShort = oneLineObject.getString("line_name");
+                routeType = oneLineObject.getInt(ROUTE_TYPE);
+                lineId = oneLineObject.getString(LINE_ID);
+                lineName = oneLineObject.getString(LINE_NAME_SHORT);
+                lineNameShort = oneLineObject.getString(LINE_NAME);
 
                 ContentValues values = new ContentValues();
                 values.put(MptContract.LineDetailEntry.COLUMN_ROUTE_TYPE, routeType);
@@ -126,10 +159,11 @@ public class RemoteMptEndpointUtil {
         return lineDetailsContentValuesList;
     }
 
+
     public static List<ContentValues> getStopDetailsForLine(int mode, String lineId,
                                                             Context context) {
         List<ContentValues> stopDetailsContentValuesList = new ArrayList<>();
-        final String uri = "/v2/mode/" + mode + "/line/" + lineId + "/stops-for-line";
+        final String uri = V2_MODE + mode + LINE + lineId + STOPS_FOR_LINE;
 
         int routeType;
         String stopId;
@@ -143,12 +177,12 @@ public class RemoteMptEndpointUtil {
             JSONArray stopsArray = new JSONArray(jsonString);
             for(int i = 0; i < stopsArray.length(); i++) {
                 JSONObject oneLineObject = stopsArray.getJSONObject(i);
-                routeType = oneLineObject.getInt("route_type");
-                stopId = oneLineObject.getString("stop_id");
-                locationName = oneLineObject.getString("location_name");
-                suburb = oneLineObject.getString("suburb");
-                latitude = oneLineObject.getDouble("lat");
-                longitude = oneLineObject.getDouble("lon");
+                routeType = oneLineObject.getInt(ROUTE_TYPE);
+                stopId = oneLineObject.getString(STOP_ID);
+                locationName = oneLineObject.getString(LOCATION_NAME);
+                suburb = oneLineObject.getString(SUBURB);
+                latitude = oneLineObject.getDouble(LAT);
+                longitude = oneLineObject.getDouble(LON);
                 ContentValues values = new ContentValues();
                 values.put(MptContract.StopDetailEntry.COLUMN_ROUTE_TYPE, routeType);
                 values.put(MptContract.StopDetailEntry.COLUMN_STOP_ID, stopId);
@@ -174,31 +208,31 @@ public class RemoteMptEndpointUtil {
             String stopId,
             int limit,
             Context context) {
-        final String uri = "/v2/mode/" + mode + "/stop/" + stopId + "/departures/by-destination/limit/" + limit;
+        final String uri = V2_MODE + mode + STOP + stopId + DEPARTURES_BY_DESTINATION + limit;
         List<NextDepartureDetails> nextDepartureDetailsList = new ArrayList<>();
         try {
             String jsonString = processRemoteRequest(uri);
 
             JSONObject broadDeparturesObject = new JSONObject(jsonString);
-            JSONArray broadDeparturesValuesArray = broadDeparturesObject.getJSONArray("values");
+            JSONArray broadDeparturesValuesArray = broadDeparturesObject.getJSONArray(VALUES);
             String directionName;
             for(int i = 0; i < broadDeparturesValuesArray.length(); i++) {
                 JSONObject oneBroadDeparturesValueObject = broadDeparturesValuesArray.getJSONObject(i);
-                String departureTimeUtc = oneBroadDeparturesValueObject.getString("time_realtime_utc");
-                if (departureTimeUtc.equals("null")) {
-                    departureTimeUtc = oneBroadDeparturesValueObject.getString("time_timetable_utc");
+                String departureTimeUtc = oneBroadDeparturesValueObject.getString(TIME_REALTIME_UTC);
+                if (departureTimeUtc.equals(NULL)) {
+                    departureTimeUtc = oneBroadDeparturesValueObject.getString(TIME_TIMETABLE_UTC);
                 }
                 String str = fmt.print(JodaDateTimeUtility.getLocalTimeFromUtcString(departureTimeUtc));
 
-                JSONObject platform = oneBroadDeparturesValueObject.getJSONObject("platform");
-                JSONObject direction = platform.getJSONObject("direction");
-                int directionId = direction.getInt("direction_id");
+                JSONObject platform = oneBroadDeparturesValueObject.getJSONObject(PLATFORM);
+                JSONObject direction = platform.getJSONObject(DIRECTION);
+                int directionId = direction.getInt(DIRECTION_ID);
 
                 JSONObject run = oneBroadDeparturesValueObject.getJSONObject("run");
-                int routeType = run.getInt("route_type");
-                int runId = run.getInt("run_id");
-                int destinationId = run.getInt("destination_id");
-                int numSkipped = run.getInt("num_skipped");
+                int routeType = run.getInt(ROUTE_TYPE);
+                int runId = run.getInt(RUN_ID);
+                int destinationId = run.getInt(DESTINATION_ID);
+                int numSkipped = run.getInt(NUM_SKIPPED);
                 if (directionMap.containsKey(directionId)) {
                     directionName = directionMap.get(directionId);
                 } else {
@@ -226,21 +260,21 @@ public class RemoteMptEndpointUtil {
     }
 
     public static List<DisruptionsDetails> getDisruptions(String modes, Context context) {
-        final String uri = "/v2/disruptions/modes/" + modes;
+        final String uri = V2_DISRUPTIONS_MODES + modes;
 
         List<DisruptionsDetails> nextDisruptionsDetailsList = new ArrayList<>();
 
         try {
             String jsonString = processRemoteRequest(uri);
             JSONObject disruptionsObject = new JSONObject(jsonString);
-            JSONArray disruptionsArray = disruptionsObject.getJSONArray("metro-train");
+            JSONArray disruptionsArray = disruptionsObject.getJSONArray(METRO_TRAIN);
             String title;
             String description;
             DisruptionsDetails disruptionsDetails;
             for(int i = 0; i < disruptionsArray.length(); i++) {
                 JSONObject oneDisruptionsObject = disruptionsArray.getJSONObject(i);
-                title = oneDisruptionsObject.getString("title");
-                description = oneDisruptionsObject.getString("description");
+                title = oneDisruptionsObject.getString(TITLE);
+                description = oneDisruptionsObject.getString(DESCRIPTION);
                 disruptionsDetails = new DisruptionsDetails(title, description);
                 nextDisruptionsDetailsList.add(disruptionsDetails);
             }
@@ -270,13 +304,13 @@ public class RemoteMptEndpointUtil {
             double longitude;
             for(int i = 0; i < stopArray.length(); i++) {
                 JSONObject oneStringObject = stopArray.getJSONObject(i);
-                JSONObject resultObject = oneStringObject.getJSONObject("result");
-                distance = resultObject.getDouble("distance");
-                locationName = resultObject.getString("location_name");
-                routeType = resultObject.getInt("route_type");
-                stopId = resultObject.getString("stop_id");
-                latitude = resultObject.getDouble("lat");
-                longitude = resultObject.getDouble("lon");
+                JSONObject resultObject = oneStringObject.getJSONObject(RESULT);
+                distance = resultObject.getDouble(DISTANCE);
+                locationName = resultObject.getString(LOCATION_NAME);
+                routeType = resultObject.getInt(ROUTE_TYPE);
+                stopId = resultObject.getString(STOP_ID);
+                latitude = resultObject.getDouble(LAT);
+                longitude = resultObject.getDouble(LON);
                 nearbyStopsDetailsList.add(new NearbyStopsDetails(
                         stopId,
                         locationName,
@@ -296,31 +330,21 @@ public class RemoteMptEndpointUtil {
         return nearbyStopsDetailsList;
     }
 
+    private static final String GET = "GET";
     @Nullable
     private static String processRemoteRequest(String uri) throws Exception {
 
-        String urlString = null;
-//        try {
+        String urlString;
             urlString = buildTTAPIURL(PTV_BASE_URL, PRIVATE_KEY, uri, DEVELOPER_ID);
-//            Log.v(TAG, "performHealthCheck - urlString: " + urlString);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+
 
         Uri.Builder uriBuilder = Uri.parse(urlString).buildUpon();
         Uri builtUri = uriBuilder.build();
-        URL url = null;
-//        try {
+        URL url;
             url = new URL(builtUri.toString());
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        }
 
-//        URL urlToProcess = urls[0];
         URL urlToProcess = url;
         String jsonString = null;
-//        Log.v(TAG, mSource + " - doInBackground - urlToProcess: " + urlToProcess);
-//        if (true) return "test";
 
         // These two need to be declared outside the try/catch
         // so that they can be closed in the finally block.
@@ -328,9 +352,8 @@ public class RemoteMptEndpointUtil {
         BufferedReader reader = null;
 
         try {
-            // Create the request to OpenWeatherMap, and open the connection
             urlConnection = (HttpURLConnection) urlToProcess.openConnection();
-            urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestMethod(GET);
             urlConnection.connect();
 
             // Read the input stream into a String
@@ -356,15 +379,7 @@ public class RemoteMptEndpointUtil {
                 return null;
             }
             jsonString = buffer.toString();
-//            processJsonString(mTaskId, jsonString);
-            // FIXME: 21/11/2016 - for all exceptions show a message in SnackBar and ask to try later
         }
-//        catch (Exception e) {
-//            if (!Utility.isReleaseVersion(context)) {
-//                e.printStackTrace();
-//            }
-//            throw new RuntimeException(TAG + ".processRemoteRequest - exception: " + e);
-//        }
         finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -373,7 +388,6 @@ public class RemoteMptEndpointUtil {
                 try {
                     reader.close();
                 } catch (final IOException nothingCanBeDone) {
-//                    Log.e(TAG, "processRemoteRequest - Error closing stream", e);
                 }
             }
         }
@@ -389,21 +403,12 @@ public class RemoteMptEndpointUtil {
         return new DateTime().withHourOfDay(selectedHour).withMinuteOfHour(selectedMinute);
     }
 
-//    private DateTime getSelectedDateTime() {
-//        if (mSelectedTime == null) {
-//            int selectedHour;
-//            int selectedMinute;
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                selectedHour = mTimePicker.getHour();
-//                selectedMinute = mTimePicker.getMinute();
-//            } else {
-//                selectedHour = mTimePicker.getCurrentHour();
-//                selectedMinute = mTimePicker.getCurrentMinute();
-//            }
-//            mSelectedTime = new DateTime().withHourOfDay(selectedHour).withMinuteOfHour(selectedMinute);
-//        }
-//        return mSelectedTime;
-//    }
+    private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
+    private static final String DEV_ID = "devid=";
+    private static final String SIGNATURE = "&signature=";
+    private static final String QUESTION_MARK = "?";
+    private static final String AMPERSAND = "&";
+    private static final String ZERO = "0";
     /**
      * Method to demonstrate building of Timetable API URL
      *
@@ -419,9 +424,9 @@ public class RemoteMptEndpointUtil {
     public static String buildTTAPIURL(final String baseURL, final String privateKey, final String uri,
                                        final int developerId) throws Exception {
 
-        String HMAC_SHA1_ALGORITHM = "HmacSHA1";
-        StringBuffer uriWithDeveloperID = new StringBuffer().append(uri).append(uri.contains("?") ? "&" : "?")
-                .append("devid=" + developerId);
+        StringBuffer uriWithDeveloperID = new StringBuffer()
+                .append(uri).append(uri.contains(QUESTION_MARK) ? AMPERSAND : QUESTION_MARK)
+                .append(DEV_ID + developerId);
         byte[] keyBytes = privateKey.getBytes();
         byte[] uriBytes = uriWithDeveloperID.toString().getBytes();
         SecretKeySpec signingKey = new SecretKeySpec(keyBytes, HMAC_SHA1_ALGORITHM);
@@ -433,12 +438,13 @@ public class RemoteMptEndpointUtil {
         {
             int intVal = signatureByte & 0xff;
             if (intVal < 0x10){
-                signature.append("0");
+                signature.append(ZERO);
             }
             signature.append(Integer.toHexString(intVal));
         }
-        StringBuffer url = new StringBuffer(baseURL).append(uri).append(uri.contains("?") ? "&" : "?")
-                .append("devid=" + developerId).append("&signature=" + signature.toString().toUpperCase());
+        StringBuffer url = new StringBuffer(baseURL)
+                .append(uri).append(uri.contains(QUESTION_MARK) ? AMPERSAND : QUESTION_MARK)
+                .append(DEV_ID + developerId).append(SIGNATURE + signature.toString().toUpperCase());
         return url.toString();
     }
 }

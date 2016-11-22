@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final String DISRUPTION_TAG = "disruption_tag";
     private static final String NEARBY_TAG = "nearby_tag";
     private static final String INIT_TAG = "init_tag";
-    private final static String TRANSPORT_MODE_METRO_TRAIN = "metro-train";
+    private static final String TRANSPORT_MODE_METRO_TRAIN = "metro-train";
 
     // FIXME: 10/10/2016 - remove enums - not efficient in Android
     public enum FragmentsId {
