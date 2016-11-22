@@ -708,7 +708,7 @@ public class MainActivity extends AppCompatActivity implements
         MainActivityEvents.MainEvents requestEvent = event.event;
         switch (requestEvent) {
 
-            case NETWORK_STATUS:
+            case REMOTE_ACCESS_PROBLEMS:
                 showSnackBar(event.msg, true);
                 break;
 

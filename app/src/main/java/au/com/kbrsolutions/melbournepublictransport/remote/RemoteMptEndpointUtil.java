@@ -1,6 +1,7 @@
 package au.com.kbrsolutions.melbournepublictransport.remote;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -37,6 +38,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.utilities.JodaDateTimeUtility;
+import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
 public class RemoteMptEndpointUtil {
 
@@ -58,31 +60,33 @@ public class RemoteMptEndpointUtil {
 
     private final static String TAG = RemoteMptEndpointUtil.class.getSimpleName();
 
-    public static boolean performHealthCheck() {
+    public static boolean performHealthCheck(Context context) {
+        boolean databaseOK = false;
         final String SECURITY_TOKEN_OK = "securityTokenOK";
         final String CLIENT_CLOCK_OK = "clientClockOK";
         final String MEM_CACHE_OK = "memcacheOK";
         final String DATABASE_OK = "databaseOK";
-        DateTime dateTime = getCurrentDateTime();
-        final String uri = "/v2/healthcheck?timestamp=" + JodaDateTimeUtility.getUtcTime(dateTime);
-        String jsonString = processRemoteRequest(uri);
 
-        JSONObject forecastJson = null;
-        boolean databaseOK = false;
         try {
+            DateTime dateTime = getCurrentDateTime();
+
+            Log.v(TAG, "performHealthCheck - before throw isReleaseVersion: " + Utility.isReleaseVersion(context));
+            if (true) throw new Exception("BR");
+
+            final String uri = "/v2/healthcheck?timestamp=" + JodaDateTimeUtility.getUtcTime(dateTime);
+            String jsonString = processRemoteRequest(uri);
+
+            JSONObject forecastJson;
             forecastJson = new JSONObject(jsonString);
             boolean securityTokenOk = forecastJson.getBoolean(SECURITY_TOKEN_OK);
             boolean clientClockOK = forecastJson.getBoolean(CLIENT_CLOCK_OK);
             boolean memcacheOK = forecastJson.getBoolean(MEM_CACHE_OK);
             databaseOK = forecastJson.getBoolean(DATABASE_OK);
-//            Log.v(TAG, "performHealthCheck - securityTokenOk/clientClockOK/memcacheOK/databaseOK: " + securityTokenOk + "/" + clientClockOK + "/" + memcacheOK + "/" + databaseOK);
-
-        } catch (JSONException e) {
-            // FIXME: 5/09/2016 - handle exception properly
-            e.printStackTrace();
-            return false;
         } catch (Exception e) {
-            throw new RuntimeException(TAG + ".performHealthCheck - exception: ");
+            if (!Utility.isReleaseVersion(context)) {
+                e.printStackTrace();
+            }
+            throw new RuntimeException(TAG + ".performHealthCheck - exception: " + e);
         }
 
         return databaseOK;
@@ -100,8 +104,6 @@ public class RemoteMptEndpointUtil {
         JSONArray lineArray = null;
         try {
             lineArray = new JSONArray(jsonString);
-//            Log.v(TAG, "processJsonString - lineArray: " + lineArray);
-//            Log.v(TAG, "processJsonString - lineArray length: " + lineArray.length());
             for(int i = 0; i < lineArray.length(); i++) {
                 JSONObject oneLineObject = lineArray.getJSONObject(i);
                 routeType = oneLineObject.getInt("route_type");

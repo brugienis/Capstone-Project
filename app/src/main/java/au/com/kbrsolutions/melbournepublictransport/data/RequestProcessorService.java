@@ -14,10 +14,12 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 import au.com.kbrsolutions.melbournepublictransport.events.RequestProcessorServiceRequestEvents;
 import au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil;
 import au.com.kbrsolutions.melbournepublictransport.utilities.DbUtility;
+import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
 import static au.com.kbrsolutions.melbournepublictransport.data.DatabaseContentRefresher.testProgressBar;
 
@@ -73,150 +75,165 @@ public class RequestProcessorService extends IntentService {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
         if (ni == null || !ni.isConnected()) {
-            sendMessageToMainActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NETWORK_STATUS)
-                    .setMsg("NO NETWORK CONNECTION")
+            sendMessageToMainActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.REMOTE_ACCESS_PROBLEMS)
+                    .setMsg(getResources().getString(R.string.no_network_connection))
                     .build());
             return;
         }
 
         if (request != null) {
+            try {
 //            boolean databaseOK = DatabaseContentRefresher.performHealthCheck();
-            if (!RemoteMptEndpointUtil.performHealthCheck()) {
-                sendMessageToMainActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NETWORK_STATUS)
-                        .setMsg("CANNOT ACCESS PTV site")
-                        .build());
-            } else {
-                LatLngDetails latLonDetails;
-                List<NearbyStopsDetails> nearbyStopsDetailsList;
-                switch (request) {
-                    case ACTION_GET_DATABASE_STATUS:
-                        if (REFRESH_TEST) {
-                            Log.v(TAG, "onHandleIntent - test database status check");
-                            sendMessageToMainActivity(new MainActivityEvents.Builder(
-                                    MainActivityEvents.MainEvents.DATABASE_STATUS)
-                                    .setDatabaseEmpty(mTestDatabaseEmpty)
-                                    .build());
-                        } else {
-                            Log.v(TAG, "onHandleIntent - real database status check");
-                            boolean databaseEmpty = DatabaseContentRefresher.databaseEmpty(getContentResolver());
-                            sendMessageToMainActivity(new MainActivityEvents.Builder(
-                                    MainActivityEvents.MainEvents.DATABASE_STATUS)
-                                    .setDatabaseEmpty(databaseEmpty)
-                                    .build());
-                        }
-                        break;
+                Log.v(TAG, "onHandleIntent - calling performHealthCheck");
+                if (!RemoteMptEndpointUtil.performHealthCheck(getApplicationContext())) {
+                    sendMessageToMainActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.REMOTE_ACCESS_PROBLEMS)
+                            .setMsg(getResources().getString(R.string.can_not_access_ptv_site))
+                            .build());
+                } else {
+                    LatLngDetails latLonDetails;
+                    List<NearbyStopsDetails> nearbyStopsDetailsList;
+                    switch (request) {
+                        case ACTION_GET_DATABASE_STATUS:
+                            if (REFRESH_TEST) {
+                                Log.v(TAG, "onHandleIntent - test database status check");
+                                sendMessageToMainActivity(new MainActivityEvents.Builder(
+                                        MainActivityEvents.MainEvents.DATABASE_STATUS)
+                                        .setDatabaseEmpty(mTestDatabaseEmpty)
+                                        .build());
+                            } else {
+                                Log.v(TAG, "onHandleIntent - real database status check");
+                                boolean databaseEmpty = DatabaseContentRefresher.databaseEmpty(getContentResolver());
+                                sendMessageToMainActivity(new MainActivityEvents.Builder(
+                                        MainActivityEvents.MainEvents.DATABASE_STATUS)
+                                        .setDatabaseEmpty(databaseEmpty)
+                                        .build());
+                            }
+                            break;
 
-                    case ACTION_REFRESH_DATA:
-                        if (REFRESH_TEST) {
-                            Log.v(TAG, "onHandleIntent - test load");
+                        case ACTION_REFRESH_DATA:
+                            if (REFRESH_TEST) {
+                                Log.v(TAG, "onHandleIntent - test load");
 //                            sendMessageToMainActivity(new MainActivityEvents.Builder(
 //                                    MainActivityEvents.MainEvents.DATABASE_STATUS)
 //                                    .setDatabaseEmpty(mTestDatabaseLoaded)
 //                                    .build());
-                            testProgressBar();
-                            mTestDatabaseLoaded = true;
-                        } else {
-                            Log.v(TAG, "onHandleIntent - real load");
-                            boolean databaseEmpty = DatabaseContentRefresher.databaseEmpty(getContentResolver());
+                                testProgressBar();
+                                mTestDatabaseLoaded = true;
+                            } else {
+                                Log.v(TAG, "onHandleIntent - real load");
+                                boolean databaseEmpty = DatabaseContentRefresher.databaseEmpty(getContentResolver());
 //                            sendMessageToMainActivity(new MainActivityEvents.Builder(
 //                                    MainActivityEvents.MainEvents.DATABASE_STATUS)
 //                                    .setDatabaseEmpty(databaseEmpty)
 //                                    .build());
-                            Log.v(TAG, "onHandleIntent - real load - databaseEmpty: " + databaseEmpty);
-                            if (databaseEmpty || !extras.getBoolean(REFRESH_DATA_IF_TABLES_EMPTY)) {
-                                DatabaseContentRefresher.refreshDatabase(getContentResolver());
-                            } else {
+                                Log.v(TAG, "onHandleIntent - real load - databaseEmpty: " + databaseEmpty);
+                                if (databaseEmpty || !extras.getBoolean(REFRESH_DATA_IF_TABLES_EMPTY)) {
+                                    DatabaseContentRefresher.refreshDatabase(getContentResolver());
+                                } else {
                                 /* database is not empty - pretend the load has finished */
-                                sendMessageToMainActivity(new MainActivityEvents.Builder(
-                                        MainActivityEvents.MainEvents.DATABASE_LOAD_PROGRESS)
-                                        .setDatabaseLoadTarget(1)
-                                        .setDatabaseLoadProgress(1)
-                                        .build());
+                                    sendMessageToMainActivity(new MainActivityEvents.Builder(
+                                            MainActivityEvents.MainEvents.DATABASE_LOAD_PROGRESS)
+                                            .setDatabaseLoadTarget(1)
+                                            .setDatabaseLoadProgress(1)
+                                            .build());
+                                }
                             }
-                        }
-                        break;
+                            break;
 
-                    case SHOW_NEXT_DEPARTURES:
-                        StopDetails stopDetails = extras.getParcelable(STOP_DETAILS);
+                        case SHOW_NEXT_DEPARTURES:
+                            StopDetails stopDetails = extras.getParcelable(STOP_DETAILS);
 //                        Log.v(TAG, "onHandleIntent - stopDetails: " + stopDetails);
 //                        getResources().getString(R.string.all_stops_train);
-                        List<NextDepartureDetails> nextDepartureDetailsList =
-                                RemoteMptEndpointUtil.getBroadNextDepartures(
-                                        stopDetails.routeType,
-                                        stopDetails.stopId,
-                                        extras.getInt(LIMIT),
-                                        getResources());
+                            List<NextDepartureDetails> nextDepartureDetailsList =
+                                    RemoteMptEndpointUtil.getBroadNextDepartures(
+                                            stopDetails.routeType,
+                                            stopDetails.stopId,
+                                            extras.getInt(LIMIT),
+                                            getResources());
 
 //                        List<NextDepartureDetails> nextDepartureDetailsList =
 //                          buildSimulatedDepartureDetails();
 //                        Log.v(TAG, "onHandleIntent - stopId: " + nextDepartureDetailsList.get(0));
-                        sendMessageToMainActivity(new MainActivityEvents.Builder(
-                                MainActivityEvents.MainEvents.NEXT_DEPARTURES_DETAILS)
-                                .setNextDepartureDetailsList(nextDepartureDetailsList)
-                                .setStopDetails(stopDetails)
-                                .build());
-                        break;
+                            sendMessageToMainActivity(new MainActivityEvents.Builder(
+                                    MainActivityEvents.MainEvents.NEXT_DEPARTURES_DETAILS)
+                                    .setNextDepartureDetailsList(nextDepartureDetailsList)
+                                    .setStopDetails(stopDetails)
+                                    .build());
+                            break;
 
-                    case GET_DISRUPTIONS_DETAILS:
-                        List<DisruptionsDetails> disruptionsDetailsList =
-                                RemoteMptEndpointUtil.getDisruptions(extras.getString(MODES));
+                        case GET_DISRUPTIONS_DETAILS:
+                            List<DisruptionsDetails> disruptionsDetailsList =
+                                    RemoteMptEndpointUtil.getDisruptions(extras.getString(MODES));
 //                        List<DisruptionsDetails> disruptionsDetailsList =
 //                          buildSimulatedDisruptionsDetails();
-                        sendMessageToMainActivity(new MainActivityEvents.Builder(
-                                MainActivityEvents.MainEvents.DISRUPTIONS_DETAILS)
-                                .setDisruptionsDetailsList(disruptionsDetailsList)
-                                .build());
-                        break;
+                            sendMessageToMainActivity(new MainActivityEvents.Builder(
+                                    MainActivityEvents.MainEvents.DISRUPTIONS_DETAILS)
+                                    .setDisruptionsDetailsList(disruptionsDetailsList)
+                                    .build());
+                            break;
 
-                    case GET_TRAIN_NEARBY_STOPS_DETAILS:
-                        latLonDetails = extras.getParcelable(LAT_LON);
-                        if (dbUtility == null) {
-                            dbUtility = new DbUtility();
-                        }
-                        nearbyStopsDetailsList = dbUtility.getNearbyTrainDetails(
-                                latLonDetails,
-                                getApplicationContext());
-                        sendMessageToMainActivity(new MainActivityEvents.Builder(
-                                MainActivityEvents.MainEvents.NEARBY_LOCATION_DETAILS)
-                                .setNearbyStopsDetailsList(nearbyStopsDetailsList)
-                                .setForTrainsStopsNearby(true)
-                                .build());
-                        break;
+                        case GET_TRAIN_NEARBY_STOPS_DETAILS:
+                            latLonDetails = extras.getParcelable(LAT_LON);
+                            if (dbUtility == null) {
+                                dbUtility = new DbUtility();
+                            }
+                            nearbyStopsDetailsList = dbUtility.getNearbyTrainDetails(
+                                    latLonDetails,
+                                    getApplicationContext());
+                            sendMessageToMainActivity(new MainActivityEvents.Builder(
+                                    MainActivityEvents.MainEvents.NEARBY_LOCATION_DETAILS)
+                                    .setNearbyStopsDetailsList(nearbyStopsDetailsList)
+                                    .setForTrainsStopsNearby(true)
+                                    .build());
+                            break;
 
-                    case GET_NEARBY_STOPS_DETAILS:
-                        latLonDetails = extras.getParcelable(LAT_LON);
+                        case GET_NEARBY_STOPS_DETAILS:
+                            latLonDetails = extras.getParcelable(LAT_LON);
 //                        Log.v(TAG, "onHandleIntent - latLonDetails: " + latLonDetails);
-                        nearbyStopsDetailsList =
-                                RemoteMptEndpointUtil.getNearbyStops(latLonDetails);
-                        if (dbUtility == null) {
-                            dbUtility = new DbUtility();
-                        }
-                        dbUtility.fillInMissingDetails(nearbyStopsDetailsList, getApplicationContext());
+                            nearbyStopsDetailsList =
+                                    RemoteMptEndpointUtil.getNearbyStops(latLonDetails);
+                            if (dbUtility == null) {
+                                dbUtility = new DbUtility();
+                            }
+                            dbUtility.fillInMissingDetails(nearbyStopsDetailsList, getApplicationContext());
 //                        List<NearbyStopsDetails> nearbyStopsDetailsList =
 //                                buildSimulatedNearbyDetails();
-                        sendMessageToMainActivity(new MainActivityEvents.Builder(
-                                MainActivityEvents.MainEvents.NEARBY_LOCATION_DETAILS)
-                                .setNearbyStopsDetailsList(nearbyStopsDetailsList)
-                                .build());
-                        break;
+                            sendMessageToMainActivity(new MainActivityEvents.Builder(
+                                    MainActivityEvents.MainEvents.NEARBY_LOCATION_DETAILS)
+                                    .setNearbyStopsDetailsList(nearbyStopsDetailsList)
+                                    .build());
+                            break;
 
-                    case UPDATE_STOPS_DETAILS:
-                        if (dbUtility == null) {
-                            dbUtility = new DbUtility();
-                        }
-                        dbUtility.updateStopDetails(
-                                extras.getInt(ROW_ID),
-                                getApplicationContext(),
-                                extras.getString(FAVORITE_COLUMN_VALUE));
+                        case UPDATE_STOPS_DETAILS:
+                            if (dbUtility == null) {
+                                dbUtility = new DbUtility();
+                            }
+                            dbUtility.updateStopDetails(
+                                    extras.getInt(ROW_ID),
+                                    getApplicationContext(),
+                                    extras.getString(FAVORITE_COLUMN_VALUE));
 //                        sendMessageToMainActivity(new MainActivityEvents.Builder(
 //                                MainActivityEvents.MainEvents.NEARBY_LOCATION_DETAILS)
 //                                .setNearbyStopsDetailsList(nearbyStopsDetailsList)
 //                                .build());
-                        break;
+                            break;
 
-                    default:
-                        throw new RuntimeException(TAG + ".onHandleIntent - no code to handle request: " + request);
+                        default:
+                            throw new RuntimeException(TAG + ".onHandleIntent - no code to handle request: " + request);
+                    }
                 }
+            } catch (Exception e) {
+                Log.v(TAG, "onHandleIntent - got exception");
+                String msg;
+                if (Utility.isReleaseVersion(getApplicationContext())) {
+                    msg = getResources().getString(R.string.can_not_access_ptv_site);
+                } else {
+                    msg = getResources().getString(R.string.can_not_access_ptv_site, e);
+                }
+                sendMessageToMainActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.REMOTE_ACCESS_PROBLEMS)
+//                        .setMsg(getResources().getString(R.string.can_not_access_ptv_site))
+                        .setMsg(msg)
+                        .build());
             }
         }
     }

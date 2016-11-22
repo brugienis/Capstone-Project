@@ -14,7 +14,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 public class MainActivityEvents {
 
     public enum MainEvents {
-        NETWORK_STATUS,
+        REMOTE_ACCESS_PROBLEMS,
         NEXT_DEPARTURES_DETAILS,
         DISRUPTIONS_DETAILS,
         CURR_LOCATION_DETAILS,

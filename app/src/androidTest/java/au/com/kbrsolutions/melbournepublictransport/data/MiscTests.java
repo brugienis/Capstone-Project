@@ -2,8 +2,6 @@ package au.com.kbrsolutions.melbournepublictransport.data;
 
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -46,9 +44,6 @@ public class MiscTests {
 
     @Test
     public void testReleaseVersion() throws Throwable {
-        SharedPreferences prefs
-                = PreferenceManager.getDefaultSharedPreferences(mContext);
-
         Utility.isReleaseVersion(mContext);
         Assert.assertTrue("Error: the value of the 'release version' has to be true",
                 Utility.isReleaseVersion(mContext));

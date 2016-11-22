@@ -21,6 +21,13 @@
     <string name="all_stops_train">All stops</string>
     <string name="database_load_status">database_load_status</string>≈
 
+    <!-- error message: no network access -->
+    <string name="no_network_connection">No network connection</string>≈
+    <!-- error message: can not access PTV web site -->
+    <string name="can_not_access_ptv_site">
+        Cannot access PTV site: <xliff:g id="dev_info">%1$s</xliff:g>
+    </string>≈
+
     <!-- Key name for storing fixed location in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_key_fixed_location" translatable="false">fixed_location</string>
 
