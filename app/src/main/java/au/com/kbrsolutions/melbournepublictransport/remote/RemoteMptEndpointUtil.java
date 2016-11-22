@@ -81,8 +81,8 @@ public class RemoteMptEndpointUtil {
             // FIXME: 5/09/2016 - handle exception properly
             e.printStackTrace();
             return false;
-        } catch (NullPointerException e) {
-            return false;
+        } catch (Exception e) {
+            throw new RuntimeException(TAG + ".performHealthCheck - exception: ");
         }
 
         return databaseOK;

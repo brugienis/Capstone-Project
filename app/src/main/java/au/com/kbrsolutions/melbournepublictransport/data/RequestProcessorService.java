@@ -80,10 +80,10 @@ public class RequestProcessorService extends IntentService {
         }
 
         if (request != null) {
-            boolean databaseOK = DatabaseContentRefresher.performHealthCheck();
-            if (!databaseOK) {
+//            boolean databaseOK = DatabaseContentRefresher.performHealthCheck();
+            if (!RemoteMptEndpointUtil.performHealthCheck()) {
                 sendMessageToMainActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.NETWORK_STATUS)
-                        .setMsg("CANNOT ACCESS MPT site")
+                        .setMsg("CANNOT ACCESS PTV site")
                         .build());
             } else {
                 LatLngDetails latLonDetails;

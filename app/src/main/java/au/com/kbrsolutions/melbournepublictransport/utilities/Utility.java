@@ -3,7 +3,6 @@ package au.com.kbrsolutions.melbournepublictransport.utilities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.util.TypedValue;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
@@ -32,7 +31,7 @@ public class Utility {
      * @param context
      * @return
      */
-    public static void init(Context context) {
+    public static void initSettings(Context context) {
         SharedPreferences prefs
                 = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -63,9 +62,12 @@ public class Utility {
                     context.getString(R.string.pref_default_widget_stop_name));
 
             editor.apply();
-            Log.v(TAG, "init - done");
 //        processPlacePickerData - : -37.817682500000004/144.96726171874994
         }
+    }
+
+    public static boolean isReleaseVersion(Context context) {
+        return context.getResources().getBoolean(R.bool.release_version);
     }
 
     /**
@@ -99,7 +101,7 @@ public class Utility {
 //        String stopName = prefs.getString(context.getString(R.string.pref_key_widget_stop_name), context.getString(R.string.pref_default_widget_stop_name));
         String stopName = prefs.getString(context.getString(R.string.pref_key_widget_stop_name), "");
         if (stopName.length() == 0) {
-            init(context);
+            initSettings(context);
             stopName = prefs.getString(context.getString(R.string.pref_key_widget_stop_name), "");
         }
         return stopName;

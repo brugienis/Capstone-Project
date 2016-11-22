@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- release_version must be true before the app can be released (published) -->
+    <bool name="release_version">false</bool>
+</resources>

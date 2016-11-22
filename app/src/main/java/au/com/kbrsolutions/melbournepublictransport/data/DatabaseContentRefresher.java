@@ -46,10 +46,10 @@ public class DatabaseContentRefresher {
         }
     }
 
-    protected static boolean performHealthCheck() {
-        boolean databaseOK = RemoteMptEndpointUtil.performHealthCheck();
-        return databaseOK;
-    }
+//    protected static boolean performHealthCheck() {
+//        boolean databaseOK = RemoteMptEndpointUtil.performHealthCheck();
+//        return databaseOK;
+//    }
 
     protected static void refreshDatabase(ContentResolver contentResolver) {
 //        if (runIfTablesAreEmpty) {

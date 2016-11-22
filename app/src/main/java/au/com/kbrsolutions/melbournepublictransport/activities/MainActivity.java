@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         }
-        Utility.init(getApplicationContext());
+        Utility.initSettings(getApplicationContext());
         Log.v(TAG, "onCreate - end");
     }
 
