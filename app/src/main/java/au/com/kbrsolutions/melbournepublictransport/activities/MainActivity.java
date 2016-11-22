@@ -56,6 +56,7 @@ import au.com.kbrsolutions.melbournepublictransport.fragments.StationOnMapFragme
 import au.com.kbrsolutions.melbournepublictransport.fragments.StopsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StopsNearbyFragment;
 import au.com.kbrsolutions.melbournepublictransport.utilities.CurrentGeoPositionFinder;
+import au.com.kbrsolutions.melbournepublictransport.utilities.ProgressBarHandler;
 import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
 import static au.com.kbrsolutions.melbournepublictransport.activities.MainActivity.FragmentsId.FAVORITE_STOPS;
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements
     private NextDeparturesFragment mNextDeparturesFragment;
     private DisruptionsFragment mDisruptionsFragment;
     private StopsNearbyFragment mStopsNearbyFragment;
+    private ProgressBarHandler mProgressBarHandler;
 //    private ActionBar actionBar;
     private AppBarLayout mAppBarLayout;
     private CoordinatorLayout mCoordinatorlayout;
@@ -231,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
         Utility.initSettings(getApplicationContext());
+        mProgressBarHandler = new ProgressBarHandler(this);
         Log.v(TAG, "onCreate - end");
     }
 
@@ -473,9 +476,11 @@ public class MainActivity extends AppCompatActivity implements
 //        fab.setImageResource(R.drawable.ic_autorenew_pink_48dp);
         fab.setImageResource(R.drawable.ic_stock_refresh_white_48dp);
         fab.setContentDescription(getString(R.string.pref_desc_main_refresh_next_departures));
+        hideProgress();
     }
 
     public void getDisruptionsDetails() {
+        showProgress();
         String trainMode = TRANSPORT_MODE_METRO_TRAIN;
         Intent intent = new Intent(this, RequestProcessorService.class);
         intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_GET_DISRUPTIONS_DETAILS);
@@ -516,6 +521,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void getStopsNearbyDetails(LatLngDetails latLonDetails, boolean forTrainsOnly) {
+        showProgress();
         Intent intent = new Intent(this, RequestProcessorService.class);
         if (forTrainsOnly) {
             intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_GET_TRAIN_STOPS_NEARBY_DETAILS);
@@ -540,6 +546,7 @@ public class MainActivity extends AppCompatActivity implements
                 .addToBackStack(DISRUPTION_TAG)     // it will also show 'Up' button in the action bar
                 .commit();
         mDisruptionsFragment.setActionBarTitle(getResources().getString(R.string.title_disruptions));
+        hideProgress();
     }
 
     /**
@@ -555,6 +562,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void startNextDeparturesSearch(StopDetails stopDetails) {
+        showProgress();
         Intent intent = new Intent(this, RequestProcessorService.class);
         intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_SHOW_NEXT_DEPARTURES);
         Bundle mBundle = new Bundle();
@@ -650,6 +658,7 @@ public class MainActivity extends AppCompatActivity implements
                 getResources().getString(R.string.title_stops_nearby)
         );
         fab.hide();
+        hideProgress();
     }
 
     @Override
@@ -779,6 +788,21 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onNearbyStopsFragmentMapClicked(NearbyStopsDetails nearbyStopsDetails) {
         showStopOnMap(new LatLngDetails(nearbyStopsDetails.latitude, nearbyStopsDetails.longitude));
+    }
+
+    /**
+     * Make progress bar visible
+     */
+    public void showProgress() {
+        mProgressBarHandler.show();
+    }
+
+
+    /**
+     * Make progress bar invisible
+     */
+    public void hideProgress() {
+        mProgressBarHandler.hide();
     }
 
     private void showTopFragment() {
