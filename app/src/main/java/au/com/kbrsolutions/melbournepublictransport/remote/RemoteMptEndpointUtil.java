@@ -86,12 +86,23 @@ public class RemoteMptEndpointUtil {
     private static Map<Integer, String> directionMap = new ArrayMap<>();
 
     static {
-        directionMap.put(0, "To City");
-        directionMap.put(1, "To City (Flinders Street)");
-        directionMap.put(6, "To Frankston");
+        directionMap.put(0,  "To City");
+        directionMap.put(1,  "To City (Flinders Street)");
+        directionMap.put(2,  "To Craigieburn");
+        directionMap.put(3,  "To Belgrave");
+        directionMap.put(4,  "To Cranbourne");
+        directionMap.put(5,  "To South Morang");
+        directionMap.put(6,  "To Frankston");
+        directionMap.put(7,  "To Glen Waverly");
+        directionMap.put(8,  "To Hurstbridge");
+        directionMap.put(9,  "To Lilydale");
+        directionMap.put(10, "To Pakenham");
         directionMap.put(11, "To Sandringham");
+        directionMap.put(12, "To Stony Point");
+        directionMap.put(13, "To Sunbury");
         directionMap.put(14, "To Upfield");
         directionMap.put(15, "To Werribee");
+        directionMap.put(16, "To Williamstown");
     }
 
     private final static String TAG = RemoteMptEndpointUtil.class.getSimpleName();

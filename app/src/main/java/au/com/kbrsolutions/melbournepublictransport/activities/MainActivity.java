@@ -21,7 +21,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -80,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements
     private NextDeparturesFragment mNextDeparturesFragment;
     private DisruptionsFragment mDisruptionsFragment;
     private StopsNearbyFragment mStopsNearbyFragment;
-    private ActionBar actionBar;
+//    private ActionBar actionBar;
     private AppBarLayout mAppBarLayout;
     private CoordinatorLayout mCoordinatorlayout;
 
@@ -150,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements
         mToolbar.setTitle(getResources().getString(R.string.title_favorite_stops));
 
         setSupportActionBar(mToolbar);
-        actionBar = getSupportActionBar();
+//        actionBar = getSupportActionBar();
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
