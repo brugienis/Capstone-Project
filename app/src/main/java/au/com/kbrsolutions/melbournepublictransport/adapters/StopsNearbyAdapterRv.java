@@ -35,7 +35,7 @@ public class StopsNearbyAdapterRv extends RecyclerView.Adapter<StopsNearbyAdapte
     @Override
     public StopsNearbyAdapterRv.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_nearby_stops_list, parent, false);
+                .inflate(R.layout.fragment_stops_nearby_list, parent, false);
         return new StopsNearbyAdapterRv.ViewHolder(view);
     }
 

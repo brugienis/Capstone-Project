@@ -76,7 +76,7 @@ public class StopsNearbyFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mRootView = inflater.inflate(R.layout.fragment_nearby_stops, container, false);
+        mRootView = inflater.inflate(R.layout.fragment_stops_nearby, container, false);
 
         mStopsNearbyAdapter = new StopsNearbyAdapter(getActivity(),
                 mNearbyStopsDetailsList, mListener);

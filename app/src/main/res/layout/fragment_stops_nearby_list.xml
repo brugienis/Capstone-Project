@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/today_touch_selector"
                 tools:text="Stop name"
-                android:textAppearance="?attr/textAppearanceListItem"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textColor="@android:color/black" />
 
             <TextView

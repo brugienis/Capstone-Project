@@ -47,7 +47,7 @@ public class StopsNearbyAdapter<T> extends ArrayAdapter<NearbyStopsDetails> {
         if (v == null) {
             LayoutInflater inflater =
                     (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inflater.inflate(R.layout.fragment_nearby_stops_list, parent, false);
+            v = inflater.inflate(R.layout.fragment_stops_nearby_list, parent, false);
 
             holder = new ViewHolder();
             holder.transportImage = (ImageView) v.findViewById(R.id.transportImageId);
