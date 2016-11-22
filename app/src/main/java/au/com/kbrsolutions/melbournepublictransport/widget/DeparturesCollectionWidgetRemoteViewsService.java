@@ -69,7 +69,9 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
                         RemoteMptEndpointUtil.getBroadNextDepartures(
                                 NearbyStopsDetails.TRAIN_ROUTE_TYPE,
                                 stopId,
-                                limit, getResources());
+                                limit,
+                                getApplicationContext());
+//                                getResources());
 //                    Log.v(TAG, "onDataSetChanged - after getBroadNextDepartures - mNextDepartureDetails.size: " + mNextDepartureDetails.size());
 //                }
                 Binder.restoreCallingIdentity(identityToken);

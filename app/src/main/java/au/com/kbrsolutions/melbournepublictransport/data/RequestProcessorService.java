@@ -28,8 +28,8 @@ public class RequestProcessorService extends IntentService {
 
     private EventBus eventBus;
     private DbUtility dbUtility;
-    boolean mTestDatabaseLoaded = false;
-    boolean mTestDatabaseEmpty = true;
+    private boolean mTestDatabaseLoaded = false;
+    private boolean mTestDatabaseEmpty = true;
 
     private final static boolean REFRESH_TEST = false;
 
@@ -37,11 +37,11 @@ public class RequestProcessorService extends IntentService {
     // FIXME: 10/10/2016 add ACTION_prefix to all action constants
     public final static String ACTION_REFRESH_DATA = "action_refresh_data";
     public final static String ACTION_GET_DATABASE_STATUS = "action_get_dadabase_status";
-    public static final String GET_DISRUPTIONS_DETAILS = "get_disruptions_details";
-    public final static String SHOW_NEXT_DEPARTURES = "show_next_departures";
-    public final static String GET_NEARBY_STOPS_DETAILS = "get_nearby_details";
-    public final static String GET_TRAIN_NEARBY_STOPS_DETAILS = "get_train_nearby_stops_details";
-    public final static String UPDATE_STOPS_DETAILS = "update_stops_details";
+    public static final String ACTION_GET_DISRUPTIONS_DETAILS = "get_disruptions_details";
+    public final static String ACTION_SHOW_NEXT_DEPARTURES = "show_next_departures";
+    public final static String ACTION_GET_STOPS_NEARBY_DETAILS = "get_nearby_details";
+    public final static String ACTION_GET_TRAIN_STOPS_NEARBY_DETAILS = "get_train_nearby_stops_details";
+    public final static String ACTION_UPDATE_STOPS_DETAILS = "update_stops_details";
 
     public final static String MODES = "modes";
     public final static String STOP_ID = "stop_id";
@@ -128,7 +128,8 @@ public class RequestProcessorService extends IntentService {
 //                                    .build());
                                 Log.v(TAG, "onHandleIntent - real load - databaseEmpty: " + databaseEmpty);
                                 if (databaseEmpty || !extras.getBoolean(REFRESH_DATA_IF_TABLES_EMPTY)) {
-                                    DatabaseContentRefresher.refreshDatabase(getContentResolver());
+                                    DatabaseContentRefresher.refreshDatabase(getContentResolver(),
+                                            getApplicationContext());
                                 } else {
                                 /* database is not empty - pretend the load has finished */
                                     sendMessageToMainActivity(new MainActivityEvents.Builder(
@@ -140,7 +141,7 @@ public class RequestProcessorService extends IntentService {
                             }
                             break;
 
-                        case SHOW_NEXT_DEPARTURES:
+                        case ACTION_SHOW_NEXT_DEPARTURES:
                             StopDetails stopDetails = extras.getParcelable(STOP_DETAILS);
 //                        Log.v(TAG, "onHandleIntent - stopDetails: " + stopDetails);
 //                        getResources().getString(R.string.all_stops_train);
@@ -149,7 +150,8 @@ public class RequestProcessorService extends IntentService {
                                             stopDetails.routeType,
                                             stopDetails.stopId,
                                             extras.getInt(LIMIT),
-                                            getResources());
+//                                            getResources(),
+                                            getApplicationContext());
 
 //                        List<NextDepartureDetails> nextDepartureDetailsList =
 //                          buildSimulatedDepartureDetails();
@@ -161,9 +163,10 @@ public class RequestProcessorService extends IntentService {
                                     .build());
                             break;
 
-                        case GET_DISRUPTIONS_DETAILS:
+                        case ACTION_GET_DISRUPTIONS_DETAILS:
                             List<DisruptionsDetails> disruptionsDetailsList =
-                                    RemoteMptEndpointUtil.getDisruptions(extras.getString(MODES));
+                                    RemoteMptEndpointUtil.getDisruptions(extras.getString(MODES),
+                                            getApplicationContext());
 //                        List<DisruptionsDetails> disruptionsDetailsList =
 //                          buildSimulatedDisruptionsDetails();
                             sendMessageToMainActivity(new MainActivityEvents.Builder(
@@ -172,7 +175,7 @@ public class RequestProcessorService extends IntentService {
                                     .build());
                             break;
 
-                        case GET_TRAIN_NEARBY_STOPS_DETAILS:
+                        case ACTION_GET_TRAIN_STOPS_NEARBY_DETAILS:
                             latLonDetails = extras.getParcelable(LAT_LON);
                             if (dbUtility == null) {
                                 dbUtility = new DbUtility();
@@ -187,11 +190,12 @@ public class RequestProcessorService extends IntentService {
                                     .build());
                             break;
 
-                        case GET_NEARBY_STOPS_DETAILS:
+                        case ACTION_GET_STOPS_NEARBY_DETAILS:
                             latLonDetails = extras.getParcelable(LAT_LON);
 //                        Log.v(TAG, "onHandleIntent - latLonDetails: " + latLonDetails);
                             nearbyStopsDetailsList =
-                                    RemoteMptEndpointUtil.getNearbyStops(latLonDetails);
+                                    RemoteMptEndpointUtil.getNearbyStops(latLonDetails,
+                                    getApplicationContext());
                             if (dbUtility == null) {
                                 dbUtility = new DbUtility();
                             }
@@ -204,7 +208,7 @@ public class RequestProcessorService extends IntentService {
                                     .build());
                             break;
 
-                        case UPDATE_STOPS_DETAILS:
+                        case ACTION_UPDATE_STOPS_DETAILS:
                             if (dbUtility == null) {
                                 dbUtility = new DbUtility();
                             }
@@ -231,7 +235,6 @@ public class RequestProcessorService extends IntentService {
                     msg = getResources().getString(R.string.can_not_access_ptv_site, e);
                 }
                 sendMessageToMainActivity(new MainActivityEvents.Builder(MainActivityEvents.MainEvents.REMOTE_ACCESS_PROBLEMS)
-//                        .setMsg(getResources().getString(R.string.can_not_access_ptv_site))
                         .setMsg(msg)
                         .build());
             }

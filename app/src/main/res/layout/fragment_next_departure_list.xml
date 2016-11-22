@@ -53,6 +53,8 @@
             android:layout_height="wrap_content"
             tools:text="hh:mm"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
+            android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
             android:textColor="@android:color/black"
             android:textSize="@dimen/text_size"
             android:background="@drawable/today_touch_selector"/>

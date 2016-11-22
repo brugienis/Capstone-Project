@@ -11,13 +11,18 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:orientation="vertical"
                   android:layout_width="match_parent"
-                  android:layout_height="match_parent">
+                  android:layout_height="match_parent"
+                  android:background="@color/deep_orange_50" >
 
         <TextView
             tools:text="Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:layout_marginLeft="@dimen/abc_list_item_padding_horizontal_material"
+            android:layout_marginStart="@dimen/abc_list_item_padding_horizontal_material"
+            android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
+            android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
             android:paddingBottom="2dp"
             android:id="@+id/disruptionsTitle"
             android:background="@drawable/today_touch_selector"
@@ -28,6 +33,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:layout_marginLeft="@dimen/abc_list_item_padding_horizontal_material"
+            android:layout_marginStart="@dimen/abc_list_item_padding_horizontal_material"
+            android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
+            android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
             android:id="@+id/disruptionsDescription"
             android:background="@drawable/today_touch_selector"
             android:textColor="@android:color/black"

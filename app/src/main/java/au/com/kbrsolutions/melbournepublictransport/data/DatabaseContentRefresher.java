@@ -3,6 +3,7 @@ package au.com.kbrsolutions.melbournepublictransport.data;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
@@ -51,7 +52,7 @@ public class DatabaseContentRefresher {
 //        return databaseOK;
 //    }
 
-    protected static void refreshDatabase(ContentResolver contentResolver) {
+    protected static void refreshDatabase(ContentResolver contentResolver, Context context) {
 //        if (runIfTablesAreEmpty) {
 //            if (databaseLoadFinished(contentResolver)) {
 //                return;
@@ -62,7 +63,8 @@ public class DatabaseContentRefresher {
 
         // FIXME: 3/10/2016
         int trainMode = NearbyStopsDetails.TRAIN_ROUTE_TYPE;    // 0;
-        List<ContentValues> lineDetailsContentValuesList = RemoteMptEndpointUtil.getLineDetails(trainMode);
+        List<ContentValues> lineDetailsContentValuesList =
+                RemoteMptEndpointUtil.getLineDetails(trainMode, context);
         sendMessageToMainActivity(new MainActivityEvents.Builder(
                 MainActivityEvents.MainEvents.DATABASE_LOAD_TARGET)
                 .setDatabaseLoadTarget(lineDetailsContentValuesList.size() - 1)
@@ -79,7 +81,8 @@ public class DatabaseContentRefresher {
             List<ContentValues> stopDetailsContentValuesList =
                     RemoteMptEndpointUtil.getStopDetailsForLine(
                             trainMode,
-                            values.getAsString(MptContract.LineDetailEntry.COLUMN_LINE_ID));
+                            values.getAsString(MptContract.LineDetailEntry.COLUMN_LINE_ID),
+                            context);
             ContentValues[] returnContentValues = new ContentValues[stopDetailsContentValuesList.size()];
             int cnt = 0;
             for (ContentValues contentValues : stopDetailsContentValuesList) {

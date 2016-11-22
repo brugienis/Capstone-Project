@@ -479,7 +479,7 @@ public class MainActivity extends AppCompatActivity implements
     public void getDisruptionsDetails() {
         String trainMode = TRANSPORT_MODE_METRO_TRAIN;
         Intent intent = new Intent(this, RequestProcessorService.class);
-        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.GET_DISRUPTIONS_DETAILS);
+        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_GET_DISRUPTIONS_DETAILS);
         intent.putExtra(RequestProcessorService.MODES, trainMode);
         startService(intent);
     }
@@ -487,7 +487,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void updateStopDetailRow(int id, String favoriteColumnValue) {
         Intent intent = new Intent(this, RequestProcessorService.class);
-        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.UPDATE_STOPS_DETAILS);
+        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_UPDATE_STOPS_DETAILS);
         intent.putExtra(RequestProcessorService.ROW_ID, id);
         intent.putExtra(RequestProcessorService.FAVORITE_COLUMN_VALUE, favoriteColumnValue);
         startService(intent);
@@ -519,9 +519,9 @@ public class MainActivity extends AppCompatActivity implements
     private void getStopsNearbyDetails(LatLngDetails latLonDetails, boolean forTrainsOnly) {
         Intent intent = new Intent(this, RequestProcessorService.class);
         if (forTrainsOnly) {
-            intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.GET_TRAIN_NEARBY_STOPS_DETAILS);
+            intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_GET_TRAIN_STOPS_NEARBY_DETAILS);
         } else {
-            intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.GET_NEARBY_STOPS_DETAILS);
+            intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_GET_STOPS_NEARBY_DETAILS);
         }
         intent.putExtra(RequestProcessorService.LAT_LON, latLonDetails);
         startService(intent);
@@ -557,7 +557,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public void startNextDeparturesSearch(StopDetails stopDetails) {
         Intent intent = new Intent(this, RequestProcessorService.class);
-        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.SHOW_NEXT_DEPARTURES);
+        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_SHOW_NEXT_DEPARTURES);
         Bundle mBundle = new Bundle();
         mBundle.putParcelable(RequestProcessorService.STOP_DETAILS, stopDetails);
         intent.putExtras(mBundle);
