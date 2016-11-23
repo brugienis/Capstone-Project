@@ -2,7 +2,8 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context=".fragments.StopsFragment">
+             tools:context=".fragments.StopsFragment"
+             android:background="@color/deep_orange_50" >
 
     <au.com.kbrsolutions.melbournepublictransport.fragments.NestedScrollingListView
         android:layout_width="match_parent"

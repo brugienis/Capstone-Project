@@ -103,6 +103,7 @@ public class RemoteMptEndpointUtil {
         directionMap.put(14, "To Upfield");
         directionMap.put(15, "To Werribee");
         directionMap.put(16, "To Williamstown");
+        directionMap.put(17, "To Showgrounds/Flemington");
     }
 
     private final static String TAG = RemoteMptEndpointUtil.class.getSimpleName();

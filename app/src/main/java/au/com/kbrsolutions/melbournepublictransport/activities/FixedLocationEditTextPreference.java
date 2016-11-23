@@ -78,12 +78,12 @@ public class FixedLocationEditTextPreference extends EditTextPreference {
     @Override
     protected View onCreateView(ViewGroup parent) {
         View view = super.onCreateView(parent);
-        final View currentLocation = view.findViewById(R.id.current_location);
-        currentLocation.setOnClickListener(new View.OnClickListener() {
+        final View fixedLocation = view.findViewById(R.id.current_location);
+        fixedLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!isGoogleApiAvailable) {
-                    Snackbar.make(currentLocation, mContext.getString(
+                    Snackbar.make(fixedLocation, mContext.getString(
                             R.string.pref_google_services_not_available_fixed_location),
                             Snackbar.LENGTH_LONG).show();
                     return;
