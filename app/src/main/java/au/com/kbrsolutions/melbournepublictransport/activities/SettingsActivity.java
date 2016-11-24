@@ -102,7 +102,7 @@ public class SettingsActivity extends AppCompatActivity {
             mSettingsFragment = new SettingsFragment();
             getFragmentManager()
                     .beginTransaction()
-                    .add(R.id.left_dynamic_fragments_frame, mSettingsFragment, SETTINGS_TAG)
+                    .add(R.id.secondary_dynamic_fragments_frame, mSettingsFragment, SETTINGS_TAG)
                     .commit();
         }
     }

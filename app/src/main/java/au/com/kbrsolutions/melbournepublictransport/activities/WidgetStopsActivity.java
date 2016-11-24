@@ -86,7 +86,7 @@ public class WidgetStopsActivity
         mFavoriteStopsFragment.setIsInSettingsActivityFlag(true);
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
+                .add(R.id.secondary_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
                 .commit();
     }
 

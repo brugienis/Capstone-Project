@@ -22,7 +22,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -81,14 +80,13 @@ public class MainActivity extends AppCompatActivity implements
     private DisruptionsFragment mDisruptionsFragment;
     private StopsNearbyFragment mStopsNearbyFragment;
     private ProgressBarHandler mProgressBarHandler;
-//    private ActionBar actionBar;
     private AppBarLayout mAppBarLayout;
     private CoordinatorLayout mCoordinatorlayout;
+    private boolean mTwoPane;
 
     private Toolbar mToolbar;
     private CollapsingToolbarLayout mCollapsingToolbar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private RecyclerView mRecyclerView;
 
     private FloatingActionButton fab;
     private EventBus eventBus;
@@ -105,7 +103,6 @@ public class MainActivity extends AppCompatActivity implements
     private static final String INIT_TAG = "init_tag";
     private static final String TRANSPORT_MODE_METRO_TRAIN = "metro-train";
 
-    // FIXME: 10/10/2016 - remove enums - not efficient in Android
     public enum FragmentsId {
         DISRUPTIONS,
         FAVORITE_STOPS,
@@ -151,7 +148,6 @@ public class MainActivity extends AppCompatActivity implements
         mToolbar.setTitle(getResources().getString(R.string.title_favorite_stops));
 
         setSupportActionBar(mToolbar);
-//        actionBar = getSupportActionBar();
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -226,6 +222,33 @@ public class MainActivity extends AppCompatActivity implements
 //                    Log.v(TAG, "onCreate - database already loaded");
                     showFavoriteStops();
 //                    checkIfDatabaseEmpty();
+                    if (findViewById(R.id.primary_dynamic_fragments_frame) != null) {
+                        // The detail container view will be present only in the large-screen layouts
+                        // (res/layout-sw600dp). If this view is present, then the activity should be
+                        // in two-pane mode.
+                        mTwoPane = true;
+                        showStopsFragment();
+                        Log.v(TAG, "onCreate - mTwoPane: " + mTwoPane);
+                        // In two-pane mode, show the detail view in this activity by
+                        // adding or replacing the detail fragment using a
+                        // fragment transaction.
+//                        showS
+//                        if (savedInstanceState == null) {
+//                            if (mStopsFragment == null) {
+//                                mTracksFragment = new TracksFragment();
+//                                TrackArrayAdapter<TrackDetails> trackArrayAdapter =
+//                                        new TrackArrayAdapter<>(this, new ArrayList<TrackDetails>());
+//                                mTracksFragment.setListAdapter(trackArrayAdapter);
+//                                getSupportFragmentManager()
+//                                        .beginTransaction()
+//                                        .replace(R.id.right_dynamic_fragments_frame, mTracksFragment, TRACK_TAG)
+//                                        .commit();
+//                            }
+//                        }
+                    } else {
+                        mTwoPane = false;
+//            getSupportActionBar().setElevation(0f);
+                    }
                 } else {
 //                    Log.v(TAG, "onCreate - database not loaded");
                     loadDatabase();
@@ -290,7 +313,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.left_dynamic_fragments_frame, mInitFragment, INIT_TAG)
+                .add(R.id.secondary_dynamic_fragments_frame, mInitFragment, INIT_TAG)
                 .addToBackStack(INIT_TAG)
                 .commit();
         Intent intent = new Intent(this, RequestProcessorService.class);
@@ -378,17 +401,18 @@ public class MainActivity extends AppCompatActivity implements
         }
         switch (topFragmentTag) {
             case FAVORITE_STOPS_TAG:
-                if (mStopsFragment == null) {
-                    mStopsFragment = new StopsFragment();
-                    mStopsFragment.setFragmentId(FragmentsId.STOPS);
-                }
-                mFavoriteStopsFragment.hideView();
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .add(R.id.left_dynamic_fragments_frame, mStopsFragment, STOP_TAG)
-                        .addToBackStack(STOP_TAG)     // it will also show 'Up' button in the action bar
-                        .commit();
-                mStopsFragment.setActionBarTitle(getResources().getString(R.string.title_stops));
+                showStopsFragment();
+//                if (mStopsFragment == null) {
+//                    mStopsFragment = new StopsFragment();
+//                    mStopsFragment.setFragmentId(FragmentsId.STOPS);
+//                }
+//                mFavoriteStopsFragment.hideView();
+//                getSupportFragmentManager()
+//                        .beginTransaction()
+//                        .add(R.id.left_dynamic_fragments_frame, mStopsFragment, STOP_TAG)
+//                        .addToBackStack(STOP_TAG)     // it will also show 'Up' button in the action bar
+//                        .commit();
+//                mStopsFragment.setActionBarTitle(getResources().getString(R.string.title_stops));
                 fab.hide();
             break;
 
@@ -402,6 +426,30 @@ public class MainActivity extends AppCompatActivity implements
                                 "" + fragmentsId);
 
         }
+    }
+
+    private void showStopsFragment() {
+        //!mTwoPane &&
+        if (mStopsFragment == null) {
+            mStopsFragment = new StopsFragment();
+            mStopsFragment.setFragmentId(FragmentsId.STOPS);
+        }
+        mFavoriteStopsFragment.hideView();
+        Log.v(TAG, "showStopsFragment - mTwoPane: " + mTwoPane);
+//        if (mTwoPane) {
+//            getSupportFragmentManager()
+//                    .beginTransaction()
+//                    .add(R.id.right_dynamic_fragments_frame, mStopsFragment, STOP_TAG)
+//                    .addToBackStack(STOP_TAG)     // it will also show 'Up' button in the action bar
+//                    .commit();
+//        } else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.secondary_dynamic_fragments_frame, mStopsFragment, STOP_TAG)
+                    .addToBackStack(STOP_TAG)     // it will also show 'Up' button in the action bar
+                    .commit();
+//        }
+        mStopsFragment.setActionBarTitle(getResources().getString(R.string.title_stops));
     }
 
     private void showTopViewOnBackStackChanged() {
@@ -469,7 +517,7 @@ public class MainActivity extends AppCompatActivity implements
         hideViewIfRequired();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.left_dynamic_fragments_frame, mNextDeparturesFragment, NEXT_DEPARTURES_TAG)
+                .add(R.id.secondary_dynamic_fragments_frame, mNextDeparturesFragment, NEXT_DEPARTURES_TAG)
                 .addToBackStack(NEXT_DEPARTURES_TAG)     // it will also show 'Up' button in the action bar
                 .commit();
         mNextDeparturesFragment.setActionBarTitle(getResources().getString(R.string.title_next_departures));
@@ -542,7 +590,7 @@ public class MainActivity extends AppCompatActivity implements
         mFavoriteStopsFragment.hideView();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.left_dynamic_fragments_frame, mDisruptionsFragment, DISRUPTION_TAG)
+                .add(R.id.secondary_dynamic_fragments_frame, mDisruptionsFragment, DISRUPTION_TAG)
                 .addToBackStack(DISRUPTION_TAG)     // it will also show 'Up' button in the action bar
                 .commit();
         mDisruptionsFragment.setActionBarTitle(getResources().getString(R.string.title_disruptions));
@@ -588,13 +636,21 @@ public class MainActivity extends AppCompatActivity implements
             mFavoriteStopsFragment.setFragmentId(FAVORITE_STOPS);
             mFavoriteStopsFragment.setActionBarTitle(getResources().getString(R.string.title_favorite_stops));
         }
+        if (mTwoPane) {
 //        mFavoriteStopsFragment.setIsInSettingsActivityFlag(false);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.left_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.secondary_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
 //                    .addToBackStack(FAVORITE_STOPS_TAG)
-                .commit();
+                    .commit();
 //        Log.v(TAG, "showFavoriteStops - mFavoriteStopsFragment hashCode: " + Utility.getClassHashCode(mFavoriteStopsFragment));
+        } else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.primary_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
+//                    .addToBackStack(FAVORITE_STOPS_TAG)
+                    .commit();
+        }
     }
 
     /**
@@ -631,7 +687,7 @@ public class MainActivity extends AppCompatActivity implements
             mFavoriteStopsFragment.hideView();
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.left_dynamic_fragments_frame, mStationOnMapFragment, STATION_ON_MAP_TAG)
+                    .add(R.id.secondary_dynamic_fragments_frame, mStationOnMapFragment, STATION_ON_MAP_TAG)
                     .addToBackStack(STATION_ON_MAP_TAG)
                     .commit();
             mStationOnMapFragment.setActionBarTitle(getResources().getString(R.string.title_stop_on_map));
@@ -650,7 +706,7 @@ public class MainActivity extends AppCompatActivity implements
         mFavoriteStopsFragment.hideView();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.left_dynamic_fragments_frame, mStopsNearbyFragment, NEARBY_TAG)
+                .add(R.id.secondary_dynamic_fragments_frame, mStopsNearbyFragment, NEARBY_TAG)
                 .addToBackStack(NEARBY_TAG)
                 .commit();
         mStopsNearbyFragment.setActionBarTitle(forTrainsStopsNearby ?
