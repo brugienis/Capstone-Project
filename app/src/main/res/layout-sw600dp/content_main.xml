@@ -18,6 +18,11 @@
         android:background="@color/deep_orange_50" >
     </FrameLayout>
 
+    <View
+        android:layout_width="5dp"
+        android:layout_height="match_parent"
+        android:background="@android:color/black" />
+
     <FrameLayout
         android:id="@+id/secondary_dynamic_fragments_frame"
         android:layout_width="0dp"

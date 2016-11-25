@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        Log.v(TAG, "onCreate - start");
+        Log.v(TAG, "onCreate - start");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -208,6 +208,15 @@ public class MainActivity extends AppCompatActivity implements
 //        BaseFragment topFragmment = getTopFragment();
         String topFragmentTag = getTopFragmentTag();
 
+        if (findViewById(R.id.primary_dynamic_fragments_frame) != null) {
+            // The detail container view will be present only in the large-screen layouts
+            // (res/layout-sw600dp). If this view is present, then the activity should be
+            // in two-pane mode.
+            mTwoPane = true;
+            Log.v(TAG, "onCreate - mTwoPane: " + mTwoPane);
+        } else {
+            mTwoPane = false;
+        }
         if (savedInstanceState != null) {   /* configuration changed */
             printBackStackFragments();
 //            Log.v(TAG, "onCreate - topFragmentTag: " + topFragmentTag);
@@ -218,27 +227,28 @@ public class MainActivity extends AppCompatActivity implements
                 fab.hide();
             }
             int cnt = getSupportFragmentManager().getBackStackEntryCount();
-            if (cnt > 0) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            if (mTwoPane) {
+                if (cnt > 1) {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                } else {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                }
             } else {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                if (cnt > 0) {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                } else {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                }
             }
         } else {
             if (topFragmentTag == null || !topFragmentTag.equals(INIT_TAG)) {
                 if (isDatabaseLoaded()) {
 //                    Log.v(TAG, "onCreate - database already loaded");
                     showFavoriteStops();
-//                    checkIfDatabaseEmpty();
-                    if (findViewById(R.id.primary_dynamic_fragments_frame) != null) {
-                        // The detail container view will be present only in the large-screen layouts
-                        // (res/layout-sw600dp). If this view is present, then the activity should be
-                        // in two-pane mode.
-                        mTwoPane = true;
+                    if (mTwoPane) {
                         showStopsFragment();
-                        Log.v(TAG, "onCreate - mTwoPane: " + mTwoPane);
-                    } else {
-                        mTwoPane = false;
                     }
+//                    checkIfDatabaseEmpty();
                 } else {
 //                    Log.v(TAG, "onCreate - database not loaded");
                     loadDatabase();
@@ -361,10 +371,14 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-//        Log.v(TAG, "onRestoreInstanceState - start");
+        Log.v(TAG, "onRestoreInstanceState - start");
 //        showFragmentsOnBackStackVisibility();
         super.onRestoreInstanceState(savedInstanceState);
         showTopFragment();
+        if (mTwoPane) {
+            mFavoriteStopsFragment.reloadLoader();
+            mFavoriteStopsFragment.showView();
+        }
 //        Log.v(TAG, "onRestoreInstanceState - after showTopFragment()");
 //        showFragmentsOnBackStackVisibility();
     }
@@ -423,7 +437,9 @@ public class MainActivity extends AppCompatActivity implements
             mStopsFragment = new StopsFragment();
             mStopsFragment.setFragmentId(FragmentsId.STOPS);
         }
-        mFavoriteStopsFragment.hideView();
+        if (!mTwoPane) {
+            mFavoriteStopsFragment.hideView();
+        }
         Log.v(TAG, "showStopsFragment - mTwoPane: " + mTwoPane);
 //        if (mTwoPane) {
 //            getSupportFragmentManager()
@@ -527,6 +543,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void updateStopDetailRow(int id, String favoriteColumnValue) {
+        showProgress();
         Intent intent = new Intent(this, RequestProcessorService.class);
         intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_UPDATE_STOPS_DETAILS);
         intent.putExtra(RequestProcessorService.ROW_ID, id);
@@ -576,7 +593,9 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             mDisruptionsFragment.setNewContent(disruptionsDetailsList);
         }
-        mFavoriteStopsFragment.hideView();
+        if (!mTwoPane) {
+            mFavoriteStopsFragment.hideView();
+        }
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.secondary_dynamic_fragments_frame, mDisruptionsFragment, DISRUPTION_TAG)
@@ -626,6 +645,14 @@ public class MainActivity extends AppCompatActivity implements
             mFavoriteStopsFragment.setActionBarTitle(getResources().getString(R.string.title_favorite_stops));
         }
         if (mTwoPane) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.primary_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
+//                    .addToBackStack(FAVORITE_STOPS_TAG)
+                    .commit();
+        } else {
+
+
 //        mFavoriteStopsFragment.setIsInSettingsActivityFlag(false);
             getSupportFragmentManager()
                     .beginTransaction()
@@ -633,12 +660,6 @@ public class MainActivity extends AppCompatActivity implements
 //                    .addToBackStack(FAVORITE_STOPS_TAG)
                     .commit();
 //        Log.v(TAG, "showFavoriteStops - mFavoriteStopsFragment hashCode: " + Utility.getClassHashCode(mFavoriteStopsFragment));
-        } else {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.primary_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
-//                    .addToBackStack(FAVORITE_STOPS_TAG)
-                    .commit();
         }
     }
 
@@ -661,6 +682,7 @@ public class MainActivity extends AppCompatActivity implements
 
             getSupportFragmentManager().popBackStack();
         }
+        hideProgress();
         Log.v(TAG, "showUpdatedFavoriteStops - end: ");
     }
 
@@ -691,13 +713,16 @@ public class MainActivity extends AppCompatActivity implements
     public void showStopsNearby(
             List<NearbyStopsDetails> nearbyStopsDetailsList,
             boolean forTrainsStopsNearby) {
+
         if (mStopsNearbyFragment == null) {
             mStopsNearbyFragment = StopsNearbyFragment.newInstance(nearbyStopsDetailsList);
             mStopsNearbyFragment.setFragmentId(FragmentsId.STOPS_NEARBY);
         } else {
             mStopsNearbyFragment.setNewContent(nearbyStopsDetailsList);
         }
-        mFavoriteStopsFragment.hideView();
+        if (!mTwoPane) {
+            mFavoriteStopsFragment.hideView();
+        }
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.secondary_dynamic_fragments_frame, mStopsNearbyFragment, NEARBY_TAG)
@@ -944,7 +969,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void findFragments() {
-//        Log.v(TAG, "findFragments - start");
+        Log.v(TAG, "findFragments - start");
 //        BaseFragment topFragmment = null;
         BaseFragment topFragmment = mFavoriteStopsFragment = (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
         if (topFragmment != null) {

@@ -84,6 +84,7 @@ public class FavoriteStopsFragment
         Call invalidateOptionsMenu() only if mCallbacks is not null.
      */
     public void hideView() {
+        Log.v(TAG, "hideView - start: ");
         isVisible = false;
         if (mRootView != null) {
             mRootView.setVisibility(View.INVISIBLE);
@@ -94,6 +95,7 @@ public class FavoriteStopsFragment
     }
 
     public void showView() {
+        Log.v(TAG, "showView - start: ");
         isVisible = true;
         if (mRootView != null) {
             mRootView.setVisibility(View.VISIBLE);
