@@ -27,7 +27,7 @@ public class DbUtility {
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
     public void updateStopDetails(long rowId, Context context, String favoriteColumnValue) {
-//        Log.v(TAG, "updateStopDetails - start - favoriteColumnValue: " + favoriteColumnValue);
+        Log.v(TAG, "updateStopDetails - start - favoriteColumnValue: " + favoriteColumnValue);
         ContentValues updatedValues = new ContentValues();
         updatedValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, favoriteColumnValue);
         int count = context.getContentResolver().update(
@@ -46,6 +46,7 @@ public class DbUtility {
 //                null
 //        );
 //        printContents(cursor);
+        Log.v(TAG, "updateStopDetails - end");
     }
 
     private void printContents(Cursor cursor) {

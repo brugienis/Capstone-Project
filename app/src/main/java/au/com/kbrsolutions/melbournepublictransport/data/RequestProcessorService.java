@@ -70,7 +70,7 @@ public class RequestProcessorService extends IntentService {
         if (extras != null) {
             request = extras.getString(REQUEST);
         }
-//        Log.v(TAG, "onHandleIntent - request: " + request);
+        Log.v(TAG, "onHandleIntent - request: " + request);
 
         ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
@@ -216,10 +216,9 @@ public class RequestProcessorService extends IntentService {
                                     extras.getInt(ROW_ID),
                                     getApplicationContext(),
                                     extras.getString(FAVORITE_COLUMN_VALUE));
-//                        sendMessageToMainActivity(new MainActivityEvents.Builder(
-//                                MainActivityEvents.MainEvents.NEARBY_LOCATION_DETAILS)
-//                                .setNearbyStopsDetailsList(nearbyStopsDetailsList)
-//                                .build());
+                            sendMessageToMainActivity(new MainActivityEvents.Builder(
+                                    MainActivityEvents.MainEvents.REFRESH_FAVORITE_STOPS_VIEW)
+                                    .build());
                             break;
 
                         default:

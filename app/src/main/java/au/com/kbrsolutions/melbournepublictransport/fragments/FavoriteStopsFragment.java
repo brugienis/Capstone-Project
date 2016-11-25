@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -268,11 +269,13 @@ public class FavoriteStopsFragment
         super.onActivityCreated(savedInstanceState);
     }
 
+    private int loaderId;
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         // This is called when a new Loader needs to be created.  This
         // fragment only uses one loader, so we don't care about checking the id.
         // Sort order:  Ascending, by location_name.
+        loaderId = i;
         String sortOrder = MptContract.StopDetailEntry.COLUMN_LOCATION_NAME + " ASC";
 
         Uri nonFavoriteStopDetailUri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.FAVORITE_FLAG);
@@ -304,6 +307,11 @@ public class FavoriteStopsFragment
 //            // to, do so now.
 //            mListView.smoothScrollToPosition(mPosition);
 //        }
+    }
+
+    public void reloadLoader() {
+        Log.v(TAG, "reloadLoader - start: ");
+        getLoaderManager().restartLoader(loaderId, null, this);  //id = 0
     }
 
     @Override

@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements
     private AppBarLayout mAppBarLayout;
     private CoordinatorLayout mCoordinatorlayout;
     private boolean mTwoPane;
+    private int mVerticalOffset;
 
     private Toolbar mToolbar;
     private CollapsingToolbarLayout mCollapsingToolbar;
@@ -177,7 +178,13 @@ public class MainActivity extends AppCompatActivity implements
                         }
                         mPrevBackStackEntryCount = cnt;
 //                        if (cnt == 1 && bf.getFragmentId() == FragmentsId.FAVORITE_STOPS) {
-                        if (cnt == 0) {
+                        if (mTwoPane) {
+                            if (cnt == 1) {
+                                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                            } else {
+                                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                            }
+                        } else if (cnt == 0) {
                             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                         } else {
                             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -229,25 +236,8 @@ public class MainActivity extends AppCompatActivity implements
                         mTwoPane = true;
                         showStopsFragment();
                         Log.v(TAG, "onCreate - mTwoPane: " + mTwoPane);
-                        // In two-pane mode, show the detail view in this activity by
-                        // adding or replacing the detail fragment using a
-                        // fragment transaction.
-//                        showS
-//                        if (savedInstanceState == null) {
-//                            if (mStopsFragment == null) {
-//                                mTracksFragment = new TracksFragment();
-//                                TrackArrayAdapter<TrackDetails> trackArrayAdapter =
-//                                        new TrackArrayAdapter<>(this, new ArrayList<TrackDetails>());
-//                                mTracksFragment.setListAdapter(trackArrayAdapter);
-//                                getSupportFragmentManager()
-//                                        .beginTransaction()
-//                                        .replace(R.id.right_dynamic_fragments_frame, mTracksFragment, TRACK_TAG)
-//                                        .commit();
-//                            }
-//                        }
                     } else {
                         mTwoPane = false;
-//            getSupportActionBar().setElevation(0f);
                     }
                 } else {
 //                    Log.v(TAG, "onCreate - database not loaded");
@@ -260,7 +250,6 @@ public class MainActivity extends AppCompatActivity implements
         Log.v(TAG, "onCreate - end");
     }
 
-    private int mVerticalOffset;
     private void saveAppBarVerticalOffset(int verticalOffset) {
         mVerticalOffset = verticalOffset;
     }
@@ -657,17 +646,22 @@ public class MainActivity extends AppCompatActivity implements
      * Remove StopFragment from the top of the BackStack.
      */
     public void showUpdatedFavoriteStops() {
+        Log.v(TAG, "showUpdatedFavoriteStops - start: ");
         if (mFavoriteStopsFragment != null) {
             mFavoriteStopsFragment.showView();
+            mFavoriteStopsFragment.reloadLoader();
             mFavoriteStopsFragment.setFragmentId(FAVORITE_STOPS);
         }
         printBackStackFragments();
-        getSupportFragmentManager()
-                .beginTransaction()
-                .remove(mStopsFragment)
-                .commit();
+        if (!mTwoPane) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .remove(mStopsFragment)
+                    .commit();
 
-        getSupportFragmentManager().popBackStack();
+            getSupportFragmentManager().popBackStack();
+        }
+        Log.v(TAG, "showUpdatedFavoriteStops - end: ");
     }
 
     @Override
@@ -786,6 +780,10 @@ public class MainActivity extends AppCompatActivity implements
 
             case CURR_LOCATION_DETAILS:
                 getStopsNearbyDetails(event.latLonDetails, event.forTrainsStopsNearby);
+                break;
+
+            case REFRESH_FAVORITE_STOPS_VIEW:
+                showUpdatedFavoriteStops();
                 break;
 
             case NEARBY_LOCATION_DETAILS:

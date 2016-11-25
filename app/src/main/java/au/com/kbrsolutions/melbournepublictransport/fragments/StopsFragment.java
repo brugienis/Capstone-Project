@@ -283,15 +283,9 @@ public class StopsFragment extends BaseFragment implements LoaderManager.LoaderC
         // if it cannot seek to that position.
         Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
         if (cursor != null) {
-            // FIXME: 2/10/2016 - call below to update row
             String favoriteValue = "y";
             mListener.updateStopDetailRow(cursor.getInt(COL_STOP_DETAILS_ID), favoriteValue);
-//            ContentValues updatedValues = new ContentValues();
-//            updatedValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, "y");
-//            int count = getActivity().getContentResolver().update(
-//                    MptContract.StopDetailEntry.CONTENT_URI, updatedValues, MptContract.StopDetailEntry._ID + "= ?",
-//                    new String [] { String.valueOf(cursor.getInt(COL_STOP_DETAILS_ID))});
-            mListener.showUpdatedFavoriteStops();
+//            mListener.showUpdatedFavoriteStops();
         }
     }
 
