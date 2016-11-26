@@ -193,7 +193,8 @@ public class FavoriteStopsFragment
             }
         });
 
-        mEmptyView = (TextView) mRootView.findViewById(R.id.emptyView);
+        mEmptyView = (TextView) mRootView.findViewById(R.id.emptyFavoriteStopsView);
+
         return mRootView;
     }
 
@@ -295,12 +296,14 @@ public class FavoriteStopsFragment
 //        Log.v(TAG, "onLoadFinished - start - rows cnt: " + data.getCount());
         mFavoriteStopDetailAdapter.swapCursor(data);
         mCursorRowCnt = data.getCount();
-        if (mCursorRowCnt > 0) {
-            clearEmptyViewText();
-            mEmptyView.setVisibility(View.GONE);
-//            Log.v(TAG, "onLoadFinished - after GONE");
-        } else {
+        if (mCursorRowCnt == 0) {
+            mListView.setVisibility(View.GONE);
             mEmptyView.setVisibility(View.VISIBLE);
+            setEmptyViewText("onLoadFinished");
+        } else {
+            clearEmptyViewText();
+            mListView.setVisibility(View.VISIBLE);
+            mEmptyView.setVisibility(View.GONE);
         }
         // FIXME: 30/08/2016 below add correct code
 //        mForecastAdapter.swapCursor(data);

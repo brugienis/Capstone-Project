@@ -6,7 +6,7 @@
              android:background="@color/deep_orange_50" >
 
     <TextView
-        android:id="@+id/emptyView"
+        android:id="@+id/emptyFavoriteStopsView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:gravity="center"
