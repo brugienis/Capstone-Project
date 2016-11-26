@@ -148,6 +148,14 @@ public class MainActivity extends AppCompatActivity implements
 
         mToolbar.setTitle(getResources().getString(R.string.title_favorite_stops));
 
+        boolean isRightToLeft = getResources().getBoolean(R.bool.is_right_to_left);
+
+        if (isRightToLeft) {
+            mToolbar.setNavigationIcon(R.mipmap.ic_arrow_right_white_24dp);
+        } else {
+            mToolbar.setNavigationIcon(R.mipmap.ic_arrow_left_white_24dp);
+        }
+
         setSupportActionBar(mToolbar);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
