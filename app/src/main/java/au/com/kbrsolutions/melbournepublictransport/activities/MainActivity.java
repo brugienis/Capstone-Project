@@ -376,7 +376,8 @@ public class MainActivity extends AppCompatActivity implements
         super.onRestoreInstanceState(savedInstanceState);
         showTopFragment();
         if (mTwoPane) {
-            mFavoriteStopsFragment.reloadLoader();
+            // FIXME: 26/11/2016 
+//            mFavoriteStopsFragment.reloadLoader();
             mFavoriteStopsFragment.showView();
         }
 //        Log.v(TAG, "onRestoreInstanceState - after showTopFragment()");
@@ -651,15 +652,10 @@ public class MainActivity extends AppCompatActivity implements
 //                    .addToBackStack(FAVORITE_STOPS_TAG)
                     .commit();
         } else {
-
-
-//        mFavoriteStopsFragment.setIsInSettingsActivityFlag(false);
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.secondary_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
-//                    .addToBackStack(FAVORITE_STOPS_TAG)
                     .commit();
-//        Log.v(TAG, "showFavoriteStops - mFavoriteStopsFragment hashCode: " + Utility.getClassHashCode(mFavoriteStopsFragment));
         }
     }
 
@@ -667,23 +663,22 @@ public class MainActivity extends AppCompatActivity implements
      * Remove StopFragment from the top of the BackStack.
      */
     public void showUpdatedFavoriteStops() {
-        Log.v(TAG, "showUpdatedFavoriteStops - start: ");
         if (mFavoriteStopsFragment != null) {
             mFavoriteStopsFragment.showView();
             mFavoriteStopsFragment.reloadLoader();
             mFavoriteStopsFragment.setFragmentId(FAVORITE_STOPS);
         }
         printBackStackFragments();
-        if (!mTwoPane) {
+        StopsFragment stopsFragment = (StopsFragment) getSupportFragmentManager().findFragmentByTag(STOP_TAG);
+        if (!mTwoPane && stopsFragment != null)  {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .remove(mStopsFragment)
+                    .remove(stopsFragment)
                     .commit();
 
             getSupportFragmentManager().popBackStack();
         }
         hideProgress();
-        Log.v(TAG, "showUpdatedFavoriteStops - end: ");
     }
 
     @Override
