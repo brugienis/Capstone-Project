@@ -15,10 +15,26 @@
      limitations under the License.
  -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_activated="true"
-        android:drawable="@color/activated"/>
+    <item android:state_pressed="true">
+        <ripple android:color="@color/grey" />
+    </item>
 
-    <!-- Default, "just hangin' out" state. The base state also
-         implements the ripple effect. -->
-    <item android:drawable="@drawable/touch_selector_base" />
+    <item android:state_activated="true"
+          android:drawable="@color/deep_orange_700"/>
+
+    <item android:state_focused="true"
+          android:drawable="@color/deep_orange_100"/>
+
+    <item android:drawable="@color/deep_orange_50" />
 </selector>
+<!--
+
+
+    <item android:state_selected="true"
+        android:drawable="@color/deep_orange_100"/>
+
+    <item android:state_activated="true"
+        android:drawable="@color/deep_orange_100"/>
+
+    <item android:drawable="@color/deep_orange_500" />
+-->

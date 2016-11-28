@@ -429,7 +429,7 @@ public class FavoriteStopsFragment
      */
     public interface OnFavoriteStopsFragmentInteractionListener {
         void startNextDeparturesSearch(StopDetails stopDetails);
-        void showStopOnMap(LatLngDetails latLonDetails);
+        void showStopOnMap(String stopName, LatLngDetails latLonDetails);
         void startStopsNearbySearch(boolean trainsOnly);
         void getDisruptionsDetails();
         void updateStopDetailRow(int id, String favoriteColumnValue);

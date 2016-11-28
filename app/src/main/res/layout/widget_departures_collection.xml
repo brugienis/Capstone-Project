@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/today_touch_selector"
+        android:background="@drawable/touch_selector"
         android:minHeight="@dimen/text_min_height"
         android:paddingTop="@dimen/text_padding_top"
         tools:text="Stop name"
@@ -35,7 +35,7 @@
             android:text="@string/no_departures_detail"
             android:contentDescription="@string/no_departures_detail"
             android:textColor="@android:color/black"
-            android:background="@drawable/today_touch_selector" />
+            android:background="@drawable/touch_selector" />
 
         <ListView
             android:id="@+id/widget_list"
@@ -44,7 +44,7 @@
             android:divider="@null"
             android:dividerHeight="0dp"
             tools:listitem="@layout/widget_departures_collection_list"
-            android:background="@drawable/today_touch_selector" />
+            android:background="@drawable/touch_selector" />
     </FrameLayout>
 
 </LinearLayout>

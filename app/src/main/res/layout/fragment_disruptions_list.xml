@@ -25,7 +25,7 @@
             android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
             android:paddingBottom="2dp"
             android:id="@+id/disruptionsTitle"
-            android:background="@drawable/today_touch_selector"
+            android:background="@drawable/touch_selector"
             android:textColor="@android:color/black"/>
 
         <TextView
@@ -38,7 +38,7 @@
             android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
             android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
             android:id="@+id/disruptionsDescription"
-            android:background="@drawable/today_touch_selector"
+            android:background="@drawable/touch_selector"
             android:textColor="@android:color/black"
             android:contentDescription="@string/pref_desc_disruptions_more_info"/>
 

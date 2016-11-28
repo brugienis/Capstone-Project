@@ -10,7 +10,7 @@
         android:gravity="center_vertical"
         android:minHeight="?android:attr/listPreferredItemHeight"
         android:orientation="horizontal"
-        android:background="@drawable/today_touch_selector" >
+        android:background="@drawable/touch_selector" >
 
         <ImageView
             android:id="@+id/transportImageId"
@@ -42,7 +42,7 @@
             android:layout_width="@dimen/touchable_size"
             android:layout_height="@dimen/touchable_size"
             android:adjustViewBounds="true"
-            android:background="@drawable/today_touch_selector"
+            android:background="@drawable/touch_selector"
             android:src="@drawable/ic_stock_forward_10_green_500_48dp"
             android:contentDescription="@string/content_desc_show_departures" />
 
@@ -50,7 +50,7 @@
             android:id="@+id/mapImageId"
             android:layout_width="@dimen/touchable_size"
             android:layout_height="@dimen/touchable_size"
-            android:background="@drawable/today_touch_selector"
+            android:background="@drawable/touch_selector"
             android:src="@drawable/ic_stock_place_green_500_48dp"
             android:contentDescription="@string/content_desc_show_map" />
 
@@ -58,7 +58,7 @@
             android:id="@+id/garbageImageId"
             android:layout_width="@dimen/touchable_size"
             android:layout_height="@dimen/touchable_size"
-            android:background="@drawable/today_touch_selector"
+            android:background="@drawable/touch_selector"
             android:src="@drawable/ic_stock_delete_green_500_48dp"
             android:contentDescription="@string/content_desc_remove_from_favorites" />
 

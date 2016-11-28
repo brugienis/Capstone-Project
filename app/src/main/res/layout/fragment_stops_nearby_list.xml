@@ -16,7 +16,7 @@
             android:scaleType="center"
             android:layout_width="@dimen/touchable_size"
             android:layout_height="@dimen/touchable_size"
-            android:background="@drawable/today_touch_selector"
+            android:background="@drawable/touch_selector"
             android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
             android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
             android:src="@drawable/ic_stock_train_blue_500_48dp" />
@@ -31,7 +31,7 @@
                 android:id="@+id/stopName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/today_touch_selector"
+                android:background="@drawable/touch_selector"
                 tools:text="Stop name"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textColor="@android:color/black" />
@@ -43,7 +43,7 @@
                 tools:text="Stop address"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textColor="@color/secondary_text"
-                android:background="@drawable/today_touch_selector"/>
+                android:background="@drawable/touch_selector"/>
 
         </LinearLayout>
 
@@ -52,7 +52,7 @@
             android:layout_width="@dimen/touchable_size"
             android:layout_height="@dimen/touchable_size"
             android:adjustViewBounds="true"
-            android:background="@drawable/today_touch_selector"
+            android:background="@drawable/touch_selector"
             android:src="@drawable/ic_stock_forward_10_green_500_48dp"
             android:contentDescription="@string/content_desc_show_departures" />
 
@@ -61,7 +61,7 @@
             android:layout_width="@dimen/touchable_size"
             android:layout_height="@dimen/touchable_size"
             android:adjustViewBounds="true"
-            android:background="@drawable/today_touch_selector"
+            android:background="@drawable/touch_selector"
             android:src="@drawable/ic_stock_place_green_500_48dp"
             android:contentDescription="@string/content_desc_show_map" />
 

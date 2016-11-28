@@ -130,7 +130,7 @@ public class WidgetStopsActivity
     }
 
     public void startNextDeparturesSearch(StopDetails stopDetails) {};
-    public void showStopOnMap(LatLngDetails latLonDetails) {};
+    public void showStopOnMap(String stopName, LatLngDetails latLonDetails) {};
     public void startStopsNearbySearch(boolean trainsOnly) {};
     public void getDisruptionsDetails() {};
     public void updateStopDetailRow(int id, String favoriteColumnValue) {};

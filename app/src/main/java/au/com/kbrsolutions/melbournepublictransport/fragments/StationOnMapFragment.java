@@ -26,13 +26,16 @@ import au.com.kbrsolutions.melbournepublictransport.R;
  */
 public class StationOnMapFragment extends BaseFragment implements OnMapReadyCallback {
 
+    private static final String ARG_STOP_NAME = "arg_stop_name";
     private static final String ARG_LATITUDE = "arg_latitude";
     private static final String ARG_LONGITUDE = "arg_longitude";
 
+    private String mStopName;
     private double mLatitude;
     private double mLongitude;
     private MapView mMapView;
     private boolean newInstanceArgsRetrieved;
+    private GoogleMap mGoogleMap;
 
     private static final String TAG = StationOnMapFragment.class.getSimpleName();
 
@@ -40,8 +43,27 @@ public class StationOnMapFragment extends BaseFragment implements OnMapReadyCall
         // Required empty public constructor
     }
 
-    public void setLatLon(double latitude, double longitude) {
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param latitude Parameter 1.
+     * @param longitude Parameter 2.
+     * @return A new instance of fragment StationOnMapFragment.
+     */
+    public static StationOnMapFragment newInstance(String stopName, double latitude, double longitude) {
+        StationOnMapFragment fragment = new StationOnMapFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_STOP_NAME, stopName);
+        args.putDouble(ARG_LATITUDE, latitude);
+        args.putDouble(ARG_LONGITUDE, longitude);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public void setLatLon(String stopName, double latitude, double longitude) {
         Log.v(TAG, "setLatLon - called: ");
+        mStopName = stopName;
         mLatitude = latitude;
         mLongitude = longitude;
         if (mGoogleMap == null) {
@@ -55,23 +77,6 @@ public class StationOnMapFragment extends BaseFragment implements OnMapReadyCall
         } else {
             showStopOnMap();
         }
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param latitude Parameter 1.
-     * @param longitude Parameter 2.
-     * @return A new instance of fragment StationOnMapFragment.
-     */
-    public static StationOnMapFragment newInstance(double latitude, double longitude) {
-        StationOnMapFragment fragment = new StationOnMapFragment();
-        Bundle args = new Bundle();
-        args.putDouble(ARG_LATITUDE, latitude);
-        args.putDouble(ARG_LONGITUDE, longitude);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -94,6 +99,7 @@ public class StationOnMapFragment extends BaseFragment implements OnMapReadyCall
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null && !newInstanceArgsRetrieved) {
+            mStopName = getArguments().getString(ARG_STOP_NAME);
             mLatitude = getArguments().getDouble(ARG_LATITUDE);
             mLongitude = getArguments().getDouble(ARG_LONGITUDE);
             newInstanceArgsRetrieved = true;
@@ -145,7 +151,6 @@ public class StationOnMapFragment extends BaseFragment implements OnMapReadyCall
 //        addMarker(googleMap, mLatitude, mLongitude,
 //                R.string.un, R.string.united_nations);
     }
-    GoogleMap mGoogleMap;
     private void showStopOnMap() {
         CameraUpdate center =
                 CameraUpdateFactory.newLatLng(new LatLng(mLatitude, mLongitude));
@@ -155,14 +160,14 @@ public class StationOnMapFragment extends BaseFragment implements OnMapReadyCall
         mGoogleMap.animateCamera(zoom);
 
         addMarker(mGoogleMap, mLatitude, mLongitude,
-                R.string.un, R.string.united_nations);
+                mStopName, mStopName);
     }
 
     private void addMarker(GoogleMap map, double lat, double lon,
-                           int title, int snippet) {
+                           String title, String snippet) {
         map.addMarker(new MarkerOptions().position(new LatLng(lat, lon))
-                .title(getString(title))
-                .snippet(getString(snippet)));
+                .title(title)
+                .snippet(snippet));
     }
 
     public boolean handleVerticalDpadKeys(boolean upKeyPressed) {

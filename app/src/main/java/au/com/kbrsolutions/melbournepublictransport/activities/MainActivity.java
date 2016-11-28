@@ -696,16 +696,18 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void showStopOnMap(LatLngDetails latLonDetails) {
+    public void showStopOnMap(String stopName, LatLngDetails latLonDetails) {
         if (readyToGo()) {
             fab.hide();
             if (mStationOnMapFragment == null) {
                 mStationOnMapFragment = StationOnMapFragment.newInstance(
+                        stopName,
                         latLonDetails.latitude,
                         latLonDetails.longitude);
                 mStationOnMapFragment.setFragmentId(FragmentsId.STATION_ON_MAP);
             } else {
                 mStationOnMapFragment.setLatLon(
+                        stopName,
                         latLonDetails.latitude,
                         latLonDetails.longitude);
             }
@@ -884,7 +886,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onNearbyStopsFragmentMapClicked(NearbyStopsDetails nearbyStopsDetails) {
-        showStopOnMap(new LatLngDetails(nearbyStopsDetails.latitude, nearbyStopsDetails.longitude));
+        showStopOnMap(nearbyStopsDetails.stopName, new LatLngDetails(nearbyStopsDetails.latitude, nearbyStopsDetails.longitude));
     }
 
     /**

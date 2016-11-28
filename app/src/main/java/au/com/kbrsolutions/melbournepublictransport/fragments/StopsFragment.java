@@ -318,7 +318,7 @@ public class StopsFragment extends BaseFragment implements LoaderManager.LoaderC
      */
     public interface OnStopFragmentInteractionListener {
         void showUpdatedFavoriteStops();
-        void showStopOnMap(LatLngDetails latLonDetails);
+        void showStopOnMap(String stopName, LatLngDetails latLonDetails);
         void updateStopDetailRow(int id, String favoriteColumnValue);  // activity should send the removeSelectedStop() below
         void startNextDeparturesSearch(StopDetails stopDetails);
         // to IntentService

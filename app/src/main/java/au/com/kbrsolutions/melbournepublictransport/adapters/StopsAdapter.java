@@ -49,7 +49,7 @@ public class StopsAdapter extends CursorAdapter {
             mapImageId.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    showSelectedStopOnMap(new LatLngDetails(stopDetails.latitude, stopDetails.longitude));
+                    showSelectedStopOnMap(stopDetails.locationName, new LatLngDetails(stopDetails.latitude, stopDetails.longitude));
                 }
             });
         }
@@ -59,8 +59,8 @@ public class StopsAdapter extends CursorAdapter {
         mListener.startNextDeparturesSearch(stopDetails);
     }
 
-    private static void showSelectedStopOnMap(LatLngDetails latLonDetails) {
-        mListener.showStopOnMap(latLonDetails);
+    private static void showSelectedStopOnMap(String stopName, LatLngDetails latLonDetails) {
+        mListener.showStopOnMap(stopName, latLonDetails);
     }
 
     public StopsAdapter(

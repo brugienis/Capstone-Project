@@ -1,6 +1,5 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="fab_margin">16dp</dimen>
@@ -10,14 +9,11 @@
     <dimen name="border_width">0dp</dimen>
 
     <dimen name="touchable_size">48dp</dimen>
-    <dimen name="text_margin">16dp</dimen>
     <dimen name="list_icon_size">40dp</dimen>
     <dimen name="appbar_height">250dp</dimen>
     <dimen name="appbar_elevation">4dp</dimen>
-    <dimen name="photo_container_height">112dp</dimen>
     <dimen name="expanded_title_margin_start">48dp</dimen>
     <dimen name="expanded_title_margin_end">64dp</dimen>
-    <dimen name="recycler_view_padding_top_and_bottom">5dp</dimen>
 
     <dimen name="text_min_height">25dp</dimen>
     <dimen name="text_padding_top">5dp</dimen>
@@ -32,8 +28,6 @@
     <dimen name="cardview_margin_top">4dp</dimen>
     <dimen name="cardview_card_corner_radius">4dp</dimen>
 
-    <integer name="anim_duration_very_long">1500</integer>
-    <integer name="anim_duration_long">500</integer>
     <integer name="anim_duration_medium">300</integer>
 
     <!-- Flinders Street station location -->
