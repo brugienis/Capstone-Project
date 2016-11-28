@@ -186,17 +186,26 @@ public class MainActivity extends AppCompatActivity implements
                         }
                         mPrevBackStackEntryCount = cnt;
 //                        if (cnt == 1 && bf.getFragmentId() == FragmentsId.FAVORITE_STOPS) {
-                        if (mTwoPane) {
-                            if (cnt == 1) {
-                                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                            } else {
-                                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                            }
-                        } else if (cnt == 0) {
+                        if (!mTwoPane && cnt == 0 || mTwoPane && cnt == 1) {
                             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                            mFavoriteStopsFragment.setShowOptionsMenuFlg(true);
                         } else {
                             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                            mFavoriteStopsFragment.setShowOptionsMenuFlg(false);
                         }
+//                        if (mTwoPane) {
+//                            if (cnt == 1) {
+//                                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//                                mFavoriteStopsFragment.setShowOptionsMenuFlg(true);
+//                            } else {
+//                                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//                                mFavoriteStopsFragment.setShowOptionsMenuFlg(false);
+//                            }
+//                        } else if (cnt == 0) {
+//                            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//                        } else {
+//                            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//                        }
                     }
                 });
 
@@ -235,6 +244,7 @@ public class MainActivity extends AppCompatActivity implements
                 fab.hide();
             }
             int cnt = getSupportFragmentManager().getBackStackEntryCount();
+            // FIXME: 27/11/2016 - refactor below
             if (mTwoPane) {
                 if (cnt > 1) {
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -250,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         } else {
             if (topFragmentTag == null || !topFragmentTag.equals(INIT_TAG)) {
-                if (isDatabaseLoaded()) {
+                if (Utility.isDatabaseLoaded(getApplicationContext())) {
 //                    Log.v(TAG, "onCreate - database already loaded");
                     showFavoriteStops();
                     if (mTwoPane) {
@@ -330,24 +340,33 @@ public class MainActivity extends AppCompatActivity implements
         startService(intent);
     }
 
-    private boolean isDatabaseLoaded() {
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        return sharedPref.getBoolean(getString(R.string.database_load_status), false);
-    }
+//    private boolean isDatabaseLoaded() {
+//        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+//        return sharedPref.getBoolean(getString(R.string.database_load_status), false);
+//    }
 
     @Override
     public void reloadDatabase() {
 //        Log.v(TAG, "reloadDatabase - start");
-        getSupportFragmentManager()
-                .beginTransaction()
-                .remove(mFavoriteStopsFragment)
-                .commit();
-        getSupportFragmentManager().popBackStack();
+        if (mTwoPane) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .remove(mStopsFragment)
+                    .commit();
+            getSupportFragmentManager().popBackStack();
+        } else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .remove(mFavoriteStopsFragment)
+                    .commit();
+            getSupportFragmentManager().popBackStack();
+        }
 
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(getString(R.string.database_load_status), false);
-        editor.apply();
+//        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPref.edit();
+//        editor.putBoolean(getString(R.string.database_load_status), false);
+//        editor.apply();
+        Utility.setDatabaseLoadedFlg(getApplicationContext(), false);
 
         loadDatabase();
 //        Log.v(TAG, "reloadDatabase - end");
@@ -362,12 +381,18 @@ public class MainActivity extends AppCompatActivity implements
         getSupportFragmentManager().popBackStack();
 
         // FIXME: 4/11/2016 - use Utility to save new value
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(getString(R.string.database_load_status), true);
+//        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPref.edit();
+//        editor.putBoolean(getString(R.string.database_load_status), true);
 //        editor.commit();
-        editor.apply();
-        showFavoriteStops();
+//        editor.apply();
+        Utility.setDatabaseLoadedFlg(getApplicationContext(), true);
+        if (mTwoPane) {
+            showStopsFragment();
+        } else {
+            showFavoriteStops();
+        }
+//        fab.show();
         Log.v(TAG, "databaseLoadFinished - end");
     }
 
@@ -703,7 +728,9 @@ public class MainActivity extends AppCompatActivity implements
                         latLonDetails.latitude,
                         latLonDetails.longitude);
             }
-            mFavoriteStopsFragment.hideView();
+            if (!mTwoPane) {
+                mFavoriteStopsFragment.hideView();
+            }
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.secondary_dynamic_fragments_frame, mStationOnMapFragment, STATION_ON_MAP_TAG)

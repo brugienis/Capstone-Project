@@ -3,6 +3,7 @@ package au.com.kbrsolutions.melbournepublictransport.utilities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.util.TypedValue;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
@@ -68,6 +69,21 @@ public class Utility {
 
     public static boolean isReleaseVersion(Context context) {
         return context.getResources().getBoolean(R.bool.release_version);
+    }
+
+    public static boolean isDatabaseLoaded(Context context) {
+        SharedPreferences prefs
+                = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(context.getString(R.string.database_load_status), false);
+    }
+
+    public static void setDatabaseLoadedFlg(Context context, boolean value) {
+        SharedPreferences prefs
+                = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(context.getString(R.string.database_load_status), value);
+        editor.apply();
+        Log.v(TAG, "setDatabaseLoadedFlg - status set to : " + value);
     }
 
     /**

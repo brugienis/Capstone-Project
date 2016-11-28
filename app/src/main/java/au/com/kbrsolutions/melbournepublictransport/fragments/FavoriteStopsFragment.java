@@ -52,6 +52,7 @@ public class FavoriteStopsFragment
     private int mCurrentSelectedRow;
     private int selectableViewsCnt = 3;
     private int selectedViewNo = -1;
+    private boolean mDatabaseIsEmpty;
 
     private static final int STOP_DETAILS_LOADER = 0;
 
@@ -113,8 +114,6 @@ public class FavoriteStopsFragment
         isVisible = true;
     }
 
-    private boolean mDatabaseIsEmpty;
-
     public void databaseIsEmpty(boolean databaseIsEmpty) {
         mDatabaseIsEmpty = databaseIsEmpty;
         // FIXME: 15/11/2016 - move to strings. Check the usage.
@@ -130,6 +129,14 @@ public class FavoriteStopsFragment
             } else {
                 mEmptyView.setText(getActivity().getResources().getString(R.string.no_favorite_stops_selected));
             }
+        }
+    }
+
+    private boolean mIsShowOptionsMenu;
+    public void setShowOptionsMenuFlg(boolean showOptionsMenuFlg) {
+        mIsShowOptionsMenu = showOptionsMenuFlg;
+        if (mListener != null) {
+            ((Activity) mListener).invalidateOptionsMenu();
         }
     }
 
@@ -363,16 +370,16 @@ public class FavoriteStopsFragment
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        if (isVisible) {
-            menu.findItem(R.id.action_train_stops_nearby).setVisible(true);
-            menu.findItem(R.id.action_stops_nearby).setVisible(true);
-            menu.findItem(R.id.action_disruptions).setVisible(true);
-            menu.findItem(R.id.action_reload_database).setVisible(true);
-        } else {
+        if (!isVisible || !mIsShowOptionsMenu) {
             menu.findItem(R.id.action_train_stops_nearby).setVisible(false);
             menu.findItem(R.id.action_stops_nearby).setVisible(false);
             menu.findItem(R.id.action_disruptions).setVisible(false);
             menu.findItem(R.id.action_reload_database).setVisible(false);
+        } else {
+            menu.findItem(R.id.action_train_stops_nearby).setVisible(true);
+            menu.findItem(R.id.action_stops_nearby).setVisible(true);
+            menu.findItem(R.id.action_disruptions).setVisible(true);
+            menu.findItem(R.id.action_reload_database).setVisible(true);
         }
         super.onPrepareOptionsMenu(menu);
 
