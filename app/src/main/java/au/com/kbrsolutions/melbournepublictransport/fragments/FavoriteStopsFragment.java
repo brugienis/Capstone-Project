@@ -134,9 +134,11 @@ public class FavoriteStopsFragment
 
     private boolean mIsShowOptionsMenu;
     public void setShowOptionsMenuFlg(boolean showOptionsMenuFlg) {
-        mIsShowOptionsMenu = showOptionsMenuFlg;
-        if (mListener != null) {
-            ((Activity) mListener).invalidateOptionsMenu();
+        if (mIsShowOptionsMenu != showOptionsMenuFlg) {
+            mIsShowOptionsMenu = showOptionsMenuFlg;
+            if (mListener != null) {
+                ((Activity) mListener).invalidateOptionsMenu();
+            }
         }
     }
 

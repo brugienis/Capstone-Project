@@ -185,7 +185,6 @@ public class MainActivity extends AppCompatActivity implements
 //                            backButtonPressed = true;
                         }
                         mPrevBackStackEntryCount = cnt;
-//                        if (cnt == 1 && bf.getFragmentId() == FragmentsId.FAVORITE_STOPS) {
                         if (!mTwoPane && cnt == 0 || mTwoPane && cnt == 1) {
                             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                             mFavoriteStopsFragment.setShowOptionsMenuFlg(true);
@@ -193,19 +192,6 @@ public class MainActivity extends AppCompatActivity implements
                             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                             mFavoriteStopsFragment.setShowOptionsMenuFlg(false);
                         }
-//                        if (mTwoPane) {
-//                            if (cnt == 1) {
-//                                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-//                                mFavoriteStopsFragment.setShowOptionsMenuFlg(true);
-//                            } else {
-//                                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//                                mFavoriteStopsFragment.setShowOptionsMenuFlg(false);
-//                            }
-//                        } else if (cnt == 0) {
-//                            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-//                        } else {
-//                            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//                        }
                     }
                 });
 
@@ -244,19 +230,10 @@ public class MainActivity extends AppCompatActivity implements
                 fab.hide();
             }
             int cnt = getSupportFragmentManager().getBackStackEntryCount();
-            // FIXME: 27/11/2016 - refactor below
-            if (mTwoPane) {
-                if (cnt > 1) {
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                } else {
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                }
+            if (!mTwoPane && cnt == 0 || mTwoPane && cnt == 1) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             } else {
-                if (cnt > 0) {
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                } else {
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                }
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
         } else {
             if (topFragmentTag == null || !topFragmentTag.equals(INIT_TAG)) {
@@ -547,10 +524,15 @@ public class MainActivity extends AppCompatActivity implements
                     nextDepartureDetailsList,
                     stopDetails);
         }
-        BaseFragment topFragment = getTopFragment();
+//        BaseFragment topFragment = getTopFragment();
         String topFragmentTag = getTopFragmentTag();
 //        if (topFragment.getFragmentId() == NEXT_DEPARTURES) {
+        Log.v(TAG, "showNextDepartures - before hideProgress: ");
+        hideProgress();
         if (topFragmentTag.equals(NEXT_DEPARTURES_TAG)) {
+            return;
+        } else if (mTwoPane && getSupportFragmentManager().getBackStackEntryCount() > 1) {
+            showSnackBar(R.string.touch_up_button_first, false);
             return;
         }
         hideViewIfRequired();
@@ -563,7 +545,6 @@ public class MainActivity extends AppCompatActivity implements
 //        fab.setImageResource(R.drawable.ic_autorenew_pink_48dp);
         fab.setImageResource(R.drawable.ic_stock_refresh_white_48dp);
         fab.setContentDescription(getString(R.string.pref_desc_main_refresh_next_departures));
-        hideProgress();
     }
 
     public void getDisruptionsDetails() {
@@ -730,6 +711,13 @@ public class MainActivity extends AppCompatActivity implements
             }
             if (!mTwoPane) {
                 mFavoriteStopsFragment.hideView();
+            }
+            String topFragmentTag = getTopFragmentTag();
+            if (topFragmentTag.equals(STATION_ON_MAP_TAG)) {
+                return;
+            } else if (mTwoPane && getSupportFragmentManager().getBackStackEntryCount() > 1) {
+                showSnackBar(R.string.touch_up_button_first, false);
+                return;
             }
             getSupportFragmentManager()
                     .beginTransaction()

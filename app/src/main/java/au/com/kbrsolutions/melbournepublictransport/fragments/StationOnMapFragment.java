@@ -3,6 +3,7 @@ package au.com.kbrsolutions.melbournepublictransport.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,8 +41,20 @@ public class StationOnMapFragment extends BaseFragment implements OnMapReadyCall
     }
 
     public void setLatLon(double latitude, double longitude) {
+        Log.v(TAG, "setLatLon - called: ");
         mLatitude = latitude;
         mLongitude = longitude;
+        if (mGoogleMap == null) {
+            try {
+                Log.v(TAG, "setLatLon - before initialize called: ");
+                MapsInitializer.initialize(getActivity().getApplicationContext());
+                Log.v(TAG, "setLatLon - initialize called: ");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            showStopOnMap();
+        }
     }
 
     /**
@@ -67,6 +80,17 @@ public class StationOnMapFragment extends BaseFragment implements OnMapReadyCall
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mGoogleMap = null;
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null && !newInstanceArgsRetrieved) {
@@ -85,6 +109,7 @@ public class StationOnMapFragment extends BaseFragment implements OnMapReadyCall
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        Log.v(TAG, "onCreateView - start");
         View rootView =  inflater.inflate(R.layout.fragment_station_on_map, container, false);
 
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
@@ -93,7 +118,9 @@ public class StationOnMapFragment extends BaseFragment implements OnMapReadyCall
         mMapView.onResume(); // needed to get the map to display immediately
 
         try {
+            Log.v(TAG, "onCreateView - before initialize called: ");
             MapsInitializer.initialize(getActivity().getApplicationContext());
+            Log.v(TAG, "onCreateView - initialize called: ");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -105,14 +132,29 @@ public class StationOnMapFragment extends BaseFragment implements OnMapReadyCall
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.v(TAG, "onMapReady - initialize called: " + mLatitude + "/" + mLongitude);
+        mGoogleMap = googleMap;
+        showStopOnMap();
+//        CameraUpdate center =
+//                CameraUpdateFactory.newLatLng(new LatLng(mLatitude, mLongitude));
+//        CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
+//
+//        googleMap.moveCamera(center);
+//        googleMap.animateCamera(zoom);
+//
+//        addMarker(googleMap, mLatitude, mLongitude,
+//                R.string.un, R.string.united_nations);
+    }
+    GoogleMap mGoogleMap;
+    private void showStopOnMap() {
         CameraUpdate center =
                 CameraUpdateFactory.newLatLng(new LatLng(mLatitude, mLongitude));
         CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
 
-        googleMap.moveCamera(center);
-        googleMap.animateCamera(zoom);
+        mGoogleMap.moveCamera(center);
+        mGoogleMap.animateCamera(zoom);
 
-        addMarker(googleMap, mLatitude, mLongitude,
+        addMarker(mGoogleMap, mLatitude, mLongitude,
                 R.string.un, R.string.united_nations);
     }
 
