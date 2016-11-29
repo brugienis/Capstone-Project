@@ -15,17 +15,10 @@ import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 
-/**
- * Created by business on 13/11/2016.
- */
-
 public class NextDeparturesAdapter<T> extends ArrayAdapter<NextDepartureDetails> {
 
     private final List<NextDepartureDetails> mValues;
     private Activity mActivity;
-    // FIXME: 20/09/2016 - move strings to values
-    private static final String ALL_STOPS = "All stops";
-    private static final String EXPRESS = "Express";
 
     private static final String TAG = NextDeparturesAdapterRv.class.getSimpleName();
 

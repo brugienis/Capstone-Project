@@ -13,10 +13,6 @@ import java.util.List;
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
 
-/**
- * Created by business on 15/11/2016.
- */
-
 public class DisruptionsAdapter<T> extends ArrayAdapter<DisruptionsDetails> {
 
     private final List<DisruptionsDetails> mValues;

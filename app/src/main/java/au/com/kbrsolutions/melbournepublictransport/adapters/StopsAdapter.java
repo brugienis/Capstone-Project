@@ -14,10 +14,6 @@ import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StopsFragment;
 
-/**
- * Created by business on 2/10/2016.
- */
-
 public class StopsAdapter extends CursorAdapter {
 
     private static StopsFragment.OnStopFragmentInteractionListener mListener;
@@ -39,7 +35,7 @@ public class StopsAdapter extends CursorAdapter {
                 public void onClick(View v) {
                     if (null != mListener) {
                         // Notify the active callbacks interface (the activity, if the
-                        // fragment is attached to one) that a map image was touched.
+                        // fragment is attached to one) that a departure image was touched.
                         startNextDeparturesSearch(stopDetails);
                     }
                 }
@@ -96,9 +92,6 @@ public class StopsAdapter extends CursorAdapter {
                 cursor.getDouble(StopsFragment.COL_STOP_DETAILS_LATITUDE),
                 cursor.getDouble(StopsFragment.COL_STOP_DETAILS_LONGITUDE),
                 cursor.getString(StopsFragment.COL_STOP_DETAILS_FAVORITE));
-
-        // FIXME: 7/09/2016 - add description
-//        viewHolder.descriptionView.setText(description);
 
         viewHolder.locationNameView.setText(locationName);
         viewHolder.stopDetails = stopDetails;

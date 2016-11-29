@@ -16,6 +16,9 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StopsNearbyFragment.OnNearbyStopsFragmentInteractionListener;
 
 /**
+ *
+ * This adapter is currently replaced with ArrayAdapter. It maybe used again in the future.
+ *
  * {@link RecyclerView.Adapter} that can display a
  * {@link au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails}.
  */
@@ -43,8 +46,6 @@ public class StopsNearbyAdapterRv extends RecyclerView.Adapter<StopsNearbyAdapte
     @Override
     public void onBindViewHolder(final StopsNearbyAdapterRv.ViewHolder holder, int position) {
         NearbyStopsDetails nearbyStopsDetails = mValues.get(position);
-//        Log.v(TAG, "onBindViewHolder - nearbyStopsDetails: " + nearbyStopsDetails);
-//        if (nearbyStopsDetails.routeType.equals("train")) {
         if (nearbyStopsDetails.routeType == NearbyStopsDetails.TRAIN_ROUTE_TYPE) {
             holder.stopName.setText(nearbyStopsDetails.stopName);
             holder.stopAddress.setText(nearbyStopsDetails.suburb);
@@ -93,7 +94,6 @@ public class StopsNearbyAdapterRv extends RecyclerView.Adapter<StopsNearbyAdapte
                     if (null != mListener) {
                         // Notify the active callbacks interface (the activity, if the
                         // fragment is attached to one) that a map image was touched.
-//                        mListener.onNearbyStopsFragmentMapClicked(nearbyStopsDetails);
                             mListener.showStopOnMap(
                                 nearbyStopsDetails.stopName,
                                 new LatLngDetails(nearbyStopsDetails.latitude,
@@ -108,7 +108,7 @@ public class StopsNearbyAdapterRv extends RecyclerView.Adapter<StopsNearbyAdapte
 //                    Log.v(TAG, "ViewHolder - onClick");
                     if (null != mListener) {
                         // Notify the active callbacks interface (the activity, if the
-                        // fragment is attached to one) that a map image was touched.
+                        // fragment is attached to one) that departure image was touched.
                         mListener.startNextDeparturesSearch(new StopDetails(
                                 -1,
                                 nearbyStopsDetails.routeType,

@@ -22,10 +22,6 @@ import static au.com.kbrsolutions.melbournepublictransport.R.id.mapImageId;
 import static au.com.kbrsolutions.melbournepublictransport.R.id.stopAddress;
 import static au.com.kbrsolutions.melbournepublictransport.R.id.stopName;
 
-/**
- * Created by business on 14/11/2016.
- */
-
 public class StopsNearbyAdapter<T> extends ArrayAdapter<NearbyStopsDetails> {
 
     private Activity mActivity;
@@ -61,7 +57,6 @@ public class StopsNearbyAdapter<T> extends ArrayAdapter<NearbyStopsDetails> {
                     if (null != mListener) {
                         // Notify the active callbacks interface (the activity, if the
                         // fragment is attached to one) that a map image was touched.
-//                        mListener.onNearbyStopsFragmentMapClicked(holder.nearbyStopsDetails);
                         mListener.showStopOnMap(
                                 holder.nearbyStopsDetails.stopName,
                                 new LatLngDetails(holder.nearbyStopsDetails.latitude,
@@ -76,7 +71,7 @@ public class StopsNearbyAdapter<T> extends ArrayAdapter<NearbyStopsDetails> {
 //                    Log.v(TAG, "ViewHolder - onClick");
                     if (null != mListener) {
                         // Notify the active callbacks interface (the activity, if the
-                        // fragment is attached to one) that a map image was touched.
+                        // fragment is attached to one) that a departure image was touched.
                         mListener.startNextDeparturesSearch(new StopDetails(
                                 -1,
                                 holder.nearbyStopsDetails.routeType,

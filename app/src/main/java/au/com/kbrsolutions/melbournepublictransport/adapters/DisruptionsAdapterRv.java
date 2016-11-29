@@ -13,7 +13,10 @@ import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
 
 /**
- * {@link RecyclerView.Adapter} that can display a 
+ *
+ * This adapter is currently replaced with ArrayAdapter. It maybe used again in the future.
+ *
+ * {@link RecyclerView.Adapter} that can display
  * {@link au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails}.
  */
 public class DisruptionsAdapterRv extends RecyclerView.Adapter<DisruptionsAdapterRv.ViewHolder> {

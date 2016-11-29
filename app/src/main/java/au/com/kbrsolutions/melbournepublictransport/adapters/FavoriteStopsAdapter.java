@@ -34,7 +34,6 @@ public class FavoriteStopsAdapter extends CursorAdapter {
         public ImageView departuresImageId;
         public ImageView garbageInfoImage;
         public StopDetails stopDetails;
-        private int selectedImagePos = 0;
 
         public ViewHolder(View view) {
             locationNameView = (TextView) view.findViewById(R.id.locationNameId);
@@ -42,7 +41,6 @@ public class FavoriteStopsAdapter extends CursorAdapter {
             mapImageId = (ImageView) view.findViewById(R.id.mapImageId);
             garbageInfoImage = (ImageView) view.findViewById(R.id.garbageImageId);
 
-//            Log.v(TAG, "ViewHolder - mIsInSettingsActivityFlag: " + mIsInSettingsActivityFlag);
             if (mIsInSettingsActivityFlag) {
                 mapImageId.setVisibility(View.GONE);
                 departuresImageId.setVisibility(View.GONE);
@@ -70,10 +68,6 @@ public class FavoriteStopsAdapter extends CursorAdapter {
                 });
             }
         }
-
-        public void selectImageView(boolean next) {
-
-        }
     }
 
     private static void showSelectedStopOnMap(String stopName, LatLngDetails latLonDetails) {
@@ -81,7 +75,6 @@ public class FavoriteStopsAdapter extends CursorAdapter {
     }
 
     private static void startNextDeparturesSearch(StopDetails stopDetails) {
-        Log.v(TAG, "startNextDeparturesSearch - stopId/locationName : " + stopDetails.stopId + "/" + stopDetails.locationName);
         mListener.startNextDeparturesSearch(stopDetails);
     }
 
@@ -130,9 +123,6 @@ public class FavoriteStopsAdapter extends CursorAdapter {
                 cursor.getDouble(FavoriteStopsFragment.COL_STOP_DETAILS_LATITUDE),
                 cursor.getDouble(FavoriteStopsFragment.COL_STOP_DETAILS_LONGITUDE),
                 cursor.getString(FavoriteStopsFragment.COL_STOP_DETAILS_FAVORITE));
-
-        // FIXME: 7/09/2016 - add description
-//        viewHolder.descriptionView.setText(description);
 
         viewHolder.locationNameView.setText(locationName);
         viewHolder.stopDetails = stopDetails;

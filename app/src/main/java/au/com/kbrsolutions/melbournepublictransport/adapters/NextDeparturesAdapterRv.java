@@ -15,8 +15,10 @@ import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 
-// FIXME: 2/10/2016 - how to show scrollbar?
 /**
+ *
+ * This adapter is currently replaced with ArrayAdapter. It maybe used again in the future.
+ *
  * {@link RecyclerView.Adapter} that can display a {@link NextDepartureDetails}.
  */
 public class NextDeparturesAdapterRv
