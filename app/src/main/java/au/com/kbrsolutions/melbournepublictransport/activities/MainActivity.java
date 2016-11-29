@@ -118,7 +118,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.v(TAG, "onCreate - start");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -150,6 +149,8 @@ public class MainActivity extends AppCompatActivity implements
 
         boolean isRightToLeft = getResources().getBoolean(R.bool.is_right_to_left);
 
+        /* Nico's solution. Not required in Androis 7.1. */
+        /* https://discussions.udacity.com/t/layout-mirroring-rtl-isnt-supported-correctly-for-app-bar/177336/4 */
         if (isRightToLeft) {
             mToolbar.setNavigationIcon(R.mipmap.ic_arrow_right_white_24dp);
         } else {
@@ -173,16 +174,14 @@ public class MainActivity extends AppCompatActivity implements
 
                         showTopViewOnBackStackChanged();
 
+                        // FIXME: 29/11/2016 - remove logcat lines before publishing
 //                        printBackStackFragments();
                         int cnt = getSupportFragmentManager().getBackStackEntryCount();
                         BaseFragment bf = getTopFragment();
-//                        boolean backButtonPressed;
                         if (cnt > mPrevBackStackEntryCount) {
                             Log.v(TAG, "onCreate.onBackStackChanged - going forward  - cnt/top: " + cnt + "/" + bf.getFragmentId());
-//                            backButtonPressed = false;
                         } else {
                             Log.v(TAG, "onCreate.onBackStackChanged - going backward - cnt/top: " + cnt + "/" + (bf == null ? "null" : bf.getFragmentId()));
-//                            backButtonPressed = true;
                         }
                         mPrevBackStackEntryCount = cnt;
                         if (!mTwoPane && cnt == 0 || mTwoPane && cnt == 1) {
@@ -208,7 +207,6 @@ public class MainActivity extends AppCompatActivity implements
 
         mCollapsingToolbar.setTitle(getResources().getString(R.string.title_favorite_stops));
 
-//        BaseFragment topFragmment = getTopFragment();
         String topFragmentTag = getTopFragmentTag();
 
         if (findViewById(R.id.primary_dynamic_fragments_frame) != null) {
@@ -216,14 +214,11 @@ public class MainActivity extends AppCompatActivity implements
             // (res/layout-sw600dp). If this view is present, then the activity should be
             // in two-pane mode.
             mTwoPane = true;
-            Log.v(TAG, "onCreate - mTwoPane: " + mTwoPane);
         } else {
             mTwoPane = false;
         }
         if (savedInstanceState != null) {   /* configuration changed */
             printBackStackFragments();
-//            Log.v(TAG, "onCreate - topFragmentTag: " + topFragmentTag);
-//            FragmentsId fragmentsId = topFragmment.getFragmentId();
             if (topFragmentTag.equals(FAVORITE_STOPS_TAG) || topFragmentTag.equals(NEXT_DEPARTURES_TAG)) {
                 fab.show();
             } else {
@@ -238,34 +233,36 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             if (topFragmentTag == null || !topFragmentTag.equals(INIT_TAG)) {
                 if (Utility.isDatabaseLoaded(getApplicationContext())) {
-//                    Log.v(TAG, "onCreate - database already loaded");
                     showFavoriteStops();
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                     if (mTwoPane) {
                         showStopsFragment();
                     }
-//                    checkIfDatabaseEmpty();
                 } else {
-//                    Log.v(TAG, "onCreate - database not loaded");
                     loadDatabase();
                 }
             }
         }
         Utility.initSettings(getApplicationContext());
         mProgressBarHandler = new ProgressBarHandler(this);
-        Log.v(TAG, "onCreate - end");
     }
 
     private void saveAppBarVerticalOffset(int verticalOffset) {
         mVerticalOffset = verticalOffset;
     }
 
+    /**
+     * Save vertical offset value.
+     */
     @Override
     protected void onPause() {
         super.onPause();
         Utility.setAppBarVerticalOffset(getApplicationContext(), mVerticalOffset);
-//        Log.v(TAG, "onPause - mVerticalOffset: " + mVerticalOffset);
     }
 
+    /**
+     * Retrieve vertical offset value.
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -277,6 +274,13 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * Based on http://stackoverflow.com/questions/33058496/set-starting-height-of-collapsingtoolbarlayout
+     *
+     * DmitryArc
+     *
+     * @param verticalOffset
+     */
     private void adjustAppBarVertivalOffset(final int verticalOffset) {
         mAppBarLayout.post(new Runnable() {
             @Override
@@ -287,7 +291,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void setAppBarOffset(int offsetPx){
-//        Log.v(TAG, "setAppBarOffset - offsetPx: " + offsetPx);
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams();
         AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
         behavior.onNestedPreScroll(mCoordinatorlayout, mAppBarLayout, null, 0, offsetPx, new int[]{0, 0});
@@ -297,8 +300,10 @@ public class MainActivity extends AppCompatActivity implements
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
+    /**
+     * Start initial database load process.
+     */
     private void loadDatabase() {
-//        Log.v(TAG, "loadDatabase - start");
         if (mInitFragment == null) {
             mInitFragment = new InitFragment();
             mInitFragment.setFragmentId(FragmentsId.INIT);
@@ -313,18 +318,16 @@ public class MainActivity extends AppCompatActivity implements
         Intent intent = new Intent(this, RequestProcessorService.class);
         intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_REFRESH_DATA);
         intent.putExtra(RequestProcessorService.REFRESH_DATA_IF_TABLES_EMPTY, true);
-//        Log.v(TAG, "loadDatabase - request sent");
         startService(intent);
     }
 
-//    private boolean isDatabaseLoaded() {
-//        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-//        return sharedPref.getBoolean(getString(R.string.database_load_status), false);
-//    }
-
+    /**
+     * This method is needed for testing.
+     *
+     * Remove before publishing on Google Play.
+     */
     @Override
     public void reloadDatabase() {
-//        Log.v(TAG, "reloadDatabase - start");
         if (mTwoPane) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -339,59 +342,38 @@ public class MainActivity extends AppCompatActivity implements
             getSupportFragmentManager().popBackStack();
         }
 
-//        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPref.edit();
-//        editor.putBoolean(getString(R.string.database_load_status), false);
-//        editor.apply();
         Utility.setDatabaseLoadedFlg(getApplicationContext(), false);
 
         loadDatabase();
-//        Log.v(TAG, "reloadDatabase - end");
     }
 
     public void databaseLoadFinished() {
-        Log.v(TAG, "databaseLoadFinished - start");
         getSupportFragmentManager()
                 .beginTransaction()
                 .remove(mInitFragment)
                 .commit();
         getSupportFragmentManager().popBackStack();
 
-        // FIXME: 4/11/2016 - use Utility to save new value
-//        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPref.edit();
-//        editor.putBoolean(getString(R.string.database_load_status), true);
-//        editor.commit();
-//        editor.apply();
         Utility.setDatabaseLoadedFlg(getApplicationContext(), true);
         if (mTwoPane) {
             showStopsFragment();
         } else {
             showFavoriteStops();
         }
-//        fab.show();
-        Log.v(TAG, "databaseLoadFinished - end");
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-//        Log.v(TAG, "onSaveInstanceState - after super");
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.v(TAG, "onRestoreInstanceState - start");
-//        showFragmentsOnBackStackVisibility();
         super.onRestoreInstanceState(savedInstanceState);
         showTopFragment();
         if (mTwoPane) {
-            // FIXME: 26/11/2016 
-//            mFavoriteStopsFragment.reloadLoader();
             mFavoriteStopsFragment.showView();
         }
-//        Log.v(TAG, "onRestoreInstanceState - after showTopFragment()");
-//        showFragmentsOnBackStackVisibility();
     }
 
     private void handleFabClicked() {
@@ -400,7 +382,6 @@ public class MainActivity extends AppCompatActivity implements
         FragmentsId fragmentsId;
         if (topFragment != null) {
             fragmentsId = topFragment.getFragmentId();
-//            Log.v(TAG, "handleFabClicked - topFragment/fragmentsId: " + topFragment + "/" + fragmentsId);
             if (fragmentsId != null &&
                     fragmentsId != FAVORITE_STOPS &&
                     fragmentsId != NEXT_DEPARTURES
@@ -410,23 +391,10 @@ public class MainActivity extends AppCompatActivity implements
             }
         } else {
             fragmentsId = FAVORITE_STOPS;
-//            showSnackBar("No logic to handle FAB touched (not in BaseFragmment)", true);
-//            return;
         }
         switch (topFragmentTag) {
             case FAVORITE_STOPS_TAG:
                 showStopsFragment();
-//                if (mStopsFragment == null) {
-//                    mStopsFragment = new StopsFragment();
-//                    mStopsFragment.setFragmentId(FragmentsId.STOPS);
-//                }
-//                mFavoriteStopsFragment.hideView();
-//                getSupportFragmentManager()
-//                        .beginTransaction()
-//                        .add(R.id.left_dynamic_fragments_frame, mStopsFragment, STOP_TAG)
-//                        .addToBackStack(STOP_TAG)     // it will also show 'Up' button in the action bar
-//                        .commit();
-//                mStopsFragment.setActionBarTitle(getResources().getString(R.string.title_stops));
                 fab.hide();
             break;
 
@@ -435,15 +403,19 @@ public class MainActivity extends AppCompatActivity implements
             break;
 
             default:
-                throw new RuntimeException(
-                        "LOC_CAT_TAG - handleFabClicked - no code to handle fragmentsId: " +
-                                "" + fragmentsId);
+                if (!Utility.isReleaseVersion(getApplicationContext())) {
+                    throw new RuntimeException(
+                            "LOC_CAT_TAG - handleFabClicked - no code to handle fragmentsId: " +
+                                    "" + fragmentsId);
+                }
 
         }
     }
 
+    /**
+     * Show all train stops that are not 'favorite' once.
+     */
     private void showStopsFragment() {
-        //!mTwoPane &&
         if (mStopsFragment == null) {
             mStopsFragment = new StopsFragment();
             mStopsFragment.setFragmentId(FragmentsId.STOPS);
@@ -451,14 +423,6 @@ public class MainActivity extends AppCompatActivity implements
         if (!mTwoPane) {
             mFavoriteStopsFragment.hideView();
         }
-        Log.v(TAG, "showStopsFragment - mTwoPane: " + mTwoPane);
-//        if (mTwoPane) {
-//            getSupportFragmentManager()
-//                    .beginTransaction()
-//                    .add(R.id.right_dynamic_fragments_frame, mStopsFragment, STOP_TAG)
-//                    .addToBackStack(STOP_TAG)     // it will also show 'Up' button in the action bar
-//                    .commit();
-//        } else {
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.secondary_dynamic_fragments_frame, mStopsFragment, STOP_TAG)
@@ -468,14 +432,14 @@ public class MainActivity extends AppCompatActivity implements
         mStopsFragment.setActionBarTitle(getResources().getString(R.string.title_stops));
     }
 
+    /**
+     * Make the fragment that is at the top of the Back Stack visible.
+     */
     private void showTopViewOnBackStackChanged() {
         BaseFragment baseFragment = getTopFragment();
-        String tag = getTopFragmentTag();
-//        Log.v(TAG, "showTopViewOnBackStackChanged - baseFragment/tag: " + baseFragment + "/" + tag);
         boolean showFab = false;
         if (baseFragment != null) {     /*  */
             FragmentsId fragmentsId = baseFragment.getFragmentId();
-//            Log.v(TAG, "showTopViewOnBackStackChanged - fragmentsId: " + fragmentsId);
                 if (fragmentsId == FAVORITE_STOPS ||
                         fragmentsId == FragmentsId.STOPS ||
                         fragmentsId == FragmentsId.STOPS_NEARBY) {
@@ -485,11 +449,7 @@ public class MainActivity extends AppCompatActivity implements
                         fragmentsId == NEXT_DEPARTURES) {
                     showFab = true;
                 }
-//            Log.v(TAG, "showTopViewOnBackStackChanged - setTitle");
-//                actionBar.setTitle(baseFragment.getActionBarTitle());
                 mToolbar.setTitle(baseFragment.getActionBarTitle());
-//                mToolbar.setTitle(baseFragment.getActionBarTitle());
-//                mCollapsingToolbar.setTitle(baseFragment.getActionBarTitle());
         }
         if (showFab) {
             fab.show();
@@ -498,6 +458,9 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * Hide some views.
+     */
     private void hideViewIfRequired() {
         BaseFragment baseFragment = getTopFragment();
             FragmentsId fragmentsId = baseFragment.getFragmentId();
@@ -508,7 +471,13 @@ public class MainActivity extends AppCompatActivity implements
             }
     }
 
-    // FIXME: 8/10/2016 - get selected stopName from stopDetails, not from mSelectedStopName
+    /**
+     *
+     * Show results of the 'next departures' search.
+     *
+     * @param nextDepartureDetailsList
+     * @param stopDetails
+     */
     private void showNextDepartures(
             List<NextDepartureDetails> nextDepartureDetailsList,
             StopDetails stopDetails) {
@@ -524,10 +493,7 @@ public class MainActivity extends AppCompatActivity implements
                     nextDepartureDetailsList,
                     stopDetails);
         }
-//        BaseFragment topFragment = getTopFragment();
         String topFragmentTag = getTopFragmentTag();
-//        if (topFragment.getFragmentId() == NEXT_DEPARTURES) {
-        Log.v(TAG, "showNextDepartures - before hideProgress: ");
         hideProgress();
         if (topFragmentTag.equals(NEXT_DEPARTURES_TAG)) {
             return;
@@ -542,11 +508,13 @@ public class MainActivity extends AppCompatActivity implements
                 .addToBackStack(NEXT_DEPARTURES_TAG)     // it will also show 'Up' button in the action bar
                 .commit();
         mNextDeparturesFragment.setActionBarTitle(getResources().getString(R.string.title_next_departures));
-//        fab.setImageResource(R.drawable.ic_autorenew_pink_48dp);
         fab.setImageResource(R.drawable.ic_stock_refresh_white_48dp);
         fab.setContentDescription(getString(R.string.pref_desc_main_refresh_next_departures));
     }
 
+    /**
+     * Initiate search for train 'disruptions' information.
+     */
     public void getDisruptionsDetails() {
         showProgress();
         String trainMode = TRANSPORT_MODE_METRO_TRAIN;
@@ -556,6 +524,12 @@ public class MainActivity extends AppCompatActivity implements
         startService(intent);
     }
 
+    /**
+     * Send request to update selected train's stop 'favorite' flag.
+     *
+     * @param id
+     * @param favoriteColumnValue
+     */
     @Override
     public void updateStopDetailRow(int id, String favoriteColumnValue) {
         showProgress();
@@ -567,7 +541,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
-     * Find current latitude and longitude of the device.
+     * Start search of stops 'nearby' - relative to device or 'fixed' (depending on settings
+     * values) position.
      *
      * @param forTrainsOnly
      */
@@ -577,18 +552,22 @@ public class MainActivity extends AppCompatActivity implements
         // FIXME: 14/11/2016 - ALDI Carrum location - remove after testing
 //        LatLngDetails latLngDetails = new LatLngDetails(-38.0763325, 145.12348046875);
         if (latLngDetails == null) {
-            Log.v(TAG, "startStopsNearbySearch - using device location");
             if (mCurrentGeoPositionFinder == null) {
                 mCurrentGeoPositionFinder = new CurrentGeoPositionFinder(getApplicationContext(), forTrainsOnly);
             } else {
                 mCurrentGeoPositionFinder.connectToGoogleApiClient(forTrainsOnly);
             }
         } else {
-            Log.v(TAG, "startStopsNearbySearch - using fixed location");
             getStopsNearbyDetails(latLngDetails, forTrainsOnly);
         }
     }
 
+    /**
+     * Initiate search for stops 'nearby'.
+     *
+     * @param latLonDetails
+     * @param forTrainsOnly
+     */
     private void getStopsNearbyDetails(LatLngDetails latLonDetails, boolean forTrainsOnly) {
         showProgress();
         Intent intent = new Intent(this, RequestProcessorService.class);
@@ -601,6 +580,10 @@ public class MainActivity extends AppCompatActivity implements
         startService(intent);
     }
 
+    /**
+     * Show results of the search for desruptions on train network.
+     * @param disruptionsDetailsList
+     */
     private void showDisruptions(List<DisruptionsDetails> disruptionsDetailsList) {
         if (mDisruptionsFragment == null) {
             mDisruptionsFragment = DisruptionsFragment.newInstance(disruptionsDetailsList);
@@ -626,12 +609,15 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onSupportNavigateUp() {
         getSupportFragmentManager().popBackStack();
-//        fab.setImageResource(android.R.drawable.ic_input_add);
         fab.setImageResource(R.drawable.ic_stock_add_circle_outline_white_48dp);
         fab.setContentDescription(getString(R.string.pref_desc_main_add_favorite_stop));
         return true;
     }
 
+    /**
+     * Send request to find 'next' departures for the selected train station.
+     * @param stopDetails
+     */
     public void startNextDeparturesSearch(StopDetails stopDetails) {
         showProgress();
         Intent intent = new Intent(this, RequestProcessorService.class);
@@ -649,12 +635,11 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
-     * Show favorite stops after user pressed Back or Up button.
+     * Show favorite stops.
      */
     private void showFavoriteStops() {
         Log.v(TAG, "showFavoriteStops - start");
         if (mFavoriteStopsFragment == null) {
-//            Log.v(TAG, "showFavoriteStops - adding new mFavoriteStopsFragment");
             mFavoriteStopsFragment = new FavoriteStopsFragment();
             mFavoriteStopsFragment.setFragmentId(FAVORITE_STOPS);
             mFavoriteStopsFragment.setActionBarTitle(getResources().getString(R.string.title_favorite_stops));
@@ -663,7 +648,6 @@ public class MainActivity extends AppCompatActivity implements
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.primary_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
-//                    .addToBackStack(FAVORITE_STOPS_TAG)
                     .commit();
         } else {
             getSupportFragmentManager()
@@ -674,7 +658,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
-     * Remove StopFragment from the top of the BackStack.
+     * Show 'favorite' stops after new one was added.
      */
     public void showUpdatedFavoriteStops() {
         if (mFavoriteStopsFragment != null) {
@@ -695,6 +679,12 @@ public class MainActivity extends AppCompatActivity implements
         hideProgress();
     }
 
+    /**
+     * Show selected train on the map.
+     *
+     * @param stopName
+     * @param latLonDetails
+     */
     @Override
     public void showStopOnMap(String stopName, LatLngDetails latLonDetails) {
         if (readyToGo()) {
@@ -730,6 +720,12 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * Show search result for the 'stops' nearby - relative to the device or 'fixed' position.
+     *
+     * @param nearbyStopsDetailsList
+     * @param forTrainsStopsNearby
+     */
     public void showStopsNearby(
             List<NearbyStopsDetails> nearbyStopsDetailsList,
             boolean forTrainsStopsNearby) {
@@ -792,7 +788,6 @@ public class MainActivity extends AppCompatActivity implements
             editor.remove(getString(R.string.pref_key_widget_stop_name));
             editor.remove(getString(R.string.pref_key_widget_stop_id));
             editor.apply();
-            Log.v(TAG, "onOptionsItemSelected - lat and lng removed: ");
             return true;
         }
 
@@ -803,9 +798,6 @@ public class MainActivity extends AppCompatActivity implements
      * Get messages through Event Bus from Green Robot.
      * This method will be called when a MainActivityEvents is posted (in the UI thread)
      */
-    // FIXME: 21/09/2016 - read this when you get java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
-    // FIXME:  4/10/2016 - written by Alex Lockwood
-    //    http://www.androiddesignpatterns.com/2013/08/fragment-transaction-commit-state-loss.html
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MainActivityEvents event) {
         MainActivityEvents.MainEvents requestEvent = event.event;
@@ -850,26 +842,38 @@ public class MainActivity extends AppCompatActivity implements
                 break;
 
             default:
-                throw new RuntimeException("LOC_CAT_TAG - onEvent - no code to handle requestEvent: " + requestEvent);
+                if (!Utility.isReleaseVersion(getApplicationContext())) {
+                    throw new RuntimeException("LOC_CAT_TAG - onEvent - no code to handle requestEvent: "
+                            + requestEvent);
+                }
         }
     }
 
+    // FIXME: 29/11/2016 - remove below and retest load process
     private void handleDatabaseLoadedTarget(int databaseLoadTarget) {
         if (mInitFragment != null) {
             mInitFragment.setDatabaseLoadTarget(databaseLoadTarget);
-        } else {
-//            Log.v(TAG, "handleDatabaseLoadedTarget - mInitFragment - is null");
         }
     }
 
+    /**
+     * Update progress bar.
+     *
+     * @param databaseLoadProgress
+     * @param databaseLoadTarget
+     */
     private void handleDatabaseLoadProgress(int databaseLoadProgress, int databaseLoadTarget) {
         if (mInitFragment != null) {
             mInitFragment.updateDatabaseLoadProgress(databaseLoadProgress, databaseLoadTarget);
-        } else {
-//            Log.v(TAG, "handleDatabaseLoadedTarget - mInitFragment - is null");
         }
     }
 
+    /**
+     * Show message at the bottom of the screen.
+     *
+     * @param msg
+     * @param showIndefinite
+     */
     public void showSnackBar(String msg, boolean showIndefinite) {
         Snackbar
                 .make(mCoordinatorlayout, msg, (showIndefinite ? Snackbar.LENGTH_INDEFINITE : Snackbar.LENGTH_LONG))
@@ -882,11 +886,6 @@ public class MainActivity extends AppCompatActivity implements
                 .make(mCoordinatorlayout, msg, (showIndefinite ? Snackbar.LENGTH_INDEFINITE : Snackbar.LENGTH_LONG))
                 .setActionTextColor(Color.RED)
                 .show(); // Don’t forget to show!
-    }
-
-    @Override
-    public void onNearbyStopsFragmentMapClicked(NearbyStopsDetails nearbyStopsDetails) {
-        showStopOnMap(nearbyStopsDetails.stopName, new LatLngDetails(nearbyStopsDetails.latitude, nearbyStopsDetails.longitude));
     }
 
     /**
@@ -904,8 +903,10 @@ public class MainActivity extends AppCompatActivity implements
         mProgressBarHandler.hide();
     }
 
+    /**
+     * Make fragment at the top of Back Stack visible.
+     */
     private void showTopFragment() {
-//        Log.v(TAG, "showTopFragment - start");
         Fragment topFragmment = null;
         if (mFavoriteStopsFragment != null) {
             mFavoriteStopsFragment.hideView();
@@ -917,21 +918,17 @@ public class MainActivity extends AppCompatActivity implements
             tag = getSupportFragmentManager().getBackStackEntryAt(i).getName();
             topFragmment = getSupportFragmentManager().findFragmentByTag(tag);
             ((BaseFragment)topFragmment).hideView();
-//            Log.v(TAG, "showTopFragment - fragment: " + i + " - " + topFragmment + "/" + topFragmment.getFragmentId());
         }
         if (topFragmment != null) {
             ((BaseFragment)topFragmment).showView();
-//            Log.v(TAG, "showTopFragment - setTitle");
-//            actionBar.setTitle(((BaseFragment)topFragmment).getActionBarTitle());
             mToolbar.setTitle(((BaseFragment)topFragmment).getActionBarTitle());
-//            mCollapsingToolbar.setTitle(((BaseFragment)topFragmment).getActionBarTitle());
         }
-//        showFragmentsOnBackStackVisibility();
-//        Log.v(TAG, "showTopFragment - end");
     }
 
+    /**
+     * Use for testing - remove before publishing on Google Play.
+     */
     private void printBackStackFragments() {
-//        Log.v(TAG, "printBackStackFragments - start");
         BaseFragment topFragmment;
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         String tag;
@@ -940,11 +937,12 @@ public class MainActivity extends AppCompatActivity implements
             topFragmment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
             Log.v(TAG, "printBackStackFragments - fragment: " + i + " - " + topFragmment + "/" + topFragmment.getFragmentId());
         }
-//        Log.v(TAG, "printBackStackFragments - end");
     }
 
+    /**
+     * Use for testing - remove before publishing on Google Play.
+     */
     private void showFragmentsOnBackStackVisibility() {
-//        Log.v(TAG, "showFragmentsOnBackStackVisibility - start");
         BaseFragment topFragmment;
         if (mFavoriteStopsFragment != null) {
             mFavoriteStopsFragment.isRootViewVisible();
@@ -957,28 +955,29 @@ public class MainActivity extends AppCompatActivity implements
             topFragmment.isRootViewVisible();
 //            Log.v(TAG, "showFragmentsOnBackStackVisibility - fragment: " + i + " - " + topFragmment + "/" + topFragmment.getFragmentId());
         }
-//        Log.v(TAG, "showFragmentsOnBackStackVisibility - end");
     }
 
+    /**
+     * Return fragment that is at the top of Back Stack.
+     */
     private BaseFragment getTopFragment() {
-        BaseFragment topFragmment = null;
-        Fragment fragment;
+        BaseFragment topFragmment;
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         if (cnt == 0) {
             topFragmment = mFavoriteStopsFragment;
         } else  {
             String tag = getSupportFragmentManager().getBackStackEntryAt(cnt - 1).getName();
-            fragment = getSupportFragmentManager().findFragmentByTag(tag);
-//            if (fragment instanceof BaseFragment) {
-                topFragmment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
-//            }
+            topFragmment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
         }
         return topFragmment;
     }
 
 
+    /**
+     * Return tah of the fragment that is at the top of Back Stack.
+     */
     private String getTopFragmentTag() {
-        String tag = null;
+        String tag;
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         if (cnt > 0) {
             tag = getSupportFragmentManager().getBackStackEntryAt(cnt - 1).getName();
@@ -988,28 +987,22 @@ public class MainActivity extends AppCompatActivity implements
         return tag;
     }
 
+    /**
+     * Restore all fragments that were tracked by the FragmentManager.
+     */
     private void findFragments() {
         Log.v(TAG, "findFragments - start");
-//        BaseFragment topFragmment = null;
         BaseFragment topFragmment = mFavoriteStopsFragment = (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
         if (topFragmment != null) {
-//            Log.v(TAG, "findFragments - hiding view: " + topFragmment);
             topFragmment.hideView();
         }
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
-//        Log.v(TAG, "findFragments - cnt/mFavoriteStopsFragment: " + cnt + "/" + mFavoriteStopsFragment);
         String tag;
         for (int i = 0; i < cnt; i++) {
             tag = getSupportFragmentManager().getBackStackEntryAt(i).getName();
             topFragmment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
-            ((BaseFragment)topFragmment).hideView();
-//            Log.v(TAG, "findFragments - cnt/tag/topFragment: " + cnt + "/"  + tag + "/" + topFragmment);
+            topFragmment.hideView();
             switch (tag) {
-//                case FAVORITE_STOPS_TAG:
-////                    mFavoriteStopsFragment = (FavoriteStopsFragment) topFragmment;
-//                    mFavoriteStopsFragment = (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
-//                    Log.v(TAG, "findFragments - what? = mFavoriteStopsFragment: " + mFavoriteStopsFragment);
-//                    break;
 
                 case STATION_ON_MAP_TAG:
                     mStationOnMapFragment = (StationOnMapFragment) topFragmment;
@@ -1036,19 +1029,19 @@ public class MainActivity extends AppCompatActivity implements
                     break;
 
                 default:
-                    throw new RuntimeException(TAG + ".findFragments - no code to handle tag: " + tag);
+                    if (!Utility.isReleaseVersion(getApplicationContext())) {
+                        throw new RuntimeException(TAG + ".findFragments - no code to handle tag: " + tag);
+                    }
             }
-//            Log.v(TAG, "printBackStackFragments - fragment: " + i + " - " + topFragmment + "/" + topFragmment.getFragmentId());
         }
         if (topFragmment != null) {
-            ((BaseFragment)topFragmment).showView();
-//            Log.v(TAG, "findFragments - showing view: " + topFragmment);
+            topFragmment.showView();
         }
-//        showFragmentsOnBackStackVisibility();
-//        Log.v(TAG, "findFragments - end");
     }
 
     /**
+     *
+     * Handle D-pad/keyboard keys.
      *
      * Based on henry74918
      *
@@ -1134,7 +1127,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    // FIXME: 25/09/2016 find source of the code below - The Busy ...
+    // FIXME: 25/09/2016 find source of the code below - The Busy ...?
     protected boolean readyToGo() {
         GoogleApiAvailability checker =
                 GoogleApiAvailability.getInstance();
@@ -1145,7 +1138,6 @@ public class MainActivity extends AppCompatActivity implements
             if (getVersionFromPackageManager(this) >= 2) {
                 return (true);
             } else {
-//                Toast.makeText(this, R.string.no_maps, Toast.LENGTH_LONG).show();
                 showSnackBar(R.string.no_maps, true);
                 finish();
             }
@@ -1154,7 +1146,6 @@ public class MainActivity extends AppCompatActivity implements
             ErrorDialogFragment.newInstance(status)
                     .show(fm, ERROR_DIALOG_FRAGMENT_TAG);
         } else {
-//            Toast.makeText(this, R.string.no_maps, Toast.LENGTH_LONG).show();
             showSnackBar(R.string.no_maps, true);
             finish();
         }
@@ -1191,38 +1182,3 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 }
-/*
-
-    private void bindPreferenceSummaryToValue(Preference preference) {
-        String key = preference.getKey();
-        // Set the listener to watch for value changes.
-        preference.setOnPreferenceChangeListener(this);
-
-        Object value;
-        final String useDevice = getString(R.string.pref_key_use_device_location);
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        if (key.equals(getString(R.string.pref_key_use_device_location))) {
-            value = currUseDeviceLocationValue = sp.getBoolean(getString(R.string.pref_key_use_device_location), false);
-            // Set the preference summaries
-            setPreferenceSummary(preference,
-                    PreferenceManager
-                            .getDefaultSharedPreferences(preference.getContext())
-                            .getString(preference.getKey(), ""));
-
-        } else if (key.equals(getString(R.string.pref_key_location_latitude))) {
-            value = currFixedLocationLatitude = sp.getFloat(getString(R.string.pref_key_use_device_location), Float.NaN);
-            // Set the preference summaries
-            setPreferenceSummary(preference,
-                    PreferenceManager
-                            .getDefaultSharedPreferences(preference.getContext())
-                            .getFloat(preference.getKey(), Float.NaN));
-
-        } else {
-            // Set the preference summaries
-            setPreferenceSummary(preference,
-                    PreferenceManager
-                            .getDefaultSharedPreferences(preference.getContext())
-                            .getString(preference.getKey(), ""));
-        }
-    }
- */

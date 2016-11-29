@@ -19,7 +19,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 
 /**
- * Created by business on 24/09/2016.
+ * Find current latitude and longitude of the device.
  */
 // FIXME: 26/09/2016 - make Singleton. Merge with DbUtility.
 public class CurrentGeoPositionFinder implements

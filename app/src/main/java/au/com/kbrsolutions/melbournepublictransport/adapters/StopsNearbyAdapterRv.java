@@ -10,6 +10,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
+import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StopsNearbyFragment.OnNearbyStopsFragmentInteractionListener;
@@ -92,7 +93,11 @@ public class StopsNearbyAdapterRv extends RecyclerView.Adapter<StopsNearbyAdapte
                     if (null != mListener) {
                         // Notify the active callbacks interface (the activity, if the
                         // fragment is attached to one) that a map image was touched.
-                        mListener.onNearbyStopsFragmentMapClicked(nearbyStopsDetails);
+//                        mListener.onNearbyStopsFragmentMapClicked(nearbyStopsDetails);
+                            mListener.showStopOnMap(
+                                nearbyStopsDetails.stopName,
+                                new LatLngDetails(nearbyStopsDetails.latitude,
+                                        nearbyStopsDetails.longitude));
                     }
                 }
             });

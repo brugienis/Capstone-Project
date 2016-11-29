@@ -110,6 +110,13 @@ public class WidgetStopsActivity
         }
     }
 
+    /**
+     * Based on http://stackoverflow.com/questions/33058496/set-starting-height-of-collapsingtoolbarlayout
+     *
+     * DmitryArc
+     *
+     * @param verticalOffset
+     */
     private void adjustAppBarVertivalOffset(final int verticalOffset) {
         mAppBarLayout.post(new Runnable() {
             @Override

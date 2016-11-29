@@ -17,6 +17,7 @@ import java.util.List;
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.adapters.StopsNearbyAdapter;
 import au.com.kbrsolutions.melbournepublictransport.adapters.StopsNearbyAdapterRv;
+import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.utilities.HorizontalDividerItemDecoration;
@@ -224,7 +225,8 @@ public class StopsNearbyFragment extends BaseFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnNearbyStopsFragmentInteractionListener {
-        void onNearbyStopsFragmentMapClicked(NearbyStopsDetails nearbyStopsDetails);
+//        void onNearbyStopsFragmentMapClicked(NearbyStopsDetails nearbyStopsDetails);
+        void showStopOnMap(String stopName, LatLngDetails latLonDetails);
         void startNextDeparturesSearch(StopDetails stopDetails);
     }
 
