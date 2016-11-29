@@ -44,6 +44,12 @@ public class WidgetStopEditTextPreference extends EditTextPreference {
         setWidgetLayoutResource(R.layout.pref_current_widget_stop);
     }
 
+    /**
+     * Start WidgetStopsActivity.
+     *
+     * @param parent
+     * @return
+     */
     @Override
     protected View onCreateView(ViewGroup parent) {
         View view = super.onCreateView(parent);

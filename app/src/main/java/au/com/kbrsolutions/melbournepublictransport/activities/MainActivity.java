@@ -235,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements
                 if (Utility.isDatabaseLoaded(getApplicationContext())) {
                     showFavoriteStops();
                     getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                    mFavoriteStopsFragment.setShowOptionsMenuFlg(true);
                     if (mTwoPane) {
                         showStopsFragment();
                     }

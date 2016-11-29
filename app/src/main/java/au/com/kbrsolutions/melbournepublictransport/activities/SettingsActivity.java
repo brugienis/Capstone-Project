@@ -167,12 +167,13 @@ public class SettingsActivity extends AppCompatActivity {
      *
      */
     private void validatePreferenceSettings() {
-        SharedPreferences sharedPreferences =
-                getDefaultSharedPreferences(this);
-        boolean useDeviceLocationValue = sharedPreferences.getBoolean(getString(R.string.pref_key_use_device_location), true);
+        SharedPreferences sharedPreferences = getDefaultSharedPreferences(this);
+        boolean useDeviceLocationValue = sharedPreferences.getBoolean(getString(R.string.pref_key_use_device_location),
+                true);
         float currFixedLocationLatitude = sharedPreferences.getFloat(getString(R.string.pref_key_location_latitude), Float.NaN);
         float currFixedLocationLongitude = sharedPreferences.getFloat(getString(R.string.pref_key_location_longitude), Float.NaN);
-        if (!useDeviceLocationValue && (Float.isNaN(currFixedLocationLatitude) || Float.isNaN(currFixedLocationLongitude))) {
+        if (!useDeviceLocationValue && (Float.isNaN(currFixedLocationLatitude) ||
+                Float.isNaN(currFixedLocationLongitude))) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean(getString(R.string.pref_key_use_device_location), true);
             editor.apply();
@@ -201,6 +202,11 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Save selected 'fixed' location details in SharedPreferences.
+     *
+     * @param data
+     */
     private void processPlacePickerData(Intent data) {
         Place place = PlacePicker.getPlace(this, data);
         mFixedLocationAddress = place.getAddress().toString();
@@ -240,6 +246,11 @@ public class SettingsActivity extends AppCompatActivity {
                 Snackbar.LENGTH_LONG).show();
     }
 
+    /**
+     * Save selected 'widget' location details in SharedPreferences.
+     *
+     * @param data
+     */
     private void processWidgetStopDetails(Intent data) {
         mStopId = data.getStringExtra(WIDGET_STOP_ID);
         mStopName = data.getStringExtra(WIDGET_LOCATION_NAME);
@@ -328,18 +339,9 @@ public class SettingsActivity extends AppCompatActivity {
      */
     @Override
     public boolean onSupportNavigateUp() {
-        int cnt = getSupportFragmentManager().getBackStackEntryCount();
-//        Log.v(TAG, "onSupportNavigateUp - start - cnt: " + cnt);
         getSupportFragmentManager().popBackStack();
         onBackPressed();
         return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        int cnt = getSupportFragmentManager().getBackStackEntryCount();
-//        Log.v(TAG, "onBackPressed - start - cnt: " + cnt);
-        super.onBackPressed();
     }
 
     public void showSnackBar(int msg, boolean showIndefinite) {
@@ -376,8 +378,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         /**
          * Attaches a listener so the summary is always updated with the preference value.
-         * Also fires the listener once, to initialize the summary (so it shows up before the value
-         * is changed.)
          */
         private void bindPreferenceSummaryToValue(Preference preference) {
             // Set the listener to watch for value changes.
@@ -406,7 +406,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         /**
          *
-         * This gets called before the preference is changed - do all required validation in this method.
+         * This gets called before the preference is changed - do all required validation in this
+         * method.
          *
          * Return 'false' if the new preference value is not correct. If 'true' is returned, the new
          * value will be accepted and onSharedPreferenceChanged(...) will be called.
@@ -438,6 +439,13 @@ public class SettingsActivity extends AppCompatActivity {
             return true;
         }
 
+        /**
+         * If 'fixed' location position is incorrect the validation below will not allow to
+         * set 'use device location' switch to on.
+         *
+         * @param newUseDeviceLocationOn
+         * @return
+         */
         private boolean validateUseDeviceFixedLocationValue(boolean newUseDeviceLocationOn) {
             SharedPreferences sp = getPreferenceScreen().getSharedPreferences();
             currFixedLocationLatitude = sp.getFloat(getString(R.string.pref_key_location_latitude), Float.NaN);
@@ -454,7 +462,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void setPreferenceSummary(Preference preference, Object value) {
             String stringValue = value.toString();
-//            String key = preference.getKey();
             preference.setSummary(stringValue);
         }
     }

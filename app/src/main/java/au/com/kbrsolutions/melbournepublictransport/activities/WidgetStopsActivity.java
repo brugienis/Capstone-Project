@@ -132,17 +132,20 @@ public class WidgetStopsActivity
         behavior.onNestedPreScroll(mCoordinatorlayout, mAppBarLayout, null, 0, offsetPx, new int[]{0, 0});
     }
 
+    /**
+     * Hide the progress bar.
+     */
     private void handleRefresh() {
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
-    public void startNextDeparturesSearch(StopDetails stopDetails) {};
-    public void showStopOnMap(String stopName, LatLngDetails latLonDetails) {};
-    public void startStopsNearbySearch(boolean trainsOnly) {};
-    public void getDisruptionsDetails() {};
-    public void updateStopDetailRow(int id, String favoriteColumnValue) {};
-    public void reloadDatabase() {};
-
+    /**
+     * Set details of the selected stop into the Intent so SettingsActivity.onActivityResult(...)
+     * can access them.
+     *
+     * @param stopId
+     * @param locationName
+     */
     @Override
     public void updateWidgetStopDetails(String stopId, String locationName) {
         Intent intent = new Intent();
@@ -161,5 +164,12 @@ public class WidgetStopsActivity
         onBackPressed();
         return true;
     }
+
+    public void startNextDeparturesSearch(StopDetails stopDetails) {};
+    public void showStopOnMap(String stopName, LatLngDetails latLonDetails) {};
+    public void startStopsNearbySearch(boolean trainsOnly) {};
+    public void getDisruptionsDetails() {};
+    public void updateStopDetailRow(int id, String favoriteColumnValue) {};
+    public void reloadDatabase() {};
 
 }

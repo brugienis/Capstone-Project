@@ -75,6 +75,13 @@ public class FixedLocationEditTextPreference extends EditTextPreference {
         setWidgetLayoutResource(R.layout.pref_fixed_location);
     }
 
+    /**
+     * If Google Services are not available, show SnackBar with message otherwise start Place
+     * Picker activity.
+     *
+     * @param parent
+     * @return
+     */
     @Override
     protected View onCreateView(ViewGroup parent) {
         View view = super.onCreateView(parent);
