@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
-import au.com.kbrsolutions.melbournepublictransport.data.DatabaseContentRefresher;
+import au.com.kbrsolutions.melbournepublictransport.utilities.DatabaseContentRefresher;
 import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
@@ -26,7 +26,7 @@ import au.com.kbrsolutions.melbournepublictransport.events.RequestProcessorServi
 import au.com.kbrsolutions.melbournepublictransport.utilities.DbUtility;
 import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
-import static au.com.kbrsolutions.melbournepublictransport.data.DatabaseContentRefresher.testProgressBar;
+import static au.com.kbrsolutions.melbournepublictransport.utilities.DatabaseContentRefresher.testProgressBar;
 
 
 public class RequestProcessorService extends IntentService {

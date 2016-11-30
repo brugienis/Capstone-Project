@@ -1,4 +1,4 @@
-package au.com.kbrsolutions.melbournepublictransport.data;
+package au.com.kbrsolutions.melbournepublictransport.utilities;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -14,6 +14,8 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
+import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
+import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 import au.com.kbrsolutions.melbournepublictransport.events.RequestProcessorServiceRequestEvents;
 import au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil;
