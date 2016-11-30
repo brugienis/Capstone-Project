@@ -11,7 +11,7 @@ import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
-import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StopsNearbyFragment.OnNearbyStopsFragmentInteractionListener;
 
@@ -20,17 +20,17 @@ import au.com.kbrsolutions.melbournepublictransport.fragments.StopsNearbyFragmen
  * This adapter is currently replaced with ArrayAdapter. It maybe used again in the future.
  *
  * {@link RecyclerView.Adapter} that can display a
- * {@link au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails}.
+ * {@link StopsNearbyDetails}.
  */
 public class StopsNearbyAdapterRv extends RecyclerView.Adapter<StopsNearbyAdapterRv.ViewHolder> {
 
-    private final List<NearbyStopsDetails> mValues;
+    private final List<StopsNearbyDetails> mValues;
     private final OnNearbyStopsFragmentInteractionListener mListener;
 
     private static final String TAG = StopsNearbyAdapterRv.class.getSimpleName();
 
     public StopsNearbyAdapterRv(
-            List<NearbyStopsDetails> items,
+            List<StopsNearbyDetails> items,
             OnNearbyStopsFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
@@ -45,15 +45,15 @@ public class StopsNearbyAdapterRv extends RecyclerView.Adapter<StopsNearbyAdapte
 
     @Override
     public void onBindViewHolder(final StopsNearbyAdapterRv.ViewHolder holder, int position) {
-        NearbyStopsDetails nearbyStopsDetails = mValues.get(position);
-        if (nearbyStopsDetails.routeType == NearbyStopsDetails.TRAIN_ROUTE_TYPE) {
+        StopsNearbyDetails nearbyStopsDetails = mValues.get(position);
+        if (nearbyStopsDetails.routeType == StopsNearbyDetails.TRAIN_ROUTE_TYPE) {
             holder.stopName.setText(nearbyStopsDetails.stopName);
             holder.stopAddress.setText(nearbyStopsDetails.suburb);
             holder.transportImage.setImageResource(R.drawable.ic_stock_train_blue_500_48dp);
         } else {
             holder.stopName.setText(nearbyStopsDetails.stopName);
             holder.stopAddress.setText(nearbyStopsDetails.stopAddress);
-            if (nearbyStopsDetails.routeType == NearbyStopsDetails.TRAM_ROUTE_TYPE) {
+            if (nearbyStopsDetails.routeType == StopsNearbyDetails.TRAM_ROUTE_TYPE) {
                 holder.transportImage.setImageResource(R.drawable.ic_stock_tram_amber_500_48dp);
             } else {
                 holder.transportImage.setImageResource(R.drawable.ic_stock_directions_bus_green_500_48dp);
@@ -63,7 +63,7 @@ public class StopsNearbyAdapterRv extends RecyclerView.Adapter<StopsNearbyAdapte
         holder.nearbyStopsDetails = mValues.get(position);
     }
 
-    public void swap(List<NearbyStopsDetails> nearbyStopsDetails){
+    public void swap(List<StopsNearbyDetails> nearbyStopsDetails){
         mValues.clear();
         mValues.addAll(nearbyStopsDetails);
         notifyDataSetChanged();
@@ -80,7 +80,7 @@ public class StopsNearbyAdapterRv extends RecyclerView.Adapter<StopsNearbyAdapte
         public final TextView stopAddress;
         public final ImageView mapImageId;
         public final ImageView departuresImageId;
-        private NearbyStopsDetails nearbyStopsDetails;
+        private StopsNearbyDetails nearbyStopsDetails;
 
         public ViewHolder(View view) {
             super(view);

@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
-import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 
 public class NextDeparturesAdapter<T> extends ArrayAdapter<NextDepartureDetails> {
@@ -58,15 +58,15 @@ public class NextDeparturesAdapter<T> extends ArrayAdapter<NextDepartureDetails>
             holder.runType.setText(runTypeText);
             holder.departureTimeId.setText(departureTime);
 
-            if (nextDepartureDetails.routeType == NearbyStopsDetails.TRAIN_ROUTE_TYPE) {
+            if (nextDepartureDetails.routeType == StopsNearbyDetails.TRAIN_ROUTE_TYPE) {
                 holder.transportImage.setImageResource(R.drawable.ic_stock_train_blue_500_48dp);
                 holder.transportImage.setContentDescription(mActivity.getResources().
                         getString(R.string.content_desc_train_transport_type));
-            } else if (nextDepartureDetails.routeType == NearbyStopsDetails.TRAM_ROUTE_TYPE) {
+            } else if (nextDepartureDetails.routeType == StopsNearbyDetails.TRAM_ROUTE_TYPE) {
                 holder.transportImage.setImageResource(R.drawable.ic_stock_tram_amber_500_48dp);
                 holder.transportImage.setContentDescription(mActivity.getResources().
                         getString(R.string.content_desc_tram_transport_type));
-            } else if (nextDepartureDetails.routeType  == NearbyStopsDetails.BUS_ROUTE_TYPE) {
+            } else if (nextDepartureDetails.routeType  == StopsNearbyDetails.BUS_ROUTE_TYPE) {
                 holder.transportImage.setImageResource(R.drawable.ic_stock_directions_bus_green_500_48dp);
                 holder.transportImage.setContentDescription(mActivity.getResources().
                         getString(R.string.content_desc_bus_transport_type));

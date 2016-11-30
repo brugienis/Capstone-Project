@@ -2,6 +2,7 @@ package au.com.kbrsolutions.melbournepublictransport.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 /**
  * This class keeps 'stops nearby' details.
  */

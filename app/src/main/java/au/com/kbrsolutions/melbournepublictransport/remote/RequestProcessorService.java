@@ -18,7 +18,7 @@ import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.utilities.DatabaseContentRefresher;
 import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
-import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
@@ -96,7 +96,7 @@ public class RequestProcessorService extends IntentService {
                             .build());
                 } else {
                     LatLngDetails latLonDetails;
-                    List<NearbyStopsDetails> nearbyStopsDetailsList;
+                    List<StopsNearbyDetails> stopsNearbyDetailsList;
                     switch (request) {
                         case ACTION_GET_DATABASE_STATUS:
                             if (REFRESH_TEST) {
@@ -185,12 +185,12 @@ public class RequestProcessorService extends IntentService {
                             if (dbUtility == null) {
                                 dbUtility = new DbUtility();
                             }
-                            nearbyStopsDetailsList = dbUtility.getNearbyTrainDetails(
+                            stopsNearbyDetailsList = dbUtility.getNearbyTrainDetails(
                                     latLonDetails,
                                     getApplicationContext());
                             sendMessageToMainActivity(new MainActivityEvents.Builder(
                                     MainActivityEvents.MainEvents.NEARBY_LOCATION_DETAILS)
-                                    .setNearbyStopsDetailsList(nearbyStopsDetailsList)
+                                    .setNearbyStopsDetailsList(stopsNearbyDetailsList)
                                     .setForTrainsStopsNearby(true)
                                     .build());
                             break;
@@ -198,18 +198,18 @@ public class RequestProcessorService extends IntentService {
                         case ACTION_GET_STOPS_NEARBY_DETAILS:
                             latLonDetails = extras.getParcelable(LAT_LON);
 //                        Log.v(TAG, "onHandleIntent - latLonDetails: " + latLonDetails);
-                            nearbyStopsDetailsList =
+                            stopsNearbyDetailsList =
                                     RemoteMptEndpointUtil.getNearbyStops(latLonDetails,
                                     getApplicationContext());
                             if (dbUtility == null) {
                                 dbUtility = new DbUtility();
                             }
-                            dbUtility.fillInMissingDetails(nearbyStopsDetailsList, getApplicationContext());
-//                        List<NearbyStopsDetails> nearbyStopsDetailsList =
+                            dbUtility.fillInMissingDetails(stopsNearbyDetailsList, getApplicationContext());
+//                        List<NearbyStopsDetails> stopsNearbyDetailsList =
 //                                buildSimulatedNearbyDetails();
                             sendMessageToMainActivity(new MainActivityEvents.Builder(
                                     MainActivityEvents.MainEvents.NEARBY_LOCATION_DETAILS)
-                                    .setNearbyStopsDetailsList(nearbyStopsDetailsList)
+                                    .setNearbyStopsDetailsList(stopsNearbyDetailsList)
                                     .build());
                             break;
 

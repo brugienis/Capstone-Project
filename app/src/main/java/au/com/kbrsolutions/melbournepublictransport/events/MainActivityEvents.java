@@ -3,7 +3,7 @@ package au.com.kbrsolutions.melbournepublictransport.events;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
-import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
@@ -31,7 +31,7 @@ public class MainActivityEvents {
     public final StopDetails stopDetails;
     public final List<DisruptionsDetails> disruptionsDetailsList;
     public final LatLngDetails latLonDetails;
-    public final List<NearbyStopsDetails> nearbyStopsDetailsList;
+    public final List<StopsNearbyDetails> nearbyStopsDetailsList;
     public final boolean forTrainsStopsNearby;
     public final boolean databaseEmpty;
     public final int databaseLoadProgress;
@@ -63,7 +63,7 @@ public class MainActivityEvents {
         private StopDetails stopDetails;
         private List<DisruptionsDetails> disruptionsDetailsList;
         private LatLngDetails latLonDetails;
-        private List<NearbyStopsDetails> nearbyStopsDetailsList;
+        private List<StopsNearbyDetails> nearbyStopsDetailsList;
         private boolean forTrainsStopsNearby;
         private boolean databaseEmpty;
         private int databaseLoadProgress;
@@ -94,7 +94,7 @@ public class MainActivityEvents {
             return this;
         }
 
-        public Builder setNearbyStopsDetailsList(List<NearbyStopsDetails> nearbyStopsDetailsList) {
+        public Builder setNearbyStopsDetailsList(List<StopsNearbyDetails> nearbyStopsDetailsList) {
             this.nearbyStopsDetailsList = nearbyStopsDetailsList;
             return this;
         }

@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by business on 18/08/2016.
+ * This class keeps 'stops' details.
  */
 public class StopDetails implements Parcelable {
     public final int id;

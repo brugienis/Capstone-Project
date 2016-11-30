@@ -4,6 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import static au.com.kbrsolutions.melbournepublictransport.R.id.directionName;
+/**
+ * This class keeps 'disruptions' details.
+ */
 
 public class DisruptionsDetails implements Parcelable {
     public final String title;

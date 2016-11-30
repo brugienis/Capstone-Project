@@ -13,7 +13,7 @@ import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
-import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StopsNearbyFragment;
 
@@ -22,15 +22,15 @@ import static au.com.kbrsolutions.melbournepublictransport.R.id.mapImageId;
 import static au.com.kbrsolutions.melbournepublictransport.R.id.stopAddress;
 import static au.com.kbrsolutions.melbournepublictransport.R.id.stopName;
 
-public class StopsNearbyAdapter<T> extends ArrayAdapter<NearbyStopsDetails> {
+public class StopsNearbyAdapter<T> extends ArrayAdapter<StopsNearbyDetails> {
 
     private Activity mActivity;
-    private final List<NearbyStopsDetails> mValues;
+    private final List<StopsNearbyDetails> mValues;
     private final StopsNearbyFragment.OnNearbyStopsFragmentInteractionListener mListener;
 
     private static final String TAG = StopsNearbyAdapterRv.class.getSimpleName();
 
-    public StopsNearbyAdapter(Activity activity, List<NearbyStopsDetails> items, StopsNearbyFragment.OnNearbyStopsFragmentInteractionListener listener) {
+    public StopsNearbyAdapter(Activity activity, List<StopsNearbyDetails> items, StopsNearbyFragment.OnNearbyStopsFragmentInteractionListener listener) {
         super(activity.getApplicationContext(), -1, items);
         mActivity = activity;
         mValues = items;
@@ -90,17 +90,17 @@ public class StopsNearbyAdapter<T> extends ArrayAdapter<NearbyStopsDetails> {
             holder = (ViewHolder) v.getTag();
         }
 
-        NearbyStopsDetails nearbyStopsDetails = mValues.get(position);
+        StopsNearbyDetails nearbyStopsDetails = mValues.get(position);
         holder.stopName.setText(nearbyStopsDetails.stopName);
 
-        if (nearbyStopsDetails.routeType == NearbyStopsDetails.TRAIN_ROUTE_TYPE) {
+        if (nearbyStopsDetails.routeType == StopsNearbyDetails.TRAIN_ROUTE_TYPE) {
             holder.stopAddress.setText(nearbyStopsDetails.suburb);
             holder.transportImage.setImageResource(R.drawable.ic_stock_train_blue_500_48dp);
             holder.transportImage.setContentDescription(mActivity.getResources().
                     getString(R.string.content_desc_train_transport_type));
         } else {
             holder.stopAddress.setText(nearbyStopsDetails.stopAddress);
-            if (nearbyStopsDetails.routeType == NearbyStopsDetails.TRAM_ROUTE_TYPE) {
+            if (nearbyStopsDetails.routeType == StopsNearbyDetails.TRAM_ROUTE_TYPE) {
                 holder.transportImage.setImageResource(R.drawable.ic_stock_tram_amber_500_48dp);
                 holder.transportImage.setContentDescription(mActivity.getResources().
                         getString(R.string.content_desc_tram_transport_type));
@@ -116,7 +116,7 @@ public class StopsNearbyAdapter<T> extends ArrayAdapter<NearbyStopsDetails> {
         return v;
     }
 
-    public void swap(List<NearbyStopsDetails> nearbyStopsDetails){
+    public void swap(List<StopsNearbyDetails> nearbyStopsDetails){
         mValues.clear();
         mValues.addAll(nearbyStopsDetails);
         notifyDataSetChanged();
@@ -128,6 +128,6 @@ public class StopsNearbyAdapter<T> extends ArrayAdapter<NearbyStopsDetails> {
         public TextView stopAddress;
         public ImageView mapImageId;
         public ImageView departuresImageId;
-        private NearbyStopsDetails nearbyStopsDetails;
+        private StopsNearbyDetails nearbyStopsDetails;
     }
 }

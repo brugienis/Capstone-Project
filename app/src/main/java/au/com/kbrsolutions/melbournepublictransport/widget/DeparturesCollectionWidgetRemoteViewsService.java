@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
-import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil;
 import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
@@ -67,7 +67,7 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
 //                } else {
                 mNextDepartureDetails =
                         RemoteMptEndpointUtil.getBroadNextDepartures(
-                                NearbyStopsDetails.TRAIN_ROUTE_TYPE,
+                                StopsNearbyDetails.TRAIN_ROUTE_TYPE,
                                 stopId,
                                 limit,
                                 getApplicationContext());

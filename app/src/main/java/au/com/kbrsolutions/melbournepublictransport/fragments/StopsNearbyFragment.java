@@ -18,7 +18,7 @@ import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.adapters.StopsNearbyAdapter;
 import au.com.kbrsolutions.melbournepublictransport.adapters.StopsNearbyAdapterRv;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
-import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.utilities.HorizontalDividerItemDecoration;
 
@@ -31,7 +31,7 @@ import au.com.kbrsolutions.melbournepublictransport.utilities.HorizontalDividerI
 public class StopsNearbyFragment extends BaseFragment {
 
     private static final String ARG_NEARBY_DATA = "arg_nearby_data";
-    private List<NearbyStopsDetails> mNearbyStopsDetailsList;
+    private List<StopsNearbyDetails> mNearbyStopsDetailsList;
     private StopsNearbyAdapterRv mRecyclerViewAdapter;
     private StopsNearbyAdapter mStopsNearbyAdapter;
     private boolean newInstanceArgsRetrieved;
@@ -46,7 +46,7 @@ public class StopsNearbyFragment extends BaseFragment {
         // Required empty public constructor
     }
 
-    public static StopsNearbyFragment newInstance(List<NearbyStopsDetails> nearbyStopsDetailsList) {
+    public static StopsNearbyFragment newInstance(List<StopsNearbyDetails> nearbyStopsDetailsList) {
         StopsNearbyFragment fragment = new StopsNearbyFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_NEARBY_DATA, (ArrayList) nearbyStopsDetailsList);
@@ -192,7 +192,7 @@ public class StopsNearbyFragment extends BaseFragment {
         return mRootView;
     }
 
-    public void setNewContent(List<NearbyStopsDetails> nearbyStopsDetailsList) {
+    public void setNewContent(List<StopsNearbyDetails> nearbyStopsDetailsList) {
 //        mRecyclerViewAdapter.swap(nearbyStopsDetailsList);
         mStopsNearbyAdapter.swap(nearbyStopsDetailsList);
     }

@@ -41,7 +41,7 @@ import java.util.List;
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
-import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.remote.RequestProcessorService;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
@@ -728,7 +728,7 @@ public class MainActivity extends AppCompatActivity implements
      * @param forTrainsStopsNearby
      */
     public void showStopsNearby(
-            List<NearbyStopsDetails> nearbyStopsDetailsList,
+            List<StopsNearbyDetails> nearbyStopsDetailsList,
             boolean forTrainsStopsNearby) {
 
         if (mStopsNearbyFragment == null) {

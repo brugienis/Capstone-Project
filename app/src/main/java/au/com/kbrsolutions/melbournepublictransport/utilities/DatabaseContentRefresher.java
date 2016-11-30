@@ -15,7 +15,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
-import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 import au.com.kbrsolutions.melbournepublictransport.events.RequestProcessorServiceRequestEvents;
 import au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil;
@@ -64,7 +64,7 @@ public class DatabaseContentRefresher {
         deleteLineAndStopDetailRows(contentResolver);
 
         // FIXME: 3/10/2016
-        int trainMode = NearbyStopsDetails.TRAIN_ROUTE_TYPE;    // 0;
+        int trainMode = StopsNearbyDetails.TRAIN_ROUTE_TYPE;    // 0;
         List<ContentValues> lineDetailsContentValuesList =
                 RemoteMptEndpointUtil.getLineDetails(trainMode, context);
         sendMessageToMainActivity(new MainActivityEvents.Builder(

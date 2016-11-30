@@ -16,7 +16,7 @@ import java.util.TreeMap;
 
 import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
-import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 
 /**
  * Created by business on 26/09/2016.
@@ -54,7 +54,7 @@ public class DbUtility {
         Log.v(TAG, "printContents - start");
     }
 
-    public List<NearbyStopsDetails> getNearbyTrainDetails(LatLngDetails latLonDetails, Context context) {
+    public List<StopsNearbyDetails> getNearbyTrainDetails(LatLngDetails latLonDetails, Context context) {
         Uri uri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.ANY_FAVORITE_FLAG);
         Cursor cursor = context.getContentResolver().query(
                 uri,
@@ -70,7 +70,7 @@ public class DbUtility {
         int latIdx;
         int lonIdx;
         double distance;
-        Map<Double, NearbyStopsDetails> map = new TreeMap<>();
+        Map<Double, StopsNearbyDetails> map = new TreeMap<>();
         while (cursor.moveToNext()) {
             stopIdIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_STOP_ID);
             locationNameIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LOCATION_NAME);
@@ -83,11 +83,11 @@ public class DbUtility {
                     cursor.getDouble(latIdx),
                     cursor.getDouble(lonIdx),
                     "K");
-            map.put(distance, new NearbyStopsDetails(
+            map.put(distance, new StopsNearbyDetails(
                     cursor.getString(locationNameIdx),
                     null,
                     cursor.getString(suburbIdx),
-                    NearbyStopsDetails.TRAIN_ROUTE_TYPE,
+                    StopsNearbyDetails.TRAIN_ROUTE_TYPE,
                     cursor.getString(stopIdIdx),
                     cursor.getDouble(latIdx),
                     cursor.getDouble(lonIdx),
@@ -96,32 +96,32 @@ public class DbUtility {
 //            Log.v(TAG, "distance/stopId/stopName: " + distance + " - " + cursor.getString(stopIdIdx) + "/" + cursor.getString(locationNameIdx));
         }
         cursor.close();
-        List<NearbyStopsDetails> nearbyStopsDetailsList = new ArrayList<>(map.size());
-        NearbyStopsDetails nearbyStopsDetails;
+        List<StopsNearbyDetails> stopsNearbyDetailsList = new ArrayList<>(map.size());
+        StopsNearbyDetails stopsNearbyDetails;
         // FIXME: 28/09/2016 - get below from settings
         int nearStopsLimitCnt = 10;
         int cnt = 0;
         for (Double key : map.keySet()) {
-            nearbyStopsDetails = map.get(key);
-            nearbyStopsDetailsList.add(nearbyStopsDetails);
+            stopsNearbyDetails = map.get(key);
+            stopsNearbyDetailsList.add(stopsNearbyDetails);
 //            Log.v(TAG, "distance/stopId/stopName: " +
-//                    nearbyStopsDetails.distance + " - " +
-//                    nearbyStopsDetails.stopId + "/" +
-//                    nearbyStopsDetails.stopName);
+//                    stopsNearbyDetails.distance + " - " +
+//                    stopsNearbyDetails.stopId + "/" +
+//                    stopsNearbyDetails.stopName);
             if (cnt++ > nearStopsLimitCnt) {
                 break;
             }
         }
-        return nearbyStopsDetailsList;
+        return stopsNearbyDetailsList;
     }
 
     private final static String STOP_ID = "Stop iD ";
-    public void fillInMissingDetails(List<NearbyStopsDetails> nearbyStopsDetailsList, Context context) {
+    public void fillInMissingDetails(List<StopsNearbyDetails> stopsNearbyDetailsList, Context context) {
 //    public List<NearbyStopsDetails> fillInMissingDetails(Map<Double, NearbyStopsDetails> nearbyStopsDetailsMap, Context context) {
 //        Log.v(TAG, "fillInMissingDetails start");
-        String[] stopIds = new String[nearbyStopsDetailsList.size()];
+        String[] stopIds = new String[stopsNearbyDetailsList.size()];
         int cnt = 0;
-        for (NearbyStopsDetails details : nearbyStopsDetailsList) {
+        for (StopsNearbyDetails details : stopsNearbyDetailsList) {
             stopIds[cnt++] = details.stopId;
         }
         String[] colNames = {
@@ -176,20 +176,20 @@ public class DbUtility {
         }
 
         String stopId;
-        NearbyStopsDetails nearbyStopsDetails;
-        for (int i = 0; i < nearbyStopsDetailsList.size(); i++) {
-            stopId = nearbyStopsDetailsList.get(i).stopId;
-            nearbyStopsDetails = nearbyStopsDetailsList.get(i);
+        StopsNearbyDetails stopsNearbyDetails;
+        for (int i = 0; i < stopsNearbyDetailsList.size(); i++) {
+            stopId = stopsNearbyDetailsList.get(i).stopId;
+            stopsNearbyDetails = stopsNearbyDetailsList.get(i);
             if (missingDetailsMap.containsKey(stopId)) {
-                nearbyStopsDetailsList.set(i, new NearbyStopsDetails(
+                stopsNearbyDetailsList.set(i, new StopsNearbyDetails(
                         missingDetailsMap.get(stopId).locationName,
-                        nearbyStopsDetails.stopAddress,
+                        stopsNearbyDetails.stopAddress,
                         missingDetailsMap.get(stopId).suburb,
-                        nearbyStopsDetails.routeType,
-                        nearbyStopsDetails.stopId,
-                        nearbyStopsDetails.latitude,
-                        nearbyStopsDetails.longitude,
-                        nearbyStopsDetails.distance
+                        stopsNearbyDetails.routeType,
+                        stopsNearbyDetails.stopId,
+                        stopsNearbyDetails.latitude,
+                        stopsNearbyDetails.longitude,
+                        stopsNearbyDetails.distance
                 ));
             } else {
 

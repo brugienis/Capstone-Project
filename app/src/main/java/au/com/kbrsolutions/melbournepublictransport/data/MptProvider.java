@@ -28,18 +28,7 @@ public class MptProvider extends ContentProvider {
 
     static{
         sLineDetailQueryBuilder = new SQLiteQueryBuilder();
-
-        //This is an inner join which looks like
-        //weather INNER JOIN location ON weather.location_id = location._id
         sLineDetailQueryBuilder.setTables(LineDetailEntry.TABLE_NAME);
-
-//        sStopDetailForFavoriteFlagQueryBuilder.setTables(
-//                WeatherContract.WeatherEntry.TABLE_NAME + " INNER JOIN " +
-//                        WeatherContract.LocationEntry.TABLE_NAME +
-//                        " ON " + WeatherContract.WeatherEntry.TABLE_NAME +
-//                        "." + WeatherContract.WeatherEntry.COLUMN_LOC_KEY +
-//                        " = " + WeatherContract.LocationEntry.TABLE_NAME +
-//                        "." + WeatherContract.LocationEntry._ID);
     }
 
     private static final SQLiteQueryBuilder sStopDetailForFavoriteFlagQueryBuilder;
@@ -47,17 +36,8 @@ public class MptProvider extends ContentProvider {
     static{
         sStopDetailForFavoriteFlagQueryBuilder = new SQLiteQueryBuilder();
 
-        //This is an inner join which looks like
-        //weather INNER JOIN location ON weather.location_id = location._id
         sStopDetailForFavoriteFlagQueryBuilder.setTables(StopDetailEntry.TABLE_NAME);
 
-//        sStopDetailForFavoriteFlagQueryBuilder.setTables(
-//                WeatherContract.WeatherEntry.TABLE_NAME + " INNER JOIN " +
-//                        WeatherContract.LocationEntry.TABLE_NAME +
-//                        " ON " + WeatherContract.WeatherEntry.TABLE_NAME +
-//                        "." + WeatherContract.WeatherEntry.COLUMN_LOC_KEY +
-//                        " = " + WeatherContract.LocationEntry.TABLE_NAME +
-//                        "." + WeatherContract.LocationEntry._ID);
     }
 
     // stop_detail.favorite = ?
@@ -94,15 +74,12 @@ public class MptProvider extends ContentProvider {
         switch (match) {
             case ALL_STOP_DETAIL:
                 return StopDetailEntry.CONTENT_TYPE;
-//            case STOPS_DETAILS_WITH_FAVORITE_FLAG:
-//                return StopDetailEntry.CONTENT_TYPE;
 
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
     }
 
-    // FIXME: 26/09/2016 - you are not USING selection, selectionArgs below
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
@@ -111,24 +88,28 @@ public class MptProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
             // line_detail
             case ALL_LINE_DETAIL: {
-                retCursor = sLineDetailQueryBuilder(uri, projection, selection, selectionArgs, sortOrder);
+                retCursor = sLineDetailQueryBuilder(uri, projection, selection, selectionArgs,
+                        sortOrder);
                 break;
             }
 
             // stop_detail?favorite_stops=value   // value is 'y', 'n' or 'a'
             case ALL_STOP_DETAIL: {
-                retCursor = getStopDetailCursorForFavoriteFlagCursor(uri, projection, selection, selectionArgs, sortOrder);
+                retCursor = getStopDetailCursorForFavoriteFlagCursor(uri, projection, selection,
+                        selectionArgs, sortOrder);
                 break;
             }
 
             default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri + " ; match value: " + sUriMatcher.match(uri));
+                throw new UnsupportedOperationException("Unknown uri: " + uri + " ; match value: " +
+                        sUriMatcher.match(uri));
         }
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return retCursor;
     }
 
-    private Cursor sLineDetailQueryBuilder(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    private Cursor sLineDetailQueryBuilder(Uri uri, String[] projection, String selection,
+                                           String[] selectionArgs, String sortOrder) {
         return sLineDetailQueryBuilder.query(mOpenHelper.getReadableDatabase(),
                 projection,
                 selection,
@@ -149,9 +130,9 @@ public class MptProvider extends ContentProvider {
         String selectionClause;
         String[] additionalSelectionArgs;
         if (favoriteFlag.equals(StopDetailEntry.ANY_FAVORITE_FLAG)) {
-//            Log.v(TAG, "getStopDetailCursorForFavoriteFlagCursor - sStopDetailForTwoFavoriteFlagSelection: " + sStopDetailForTwoFavoriteFlagSelection);
             selectionClause = sStopDetailForTwoFavoriteFlagSelection;
-            additionalSelectionArgs = new String[]{StopDetailEntry.NON_FAVORITE_FLAG, StopDetailEntry.FAVORITE_FLAG};
+            additionalSelectionArgs = new String[]{StopDetailEntry.NON_FAVORITE_FLAG,
+                    StopDetailEntry.FAVORITE_FLAG};
         } else {
             selectionClause = sStopDetailForOneFavoriteFlagSelection;
             additionalSelectionArgs = new String[]{favoriteFlag};
@@ -179,7 +160,6 @@ public class MptProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
-//        Log.v(TAG, "insert - start");
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         Uri returnUri;
@@ -206,7 +186,6 @@ public class MptProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         getContext().getContentResolver().notifyChange(uri, null);
-//        Log.v(TAG, "insert - end");
         return returnUri;
     }
 
@@ -215,7 +194,7 @@ public class MptProvider extends ContentProvider {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         int rowsDeleted;
-        // this makes delete all rows and return the number of rows deleted
+        // this deletes all rows and return the number of rows deleted
         if ( null == selection ) selection = "1";
         switch (match) {
             case ALL_LINE_DETAIL:
@@ -281,16 +260,14 @@ public class MptProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(uri, null);
                 return returnCount;
 
-            // FIXME: 2/09/2016 - investigate if we should throw exception or call super
             default:
-//                Log.v(TAG, "bulkInsert - default");
                 return super.bulkInsert(uri, values);
         }
     }
 
     /*
-        Creating the the UriMatcher. This UriMatcher will match each URI to the STOPS_DETAILS_WITH_FAVORITE_FLAG
-        integer constants defined above.
+        Creating the the UriMatcher. This UriMatcher will match each URI to the
+        STOPS_DETAILS_WITH_FAVORITE_FLAG integer constants defined above.
     */
     static UriMatcher buildUriMatcher() {
         // All paths added to the UriMatcher have a corresponding code to return when a match is

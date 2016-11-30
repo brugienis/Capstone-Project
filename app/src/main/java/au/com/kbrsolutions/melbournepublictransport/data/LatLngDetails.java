@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
+ * This class keeps latitude and longitude values.
  */
 public class LatLngDetails implements Parcelable {
 

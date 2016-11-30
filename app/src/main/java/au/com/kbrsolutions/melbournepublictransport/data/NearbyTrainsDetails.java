@@ -4,9 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by business on 27/09/2016.
+ * This class keeps 'nearby trains' details.
  */
-
 public class NearbyTrainsDetails implements Parcelable {
 
     public final String stopId;

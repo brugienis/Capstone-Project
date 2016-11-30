@@ -31,7 +31,7 @@ import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
-import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.utilities.JodaDateTimeUtility;
 import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
@@ -299,11 +299,11 @@ public class RemoteMptEndpointUtil {
         return nextDisruptionsDetailsList;
     }
 
-    public static List<NearbyStopsDetails> getNearbyStops(LatLngDetails latLonDetails,
-            Context context) {
+    public static List<StopsNearbyDetails> getNearbyStops(LatLngDetails latLonDetails,
+                                                          Context context) {
         final String uri = "/v2/nearme/latitude/" + latLonDetails.latitude + "/longitude/" + latLonDetails.longitude;
 
-        List<NearbyStopsDetails> nearbyStopsDetailsList = new ArrayList<>();
+        List<StopsNearbyDetails> stopsNearbyDetailsList = new ArrayList<>();
 
         try {
             String jsonString = processRemoteRequest(uri);
@@ -323,7 +323,7 @@ public class RemoteMptEndpointUtil {
                 stopId = resultObject.getString(STOP_ID);
                 latitude = resultObject.getDouble(LAT);
                 longitude = resultObject.getDouble(LON);
-                nearbyStopsDetailsList.add(new NearbyStopsDetails(
+                stopsNearbyDetailsList.add(new StopsNearbyDetails(
                         stopId,
                         locationName,
                         null,
@@ -339,7 +339,7 @@ public class RemoteMptEndpointUtil {
             }
             throw new RuntimeException(TAG + ".getNearbyStops - exception: " + e);
         }
-        return nearbyStopsDetailsList;
+        return stopsNearbyDetailsList;
     }
 
     private static final String GET = "GET";

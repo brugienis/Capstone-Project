@@ -2,7 +2,9 @@ package au.com.kbrsolutions.melbournepublictransport.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
+/**
+ * This class keeps 'next departures' details.
+ */
 public class NextDepartureDetails implements Parcelable {
     public final int directionId;
     public final int routeType;

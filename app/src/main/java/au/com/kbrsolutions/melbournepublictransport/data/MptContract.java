@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
- * Created by business on 24/08/2016.
+ * TMelbourne Public Transport contract.
  */
 public class MptContract {
 

@@ -1,7 +1,7 @@
 package au.com.kbrsolutions.melbournepublictransport.data;
 
 /**
- * Created by business on 5/09/2016.
+ * This class keeps train line details.
  */
 public class LineDetails {
     public final int routeType;
