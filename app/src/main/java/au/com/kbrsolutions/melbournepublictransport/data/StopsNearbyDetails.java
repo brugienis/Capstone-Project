@@ -2,8 +2,10 @@ package au.com.kbrsolutions.melbournepublictransport.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-public class NearbyStopsDetails implements Parcelable {
+/**
+ * This class keeps 'stops nearby' details.
+ */
+public class StopsNearbyDetails implements Parcelable {
 
     public String stopName;
     public final String stopAddress;
@@ -18,7 +20,7 @@ public class NearbyStopsDetails implements Parcelable {
     public final static int TRAM_ROUTE_TYPE = 1;
     public final static int BUS_ROUTE_TYPE = 2;
 
-    public NearbyStopsDetails(
+    public StopsNearbyDetails(
             String stopName,
             String stopAddress,
             String suburb,
@@ -37,7 +39,7 @@ public class NearbyStopsDetails implements Parcelable {
         this.distance = distance;
     }
 
-    public NearbyStopsDetails(Parcel input) {
+    public StopsNearbyDetails(Parcel input) {
         stopName = input.readString();
         stopAddress = input.readString();
         suburb = input.readString();
@@ -76,14 +78,14 @@ public class NearbyStopsDetails implements Parcelable {
         dest.writeDouble(distance);
     }
 
-    public static final Parcelable.Creator<NearbyStopsDetails> CREATOR =
-            new Parcelable.Creator<NearbyStopsDetails>() {
-                public NearbyStopsDetails createFromParcel(Parcel in) {
-                    return new NearbyStopsDetails(in);
+    public static final Parcelable.Creator<StopsNearbyDetails> CREATOR =
+            new Parcelable.Creator<StopsNearbyDetails>() {
+                public StopsNearbyDetails createFromParcel(Parcel in) {
+                    return new StopsNearbyDetails(in);
                 }
 
-                public NearbyStopsDetails[] newArray(int size) {
-                    return new NearbyStopsDetails[size];
+                public StopsNearbyDetails[] newArray(int size) {
+                    return new StopsNearbyDetails[size];
                 }
             };
 }
