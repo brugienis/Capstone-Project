@@ -23,6 +23,8 @@ import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
 import static au.com.kbrsolutions.melbournepublictransport.R.id.disruptionsList;
 
 /**
+ * This class handles retrieving information about disruptions on the train network.
+ *
  * A simple {@link Fragment} subclass.
  *
  */
@@ -97,6 +99,12 @@ public class DisruptionsFragment extends BaseFragment {
         return mRootView;
     }
 
+    /**
+     * This is called when D-pad navigation keys are used.
+     *
+     * @param view
+     * @param position
+     */
     private void handleItemSelected(View view, int position) {
         if (view.getTag() != null) {
             mCurrentSelectedView = view;
@@ -116,6 +124,12 @@ public class DisruptionsFragment extends BaseFragment {
         }
         return false;
     }
+
+    /**
+     * Ignore horizontal navigation keys.
+     * @param rightKeyPressed
+     * @return
+     */
     @Override
     public boolean handleHorizontalDpadKeys(boolean rightKeyPressed) {
         return false;
@@ -123,7 +137,7 @@ public class DisruptionsFragment extends BaseFragment {
 
     /**
      *
-     * This onCreateView is using RecyclerView.Adapter.
+     * This onCreateView is using RecyclerView.Adapter. NOT IN USE now.
      *
      * Use this method in the future when you have more information about how to handle D-pad
      * navigation.
@@ -168,8 +182,13 @@ public class DisruptionsFragment extends BaseFragment {
         return view;
     }
 
+    /**
+     *
+     * Show the latest disruptions details.
+     *
+     * @param disruptionDetailsList
+     */
     public void setNewContent(List<DisruptionsDetails> disruptionDetailsList) {
-//        mRecyclerViewAdapter.swap(disruptionDetailsList);
         mDisruptionsAdapter.swap(disruptionDetailsList);
     }
 

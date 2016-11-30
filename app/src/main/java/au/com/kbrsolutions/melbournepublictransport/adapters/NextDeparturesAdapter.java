@@ -15,6 +15,11 @@ import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 
+/**
+ *
+ * Adapter used by NextDeparturesFragment.
+ *
+ */
 public class NextDeparturesAdapter<T> extends ArrayAdapter<NextDepartureDetails> {
 
     private final List<NextDepartureDetails> mValues;

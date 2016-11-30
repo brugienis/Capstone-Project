@@ -25,6 +25,7 @@ import au.com.kbrsolutions.melbournepublictransport.utilities.HorizontalDividerI
 
 /**
  * A fragment representing a list of NextDepartureDetails.
+ *
  * <p/>
  */
 public class NextDeparturesFragment extends BaseFragment
@@ -40,6 +41,9 @@ public class NextDeparturesFragment extends BaseFragment
     private StopDetails mSearchStopDetails;
     private TextView selectedStopNameTv;
     private boolean newInstanceArgsRetrieved;
+    private int mNextDepartureDetailsCnt;
+    private View mCurrentSelectedView;
+    private int mCurrentSelectedRow;
 
     private static final String TAG = NextDeparturesFragment.class.getSimpleName();
 
@@ -118,10 +122,12 @@ public class NextDeparturesFragment extends BaseFragment
         return rootView;
     }
 
-    private int mNextDepartureDetailsCnt;
-    private View mCurrentSelectedView;
-    private int mCurrentSelectedRow;
-
+    /**
+     * This is called when D-pad navigation keys are used.
+     *
+     * @param view
+     * @param position
+     */
     private void handleItemSelected(View view, int position) {
         if (view.getTag() != null) {
             mCurrentSelectedView = view;
@@ -144,12 +150,7 @@ public class NextDeparturesFragment extends BaseFragment
 
     /**
      *
-     * Based on henry74918
-     *
-     *  http://stackoverflow.com/questions/14392356/how-to-use-d-pad-navigate-switch-between-listviews-row-and-its-decendants-goo
-     *
-     * @param rightKeyPressed
-     * @return
+     * Ignore horizontal scrolling.
      */
     public boolean handleHorizontalDpadKeys(boolean rightKeyPressed) {
         return false;
@@ -158,6 +159,24 @@ public class NextDeparturesFragment extends BaseFragment
     /**
      *
      * This onCreateView is using RecyclerView.Adapter.
+     *
+     * Use this method in the future when you have more information about how to handle D-pad
+     * navigation.
+     *
+     * see:
+     *      https://github.com/vganin/dpad-aware-recycler-view/blob/master/app/src/main/java/net/ganin/darv/sample/SampleActivity.java
+     *      https://www.bignerdranch.com/blog/recyclerview-part-1-fundamentals-for-listview-experts/
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
+
+
+    /**
+     *
+     * This onCreateView is using RecyclerView.Adapter. NOT IN USE now.
      *
      * Use this method in the future when you have more information about how to handle D-pad
      * navigation.
@@ -206,6 +225,14 @@ public class NextDeparturesFragment extends BaseFragment
         return view;
     }
 
+    /**
+     *
+     * Show the latest departure details.
+     *
+     * @param selectedStopName
+     * @param nextDepartureDetailsList
+     * @param stopDetails
+     */
     public void setNewContent(
             String selectedStopName,
             List<NextDepartureDetails> nextDepartureDetailsList,
@@ -219,19 +246,16 @@ public class NextDeparturesFragment extends BaseFragment
 
     @Override
     public void hideView() {
-
     }
 
     @Override
     public void showView() {
-
     }
 
     @Override
     public void onGlobalFocusChanged(View view, View view1) {
-
     }
 
-    AdapterView.OnItemSelectedListener mOnItemSelectedListener;
+//    AdapterView.OnItemSelectedListener mOnItemSelectedListener;
 
 }

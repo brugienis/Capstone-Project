@@ -3,7 +3,6 @@ package au.com.kbrsolutions.melbournepublictransport.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +17,15 @@ import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragm
 import static au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragment.COL_STOP_DETAILS_LOCATION_NAME;
 
 /**
- * Created by business on 1/10/2016.
+ *
+ * Adapter used by FavoriteStopsFragment.
+ *
  */
-
 public class FavoriteStopsAdapter extends CursorAdapter {
 
     private static boolean mIsInSettingsActivityFlag;
     private static FavoriteStopsFragment.OnFavoriteStopsFragmentInteractionListener mListener;
+    private static String sFavoriteStopFalseValue;
 
     private static final String TAG = FavoriteStopsAdapter.class.getSimpleName();
 
@@ -78,9 +79,8 @@ public class FavoriteStopsAdapter extends CursorAdapter {
         mListener.startNextDeparturesSearch(stopDetails);
     }
 
-    private static final String NON_FAVORITE_VALUE = "n";
     private static void updateStopDetailRow(StopDetails stopDetails) {
-        mListener.updateStopDetailRow(stopDetails.id, NON_FAVORITE_VALUE);
+        mListener.updateStopDetailRow(stopDetails.id, sFavoriteStopFalseValue);
     }
 
     public FavoriteStopsAdapter(
@@ -97,6 +97,7 @@ public class FavoriteStopsAdapter extends CursorAdapter {
             mListener = listener;
         }
         mIsInSettingsActivityFlag = isInSettingsActivityFlag;
+        sFavoriteStopFalseValue = context.getString(R.string.favorite_stop_false_value);
     }
 
     @Override

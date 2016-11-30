@@ -24,23 +24,17 @@ public class DatabaseContentRefresher {
 
     private static final String TAG = DatabaseContentRefresher.class.getSimpleName();
 
+    /**
+     * Test progress bar.
+     */
     public static void testProgressBar() {
         int cnt = 10;
         for (int i = 0; i < cnt; i++) {
-            if (i == 0) {
-                sendMessageToMainActivity(new MainActivityEvents.Builder(
-                        MainActivityEvents.MainEvents.DATABASE_LOAD_TARGET)
-                        .setDatabaseLoadTarget(cnt - 1)
-                        .build());
-//                Log.v(TAG, "testProgressBar - target sent");
-            } else {
-                sendMessageToMainActivity(new MainActivityEvents.Builder(
-                        MainActivityEvents.MainEvents.DATABASE_LOAD_PROGRESS)
-                        .setDatabaseLoadTarget(cnt - 1)
-                        .setDatabaseLoadProgress(i)
-                        .build());
-//                Log.v(TAG, "testProgressBar - progress sent i: " + i);
-            }
+            sendMessageToMainActivity(new MainActivityEvents.Builder(
+                    MainActivityEvents.MainEvents.DATABASE_LOAD_PROGRESS)
+                    .setDatabaseLoadTarget(cnt - 1)
+                    .setDatabaseLoadProgress(i)
+                    .build());
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -49,28 +43,13 @@ public class DatabaseContentRefresher {
         }
     }
 
-//    protected static boolean performHealthCheck() {
-//        boolean databaseOK = RemoteMptEndpointUtil.performHealthCheck();
-//        return databaseOK;
-//    }
-
     public static void refreshDatabase(ContentResolver contentResolver, Context context) {
-//        if (runIfTablesAreEmpty) {
-//            if (databaseLoadFinished(contentResolver)) {
-//                return;
-//            }
-//        }
         // Delete all rows from stop_detail and line_detail table
         deleteLineAndStopDetailRows(contentResolver);
 
-        // FIXME: 3/10/2016
-        int trainMode = StopsNearbyDetails.TRAIN_ROUTE_TYPE;    // 0;
+        int trainMode = StopsNearbyDetails.TRAIN_ROUTE_TYPE;
         List<ContentValues> lineDetailsContentValuesList =
                 RemoteMptEndpointUtil.getLineDetails(trainMode, context);
-        sendMessageToMainActivity(new MainActivityEvents.Builder(
-                MainActivityEvents.MainEvents.DATABASE_LOAD_TARGET)
-                .setDatabaseLoadTarget(lineDetailsContentValuesList.size() - 1)
-                .build());
         long locationId;
         int lineNo = 0;
         for (ContentValues values: lineDetailsContentValuesList) {

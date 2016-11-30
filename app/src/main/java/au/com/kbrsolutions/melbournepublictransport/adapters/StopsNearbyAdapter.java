@@ -22,6 +22,11 @@ import static au.com.kbrsolutions.melbournepublictransport.R.id.mapImageId;
 import static au.com.kbrsolutions.melbournepublictransport.R.id.stopAddress;
 import static au.com.kbrsolutions.melbournepublictransport.R.id.stopName;
 
+/**
+ *
+ * Adapter used by StopsNearbyFragment.
+ *
+ */
 public class StopsNearbyAdapter<T> extends ArrayAdapter<StopsNearbyDetails> {
 
     private Activity mActivity;

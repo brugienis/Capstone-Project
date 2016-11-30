@@ -14,6 +14,11 @@ import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StopsFragment;
 
+/**
+ *
+ * Adapter used by StopsFragment.
+ *
+ */
 public class StopsAdapter extends CursorAdapter {
 
     private static StopsFragment.OnStopFragmentInteractionListener mListener;

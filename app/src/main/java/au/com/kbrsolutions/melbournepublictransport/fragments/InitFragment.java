@@ -3,7 +3,6 @@ package au.com.kbrsolutions.melbournepublictransport.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,9 @@ import android.widget.ProgressBar;
 import au.com.kbrsolutions.melbournepublictransport.R;
 
 /**
+ *
+ * This class handles the initial load of data into the database.
+ *
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link OnInitFragmentInteractionListener} interface
@@ -33,7 +35,6 @@ public class InitFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.v(TAG, "onCreate - start");
         setRetainInstance(true);
     }
 
@@ -43,8 +44,6 @@ public class InitFragment extends BaseFragment {
                              Bundle savedInstanceState) {
 
         View rootView =  inflater.inflate(R.layout.fragment_init, container, false);
-        // FIXME: 2/10/2016 - ProgressBar: http://www.materialdoc.com/linear-progress/
-        // FIXME: 2/10/2016  - and         https://material.google.com/components/progress-activity.html#progress-activity-behavior
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.loadProgressBar);
         return rootView;
     }
@@ -58,19 +57,7 @@ public class InitFragment extends BaseFragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnInitFragmentInteractionListener");
         }
-        Log.v(TAG, "onAttach - InitFragment: " + String.format("0x%08X", this.hashCode()) + " mListener: " + String.format("0x%08X", mListener.hashCode()));
     }
-
-//    public void setListener(OnInitFragmentInteractionListener listener) {
-//        String old = null;
-//        if (mListener != null) {
-//            old = String.format("0x%08X", mListener.hashCode());
-//        }
-//        mListener = listener;
-//        Log.v(TAG, "setListener - new listener set - old/new: " +
-//                old + "/" +
-//                String.format("0x%08X", mListener.hashCode()));
-//    }
 
     @Override
     public void onDetach() {
@@ -78,12 +65,13 @@ public class InitFragment extends BaseFragment {
         mListener = null;
     }
 
-    public void setDatabaseLoadTarget(int target) {
-        mTarget = target;
-    }
-
+    /**
+     * Update the progress bar. Call parent activity when all data loaded.
+     *
+     * @param progress
+     * @param target
+     */
     public void updateDatabaseLoadProgress(int progress, int target) {
-        Log.v(TAG, "updateDatabaseLoadProgress - progress/mTarget: " + progress + "/" + target);
         if (!mIsTargetSet) {
             mIsTargetSet = true;
             mProgressBar.setIndeterminate(false);
@@ -93,9 +81,7 @@ public class InitFragment extends BaseFragment {
         mProgressBar.setMax(target);
         mProgressBar.setProgress(progress);
         if (target == progress) {
-            Log.v(TAG, "updateDatabaseLoadProgress - listener: " + String.format("0x%08X", mListener.hashCode()));
             mListener.databaseLoadFinished();
-            Log.v(TAG, "updateDatabaseLoadProgress - databaseLoadFinished");
         }
     }
 
@@ -110,7 +96,6 @@ public class InitFragment extends BaseFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnInitFragmentInteractionListener {
-        // TODO: Update argument type and name
         void databaseLoadFinished();
     }
 }

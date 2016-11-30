@@ -13,6 +13,11 @@ import java.util.List;
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
 
+/**
+ * Adapter used by DisruptionsFragment.
+ *
+ * @param <T>
+ */
 public class DisruptionsAdapter<T> extends ArrayAdapter<DisruptionsDetails> {
 
     private final List<DisruptionsDetails> mValues;

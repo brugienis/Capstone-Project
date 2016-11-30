@@ -23,14 +23,14 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.utilities.HorizontalDividerItemDecoration;
 
 /**
- * A fragment representing a list of Items.
+ * This class handles retrieving information about stops nearby.
+ *
  * <p/>
  * Activities containing this fragment MUST implement the {@link
  * OnNearbyStopsFragmentInteractionListener} interface.
  */
 public class StopsNearbyFragment extends BaseFragment {
 
-    private static final String ARG_NEARBY_DATA = "arg_nearby_data";
     private List<StopsNearbyDetails> mNearbyStopsDetailsList;
     private StopsNearbyAdapterRv mRecyclerViewAdapter;
     private StopsNearbyAdapter mStopsNearbyAdapter;
@@ -39,6 +39,12 @@ public class StopsNearbyFragment extends BaseFragment {
     private OnNearbyStopsFragmentInteractionListener mListener;
     private NestedScrollingListView mListView;
     private TextView mEmptyView;
+    private int mNextDepartureDetailsCnt;
+    private View mCurrentSelectedView;
+    private int mCurrentSelectedRow;
+    private int selectableViewsCnt = 2;
+    private int selectedViewNo = -1;
+    private static final String ARG_NEARBY_DATA = "arg_nearby_data";
 
     private static final String TAG = StopsNearbyFragment.class.getSimpleName();
 
@@ -59,7 +65,8 @@ public class StopsNearbyFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null && !newInstanceArgsRetrieved) {
-            mNearbyStopsDetailsList = (ArrayList)getArguments().getParcelableArrayList(ARG_NEARBY_DATA);
+            mNearbyStopsDetailsList = (ArrayList)getArguments().getParcelableArrayList(
+                    ARG_NEARBY_DATA);
             newInstanceArgsRetrieved = true;
         }
         setRetainInstance(true);
@@ -105,18 +112,20 @@ public class StopsNearbyFragment extends BaseFragment {
         return mRootView;
     }
 
-    private int mNextDepartureDetailsCnt;
-    private View mCurrentSelectedView;
-    private int mCurrentSelectedRow;
-    private int selectableViewsCnt = 2;
-    private int selectedViewNo = -1;
 
+    /**
+     * This is called when D-pad navigation keys are used.
+     *
+     * @param view
+     * @param position
+     */
     private void handleItemSelected(View view, int position) {
         if (view.getTag() != null) {
             mCurrentSelectedView = view;
             mCurrentSelectedRow = position;
             selectedViewNo = 0;
-            StopsNearbyAdapter.ViewHolder holder = (StopsNearbyAdapter.ViewHolder) mCurrentSelectedView.getTag();
+            StopsNearbyAdapter.ViewHolder holder = (StopsNearbyAdapter.ViewHolder)
+                    mCurrentSelectedView.getTag();
             mListView.clearFocus();
             holder.departuresImageId.setFocusable(true);
             holder.departuresImageId.requestFocus();
@@ -148,11 +157,13 @@ public class StopsNearbyFragment extends BaseFragment {
         if (mCurrentSelectedView != null && mCurrentSelectedView.hasFocus()) {
             int prevSelectedViewNo = selectedViewNo;
             if (rightKeyPressed) {
-                selectedViewNo = selectedViewNo == (selectableViewsCnt - 1) ? 0 : selectedViewNo + 1;
+                selectedViewNo = selectedViewNo ==
+                        (selectableViewsCnt - 1) ? 0 : selectedViewNo + 1;
             } else {
                 selectedViewNo = selectedViewNo < 1 ? selectableViewsCnt - 1 : selectedViewNo - 1;
             }
-            StopsNearbyAdapter.ViewHolder holder = (StopsNearbyAdapter.ViewHolder) mCurrentSelectedView.getTag();
+            StopsNearbyAdapter.ViewHolder holder = (StopsNearbyAdapter.ViewHolder)
+                    mCurrentSelectedView.getTag();
             mListView.clearFocus();
             switch (selectedViewNo) {
                 case 0:
@@ -174,6 +185,22 @@ public class StopsNearbyFragment extends BaseFragment {
         return resultOk;
     }
 
+    /**
+     *
+     * This onCreateView is using RecyclerView.Adapter. NOT IN USE now.
+     *
+     * Use this method in the future when you have more information about how to handle D-pad
+     * navigation.
+     *
+     * see:
+     *      https://github.com/vganin/dpad-aware-recycler-view/blob/master/app/src/main/java/net/ganin/darv/sample/SampleActivity.java
+     *      https://www.bignerdranch.com/blog/recyclerview-part-1-fundamentals-for-listview-experts/
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
 //    @Override
     public View onCreateView_UseWithRececleViewAdapter(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -192,6 +219,12 @@ public class StopsNearbyFragment extends BaseFragment {
         return mRootView;
     }
 
+    /**
+     *
+     * Show the latest disruptions details.
+     *
+     * @param nearbyStopsDetailsList
+     */
     public void setNewContent(List<StopsNearbyDetails> nearbyStopsDetailsList) {
 //        mRecyclerViewAdapter.swap(nearbyStopsDetailsList);
         mStopsNearbyAdapter.swap(nearbyStopsDetailsList);

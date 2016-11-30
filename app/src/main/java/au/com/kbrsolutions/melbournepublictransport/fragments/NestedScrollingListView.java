@@ -9,7 +9,9 @@ import android.util.AttributeSet;
 import android.widget.ListView;
 
 /**
- * stackoverflow - 'I love coding'
+ * Add ScrollingViewBehavior for ListView.
+ *
+ * From stackoverflow - 'I love coding'
  * http://stackoverflow.com/questions/30612453/scrollingviewbehavior-for-listview
  */
 

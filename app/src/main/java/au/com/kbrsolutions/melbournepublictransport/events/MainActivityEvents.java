@@ -21,8 +21,7 @@ public class MainActivityEvents {
         NEARBY_LOCATION_DETAILS,
         REFRESH_FAVORITE_STOPS_VIEW,
         DATABASE_STATUS,
-        DATABASE_LOAD_PROGRESS,
-        DATABASE_LOAD_TARGET
+        DATABASE_LOAD_PROGRESS
     }
 
     public final MainEvents event;

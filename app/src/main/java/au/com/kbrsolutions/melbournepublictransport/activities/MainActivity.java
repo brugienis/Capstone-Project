@@ -179,9 +179,9 @@ public class MainActivity extends AppCompatActivity implements
                         int cnt = getSupportFragmentManager().getBackStackEntryCount();
                         BaseFragment bf = getTopFragment();
                         if (cnt > mPrevBackStackEntryCount) {
-                            Log.v(TAG, "onCreate.onBackStackChanged - going forward  - cnt/top: " + cnt + "/" + bf.getFragmentId());
+//                            Log.v(TAG, "onCreate.onBackStackChanged - going forward  - cnt/top: " + cnt + "/" + bf.getFragmentId());
                         } else {
-                            Log.v(TAG, "onCreate.onBackStackChanged - going backward - cnt/top: " + cnt + "/" + (bf == null ? "null" : bf.getFragmentId()));
+//                            Log.v(TAG, "onCreate.onBackStackChanged - going backward - cnt/top: " + cnt + "/" + (bf == null ? "null" : bf.getFragmentId()));
                         }
                         mPrevBackStackEntryCount = cnt;
                         if (!mTwoPane && cnt == 0 || mTwoPane && cnt == 1) {
@@ -318,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements
                 .commit();
         Intent intent = new Intent(this, RequestProcessorService.class);
         intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_REFRESH_DATA);
-        intent.putExtra(RequestProcessorService.REFRESH_DATA_IF_TABLES_EMPTY, true);
+        intent.putExtra(RequestProcessorService.REFRESH_DATA_IF_TABLES_EMPTY, false);
         startService(intent);
     }
 
@@ -834,10 +834,6 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 break;
 
-            case DATABASE_LOAD_TARGET:
-                handleDatabaseLoadedTarget(event.databaseLoadTarget);
-                break;
-
             case DATABASE_LOAD_PROGRESS:
                 handleDatabaseLoadProgress(event.databaseLoadProgress, event.databaseLoadTarget);
                 break;
@@ -847,13 +843,6 @@ public class MainActivity extends AppCompatActivity implements
                     throw new RuntimeException("LOC_CAT_TAG - onEvent - no code to handle requestEvent: "
                             + requestEvent);
                 }
-        }
-    }
-
-    // FIXME: 29/11/2016 - remove below and retest load process
-    private void handleDatabaseLoadedTarget(int databaseLoadTarget) {
-        if (mInitFragment != null) {
-            mInitFragment.setDatabaseLoadTarget(databaseLoadTarget);
         }
     }
 

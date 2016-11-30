@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +28,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 
 /**
+ * Handles favorite train stops.
  *
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -53,11 +53,15 @@ public class FavoriteStopsFragment
     private int selectableViewsCnt = 3;
     private int selectedViewNo = -1;
     private boolean mDatabaseIsEmpty;
+    private boolean mIsShowOptionsMenu;
+    private int loaderId;
+    private static final String ASCENDING_SORT_ORDER = " ASC";
+    private static final String DOT = ".";
 
     private static final int STOP_DETAILS_LOADER = 0;
 
     public static final String[] STOP_DETAILS_COLUMNS = {
-            MptContract.StopDetailEntry.TABLE_NAME + "." + MptContract.StopDetailEntry._ID,
+            MptContract.StopDetailEntry.TABLE_NAME + DOT + MptContract.StopDetailEntry._ID,
             MptContract.StopDetailEntry.COLUMN_ROUTE_TYPE,
             MptContract.StopDetailEntry.COLUMN_STOP_ID,
             MptContract.StopDetailEntry.COLUMN_LOCATION_NAME,
@@ -81,11 +85,12 @@ public class FavoriteStopsFragment
         // Required empty public constructor
     }
 
-    /*
-        Call invalidateOptionsMenu() only if mCallbacks is not null.
+    /**
+     *
+     * Call invalidateOptionsMenu() to change the available menu options.
+     *
      */
     public void hideView() {
-        Log.v(TAG, "hideView - start: ");
         isVisible = false;
         if (mRootView != null) {
             mRootView.setVisibility(View.INVISIBLE);
@@ -95,8 +100,13 @@ public class FavoriteStopsFragment
         }
     }
 
+
+    /**
+     *
+     * Call invalidateOptionsMenu() to change the available menu options.
+     *
+     */
     public void showView() {
-        Log.v(TAG, "showView - start: ");
         isVisible = true;
         if (mRootView != null) {
             mRootView.setVisibility(View.VISIBLE);
@@ -116,7 +126,6 @@ public class FavoriteStopsFragment
 
     public void databaseIsEmpty(boolean databaseIsEmpty) {
         mDatabaseIsEmpty = databaseIsEmpty;
-        // FIXME: 15/11/2016 - move to strings. Check the usage.
         setEmptyViewText("databaseIsEmpty");
     }
 
@@ -132,7 +141,6 @@ public class FavoriteStopsFragment
         }
     }
 
-    private boolean mIsShowOptionsMenu;
     public void setShowOptionsMenuFlg(boolean showOptionsMenuFlg) {
         if (mIsShowOptionsMenu != showOptionsMenuFlg) {
             mIsShowOptionsMenu = showOptionsMenuFlg;
@@ -160,7 +168,6 @@ public class FavoriteStopsFragment
      * @return
      */
     @Override
-    // FIXME: 8/11/2016 http://stackoverflow.com/questions/14392356/how-to-use-d-pad-navigate-switch-between-listviews-row-and-its-decendants-goo
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mFavoriteStopDetailAdapter = new FavoriteStopsAdapter(
@@ -207,12 +214,19 @@ public class FavoriteStopsFragment
         return mRootView;
     }
 
+    /**
+     * This is called when D-pad navigation keys are used.
+     *
+     * @param view
+     * @param position
+     */
     private void handleItemSelected(View view, int position) {
         if (view.getTag() != null) {
             mCurrentSelectedView = view;
             mCurrentSelectedRow = position;
             selectedViewNo = 0;
-            FavoriteStopsAdapter.ViewHolder holder = (FavoriteStopsAdapter.ViewHolder) mCurrentSelectedView.getTag();
+            FavoriteStopsAdapter.ViewHolder holder = (FavoriteStopsAdapter.ViewHolder)
+                    mCurrentSelectedView.getTag();
             mListView.clearFocus();
             holder.departuresImageId.setFocusable(true);
             holder.departuresImageId.requestFocus();
@@ -248,7 +262,8 @@ public class FavoriteStopsFragment
             } else {
                 selectedViewNo = selectedViewNo < 1 ? selectableViewsCnt - 1 : selectedViewNo - 1;
             }
-            FavoriteStopsAdapter.ViewHolder holder = (FavoriteStopsAdapter.ViewHolder) mCurrentSelectedView.getTag();
+            FavoriteStopsAdapter.ViewHolder holder = (FavoriteStopsAdapter.ViewHolder)
+                    mCurrentSelectedView.getTag();
             mListView.clearFocus();
             switch (selectedViewNo) {
                 case 0:
@@ -281,16 +296,16 @@ public class FavoriteStopsFragment
         super.onActivityCreated(savedInstanceState);
     }
 
-    private int loaderId;
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        // This is called when a new Loader needs to be created.  This
-        // fragment only uses one loader, so we don't care about checking the id.
-        // Sort order:  Ascending, by location_name.
+        // This is called when a new Loader needs to be created. Sort order:  Ascending, by
+        // location_name.
         loaderId = i;
-        String sortOrder = MptContract.StopDetailEntry.COLUMN_LOCATION_NAME + " ASC";
+        String sortOrder = MptContract.StopDetailEntry.COLUMN_LOCATION_NAME +
+                ASCENDING_SORT_ORDER;
 
-        Uri nonFavoriteStopDetailUri = MptContract.StopDetailEntry.buildFavoriteStopsUri(MptContract.StopDetailEntry.FAVORITE_FLAG);
+        Uri nonFavoriteStopDetailUri = MptContract.StopDetailEntry.buildFavoriteStopsUri(
+                MptContract.StopDetailEntry.FAVORITE_FLAG);
 
         return new CursorLoader(getActivity(),
                 nonFavoriteStopDetailUri,
@@ -302,30 +317,21 @@ public class FavoriteStopsFragment
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-//        Log.v(TAG, "onLoadFinished - start - rows cnt: " + data.getCount());
         mFavoriteStopDetailAdapter.swapCursor(data);
         mCursorRowCnt = data.getCount();
         if (mCursorRowCnt == 0) {
             mListView.setVisibility(View.GONE);
             mEmptyView.setVisibility(View.VISIBLE);
-            setEmptyViewText("onLoadFinished");
+            setEmptyViewText(TAG);
         } else {
             clearEmptyViewText();
             mListView.setVisibility(View.VISIBLE);
             mEmptyView.setVisibility(View.GONE);
         }
-        // FIXME: 30/08/2016 below add correct code
-//        mForecastAdapter.swapCursor(data);
-//        if (mPosition != ListView.INVALID_POSITION) {
-//            // If we don't need to restart the loader, and there's a desired position to restore
-//            // to, do so now.
-//            mListView.smoothScrollToPosition(mPosition);
-//        }
     }
 
     public void reloadLoader() {
-        Log.v(TAG, "reloadLoader - start: ");
-        getLoaderManager().restartLoader(loaderId, null, this);  //id = 0
+        getLoaderManager().restartLoader(loaderId, null, this);
     }
 
     @Override
@@ -335,11 +341,14 @@ public class FavoriteStopsFragment
 
     public void setIsInSettingsActivityFlag(boolean value) {
         mIsInSettingsActivityFlag = value;
-//        if (mFavoriteStopDetailAdapter != null) {
-//            mFavoriteStopDetailAdapter.setIsInSettingsActivityFlag(value);
-//        }
     }
 
+    /**
+     * Passes selected stop details to the parent activity.
+     *
+     * @param adapterView
+     * @param position
+     */
     private void handleRowSelected(AdapterView<?> adapterView, int position) {
         // CursorAdapter returns a cursor at the correct position for getItem(), or null
         // if it cannot seek to that position.
@@ -399,7 +408,6 @@ public class FavoriteStopsFragment
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_train_stops_nearby) {
             mListener.startStopsNearbySearch(true);
             return true;

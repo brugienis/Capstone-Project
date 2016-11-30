@@ -6,9 +6,8 @@ import android.util.Log;
 import au.com.kbrsolutions.melbournepublictransport.activities.MainActivity;
 
 /**
- * Created by business on 30/09/2016.
+ * Every fragment extends this class.
  */
-
 public abstract class BaseFragment extends Fragment {
 
     private MainActivity.FragmentsId mFragmentsId;
@@ -17,25 +16,24 @@ public abstract class BaseFragment extends Fragment {
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
     public void hideView() {
-
     }
 
     public void showView() {
-
     }
 
+    /**
+     * Use for testing - remove before publishing on Google Play.
+     */
     public void isRootViewVisible() {
         Log.v(TAG, "isVisible - no code");
     }
 
     public String getActionBarTitle() {
-        Log.v(TAG, "getActionBarTitle - title: " + mActionBarTitle);
         return mActionBarTitle;
     }
 
     public void setActionBarTitle(String actionBarTitle) {
         mActionBarTitle = actionBarTitle;
-//        Log.v(TAG, "setActionBarTitle - title: " + actionBarTitle);
     }
 
     public MainActivity.FragmentsId getFragmentId() {
@@ -43,7 +41,6 @@ public abstract class BaseFragment extends Fragment {
     }
     public void setFragmentId(MainActivity.FragmentsId fragmentd) {
         this.mFragmentsId = fragmentd;
-//        Log.v(TAG, "setFragmentId - fragmentd: " + fragmentd);
     }
 
     public boolean handleVerticalDpadKeys(boolean upKeyPressed) {
