@@ -1,4 +1,4 @@
-package au.com.kbrsolutions.melbournepublictransport.data;
+package au.com.kbrsolutions.melbournepublictransport.remote;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -15,9 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
+import au.com.kbrsolutions.melbournepublictransport.data.DatabaseContentRefresher;
+import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 import au.com.kbrsolutions.melbournepublictransport.events.RequestProcessorServiceRequestEvents;
-import au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil;
 import au.com.kbrsolutions.melbournepublictransport.utilities.DbUtility;
 import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 

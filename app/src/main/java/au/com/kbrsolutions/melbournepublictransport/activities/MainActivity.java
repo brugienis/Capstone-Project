@@ -43,7 +43,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NearbyStopsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
-import au.com.kbrsolutions.melbournepublictransport.data.RequestProcessorService;
+import au.com.kbrsolutions.melbournepublictransport.remote.RequestProcessorService;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 import au.com.kbrsolutions.melbournepublictransport.fragments.BaseFragment;

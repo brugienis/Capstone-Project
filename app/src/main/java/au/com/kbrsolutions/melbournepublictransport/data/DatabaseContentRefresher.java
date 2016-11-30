@@ -22,7 +22,7 @@ public class DatabaseContentRefresher {
 
     private static final String TAG = DatabaseContentRefresher.class.getSimpleName();
 
-    protected static void testProgressBar() {
+    public static void testProgressBar() {
         int cnt = 10;
         for (int i = 0; i < cnt; i++) {
             if (i == 0) {
@@ -52,7 +52,7 @@ public class DatabaseContentRefresher {
 //        return databaseOK;
 //    }
 
-    protected static void refreshDatabase(ContentResolver contentResolver, Context context) {
+    public static void refreshDatabase(ContentResolver contentResolver, Context context) {
 //        if (runIfTablesAreEmpty) {
 //            if (databaseLoadFinished(contentResolver)) {
 //                return;
@@ -125,7 +125,7 @@ public class DatabaseContentRefresher {
         Log.v(TAG, "refreshDatabase - performing refresh action");
     }
 
-    protected static boolean databaseEmpty(ContentResolver contentResolver) {
+    public static boolean databaseEmpty(ContentResolver contentResolver) {
         Cursor lineCursor = contentResolver.query(
                 MptContract.LineDetailEntry.CONTENT_URI,
                 null, // leaving "columns" null just returns all the columns.

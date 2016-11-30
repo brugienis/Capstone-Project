@@ -19,7 +19,7 @@ import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.adapters.NextDeparturesAdapter;
 import au.com.kbrsolutions.melbournepublictransport.adapters.NextDeparturesAdapterRv;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
-import au.com.kbrsolutions.melbournepublictransport.data.RequestProcessorService;
+import au.com.kbrsolutions.melbournepublictransport.remote.RequestProcessorService;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.utilities.HorizontalDividerItemDecoration;
 
