@@ -29,10 +29,12 @@ public class StationOnMapFragment extends BaseFragment implements OnMapReadyCall
     private static final String ARG_STOP_NAME = "arg_stop_name";
     private static final String ARG_LATITUDE = "arg_latitude";
     private static final String ARG_LONGITUDE = "arg_longitude";
+    private static final String ARG_TWO_PAIN_SCREEN = "arg_two_pain_screen";
 
     private String mStopName;
     private double mLatitude;
     private double mLongitude;
+    private boolean mTwoPainScreen;
     private MapView mMapView;
     private boolean newInstanceArgsRetrieved;
     private GoogleMap mGoogleMap;
@@ -51,12 +53,17 @@ public class StationOnMapFragment extends BaseFragment implements OnMapReadyCall
      * @param longitude Parameter 2.
      * @return A new instance of fragment StationOnMapFragment.
      */
-    public static StationOnMapFragment newInstance(String stopName, double latitude, double longitude) {
+    public static StationOnMapFragment newInstance(
+            String stopName,
+            double latitude,
+            double longitude,
+            boolean twoPainScreen) {
         StationOnMapFragment fragment = new StationOnMapFragment();
         Bundle args = new Bundle();
         args.putString(ARG_STOP_NAME, stopName);
         args.putDouble(ARG_LATITUDE, latitude);
         args.putDouble(ARG_LONGITUDE, longitude);
+        args.putBoolean(ARG_TWO_PAIN_SCREEN, twoPainScreen);
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,6 +72,9 @@ public class StationOnMapFragment extends BaseFragment implements OnMapReadyCall
         mStopName = stopName;
         mLatitude = latitude;
         mLongitude = longitude;
+        if (!mTwoPainScreen) {
+            return;
+        }
         if (mGoogleMap == null) {
             try {
                 MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -89,6 +99,7 @@ public class StationOnMapFragment extends BaseFragment implements OnMapReadyCall
             mStopName = getArguments().getString(ARG_STOP_NAME);
             mLatitude = getArguments().getDouble(ARG_LATITUDE);
             mLongitude = getArguments().getDouble(ARG_LONGITUDE);
+            mTwoPainScreen = getArguments().getBoolean(ARG_TWO_PAIN_SCREEN);
             newInstanceArgsRetrieved = true;
         }
         setRetainInstance(true);

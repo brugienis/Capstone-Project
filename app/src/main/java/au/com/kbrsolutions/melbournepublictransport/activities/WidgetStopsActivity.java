@@ -17,7 +17,7 @@ import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragment;
-import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
+import au.com.kbrsolutions.melbournepublictransport.utilities.SharedPreferencesUtility;
 
 import static au.com.kbrsolutions.melbournepublictransport.activities.MainActivity.FragmentsId.FAVORITE_STOPS;
 
@@ -97,13 +97,13 @@ public class WidgetStopsActivity
     @Override
     protected void onPause() {
         super.onPause();
-        Utility.setAppBarVerticalOffset(getApplicationContext(), mVerticalOffset);
+        SharedPreferencesUtility.setAppBarVerticalOffset(getApplicationContext(), mVerticalOffset);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        int verticalOffset = Utility.getAppBarVerticalOffset(getApplicationContext());
+        int verticalOffset = SharedPreferencesUtility.getAppBarVerticalOffset(getApplicationContext());
         if (mVerticalOffset != verticalOffset) {
             mVerticalOffset = verticalOffset;
             adjustAppBarVertivalOffset(verticalOffset * -1);

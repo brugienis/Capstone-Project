@@ -9,9 +9,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 /**
- * Created by business on 23/11/2016.
+ * Indeterminate Progress Bar.
  */
-
 public class ProgressBarHandler {
     private ProgressBar mProgressBar;
     private Context mContext;
@@ -19,14 +18,16 @@ public class ProgressBarHandler {
     public ProgressBarHandler(Context context) {
         mContext = context;
 
-        ViewGroup layout = (ViewGroup) ((Activity) context).findViewById(android.R.id.content).getRootView();
+        ViewGroup layout = (ViewGroup) ((Activity) context).
+                findViewById(android.R.id.content).getRootView();
 
         mProgressBar = new ProgressBar(context, null, android.R.attr.progressBarStyleLarge);
 //        mProgressBar = new ProgressBar(context, null, android.R.attr.progressBarStyleSmallInverse);
         mProgressBar.setIndeterminate(true);
 
         RelativeLayout.LayoutParams params = new
-                RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT);
 
         RelativeLayout rl = new RelativeLayout(context);
 

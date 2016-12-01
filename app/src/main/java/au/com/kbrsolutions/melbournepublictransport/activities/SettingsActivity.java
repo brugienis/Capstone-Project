@@ -24,7 +24,7 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
-import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
+import au.com.kbrsolutions.melbournepublictransport.utilities.SharedPreferencesUtility;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static au.com.kbrsolutions.melbournepublictransport.R.id.fab;
@@ -114,13 +114,13 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        Utility.setAppBarVerticalOffset(getApplicationContext(), mVerticalOffset);
+        SharedPreferencesUtility.setAppBarVerticalOffset(getApplicationContext(), mVerticalOffset);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        int verticalOffset = Utility.getAppBarVerticalOffset(getApplicationContext());
+        int verticalOffset = SharedPreferencesUtility.getAppBarVerticalOffset(getApplicationContext());
         if (mVerticalOffset != verticalOffset) {
             mVerticalOffset = verticalOffset;
             adjustAppBarVertivalOffset(verticalOffset * -1);

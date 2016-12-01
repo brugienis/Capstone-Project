@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
+import au.com.kbrsolutions.melbournepublictransport.utilities.SharedPreferencesUtility;
 
 @RunWith(AndroidJUnit4.class)
 public class MiscTests {
@@ -44,8 +44,8 @@ public class MiscTests {
 
     @Test
     public void testReleaseVersion() throws Throwable {
-        Utility.isReleaseVersion(mContext);
+        SharedPreferencesUtility.isReleaseVersion(mContext);
         Assert.assertTrue("Error: the value of the 'release version' has to be true",
-                Utility.isReleaseVersion(mContext));
+                SharedPreferencesUtility.isReleaseVersion(mContext));
     }
 }

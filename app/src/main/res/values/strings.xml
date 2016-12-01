@@ -114,6 +114,7 @@
     <!-- Misc -->
     <string name="favorite_stop_true_value">y</string>
     <string name="favorite_stop_false_value">n</string>
+    <string name="favorite_stop_any_value">a</string>
 
     <!-- Strings related to content descriptions shared betweeen different layouts -->
     <string name="content_desc_bus_transport_type">Bus</string>

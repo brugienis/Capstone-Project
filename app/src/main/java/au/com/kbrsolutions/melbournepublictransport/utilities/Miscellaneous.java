@@ -2,15 +2,22 @@ package au.com.kbrsolutions.melbournepublictransport.utilities;
 
 import java.util.Arrays;
 
-/**
- * Created by business on 26/09/2016.
- */
-
 public class Miscellaneous {
 
-    /*
-        from Joachim Sauer
-            http://stackoverflow.com/questions/80476/how-can-i-concatenate-two-arrays-in-java
+    /**
+     * Returns object hash code - used for testing.
+     *
+     * @param o
+     * @return
+     */
+    public static String getClassHashCode(Object o) {
+        return String.format("0x%08X", o.hashCode());
+    }
+
+    /**
+     * from Joachim Sauer
+     *
+     * http://stackoverflow.com/questions/80476/how-can-i-concatenate-two-arrays-in-java
     */
     public static <T> T[] concatAll(T[] first, T[]... rest) {
         int totalLength = first.length;
@@ -26,8 +33,17 @@ public class Miscellaneous {
         return result;
     }
 
-    /*
-        from https://dzone.com/articles/distance-calculation-using-3
+    /**
+     * Calculate distance between tw GEO positions.
+     *
+     * from https://dzone.com/articles/distance-calculation-using-3
+     *
+     * @param lat1
+     * @param lon1
+     * @param lat2
+     * @param lon2
+     * @param unit
+     * @return
      */
     public static double distance(double lat1, double lon1, double lat2, double lon2, String unit) {
         double theta = lon1 - lon2;

@@ -11,16 +11,15 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.activities.MainActivity;
 import au.com.kbrsolutions.melbournepublictransport.activities.SettingsActivity;
-import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
+import au.com.kbrsolutions.melbournepublictransport.utilities.SharedPreferencesUtility;
 
 /**
- * Created by business on 15/10/2016.
+ * Widget Provider - will allow to show selected widget stop's departure details.
  */
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -30,27 +29,20 @@ public class DeparturesCollectionWidgetProvider extends AppWidgetProvider {
 
     /**
      *
-     * Initiate Scores Collection widget update.
+     * Initiate Departures Collection widget update.
      *
      */
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         boolean fromBook = false;
+        /* remove the 'if' block below before publishing app on the Google Play */
         if (fromBook) {
             onUpdateFromBook(context, appWidgetManager, appWidgetIds);
             return;
         }
-        Log.v(TAG, "onUpdate - start");
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int appWidgetId : appWidgetIds) {
-//            Log.v(TAG, "onUpdate - appWidgetId: " + appWidgetId);
-            String stopName = Utility.getWidgetStopName(context);
-//            Log.v(TAG, "onUpdate - stopName: " + stopName);
-//            if (stopName.equals(context.getString(R.string.pref_default_widget_stop_name))) {
-//                stopName = context.getString(R.string.pref_value_widget_stop_set_up_instructions);
-//            } else {
-//                Log.v(TAG, "onUpdate - showing view widget_departures_collection");
-//            }
+            String stopName = SharedPreferencesUtility.getWidgetStopName(context);
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_departures_collection);
 
             // Create an Intent to launch MainActivity
@@ -75,10 +67,8 @@ public class DeparturesCollectionWidgetProvider extends AppWidgetProvider {
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_list);
-            Log.v(TAG, "onUpdate - after the end if last statement in the loop");
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds);
-        Log.v(TAG, "onUpdate - end");
     }
 
     /**
@@ -90,25 +80,23 @@ public class DeparturesCollectionWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         super.onReceive(context, intent);
-//        Log.v(TAG, "onReceive - intent action: " + intent.getAction());
         if (SettingsActivity.WIDGET_STOP_UPDATED.equals(intent.getAction())) {
-            Log.v(TAG, "onReceive - got WIDGET_STOP_UPDATED");
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(
                     new ComponentName(context, getClass()));
             onUpdate(context, appWidgetManager, appWidgetIds);
-//            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list);
         }
     }
 
     /**
      *
-     * Initiate Scores Collection widget update.
+     * Remove this method before publishing app on the Google Play
+     *
+     * Initiate Departures Collection widget update.
      *
      */
 //        @Override
     public void onUpdateFromBook(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-//        Log.v(TAG, "onUpdateFromBook - start");
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int i=0; i<appWidgetIds.length; i++) {
             Intent svcIntent=new Intent(context, DeparturesCollectionWidgetRemoteViewsService.class);
@@ -133,7 +121,6 @@ public class DeparturesCollectionWidgetProvider extends AppWidgetProvider {
             appWidgetManager.updateAppWidget(appWidgetIds[i], widget);
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds);
-//        Log.v(TAG, "onUpdateFromBook - end");
     }
 
     /**

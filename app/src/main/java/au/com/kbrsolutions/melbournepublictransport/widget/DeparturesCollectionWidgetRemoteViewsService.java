@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Binder;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -13,19 +12,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
-import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 import au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil;
-import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
+import au.com.kbrsolutions.melbournepublictransport.utilities.SharedPreferencesUtility;
 
 /**
- * Created by business on 15/10/2016.
+ *
+ * Departures Collection WidgetRemote Views Service.
+ *
+ * Builds the widget details view.
+ *
  */
-
 public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsService {
-    {
-//        Log.v(TAG, "instance initializer - start");
-    }
 
     private final static String TAG = DeparturesCollectionWidgetRemoteViewsService.class.getSimpleName();
 
@@ -41,45 +40,33 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
 
             /**
              *
-             * Retrieves the most recent results for default day from DB. Data is sorted in
-             * ascending order of 'time' and 'home' columns.
+             * Retrieves the most recent departures details from PTV web site. Data is sorted in
+             * ascending order of departure time.
              *
              * This method is called by the app hosting the widget (e.g., the launcher)
-             * However, our ContentProvider is not exported so it doesn't have access to the
-             * data. Therefore we need to clear (and finally restore) the calling identity so
-             * that calls use our process and permission.
-             *
-             * The data from DB is sorted by time and hone columns in ascending order.
              *
              */
-//            private String stopId = "1035";
-            private int limit = 5;
+
             @Override
             public void onDataSetChanged() {
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                String stopId = Utility.getWidgetStopId(getApplication());
-//                Log.v(TAG, "onDataSetChanged - start - stopId: " + stopId);
+                String stopId = SharedPreferencesUtility.getWidgetStopId(getApplication());
 
                 final long identityToken = Binder.clearCallingIdentity();
 
-//                if (stopId.equals(getString(R.string.pref_default_widget_stop_id))) {
-//                    Log.v(TAG, "onDataSetChanged - no data to process");
-//                } else {
+                int nextDeparturesLimitParam = 5;
                 mNextDepartureDetails =
                         RemoteMptEndpointUtil.getBroadNextDepartures(
                                 StopsNearbyDetails.TRAIN_ROUTE_TYPE,
                                 stopId,
-                                limit,
+                                nextDeparturesLimitParam,
                                 getApplicationContext());
-//                                getResources());
-//                    Log.v(TAG, "onDataSetChanged - after getBroadNextDepartures - mNextDepartureDetails.size: " + mNextDepartureDetails.size());
-//                }
+
                 Binder.restoreCallingIdentity(identityToken);
             }
 
             @Override
             public int getCount() {
-//                Log.v(TAG, "onCreate - getCount - count: " + mNextDepartureDetails.size());
                 return mNextDepartureDetails.size();
             }
 
@@ -94,7 +81,6 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
 //            Log.v(TAG, "getViewAt - position: " + position);
                 if (position == AdapterView.INVALID_POSITION ||
                         mNextDepartureDetails == null || mNextDepartureDetails.size() - 1 < position) {
-                    Log.v(TAG, "getViewAt - INVALID_POSITION");
                     return null;
                 }
 
@@ -104,22 +90,24 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
                 views.setTextViewText(R.id.directionName, mNextDepartureDetails.get(position).directionName);
                 views.setTextViewText(R.id.runType, String.valueOf(mNextDepartureDetails.get(position).runType));
                 views.setTextViewText(R.id.departureTimeId, String.valueOf(mNextDepartureDetails.get(position).utcDepartureTime));
-//            Log.v(TAG, "getViewAt - populated podition: " + position);
 
                 final Intent fillInIntent = new Intent();
 
-                // FIXME: 15/10/2016 - handle below
                 views.setOnClickFillInIntent(R.id.widgetDeparturesCollectionList, fillInIntent);
-//            Log.v(TAG, "getViewAt - views: " + views.getLayoutId());
+
                 return views;
             }
 
             @Override
             public RemoteViews getLoadingView() {
-//            Log.v(TAG, "getLoadingView - start");
                 return new RemoteViews(getPackageName(), R.layout.widget_departures_collection_list);
             }
 
+            /**
+             * Returns just one view type
+             *
+             * @return
+             */
             @Override
             public int getViewTypeCount() {
                 return 1;

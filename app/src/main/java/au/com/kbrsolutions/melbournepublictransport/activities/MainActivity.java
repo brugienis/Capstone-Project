@@ -56,7 +56,7 @@ import au.com.kbrsolutions.melbournepublictransport.fragments.StopsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StopsNearbyFragment;
 import au.com.kbrsolutions.melbournepublictransport.utilities.CurrentGeoPositionFinder;
 import au.com.kbrsolutions.melbournepublictransport.utilities.ProgressBarHandler;
-import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
+import au.com.kbrsolutions.melbournepublictransport.utilities.SharedPreferencesUtility;
 
 import static au.com.kbrsolutions.melbournepublictransport.activities.MainActivity.FragmentsId.FAVORITE_STOPS;
 import static au.com.kbrsolutions.melbournepublictransport.activities.MainActivity.FragmentsId.NEXT_DEPARTURES;
@@ -236,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         } else {
             if (topFragmentTag == null || !topFragmentTag.equals(INIT_TAG)) {
-                if (Utility.isDatabaseLoaded(getApplicationContext())) {
+                if (SharedPreferencesUtility.isDatabaseLoaded(getApplicationContext())) {
                     showFavoriteStops();
                     getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                     mFavoriteStopsFragment.setShowOptionsMenuFlg(true);
@@ -248,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         }
-        Utility.initSettings(getApplicationContext());
+        SharedPreferencesUtility.initSettings(getApplicationContext());
         mProgressBarHandler = new ProgressBarHandler(this);
     }
 
@@ -262,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onPause() {
         super.onPause();
-        Utility.setAppBarVerticalOffset(getApplicationContext(), mVerticalOffset);
+        SharedPreferencesUtility.setAppBarVerticalOffset(getApplicationContext(), mVerticalOffset);
     }
 
     /**
@@ -271,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        int verticalOffset = Utility.getAppBarVerticalOffset(getApplicationContext());
+        int verticalOffset = SharedPreferencesUtility.getAppBarVerticalOffset(getApplicationContext());
 //        Log.v(TAG, "onResume - mVerticalOffset/verticalOffset: " + mVerticalOffset + "/" + verticalOffset);
         if (mVerticalOffset != verticalOffset) {
             mVerticalOffset = verticalOffset;
@@ -321,7 +321,7 @@ public class MainActivity extends AppCompatActivity implements
                 .addToBackStack(INIT_TAG)
                 .commit();
         Intent intent = new Intent(this, RequestProcessorService.class);
-        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_REFRESH_DATA);
+        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_LOAD_OR_REFRESH_DATA);
         intent.putExtra(RequestProcessorService.REFRESH_DATA_IF_TABLES_EMPTY, false);
         startService(intent);
     }
@@ -347,7 +347,7 @@ public class MainActivity extends AppCompatActivity implements
             getSupportFragmentManager().popBackStack();
         }
 
-        Utility.setDatabaseLoadedFlg(getApplicationContext(), false);
+        SharedPreferencesUtility.setDatabaseLoadedFlg(getApplicationContext(), false);
 
         loadDatabase();
     }
@@ -359,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements
                 .commit();
         getSupportFragmentManager().popBackStack();
 
-        Utility.setDatabaseLoadedFlg(getApplicationContext(), true);
+        SharedPreferencesUtility.setDatabaseLoadedFlg(getApplicationContext(), true);
         if (mTwoPane) {
             showStopsFragment();
         } else {
@@ -408,7 +408,7 @@ public class MainActivity extends AppCompatActivity implements
             break;
 
             default:
-                if (!Utility.isReleaseVersion(getApplicationContext())) {
+                if (!SharedPreferencesUtility.isReleaseVersion(getApplicationContext())) {
                     throw new RuntimeException(
                             "LOC_CAT_TAG - handleFabClicked - no code to handle fragmentsId: " +
                                     "" + fragmentsId);
@@ -553,7 +553,7 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void startStopsNearbySearch(boolean forTrainsOnly) {
-        LatLngDetails latLngDetails = Utility.getLatLng(this);
+        LatLngDetails latLngDetails = SharedPreferencesUtility.getLatLng(this);
         // FIXME: 14/11/2016 - ALDI Carrum location - remove after testing
 //        LatLngDetails latLngDetails = new LatLngDetails(-38.0763325, 145.12348046875);
         if (latLngDetails == null) {
@@ -698,7 +698,8 @@ public class MainActivity extends AppCompatActivity implements
                 mStationOnMapFragment = StationOnMapFragment.newInstance(
                         stopName,
                         latLonDetails.latitude,
-                        latLonDetails.longitude);
+                        latLonDetails.longitude,
+                        mTwoPane);
                 mStationOnMapFragment.setFragmentId(FragmentsId.STATION_ON_MAP);
             } else {
                 mStationOnMapFragment.setLatLon(
@@ -844,7 +845,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
 
             default:
-                if (!Utility.isReleaseVersion(getApplicationContext())) {
+                if (!SharedPreferencesUtility.isReleaseVersion(getApplicationContext())) {
                     throw new RuntimeException("LOC_CAT_TAG - onEvent - no code to handle requestEvent: "
                             + requestEvent);
                 }
@@ -986,7 +987,6 @@ public class MainActivity extends AppCompatActivity implements
      * Restore all fragments that were tracked by the FragmentManager.
      */
     private void findFragments() {
-        Log.v(TAG, "findFragments - start");
         BaseFragment topFragmment = mFavoriteStopsFragment = (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
         if (topFragmment != null) {
             topFragmment.hideView();
@@ -1024,7 +1024,7 @@ public class MainActivity extends AppCompatActivity implements
                     break;
 
                 default:
-                    if (!Utility.isReleaseVersion(getApplicationContext())) {
+                    if (!SharedPreferencesUtility.isReleaseVersion(getApplicationContext())) {
                         throw new RuntimeException(TAG + ".findFragments - no code to handle tag: " + tag);
                     }
             }

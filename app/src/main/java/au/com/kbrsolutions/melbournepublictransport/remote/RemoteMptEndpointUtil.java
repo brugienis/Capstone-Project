@@ -34,7 +34,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 import au.com.kbrsolutions.melbournepublictransport.utilities.JodaDateTimeUtility;
-import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
+import au.com.kbrsolutions.melbournepublictransport.utilities.SharedPreferencesUtility;
 
 public class RemoteMptEndpointUtil {
 
@@ -130,7 +130,7 @@ public class RemoteMptEndpointUtil {
 //            boolean memcacheOK = forecastJson.getBoolean(MEM_CACHE_OK);
             databaseOK = jsonObject.getBoolean(DATABASE_OK);
         } catch (Exception e) {
-            if (!Utility.isReleaseVersion(context)) {
+            if (!SharedPreferencesUtility.isReleaseVersion(context)) {
                 e.printStackTrace();
             }
             throw new RuntimeException(TAG + context.getString
@@ -173,7 +173,7 @@ public class RemoteMptEndpointUtil {
                 lineDetailsContentValuesList.add(values);
             }
         } catch (Exception e) {
-            if (!Utility.isReleaseVersion(context)) {
+            if (!SharedPreferencesUtility.isReleaseVersion(context)) {
                 e.printStackTrace();
             }
             throw new RuntimeException(TAG + context.getString
@@ -225,7 +225,7 @@ public class RemoteMptEndpointUtil {
                 stopDetailsContentValuesList.add(values);
             }
         } catch (Exception e) {
-            if (!Utility.isReleaseVersion(context)) {
+            if (!SharedPreferencesUtility.isReleaseVersion(context)) {
                 e.printStackTrace();
             }
             throw new RuntimeException(TAG + context.getString
@@ -292,7 +292,7 @@ public class RemoteMptEndpointUtil {
                         str));
             }
         } catch (Exception e) {
-            if (!Utility.isReleaseVersion(context)) {
+            if (!SharedPreferencesUtility.isReleaseVersion(context)) {
                 e.printStackTrace();
             }
             throw new RuntimeException(TAG + context.getString
@@ -328,7 +328,7 @@ public class RemoteMptEndpointUtil {
                 nextDisruptionsDetailsList.add(disruptionsDetails);
             }
         } catch (Exception e) {
-            if (!Utility.isReleaseVersion(context)) {
+            if (!SharedPreferencesUtility.isReleaseVersion(context)) {
                 e.printStackTrace();
             }
             throw new RuntimeException(TAG + context.getString
@@ -380,7 +380,7 @@ public class RemoteMptEndpointUtil {
                         distance));
             }
         } catch (Exception e) {
-            if (!Utility.isReleaseVersion(context)) {
+            if (!SharedPreferencesUtility.isReleaseVersion(context)) {
                 e.printStackTrace();
             }
             throw new RuntimeException(TAG + context.getString

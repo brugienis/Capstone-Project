@@ -43,7 +43,7 @@ public class DatabaseContentRefresher {
         }
     }
 
-    public static void refreshDatabase(ContentResolver contentResolver, Context context) {
+    public static void loadOrRefreshDatabase(ContentResolver contentResolver, Context context) {
         // Delete all rows from stop_detail and line_detail table
         deleteLineAndStopDetailRows(contentResolver);
 
@@ -99,14 +99,21 @@ public class DatabaseContentRefresher {
                     .setDatabaseLoadTarget(lineDetailsContentValuesList.size() - 1)
                     .setDatabaseLoadProgress(lineNo++)
                     .build());
-            Log.v(TAG, "refreshDatabase - line_detail/stop_detail cnt: " + lineDetailsRowsCnt + "/" + stopCursor.getCount());
+            Log.v(TAG, "loadOrRefreshDatabase - line_detail/stop_detail cnt: " + lineDetailsRowsCnt + "/" + stopCursor.getCount());
             stopCursor.close();
         }
 //        printLineDetailContent(contentResolver);
-        Log.v(TAG, "refreshDatabase - performing refresh action");
+        Log.v(TAG, "loadOrRefreshDatabase - performing refresh action");
     }
 
-    public static boolean databaseEmpty(ContentResolver contentResolver) {
+    /**
+     * Check if database is empty.
+     *
+     * @param contentResolver
+     * @param context
+     * @return
+     */
+    public static boolean isDatabaseEmpty(ContentResolver contentResolver, Context context) {
         Cursor lineCursor = contentResolver.query(
                 MptContract.LineDetailEntry.CONTENT_URI,
                 null, // leaving "columns" null just returns all the columns.
@@ -148,6 +155,11 @@ public class DatabaseContentRefresher {
 
     }
 
+    /**
+     * Helper class - use for testing.
+     *
+     * @param contentResolver
+     */
     private static void printLineDetailContent(ContentResolver contentResolver) {
         Cursor cursor = contentResolver.query(
                 MptContract.LineDetailEntry.CONTENT_URI,

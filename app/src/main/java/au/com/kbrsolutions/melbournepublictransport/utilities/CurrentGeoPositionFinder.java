@@ -6,7 +6,6 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -19,9 +18,10 @@ import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 
 /**
+ *
  * Find current latitude and longitude of the device.
+ *
  */
-// FIXME: 26/09/2016 - make Singleton. Merge with DbUtility.
 public class CurrentGeoPositionFinder implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -74,15 +74,15 @@ public class CurrentGeoPositionFinder implements
     public void onConnectionFailed(ConnectionResult result) {
         // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
         // onConnectionFailed.
-        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
+//        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
     }
     /*
     * Called by Google Play services if the connection to GoogleApiClient drops because of an
     * error.
     */
-    public void onDisconnected() {
-        Log.i(TAG, "Disconnected");
-    }
+//    public void onDisconnected() {
+//        Log.i(TAG, "Disconnected");
+//    }
 
     /**
      * Runs when a GoogleApiClient object successfully connects.
@@ -105,7 +105,6 @@ public class CurrentGeoPositionFinder implements
     public void onConnectionSuspended(int cause) {
         // The connection to Google Play services was lost for some reason. We call connect() to
         // attempt to re-establish the connection.
-        Log.i(TAG, "Connection suspended");
         mGoogleApiClient.connect();
     }
 }

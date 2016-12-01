@@ -23,7 +23,7 @@ import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 import au.com.kbrsolutions.melbournepublictransport.events.RequestProcessorServiceRequestEvents;
 import au.com.kbrsolutions.melbournepublictransport.utilities.DatabaseContentRefresher;
 import au.com.kbrsolutions.melbournepublictransport.utilities.DbUtility;
-import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
+import au.com.kbrsolutions.melbournepublictransport.utilities.SharedPreferencesUtility;
 
 import static au.com.kbrsolutions.melbournepublictransport.utilities.DatabaseContentRefresher.testProgressBar;
 
@@ -40,7 +40,7 @@ public class RequestProcessorService extends IntentService {
 
     public final static String REQUEST = "request";
 
-    public final static String ACTION_REFRESH_DATA = "action_refresh_data";
+    public final static String ACTION_LOAD_OR_REFRESH_DATA = "action_refresh_data";
     public final static String ACTION_GET_DATABASE_STATUS = "action_get_dadabase_status";
     public static final String ACTION_GET_DISRUPTIONS_DETAILS = "get_disruptions_details";
     public final static String ACTION_SHOW_NEXT_DEPARTURES = "show_next_departures";
@@ -105,7 +105,8 @@ public class RequestProcessorService extends IntentService {
                                         .build());
                             } else {
                                 boolean databaseEmpty = DatabaseContentRefresher.
-                                        databaseEmpty(getContentResolver());
+                                        isDatabaseEmpty(getContentResolver(),
+                                                getApplicationContext());
                                 sendMessageToMainActivity(new MainActivityEvents.Builder(
                                         MainActivityEvents.MainEvents.DATABASE_STATUS)
                                         .setDatabaseEmpty(databaseEmpty)
@@ -113,16 +114,17 @@ public class RequestProcessorService extends IntentService {
                             }
                             break;
 
-                        case ACTION_REFRESH_DATA:
+                        case ACTION_LOAD_OR_REFRESH_DATA:
                             if (REFRESH_TEST) {
                                 testProgressBar();
                             } else {
                                 boolean databaseEmpty = DatabaseContentRefresher.
-                                        databaseEmpty(getContentResolver());
+                                        isDatabaseEmpty(getContentResolver(),
+                                                getApplicationContext());
 
                                 if (databaseEmpty ||
                                         !extras.getBoolean(REFRESH_DATA_IF_TABLES_EMPTY)) {
-                                    DatabaseContentRefresher.refreshDatabase(getContentResolver(),
+                                    DatabaseContentRefresher.loadOrRefreshDatabase(getContentResolver(),
                                             getApplicationContext());
                                 } else {
                                 /* database is not empty - pretend the load has finished */
@@ -221,7 +223,7 @@ public class RequestProcessorService extends IntentService {
             } catch (Exception e) {
 //                Log.v(TAG, "onHandleIntent - got exception: " + e);
                 String msg;
-                if (Utility.isReleaseVersion(getApplicationContext())) {
+                if (SharedPreferencesUtility.isReleaseVersion(getApplicationContext())) {
                     msg = getResources().getString(R.string.can_not_access_ptv_site);
                 } else {
                     msg = getResources().getString(R.string.can_not_access_ptv_site, e);

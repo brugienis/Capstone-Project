@@ -9,8 +9,13 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-// inspired by https://gist.github.com/polbins/e37206fbc444207c0e92
-
+/**
+ *
+ * This class allows to build RecyclerView horizontal divider.
+ *
+ * Inspired by https://gist.github.com/polbins/e37206fbc444207c0e92
+ *
+ */
 public class HorizontalDividerItemDecoration extends RecyclerView.ItemDecoration {
     private Drawable divider;
 
