@@ -186,10 +186,14 @@ public class MainActivity extends AppCompatActivity implements
                         mPrevBackStackEntryCount = cnt;
                         if (!mTwoPane && cnt == 0 || mTwoPane && cnt == 1) {
                             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                            mFavoriteStopsFragment.setShowOptionsMenuFlg(true);
+                            if (mFavoriteStopsFragment != null) {
+                                mFavoriteStopsFragment.setShowOptionsMenuFlg(true);
+                            }
                         } else {
                             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                            mFavoriteStopsFragment.setShowOptionsMenuFlg(false);
+                            if (mFavoriteStopsFragment != null) {
+                                mFavoriteStopsFragment.setShowOptionsMenuFlg(false);
+                            }
                         }
                     }
                 });
@@ -806,6 +810,7 @@ public class MainActivity extends AppCompatActivity implements
 
             case REMOTE_ACCESS_PROBLEMS:
                 showSnackBar(event.msg, true);
+                hideProgress();
                 break;
 
             case NEXT_DEPARTURES_DETAILS:

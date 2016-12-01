@@ -31,14 +31,13 @@ import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
-import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 import au.com.kbrsolutions.melbournepublictransport.utilities.JodaDateTimeUtility;
 import au.com.kbrsolutions.melbournepublictransport.utilities.Utility;
 
 public class RemoteMptEndpointUtil {
 
-    private DateTime mSelectedTime;
     private final static int DEVELOPER_ID = 1000796;
 
     private static DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm");;
@@ -74,6 +73,7 @@ public class RemoteMptEndpointUtil {
     private static final String DIRECTION = "direction";
     private static final String DIRECTION_ID = "direction_id";
     private static final String RUN_ID = "run_id";
+    private static final String RUN = "run";
     private static final String DESTINATION_ID = "destination_id";
     private static final String NUM_SKIPPED = "num_skipped";
     private static final String V2_DISRUPTIONS_MODES = "/v2/disruptions/modes/";
@@ -82,6 +82,9 @@ public class RemoteMptEndpointUtil {
     private static final String DESCRIPTION = "description";
     private static final String RESULT = "result";
     private static final String DISTANCE = "distance";
+    private static final String V2_NEARME_LATITUDE = "/v2/nearme/latitude/";
+    private static final String LONGITUDE = "/longitude/";
+    private static final String GET = "GET";
 
     private static Map<Integer, String> directionMap = new ArrayMap<>();
 
@@ -108,15 +111,16 @@ public class RemoteMptEndpointUtil {
 
     private final static String TAG = RemoteMptEndpointUtil.class.getSimpleName();
 
+    /**
+     * Check if MPT site is available working.
+     *
+     * @param context
+     * @return
+     */
     public static boolean performHealthCheck(Context context) {
-        boolean databaseOK = false;
-
+        boolean databaseOK;
         try {
             DateTime dateTime = getCurrentDateTime();
-
-//            Log.v(TAG, "performHealthCheck - before throw isReleaseVersion: " + Utility.isReleaseVersion(context));
-//            if (true) throw new Exception("BR");
-
             final String uri = V2_HEALTHCHECK + JodaDateTimeUtility.getUtcTime(dateTime);
             String jsonString = processRemoteRequest(uri);
 
@@ -129,12 +133,19 @@ public class RemoteMptEndpointUtil {
             if (!Utility.isReleaseVersion(context)) {
                 e.printStackTrace();
             }
-            throw new RuntimeException(TAG + ".performHealthCheck - exception: " + e);
+            throw new RuntimeException(TAG + context.getString
+                    (R.string.perform_health_check_exception_text, e));
         }
-
         return databaseOK;
     }
 
+    /**
+     * Retrieve train lines details.
+     *
+     * @param mode
+     * @param context
+     * @return
+     */
     public static List<ContentValues> getLineDetails(int mode, Context context) {
         List<ContentValues> lineDetailsContentValuesList = new ArrayList<>();
         final String uri = V2_LINES + mode;
@@ -165,13 +176,21 @@ public class RemoteMptEndpointUtil {
             if (!Utility.isReleaseVersion(context)) {
                 e.printStackTrace();
             }
-            throw new RuntimeException(TAG + ".getLineDetails - exception: " + e);
+            throw new RuntimeException(TAG + context.getString
+                    (R.string.get_line_details_exception_text, e));
         }
 
         return lineDetailsContentValuesList;
     }
 
-
+    /**
+     * Retrieve train stops details.
+     *
+     * @param mode
+     * @param lineId
+     * @param context
+     * @return
+     */
     public static List<ContentValues> getStopDetailsForLine(int mode, String lineId,
                                                             Context context) {
         List<ContentValues> stopDetailsContentValuesList = new ArrayList<>();
@@ -183,7 +202,6 @@ public class RemoteMptEndpointUtil {
         String suburb;
         double latitude;
         double longitude;
-        String favorite = "n";
         try {
             String jsonString = processRemoteRequest(uri);
             JSONArray stopsArray = new JSONArray(jsonString);
@@ -202,19 +220,30 @@ public class RemoteMptEndpointUtil {
                 values.put(MptContract.StopDetailEntry.COLUMN_SUBURB, suburb);
                 values.put(MptContract.StopDetailEntry.COLUMN_LATITUDE, latitude);
                 values.put(MptContract.StopDetailEntry.COLUMN_LONGITUDE, longitude);
-                values.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, favorite);
+                values.put(MptContract.StopDetailEntry.COLUMN_FAVORITE,
+                        context.getString(R.string.favorite_stop_false_value));
                 stopDetailsContentValuesList.add(values);
             }
         } catch (Exception e) {
             if (!Utility.isReleaseVersion(context)) {
                 e.printStackTrace();
             }
-            throw new RuntimeException(TAG + ".getStopDetailsForLine - exception: " + e);
+            throw new RuntimeException(TAG + context.getString
+                    (R.string.getstop_details_for_line_exception_text, e));
         }
 
         return stopDetailsContentValuesList;
     }
 
+    /**
+     * Retrieve departuers details.
+     *
+     * @param mode
+     * @param stopId
+     * @param limit
+     * @param context
+     * @return
+     */
     public static List<NextDepartureDetails> getBroadNextDepartures (
             int mode,
             String stopId,
@@ -240,7 +269,7 @@ public class RemoteMptEndpointUtil {
                 JSONObject direction = platform.getJSONObject(DIRECTION);
                 int directionId = direction.getInt(DIRECTION_ID);
 
-                JSONObject run = oneBroadDeparturesValueObject.getJSONObject("run");
+                JSONObject run = oneBroadDeparturesValueObject.getJSONObject(RUN);
                 int routeType = run.getInt(ROUTE_TYPE);
                 int runId = run.getInt(RUN_ID);
                 int destinationId = run.getInt(DESTINATION_ID);
@@ -266,11 +295,19 @@ public class RemoteMptEndpointUtil {
             if (!Utility.isReleaseVersion(context)) {
                 e.printStackTrace();
             }
-            throw new RuntimeException(TAG + ".getBroadNextDepartures - exception: " + e);
+            throw new RuntimeException(TAG + context.getString
+                    (R.string.getbroad_next_departures_exception_text, e));
         }
         return nextDepartureDetailsList;
     }
 
+    /**
+     * Retrieve disruptions details.
+     *
+     * @param modes
+     * @param context
+     * @return
+     */
     public static List<DisruptionsDetails> getDisruptions(String modes, Context context) {
         final String uri = V2_DISRUPTIONS_MODES + modes;
 
@@ -294,14 +331,23 @@ public class RemoteMptEndpointUtil {
             if (!Utility.isReleaseVersion(context)) {
                 e.printStackTrace();
             }
-            throw new RuntimeException(TAG + ".getDisruptions - exception: " + e);
+            throw new RuntimeException(TAG + context.getString
+                    (R.string.get_disruptions_exception_text, e));
         }
         return nextDisruptionsDetailsList;
     }
 
-    public static List<StopsNearbyDetails> getNearbyStops(LatLngDetails latLonDetails,
+    /**
+     * Retrieve stops nearby details.
+     *
+     * @param latLonDetails
+     * @param context
+     * @return
+     */
+    public static List<StopsNearbyDetails> getStopsNearby(LatLngDetails latLonDetails,
                                                           Context context) {
-        final String uri = "/v2/nearme/latitude/" + latLonDetails.latitude + "/longitude/" + latLonDetails.longitude;
+        final String uri = V2_NEARME_LATITUDE + latLonDetails.latitude + LONGITUDE +
+                latLonDetails.longitude;
 
         List<StopsNearbyDetails> stopsNearbyDetailsList = new ArrayList<>();
 
@@ -337,12 +383,19 @@ public class RemoteMptEndpointUtil {
             if (!Utility.isReleaseVersion(context)) {
                 e.printStackTrace();
             }
-            throw new RuntimeException(TAG + ".getNearbyStops - exception: " + e);
+            throw new RuntimeException(TAG + context.getString
+                    (R.string.get_stops_nearby_exception_text, e));
         }
         return stopsNearbyDetailsList;
     }
 
-    private static final String GET = "GET";
+    /**
+     * Send request encoded in the uri to MPT site.
+     *
+     * @param uri
+     * @return
+     * @throws Exception
+     */
     @Nullable
     private static String processRemoteRequest(String uri) throws Exception {
 
@@ -424,9 +477,11 @@ public class RemoteMptEndpointUtil {
     /**
      * Method to demonstrate building of Timetable API URL
      *
-     * @param baseURL - Timetable API base URL without slash at the end ( Example :http://timetableapi.ptv.vic.gov.au )
+     * @param baseURL - Timetable API base URL without slash at the end
+     *                ( Example :http://timetableapi.ptv.vic.gov.au )
      * @param privateKey - Developer Key supplied by PTV (((Example :"9c132d31-6a30-4cac-8d8b-8a1970834799")
-     * @param uri - Request URI with parameters(Example :/v2/mode/0/line/8/stop/1104/directionid/0/departures/all/limit/5?for_utc=2014-08-15T06:18:08Z)
+     * @param uri - Request URI with parameters(Example :
+     *            /v2/mode/0/line/8/stop/1104/directionid/0/departures/all/limit/5?for_utc=2014-08-15T06:18:08Z)
      * @param developerId- Developer ID supplied by PTV
      * @return Complete URL with signature
      * @throws Exception

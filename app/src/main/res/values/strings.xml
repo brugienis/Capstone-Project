@@ -123,6 +123,29 @@
     <string name="content_desc_show_map">Show stop on map</string>
     <string name="content_desc_remove_from_favorites">Remove stop from favorites</string>
 
+    <!-- Strings related to exceptions texts -->
+    <string name="perform_health_check_exception_text">
+        ".performHealthCheck - exception: <xliff:g id="exception_text">%1$s</xliff:g>"
+    </string>
+    <string name="get_line_details_exception_text">
+        ".getLineDetails - exception: <xliff:g id="exception_text">%1$s</xliff:g>"
+    </string>
+    <string name="getstop_details_for_line_exception_text">
+        ".getStopDetailsForLine - exception: <xliff:g id="exception_text">%1$s</xliff:g>"
+        "</string>
+    <string name="getbroad_next_departures_exception_text">
+        ".getBroadNextDepartures - exception: <xliff:g id="exception_text">%1$s</xliff:g>"
+    </string>
+    <string name="get_disruptions_exception_text">
+        ".getDisruptions - exception: <xliff:g id="exception_text">%1$s</xliff:g>"
+    </string>
+    <string name="get_stops_nearby_exception_text">
+        ".getStopsNearby - exception: <xliff:g id="exception_text">%1$s</xliff:g>"
+    </string>
+    <string name="no_code_to_handle_request_exception_text">
+        ".onHandleIntent - no code to handle request: <xliff:g id="exception_text">%1$s</xliff:g>"
+    </string>
+
     <!-- Strings related to Settings -->
 
 
