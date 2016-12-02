@@ -155,7 +155,6 @@ public class StopsNearbyFragment extends BaseFragment {
     public boolean handleHorizontalDpadKeys(boolean rightKeyPressed) {
         boolean resultOk = false;
         if (mCurrentSelectedView != null && mCurrentSelectedView.hasFocus()) {
-            int prevSelectedViewNo = selectedViewNo;
             if (rightKeyPressed) {
                 selectedViewNo = selectedViewNo ==
                         (selectableViewsCnt - 1) ? 0 : selectedViewNo + 1;

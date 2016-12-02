@@ -120,7 +120,7 @@ public class MptDbHelperTest {
         // insert row into stop_detail
         try {
             ContentValues testValues = TestUtilities.createFrankstonLineStopDetailsValues(1234, MptContract.StopDetailEntry.NON_FAVORITE_FLAG);
-            long stop_detailRowId = db.insert(MptContract.StopDetailEntry.TABLE_NAME, null, testValues);
+            db.insert(MptContract.StopDetailEntry.TABLE_NAME, null, testValues);
         } catch (SQLiteConstraintException e) {
             Assert.fail("Should not allow to insert stop_detail when c");
         }

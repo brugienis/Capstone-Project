@@ -39,7 +39,7 @@ public class DbUtility {
     public void updateStopDetails(long rowId, Context context, String favoriteColumnValue) {
         ContentValues updatedValues = new ContentValues();
         updatedValues.put(MptContract.StopDetailEntry.COLUMN_FAVORITE, favoriteColumnValue);
-        int count = context.getContentResolver().update(
+        context.getContentResolver().update(
                 MptContract.StopDetailEntry.CONTENT_URI,
                 updatedValues,
                 MptContract.StopDetailEntry._ID + EQUAL_QUESTION_MARK,
@@ -54,14 +54,14 @@ public class DbUtility {
     private void printContents(Cursor cursor) {
         int stopIdIdx;
         int locationNameIdx;
-        int lfavoriteIdx;
+        int favoriteIdx;
         while (cursor.moveToNext()) {
             stopIdIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_STOP_ID);
             locationNameIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LOCATION_NAME);
-            lfavoriteIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_FAVORITE);
+            favoriteIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_FAVORITE);
             Log.v(TAG, cursor.getString(stopIdIdx) + "/" +
                     cursor.getString(locationNameIdx) + "/" +
-                    cursor.getString(lfavoriteIdx));
+                    cursor.getString(favoriteIdx));
         }
     }
 

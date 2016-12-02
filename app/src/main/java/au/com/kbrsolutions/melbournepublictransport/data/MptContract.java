@@ -104,8 +104,12 @@ public class MptContract {
         public static final String COLUMN_FAVORITE = "favorite";
 
         public static Uri buildFavoriteStopsUri(String favoriteFlag) {
-            if (favoriteFlag != ANY_FAVORITE_FLAG && favoriteFlag != NON_FAVORITE_FLAG && favoriteFlag != FAVORITE_FLAG) {
-                throw new RuntimeException("MptContract.StopDetailsEntry - incorrect value of favoriteFlag: " + favoriteFlag);
+            if (favoriteFlag.equals(ANY_FAVORITE_FLAG) &&
+                    favoriteFlag.equals(NON_FAVORITE_FLAG) &&
+                    favoriteFlag.equals(FAVORITE_FLAG)) {
+                throw new RuntimeException(
+                        "MptContract.StopDetailsEntry - incorrect value of favoriteFlag: " +
+                                favoriteFlag);
             }
             return CONTENT_URI.buildUpon().appendQueryParameter
                     (COLUMN_FAVORITE, favoriteFlag).build();

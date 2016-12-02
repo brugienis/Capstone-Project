@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements
 
         boolean isRightToLeft = getResources().getBoolean(R.bool.is_right_to_left);
 
-        /* Nico's solution. Not required in Androis 7.1. */
+        /* Nico's solution. Not required in Android 7.1. */
         /* https://discussions.udacity.com/t/layout-mirroring-rtl-isnt-supported-correctly-for-app-bar/177336/4 */
         if (isRightToLeft) {
             mToolbar.setNavigationIcon(R.mipmap.ic_arrow_right_white_24dp);
@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements
                         // FIXME: 29/11/2016 - remove logcat lines before publishing
 //                        printBackStackFragments();
                         int cnt = getSupportFragmentManager().getBackStackEntryCount();
-                        BaseFragment bf = getTopFragment();
+//                        BaseFragment bf = getTopFragment();
                         if (cnt > mPrevBackStackEntryCount) {
 //                            Log.v(TAG, "onCreate.onBackStackChanged - going forward  - cnt/top: " + cnt + "/" + bf.getFragmentId());
                         } else {
@@ -275,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements
 //        Log.v(TAG, "onResume - mVerticalOffset/verticalOffset: " + mVerticalOffset + "/" + verticalOffset);
         if (mVerticalOffset != verticalOffset) {
             mVerticalOffset = verticalOffset;
-            adjustAppBarVertivalOffset(verticalOffset * -1);
+            adjustAppBarVerticalOffset(verticalOffset * -1);
         }
     }
 
@@ -286,7 +286,7 @@ public class MainActivity extends AppCompatActivity implements
      *
      * @param verticalOffset
      */
-    private void adjustAppBarVertivalOffset(final int verticalOffset) {
+    private void adjustAppBarVerticalOffset(final int verticalOffset) {
         mAppBarLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -554,8 +554,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void startStopsNearbySearch(boolean forTrainsOnly) {
         LatLngDetails latLngDetails = SharedPreferencesUtility.getLatLng(this);
-        // FIXME: 14/11/2016 - ALDI Carrum location - remove after testing
-//        LatLngDetails latLngDetails = new LatLngDetails(-38.0763325, 145.12348046875);
         if (latLngDetails == null) {
             if (mCurrentGeoPositionFinder == null) {
                 mCurrentGeoPositionFinder = new CurrentGeoPositionFinder(getApplicationContext(), forTrainsOnly);
@@ -586,7 +584,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
-     * Show results of the search for desruptions on train network.
+     * Show results of the search for disruptions on train network.
      * @param disruptionsDetailsList
      */
     private void showDisruptions(List<DisruptionsDetails> disruptionsDetailsList) {
@@ -636,7 +634,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void updateWidgetStopDetails(String stopId, String locationName) {
-        // this methd is used in SettingsActivity
+        // this method is used in SettingsActivity
     }
 
     /**
@@ -903,21 +901,21 @@ public class MainActivity extends AppCompatActivity implements
      * Make fragment at the top of Back Stack visible.
      */
     private void showTopFragment() {
-        Fragment topFragmment = null;
+        Fragment topFragment = null;
         if (mFavoriteStopsFragment != null) {
             mFavoriteStopsFragment.hideView();
-            topFragmment = mFavoriteStopsFragment;
+            topFragment = mFavoriteStopsFragment;
         }
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         String tag;
         for (int i = 0; i < cnt; i++) {
             tag = getSupportFragmentManager().getBackStackEntryAt(i).getName();
-            topFragmment = getSupportFragmentManager().findFragmentByTag(tag);
-            ((BaseFragment)topFragmment).hideView();
+            topFragment = getSupportFragmentManager().findFragmentByTag(tag);
+            ((BaseFragment)topFragment).hideView();
         }
-        if (topFragmment != null) {
-            ((BaseFragment)topFragmment).showView();
-            mToolbar.setTitle(((BaseFragment)topFragmment).getActionBarTitle());
+        if (topFragment != null) {
+            ((BaseFragment)topFragment).showView();
+            mToolbar.setTitle(((BaseFragment)topFragment).getActionBarTitle());
         }
     }
 
@@ -925,13 +923,13 @@ public class MainActivity extends AppCompatActivity implements
      * Use for testing - remove before publishing on Google Play.
      */
     private void printBackStackFragments() {
-        BaseFragment topFragmment;
+        BaseFragment topFragment;
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         String tag;
         for (int i = 0; i < cnt; i++) {
             tag = getSupportFragmentManager().getBackStackEntryAt(i).getName();
-            topFragmment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
-            Log.v(TAG, "printBackStackFragments - fragment: " + i + " - " + topFragmment + "/" + topFragmment.getFragmentId());
+            topFragment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
+            Log.v(TAG, "printBackStackFragments - fragment: " + i + " - " + topFragment + "/" + topFragment.getFragmentId());
         }
     }
 
@@ -939,7 +937,7 @@ public class MainActivity extends AppCompatActivity implements
      * Use for testing - remove before publishing on Google Play.
      */
     private void showFragmentsOnBackStackVisibility() {
-        BaseFragment topFragmment;
+        BaseFragment topFragment;
         if (mFavoriteStopsFragment != null) {
             mFavoriteStopsFragment.isRootViewVisible();
         }
@@ -947,9 +945,9 @@ public class MainActivity extends AppCompatActivity implements
         String tag;
         for (int i = 0; i < cnt; i++) {
             tag = getSupportFragmentManager().getBackStackEntryAt(i).getName();
-            topFragmment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
-            topFragmment.isRootViewVisible();
-//            Log.v(TAG, "showFragmentsOnBackStackVisibility - fragment: " + i + " - " + topFragmment + "/" + topFragmment.getFragmentId());
+            topFragment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
+            topFragment.isRootViewVisible();
+//            Log.v(TAG, "showFragmentsOnBackStackVisibility - fragment: " + i + " - " + topFragment + "/" + topFragment.getFragmentId());
         }
     }
 
@@ -957,15 +955,15 @@ public class MainActivity extends AppCompatActivity implements
      * Return fragment that is at the top of Back Stack.
      */
     private BaseFragment getTopFragment() {
-        BaseFragment topFragmment;
+        BaseFragment topFragment;
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         if (cnt == 0) {
-            topFragmment = mFavoriteStopsFragment;
+            topFragment = mFavoriteStopsFragment;
         } else  {
             String tag = getSupportFragmentManager().getBackStackEntryAt(cnt - 1).getName();
-            topFragmment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
+            topFragment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
         }
-        return topFragmment;
+        return topFragment;
     }
 
 
@@ -987,40 +985,40 @@ public class MainActivity extends AppCompatActivity implements
      * Restore all fragments that were tracked by the FragmentManager.
      */
     private void findFragments() {
-        BaseFragment topFragmment = mFavoriteStopsFragment = (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
-        if (topFragmment != null) {
-            topFragmment.hideView();
+        BaseFragment topFragment = mFavoriteStopsFragment = (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
+        if (topFragment != null) {
+            topFragment.hideView();
         }
         int cnt = getSupportFragmentManager().getBackStackEntryCount();
         String tag;
         for (int i = 0; i < cnt; i++) {
             tag = getSupportFragmentManager().getBackStackEntryAt(i).getName();
-            topFragmment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
-            topFragmment.hideView();
+            topFragment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
+            topFragment.hideView();
             switch (tag) {
 
                 case STATION_ON_MAP_TAG:
-                    mStationOnMapFragment = (StationOnMapFragment) topFragmment;
+                    mStationOnMapFragment = (StationOnMapFragment) topFragment;
                     break;
 
                 case STOP_TAG:
-                    mStopsFragment = (StopsFragment) topFragmment;
+                    mStopsFragment = (StopsFragment) topFragment;
                     break;
 
                 case NEXT_DEPARTURES_TAG:
-                    mNextDeparturesFragment = (NextDeparturesFragment) topFragmment;
+                    mNextDeparturesFragment = (NextDeparturesFragment) topFragment;
                     break;
 
                 case DISRUPTION_TAG:
-                    mDisruptionsFragment = (DisruptionsFragment) topFragmment;
+                    mDisruptionsFragment = (DisruptionsFragment) topFragment;
                     break;
 
                 case NEARBY_TAG:
-                    mStopsNearbyFragment = (StopsNearbyFragment) topFragmment;
+                    mStopsNearbyFragment = (StopsNearbyFragment) topFragment;
                     break;
 
                 case INIT_TAG:
-                    mInitFragment = (InitFragment) topFragmment;
+                    mInitFragment = (InitFragment) topFragment;
                     break;
 
                 default:
@@ -1029,8 +1027,8 @@ public class MainActivity extends AppCompatActivity implements
                     }
             }
         }
-        if (topFragmment != null) {
-            topFragmment.showView();
+        if (topFragment != null) {
+            topFragment.showView();
         }
     }
 

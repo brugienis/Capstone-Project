@@ -39,8 +39,8 @@ public abstract class BaseFragment extends Fragment {
     public MainActivity.FragmentsId getFragmentId() {
         return  mFragmentsId;
     }
-    public void setFragmentId(MainActivity.FragmentsId fragmentd) {
-        this.mFragmentsId = fragmentd;
+    public void setFragmentId(MainActivity.FragmentsId fragmentId) {
+        this.mFragmentsId = fragmentId;
     }
 
     public boolean handleVerticalDpadKeys(boolean upKeyPressed) {

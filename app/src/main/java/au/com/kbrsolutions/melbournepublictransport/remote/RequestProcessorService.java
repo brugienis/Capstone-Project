@@ -21,11 +21,11 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 import au.com.kbrsolutions.melbournepublictransport.events.RequestProcessorServiceRequestEvents;
-import au.com.kbrsolutions.melbournepublictransport.utilities.DatabaseContentRefresher;
+import au.com.kbrsolutions.melbournepublictransport.utilities.DatabaseContentLoader;
 import au.com.kbrsolutions.melbournepublictransport.utilities.DbUtility;
 import au.com.kbrsolutions.melbournepublictransport.utilities.SharedPreferencesUtility;
 
-import static au.com.kbrsolutions.melbournepublictransport.utilities.DatabaseContentRefresher.testProgressBar;
+import static au.com.kbrsolutions.melbournepublictransport.utilities.DatabaseContentLoader.testProgressBar;
 
 /**
  * Perform asynch tasks: get data from PTV web site and access internal app database.
@@ -104,7 +104,7 @@ public class RequestProcessorService extends IntentService {
                                         .setDatabaseEmpty(mTestDatabaseEmpty)
                                         .build());
                             } else {
-                                boolean databaseEmpty = DatabaseContentRefresher.
+                                boolean databaseEmpty = DatabaseContentLoader.
                                         isDatabaseEmpty(getContentResolver(),
                                                 getApplicationContext());
                                 sendMessageToMainActivity(new MainActivityEvents.Builder(
@@ -118,13 +118,13 @@ public class RequestProcessorService extends IntentService {
                             if (REFRESH_TEST) {
                                 testProgressBar();
                             } else {
-                                boolean databaseEmpty = DatabaseContentRefresher.
+                                boolean databaseEmpty = DatabaseContentLoader.
                                         isDatabaseEmpty(getContentResolver(),
                                                 getApplicationContext());
 
                                 if (databaseEmpty ||
                                         !extras.getBoolean(REFRESH_DATA_IF_TABLES_EMPTY)) {
-                                    DatabaseContentRefresher.loadOrRefreshDatabase(getContentResolver(),
+                                    DatabaseContentLoader.loadOrRefreshDatabase(getContentResolver(),
                                             getApplicationContext());
                                 } else {
                                 /* database is not empty - pretend the load has finished */

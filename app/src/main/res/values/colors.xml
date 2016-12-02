@@ -8,7 +8,7 @@
 
     <color name="grey">#cccccc</color>
 
-    <!--tried to find color that is close to the seperator color in ListView - Grey 300 from
+    <!--tried to find color that is close to the separator color in ListView - Grey 300 from
             https://material.google.com/style/color.html#color-color-palette-->
     <color name="divider">#E0E0E0</color>
 

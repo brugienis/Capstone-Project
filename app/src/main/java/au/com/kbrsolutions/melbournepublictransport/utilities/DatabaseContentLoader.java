@@ -20,9 +20,9 @@ import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 import au.com.kbrsolutions.melbournepublictransport.events.RequestProcessorServiceRequestEvents;
 import au.com.kbrsolutions.melbournepublictransport.remote.RemoteMptEndpointUtil;
 
-public class DatabaseContentRefresher {
+public class DatabaseContentLoader {
 
-    private static final String TAG = DatabaseContentRefresher.class.getSimpleName();
+    private static final String TAG = DatabaseContentLoader.class.getSimpleName();
 
     /**
      * Test progress bar.
@@ -151,7 +151,7 @@ public class DatabaseContentRefresher {
                 null,
                 null);
 
-        // and then elete all rows from line_detail table. If you do it in a reverse order you will
+        // and then delete all rows from line_detail table. If you do it in a reverse order you will
         // get Foreign Key problem - SQLiteConstraintException
         contentResolver.delete(
                 MptContract.LineDetailEntry.CONTENT_URI,

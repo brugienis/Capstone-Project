@@ -1,9 +1,7 @@
 package au.com.kbrsolutions.melbournepublictransport.widget;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Binder;
-import android.preference.PreferenceManager;
 import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -49,7 +47,7 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
 
             @Override
             public void onDataSetChanged() {
-                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 String stopId = SharedPreferencesUtility.getWidgetStopId(getApplication());
 
                 final long identityToken = Binder.clearCallingIdentity();

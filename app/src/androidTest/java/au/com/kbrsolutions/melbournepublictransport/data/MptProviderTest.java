@@ -225,7 +225,7 @@ public class MptProviderTest {
         // insert the first row into stop_detail table
         ContentValues stop_detailValues = TestUtilities.createFrankstonLineStopDetailsValues(locationRowId, StopDetailEntry.NON_FAVORITE_FLAG);
 
-        resultUri = mContext.getContentResolver().insert(
+        mContext.getContentResolver().insert(
         StopDetailEntry.CONTENT_URI,
                 stop_detailValues
         );
@@ -255,7 +255,7 @@ public class MptProviderTest {
         // insert the second row into stop_detail table
         stop_detailValues = TestUtilities.createFrankstonLineStopDetailsValues(locationRowId, StopDetailEntry.FAVORITE_FLAG);
 
-        resultUri = mContext.getContentResolver().insert(
+        mContext.getContentResolver().insert(
         StopDetailEntry.CONTENT_URI,
                 stop_detailValues
         );
