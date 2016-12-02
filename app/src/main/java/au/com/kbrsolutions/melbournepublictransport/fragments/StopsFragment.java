@@ -37,7 +37,7 @@ public class StopsFragment extends BaseFragment implements LoaderManager.LoaderC
     private NestedScrollingListView mListView;
     private StopsAdapter mStopDetailAdapter;
     private OnStopFragmentInteractionListener mListener;
-    private static List<StopDetails> mFolderItemList = new ArrayList<>();
+    private static final List<StopDetails> mFolderItemList = new ArrayList<>();
     private TextView mEmptyView;
     private View mRootView;
     private int mCursorRowCnt;

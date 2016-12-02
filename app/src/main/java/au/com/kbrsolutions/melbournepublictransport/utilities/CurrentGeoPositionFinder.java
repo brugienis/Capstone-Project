@@ -28,7 +28,7 @@ public class CurrentGeoPositionFinder implements
         com.google.android.gms.location.LocationListener {
 
     private GoogleApiClient mGoogleApiClient;
-    private Context mContext;
+    private final Context mContext;
     private boolean mTrainOnly;
 
     private LocationRequest mLocationRequest;
@@ -47,7 +47,7 @@ public class CurrentGeoPositionFinder implements
         mGoogleApiClient.connect();
     }
 
-    protected synchronized void buildGoogleApiClient() {
+    private synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(mContext)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)

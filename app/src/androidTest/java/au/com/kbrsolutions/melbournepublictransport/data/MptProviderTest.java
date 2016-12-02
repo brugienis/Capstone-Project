@@ -10,7 +10,6 @@ import android.support.test.runner.AndroidJUnit4;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,10 +39,10 @@ public class MptProviderTest {
         deleteAllRecordsFromProvider();
     }
 
-    @After
-    public void tearDown() throws Exception {
-
-    }
+//    @After
+//    public void tearDown() throws Exception {
+//
+//    }
 
     @Test
     public void testDelete() throws Exception {
@@ -109,20 +108,20 @@ public class MptProviderTest {
         cursor.close();
     }
 
-    @Test
-    public void testBuildUriMatcher() throws Exception {
+//    @Test
+//    public void testBuildUriMatcher() throws Exception {
+//
+//    }
 
-    }
+//    @Test
+//    public void testOnCreate() throws Exception {
+//
+//    }
 
-    @Test
-    public void testOnCreate() throws Exception {
-
-    }
-
-    @Test
-    public void testQuery() throws Exception {
-
-    }
+//    @Test
+//    public void testQuery() throws Exception {
+//
+//    }
 
     @Test
     public void testQueryWithInClause() throws Exception {
@@ -197,10 +196,10 @@ public class MptProviderTest {
 //        Cursor cursor = mDb.rawQuery(query, names);
     }
 
-    @Test
-    public void testGetType() throws Exception {
-
-    }
+//    @Test
+//    public void testGetType() throws Exception {
+//
+//    }
 
     @Test
     public void testInsert() throws Exception {

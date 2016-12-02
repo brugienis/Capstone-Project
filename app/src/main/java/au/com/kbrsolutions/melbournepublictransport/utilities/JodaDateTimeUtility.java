@@ -18,7 +18,7 @@ public class JodaDateTimeUtility {
         return time.toDateTime( org.joda.time.DateTimeZone.UTC );
     }
 
-    public static org.joda.time.DateTime getLocalTime(org.joda.time.DateTime utcTime) {
+    private static org.joda.time.DateTime getLocalTime(org.joda.time.DateTime utcTime) {
         DateTimeZone dateTimeZone = DateTimeZone.getDefault();
         return utcTime.withZone(dateTimeZone);
     }

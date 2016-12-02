@@ -42,7 +42,7 @@ public class StopsNearbyFragment extends BaseFragment {
     private int mNextDepartureDetailsCnt;
     private View mCurrentSelectedView;
     private int mCurrentSelectedRow;
-    private int selectableViewsCnt = 2;
+    private final int selectableViewsCnt = 2;
     private int selectedViewNo = -1;
     private static final String ARG_NEARBY_DATA = "arg_nearby_data";
 

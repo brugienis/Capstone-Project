@@ -29,7 +29,7 @@ import static au.com.kbrsolutions.melbournepublictransport.R.id.stopName;
  */
 public class StopsNearbyAdapter<T> extends ArrayAdapter<StopsNearbyDetails> {
 
-    private Activity mActivity;
+    private final Activity mActivity;
     private final List<StopsNearbyDetails> mValues;
     private final StopsNearbyFragment.OnNearbyStopsFragmentInteractionListener mListener;
 

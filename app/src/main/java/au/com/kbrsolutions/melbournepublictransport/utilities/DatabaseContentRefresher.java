@@ -83,8 +83,9 @@ public class DatabaseContentRefresher {
                     null, // values for "where" clause
                     null  // no sort order
             );
-            int lineDetailsRowsCnt = lineCursor.getCount();
-            lineCursor.close();
+            if (lineCursor != null) {
+                lineCursor.close();
+            }
 //
             Uri uri = MptContract.StopDetailEntry.buildFavoriteStopsUri("a");
             Cursor stopCursor = contentResolver.query(
@@ -99,11 +100,12 @@ public class DatabaseContentRefresher {
                     .setDatabaseLoadTarget(lineDetailsContentValuesList.size() - 1)
                     .setDatabaseLoadProgress(lineNo++)
                     .build());
-            Log.v(TAG, "loadOrRefreshDatabase - line_detail/stop_detail cnt: " + lineDetailsRowsCnt + "/" + stopCursor.getCount());
-            stopCursor.close();
+            if (stopCursor != null) {
+                stopCursor.close();
+            }
         }
 //        printLineDetailContent(contentResolver);
-        Log.v(TAG, "loadOrRefreshDatabase - performing refresh action");
+//        Log.v(TAG, "loadOrRefreshDatabase - performing refresh action");
     }
 
     /**
@@ -121,8 +123,10 @@ public class DatabaseContentRefresher {
                 null, // values for "where" clause
                 null  // no sort order
         );
-        int lineDetailsRowsCnt = lineCursor.getCount();
-        lineCursor.close();
+        int lineDetailsRowsCnt = lineCursor == null ? 0 : lineCursor.getCount();
+        if (lineCursor != null) {
+            lineCursor.close();
+        }
 //
         Uri uri = MptContract.StopDetailEntry.buildFavoriteStopsUri("a");
         Cursor stopCursor = contentResolver.query(
@@ -132,9 +136,10 @@ public class DatabaseContentRefresher {
                 null, // values for "where" clause
                 null  // no sort order
         );
-        int stopDetailsRowsCnt = stopCursor.getCount();
-//        Log.v(TAG, "databaseLoadFinished - line_detail/stop_detail cnt: " + lineDetailsRowsCnt + "/" + stopDetailsRowsCnt);
-        stopCursor.close();
+        int stopDetailsRowsCnt = stopCursor == null ? 0 : stopCursor.getCount();
+        if (stopCursor != null) {
+            stopCursor.close();
+        }
 
         return (lineDetailsRowsCnt + stopDetailsRowsCnt) == 0;
     }
@@ -168,17 +173,20 @@ public class DatabaseContentRefresher {
                 null,
                 null);
 
-        cursor.moveToFirst();
-        for ( int i = 0; i < cursor.getCount(); i++, cursor.moveToNext() ) {
-            Log.v(TAG, "printLineDetailContent - lineId/lineName: " + cursor.getString(0) + "/" + cursor.getString(1));
+        if (cursor != null) {
+            cursor.moveToFirst();
+            for ( int i = 0; i < cursor.getCount(); i++, cursor.moveToNext() ) {
+                Log.v(TAG, "printLineDetailContent - lineId/lineName: " + cursor.getString(0) + "/" + cursor.getString(1));
+            }
+            cursor.close();
         }
-        cursor.close();
     }
 
     private static void sendMessageToMainActivity(MainActivityEvents event) {
         EventBus.getDefault().post(event);
     }
 
+    @SuppressWarnings("EmptyMethod")
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(RequestProcessorServiceRequestEvents event) {
     }

@@ -40,7 +40,7 @@ public class RemoteMptEndpointUtil {
 
     private final static int DEVELOPER_ID = 1000796;
 
-    private static DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm");;
+    private static final DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm");;
     private final static String PRIVATE_KEY = "8d3c3f43-4244-11e6-a0ce-06f54b901f07";
     private final static String PTV_BASE_URL = "http://timetableapi.ptv.vic.gov.au";
 
@@ -86,7 +86,7 @@ public class RemoteMptEndpointUtil {
     private static final String LONGITUDE = "/longitude/";
     private static final String GET = "GET";
 
-    private static Map<Integer, String> directionMap = new ArrayMap<>();
+    private static final Map<Integer, String> directionMap = new ArrayMap<>();
 
     static {
         directionMap.put(0,  "To City");
@@ -400,7 +400,8 @@ public class RemoteMptEndpointUtil {
     private static String processRemoteRequest(String uri) throws Exception {
 
         String urlString;
-            urlString = buildTTAPIURL(PTV_BASE_URL, PRIVATE_KEY, uri, DEVELOPER_ID);
+//            urlString = buildTTAPIURL(PTV_BASE_URL, PRIVATE_KEY, uri, DEVELOPER_ID);
+            urlString = buildTTAPIURL(uri);
 
 
         Uri.Builder uriBuilder = Uri.parse(urlString).buildUpon();
@@ -435,7 +436,7 @@ public class RemoteMptEndpointUtil {
                 // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
                 // But it does make debugging a *lot* easier if you print out the completed
                 // buffer for debugging.
-                buffer.append(line + "\n");
+                buffer.append(line).append("\n");
             }
 
             if (buffer.length() == 0) {
@@ -452,7 +453,7 @@ public class RemoteMptEndpointUtil {
             if (reader != null) {
                 try {
                     reader.close();
-                } catch (final IOException nothingCanBeDone) {
+                } catch (final IOException ignored) {
                 }
             }
         }
@@ -474,28 +475,23 @@ public class RemoteMptEndpointUtil {
     private static final String QUESTION_MARK = "?";
     private static final String AMPERSAND = "&";
     private static final String ZERO = "0";
+    // FIXME: 2/12/2016 - put proper method description
     /**
      * Method to demonstrate building of Timetable API URL
      *
-     * @param baseURL - Timetable API base URL without slash at the end
-     *                ( Example :http://timetableapi.ptv.vic.gov.au )
-     * @param privateKey - Developer Key supplied by PTV (((Example :"9c132d31-6a30-4cac-8d8b-8a1970834799")
-     * @param uri - Request URI with parameters(Example :
-     *            /v2/mode/0/line/8/stop/1104/directionid/0/departures/all/limit/5?for_utc=2014-08-15T06:18:08Z)
-     * @param developerId- Developer ID supplied by PTV
      * @return Complete URL with signature
      * @throws Exception
      *
      */
     @NonNull
-    public static String buildTTAPIURL(final String baseURL, final String privateKey, final String uri,
-                                       final int developerId) throws Exception {
+//    public static String buildTTAPIURL(final String baseURL, final String privateKey, final String uri,
+//                                       final int developerId) throws Exception {
+    public static String buildTTAPIURL(final String uri) throws Exception {
 
-        StringBuffer uriWithDeveloperID = new StringBuffer()
-                .append(uri).append(uri.contains(QUESTION_MARK) ? AMPERSAND : QUESTION_MARK)
-                .append(DEV_ID + developerId);
-        byte[] keyBytes = privateKey.getBytes();
-        byte[] uriBytes = uriWithDeveloperID.toString().getBytes();
+        String uriWithDeveloperID = uri + (uri.contains(QUESTION_MARK) ? AMPERSAND : QUESTION_MARK) +
+                DEV_ID + DEVELOPER_ID;
+        byte[] keyBytes = PRIVATE_KEY.getBytes();
+        byte[] uriBytes = uriWithDeveloperID.getBytes();
         SecretKeySpec signingKey = new SecretKeySpec(keyBytes, HMAC_SHA1_ALGORITHM);
         Mac mac = Mac.getInstance(HMAC_SHA1_ALGORITHM);
         mac.init(signingKey);
@@ -509,9 +505,9 @@ public class RemoteMptEndpointUtil {
             }
             signature.append(Integer.toHexString(intVal));
         }
-        StringBuffer url = new StringBuffer(baseURL)
-                .append(uri).append(uri.contains(QUESTION_MARK) ? AMPERSAND : QUESTION_MARK)
-                .append(DEV_ID + developerId).append(SIGNATURE + signature.toString().toUpperCase());
-        return url.toString();
+        String url = PTV_BASE_URL +
+                uri + (uri.contains(QUESTION_MARK) ? AMPERSAND : QUESTION_MARK) +
+                DEV_ID + DEVELOPER_ID + SIGNATURE + signature.toString().toUpperCase();
+        return url;
     }
 }

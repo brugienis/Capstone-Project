@@ -35,6 +35,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
  * {@link FavoriteStopsFragment.OnFavoriteStopsFragmentInteractionListener} interface
  * to handle interaction events.
  */
+@SuppressWarnings("ALL")
 public class FavoriteStopsFragment
         extends BaseFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -60,7 +61,7 @@ public class FavoriteStopsFragment
 
     private static final int STOP_DETAILS_LOADER = 0;
 
-    public static final String[] STOP_DETAILS_COLUMNS = {
+    private static final String[] STOP_DETAILS_COLUMNS = {
             MptContract.StopDetailEntry.TABLE_NAME + DOT + MptContract.StopDetailEntry._ID,
             MptContract.StopDetailEntry.COLUMN_ROUTE_TYPE,
             MptContract.StopDetailEntry.COLUMN_STOP_ID,
@@ -339,8 +340,8 @@ public class FavoriteStopsFragment
         mFavoriteStopDetailAdapter.swapCursor(null);
     }
 
-    public void setIsInSettingsActivityFlag(boolean value) {
-        mIsInSettingsActivityFlag = value;
+    public void setIsInSettingsActivityFlag() {
+        mIsInSettingsActivityFlag = true;
     }
 
     /**

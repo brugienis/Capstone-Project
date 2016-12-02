@@ -44,7 +44,7 @@ public class FixedLocationEditTextPreference extends EditTextPreference {
     static final private int DEFAULT_MINIMUM_LOCATION_LENGTH = 2;
     private int mMinLength;
     private boolean isGoogleApiAvailable;
-    Context mContext;
+    private final Context mContext;
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 

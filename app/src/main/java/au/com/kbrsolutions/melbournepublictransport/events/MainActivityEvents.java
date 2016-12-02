@@ -56,7 +56,7 @@ public class MainActivityEvents {
             this.event = event;
         }
 
-        private MainEvents event;
+        private final MainEvents event;
         private String msg;
         private List<NextDepartureDetails> nextDepartureDetailsList;
         private StopDetails stopDetails;

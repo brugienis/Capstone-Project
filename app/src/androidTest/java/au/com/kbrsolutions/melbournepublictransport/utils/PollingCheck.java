@@ -7,6 +7,7 @@ import java.util.concurrent.Callable;
 /**
  * Created by business on 1/09/2016.
  */
+@SuppressWarnings("ALL")
 public abstract class PollingCheck {
     private static final long TIME_SLICE = 50;
     private long mTimeout = 3000;

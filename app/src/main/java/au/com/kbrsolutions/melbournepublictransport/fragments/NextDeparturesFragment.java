@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
@@ -19,8 +18,8 @@ import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.adapters.NextDeparturesAdapter;
 import au.com.kbrsolutions.melbournepublictransport.adapters.NextDeparturesAdapterRv;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
-import au.com.kbrsolutions.melbournepublictransport.remote.RequestProcessorService;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
+import au.com.kbrsolutions.melbournepublictransport.remote.RequestProcessorService;
 import au.com.kbrsolutions.melbournepublictransport.utilities.HorizontalDividerItemDecoration;
 
 /**
@@ -28,8 +27,8 @@ import au.com.kbrsolutions.melbournepublictransport.utilities.HorizontalDividerI
  *
  * <p/>
  */
-public class NextDeparturesFragment extends BaseFragment
-        implements ViewTreeObserver.OnGlobalFocusChangeListener {
+public class NextDeparturesFragment extends BaseFragment {
+//        implements ViewTreeObserver.OnGlobalFocusChangeListener {
 
     private static final String ARG_SELECTED_STOP_NAME = "arg_selected_stop_name";
     private static final String ARG_NEXT_DEPARTURE_DATA = "next_departure_data";
@@ -242,18 +241,6 @@ public class NextDeparturesFragment extends BaseFragment
 //        mRecyclerViewAdapter.swapNextDeparturesDetails(nextDepartureDetailsList);
         mNextDeparturesAdapter.swap(nextDepartureDetailsList);
         mSearchStopDetails = stopDetails;
-    }
-
-    @Override
-    public void hideView() {
-    }
-
-    @Override
-    public void showView() {
-    }
-
-    @Override
-    public void onGlobalFocusChanged(View view, View view1) {
     }
 
 //    AdapterView.OnItemSelectedListener mOnItemSelectedListener;

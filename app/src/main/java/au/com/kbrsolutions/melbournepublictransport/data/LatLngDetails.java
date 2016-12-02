@@ -16,7 +16,7 @@ public class LatLngDetails implements Parcelable {
         this.longitude = longitude;
     }
 
-    public LatLngDetails(Parcel input) {
+    private LatLngDetails(Parcel input) {
         latitude = input.readDouble();
         longitude = input.readDouble();
     }

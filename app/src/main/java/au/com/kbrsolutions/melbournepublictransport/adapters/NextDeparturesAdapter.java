@@ -23,7 +23,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 public class NextDeparturesAdapter<T> extends ArrayAdapter<NextDepartureDetails> {
 
     private final List<NextDepartureDetails> mValues;
-    private Activity mActivity;
+    private final Activity mActivity;
 
     private static final String TAG = NextDeparturesAdapterRv.class.getSimpleName();
 

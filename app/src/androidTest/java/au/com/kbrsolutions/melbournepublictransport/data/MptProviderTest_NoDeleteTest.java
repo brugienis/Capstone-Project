@@ -9,7 +9,6 @@ import android.support.test.runner.AndroidJUnit4;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,10 +36,10 @@ public class MptProviderTest_NoDeleteTest {
         mContext = InstrumentationRegistry.getTargetContext();
     }
 
-    @After
-    public void tearDown() throws Exception {
-
-    }
+//    @After
+//    public void tearDown() throws Exception {
+//
+//    }
 
     @Test
     public void testFindingTrainStopsNearby() throws Exception {
@@ -73,8 +72,8 @@ public class MptProviderTest_NoDeleteTest {
                     currLat,
                     currLon,
                     cursor.getDouble(latIdx),
-                    cursor.getDouble(lonIdx),
-                    "K");
+                    cursor.getDouble(lonIdx)
+            );
             map.put(distance, new NearbyTrainsDetails(
                     cursor.getString(stopIdIdx),
                     cursor.getString(locationNameIdx),

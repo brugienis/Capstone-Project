@@ -3,7 +3,7 @@ package au.com.kbrsolutions.melbournepublictransport.data;
 /**
  * This class keeps train line details.
  */
-public class LineDetails {
+class LineDetails {
     public final int routeType;
     public final String lineId;
     public final String lineName;

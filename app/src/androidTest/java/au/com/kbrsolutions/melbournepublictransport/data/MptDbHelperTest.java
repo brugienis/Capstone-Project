@@ -9,7 +9,6 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,20 +37,20 @@ public class MptDbHelperTest {
         deleteTheDatabase();
     }
 
-    @After
-    public void tearDown() throws Exception {
+//    @After
+//    public void tearDown() throws Exception {
+//
+//    }
 
-    }
+//    @Test
+//    public void testOnCreate() throws Exception {
+//
+//    }
 
-    @Test
-    public void testOnCreate() throws Exception {
-
-    }
-
-    @Test
-    public void testOnUpgrade() throws Exception {
-
-    }
+//    @Test
+//    public void testOnUpgrade() throws Exception {
+//
+//    }
 
     @Test
     public void testCreateDb() throws Throwable {

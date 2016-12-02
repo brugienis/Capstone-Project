@@ -5,7 +5,6 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +15,7 @@ import au.com.kbrsolutions.melbournepublictransport.utilities.SharedPreferencesU
 @RunWith(AndroidJUnit4.class)
 public class MiscTests {
 
-    Context mContext;
+    private Context mContext;
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
@@ -27,20 +26,20 @@ public class MiscTests {
         mContext = InstrumentationRegistry.getTargetContext();
     }
 
-    @After
-    public void tearDown() throws Exception {
+//    @After
+//    public void tearDown() throws Exception {
+//
+//    }
 
-    }
+//    @Test
+//    public void testOnCreate() throws Exception {
+//
+//    }
 
-    @Test
-    public void testOnCreate() throws Exception {
-
-    }
-
-    @Test
-    public void testOnUpgrade() throws Exception {
-
-    }
+//    @Test
+//    public void testOnUpgrade() throws Exception {
+//
+//    }
 
     @Test
     public void testReleaseVersion() throws Throwable {

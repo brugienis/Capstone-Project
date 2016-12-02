@@ -17,7 +17,7 @@ public class DisruptionsDetails implements Parcelable {
         this.description = description;
     }
 
-    public DisruptionsDetails(Parcel input) {
+    private DisruptionsDetails(Parcel input) {
         title = input.readString();
         description = input.readString();
     }

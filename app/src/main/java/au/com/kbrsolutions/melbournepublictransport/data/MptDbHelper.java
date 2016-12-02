@@ -11,7 +11,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.MptContract.StopDetailE
 /**
  * Manages a local database for MPT data.
  */
-public class MptDbHelper extends SQLiteOpenHelper {
+class MptDbHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
     private static final int DATABASE_VERSION = 1;

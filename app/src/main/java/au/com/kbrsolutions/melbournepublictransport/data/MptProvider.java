@@ -21,8 +21,8 @@ public class MptProvider extends ContentProvider {
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private MptDbHelper mOpenHelper;
 
-    static final int ALL_STOP_DETAIL = 100;
-    static final int ALL_LINE_DETAIL = 200;
+    private static final int ALL_STOP_DETAIL = 100;
+    private static final int ALL_LINE_DETAIL = 200;
 
     private static final SQLiteQueryBuilder sLineDetailQueryBuilder;
 
