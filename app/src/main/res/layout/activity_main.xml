@@ -68,7 +68,7 @@
         app:elevation="@dimen/fab_elevation"
         app:pressedTranslationZ="@dimen/fab_press_translation_z"
         app:borderWidth="@dimen/border_width"
-        android:src="@drawable/ic_stock_add_circle_outline_white_48dp" />
+        android:src="@drawable/ic_stock_add_circle_white" />
 
 </android.support.design.widget.CoordinatorLayout>
 

@@ -65,9 +65,9 @@ public class NextDeparturesAdapterRv
         holder.departureTimeId.setText(departureTime);
 
         if (nextDepartureDetails.routeType == StopsNearbyDetails.TRAM_ROUTE_TYPE) {
-            holder.transportImage.setImageResource(R.drawable.ic_stock_tram_amber_500_48dp);
+            holder.transportImage.setImageResource(R.drawable.ic_stock_tram_amber_500);
         } else if (nextDepartureDetails.routeType  == StopsNearbyDetails.BUS_ROUTE_TYPE) {
-            holder.transportImage.setImageResource(R.drawable.ic_stock_directions_bus_green_500_48dp);
+            holder.transportImage.setImageResource(R.drawable.ic_stock_directions_bus_green_500);
         }
     }
 

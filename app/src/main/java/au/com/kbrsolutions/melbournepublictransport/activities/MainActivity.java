@@ -513,7 +513,7 @@ public class MainActivity extends AppCompatActivity implements
                 .addToBackStack(NEXT_DEPARTURES_TAG)     // it will also show 'Up' button in the action bar
                 .commit();
         mNextDeparturesFragment.setActionBarTitle(getResources().getString(R.string.title_next_departures));
-        fab.setImageResource(R.drawable.ic_stock_refresh_white_48dp);
+        fab.setImageResource(R.drawable.ic_stock_refresh_white);
         fab.setContentDescription(getString(R.string.pref_desc_main_refresh_next_departures));
     }
 
@@ -612,7 +612,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onSupportNavigateUp() {
         getSupportFragmentManager().popBackStack();
-        fab.setImageResource(R.drawable.ic_stock_add_circle_outline_white_48dp);
+        fab.setImageResource(R.drawable.ic_stock_add_circle_white);
         fab.setContentDescription(getString(R.string.pref_desc_main_add_favorite_stop));
         return true;
     }

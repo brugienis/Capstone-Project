@@ -19,7 +19,7 @@
             android:layout_height="@dimen/touchable_size"
             android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
             android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
-            android:src="@drawable/ic_stock_train_blue_500_48dp"
+            android:src="@drawable/ic_stock_train_blue_500"
             android:contentDescription="@string/content_desc_train_transport_type" />
 
         <LinearLayout
@@ -43,7 +43,7 @@
             android:layout_height="@dimen/touchable_size"
             android:adjustViewBounds="true"
             android:background="@drawable/touch_selector"
-            android:src="@drawable/ic_stock_forward_10_green_500_48dp"
+            android:src="@drawable/ic_stock_forward_10_green_500"
             android:contentDescription="@string/content_desc_show_departures" />
 
         <ImageView
@@ -51,7 +51,7 @@
             android:layout_width="@dimen/touchable_size"
             android:layout_height="@dimen/touchable_size"
             android:background="@drawable/touch_selector"
-            android:src="@drawable/ic_stock_place_green_500_48dp"
+            android:src="@drawable/ic_stock_place_green_500"
             android:contentDescription="@string/content_desc_show_map" />
 
         <ImageView
@@ -59,7 +59,7 @@
             android:layout_width="@dimen/touchable_size"
             android:layout_height="@dimen/touchable_size"
             android:background="@drawable/touch_selector"
-            android:src="@drawable/ic_stock_delete_green_500_48dp"
+            android:src="@drawable/ic_stock_delete_green_500"
             android:contentDescription="@string/content_desc_remove_from_favorites" />
 
     </LinearLayout>

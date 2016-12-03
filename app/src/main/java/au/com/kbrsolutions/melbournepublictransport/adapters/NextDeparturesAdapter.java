@@ -64,15 +64,15 @@ public class NextDeparturesAdapter<T> extends ArrayAdapter<NextDepartureDetails>
             holder.departureTimeId.setText(departureTime);
 
             if (nextDepartureDetails.routeType == StopsNearbyDetails.TRAIN_ROUTE_TYPE) {
-                holder.transportImage.setImageResource(R.drawable.ic_stock_train_blue_500_48dp);
+                holder.transportImage.setImageResource(R.drawable.ic_stock_train_blue_500);
                 holder.transportImage.setContentDescription(mActivity.getResources().
                         getString(R.string.content_desc_train_transport_type));
             } else if (nextDepartureDetails.routeType == StopsNearbyDetails.TRAM_ROUTE_TYPE) {
-                holder.transportImage.setImageResource(R.drawable.ic_stock_tram_amber_500_48dp);
+                holder.transportImage.setImageResource(R.drawable.ic_stock_tram_amber_500);
                 holder.transportImage.setContentDescription(mActivity.getResources().
                         getString(R.string.content_desc_tram_transport_type));
             } else if (nextDepartureDetails.routeType  == StopsNearbyDetails.BUS_ROUTE_TYPE) {
-                holder.transportImage.setImageResource(R.drawable.ic_stock_directions_bus_green_500_48dp);
+                holder.transportImage.setImageResource(R.drawable.ic_stock_directions_bus_green_500);
                 holder.transportImage.setContentDescription(mActivity.getResources().
                         getString(R.string.content_desc_bus_transport_type));
             }

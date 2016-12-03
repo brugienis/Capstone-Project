@@ -19,7 +19,7 @@
             android:background="@drawable/touch_selector"
             android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
             android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
-            android:src="@drawable/ic_stock_train_blue_500_48dp"
+            android:src="@drawable/ic_stock_train_blue_500"
             android:contentDescription="@string/content_desc_train_transport_type" />
 
     <LinearLayout
