@@ -24,4 +24,5 @@
         android:orderInCategory="20"
         android:title="@string/action_reload_database"
         app:showAsAction="never"/>
+    <!-- FIXME  - add menu 'help' for API 23+ - explaining required permissiona-->
 </menu>

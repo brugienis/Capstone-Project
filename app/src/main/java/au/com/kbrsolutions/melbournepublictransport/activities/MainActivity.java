@@ -1,5 +1,6 @@
 package au.com.kbrsolutions.melbournepublictransport.activities;
 
+import android.Manifest;
 import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.content.Context;
@@ -17,9 +18,11 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -41,10 +44,9 @@ import java.util.List;
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.DisruptionsDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
-import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
-import au.com.kbrsolutions.melbournepublictransport.remote.RequestProcessorService;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 import au.com.kbrsolutions.melbournepublictransport.fragments.BaseFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.DisruptionsFragment;
@@ -54,6 +56,7 @@ import au.com.kbrsolutions.melbournepublictransport.fragments.NextDeparturesFrag
 import au.com.kbrsolutions.melbournepublictransport.fragments.StationOnMapFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StopsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StopsNearbyFragment;
+import au.com.kbrsolutions.melbournepublictransport.remote.RequestProcessorService;
 import au.com.kbrsolutions.melbournepublictransport.utilities.CurrentGeoPositionFinder;
 import au.com.kbrsolutions.melbournepublictransport.utilities.ProgressBarHandler;
 import au.com.kbrsolutions.melbournepublictransport.utilities.SharedPreferencesUtility;
@@ -93,7 +96,11 @@ public class MainActivity extends AppCompatActivity implements
     private EventBus eventBus;
     private CurrentGeoPositionFinder mCurrentGeoPositionFinder;
     private int mPrevBackStackEntryCount;
+    private static final String STATE_IN_PERMISSION = "inPermission";
+    private boolean isInPermission = false;
 
+    private static final int REQUEST_PERMS_READ_EXTERNAL_STORAGE = 1000;
+    private static final int REQUEST_PERMS_ACCESS_FINE_LOCATION = 2000;
     private static final String FAVORITE_STOPS_TAG = "favorite_stops_tag";
     private static final String ERROR_DIALOG_FRAGMENT_TAG = "errorDialog";
     private static final String STATION_ON_MAP_TAG = "station_on_map_tag";
@@ -234,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements
             } else {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
+            isInPermission = savedInstanceState.getBoolean(STATE_IN_PERMISSION, false);
         } else {
             if (topFragmentTag == null || !topFragmentTag.equals(INIT_TAG)) {
                 if (SharedPreferencesUtility.isDatabaseLoaded(getApplicationContext())) {
@@ -250,6 +258,16 @@ public class MainActivity extends AppCompatActivity implements
         }
         SharedPreferencesUtility.initSettings(getApplicationContext());
         mProgressBarHandler = new ProgressBarHandler(this);
+
+        if (!hasFilesPermission()) {
+            if (!isInPermission) {
+                isInPermission=true;
+
+                ActivityCompat.requestPermissions(this,
+                        new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
+                        REQUEST_PERMS_READ_EXTERNAL_STORAGE);
+            }
+        }
     }
 
     private void saveAppBarVerticalOffset(int verticalOffset) {
@@ -367,10 +385,12 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putBoolean(STATE_IN_PERMISSION, isInPermission);
+    }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -378,6 +398,47 @@ public class MainActivity extends AppCompatActivity implements
         showTopFragment();
         if (mTwoPane) {
             mFavoriteStopsFragment.showView();
+        }
+    }
+
+    private boolean hasFilesPermission() {
+        return(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE ) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    private boolean hasLocationPermission() {
+        return(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    // FIXME: 4/12/2016 https://developer.android.com/training/permissions/requesting.html
+    // FIXME: 4/12/2016  version 8.3 or later of the Google Play services SDK, you no longer need the
+    // FIXME: 4/12/2016  android.permission.WRITE_EXTERNAL_STORAGE - see below. How do you check the version?
+    // FIXME: 4/12/2016https://developers.google.com/maps/documentation/android-api/config
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions,
+                                           int[] grantResults) {
+        isInPermission=false;
+
+        if (requestCode == REQUEST_PERMS_READ_EXTERNAL_STORAGE) {
+            if (hasFilesPermission()) {
+                Log.v(TAG, "onRequestPermissionsResult - READ_EXTERNAL_STORAGE ermission is granted: ");
+                // do nothing
+            }
+            else {
+//                finish(); // denied permission, so we're done
+                Log.v(TAG, "onRequestPermissionsResult - READ_EXTERNAL_STORAGE ermission not granted: ");
+            }
+        } else if (requestCode == REQUEST_PERMS_ACCESS_FINE_LOCATION) {
+            if (hasFilesPermission()) {
+                Log.v(TAG, "onRequestPermissionsResult - ACCESS_FINE_LOCATION permission is granted: ");
+                // do nothing
+            }
+            else {
+//                finish(); // denied permission, so we're done
+                Log.v(TAG, "onRequestPermissionsResult - ACCESS_FINE_LOCATION permission not granted: ");
+            }
         }
     }
 
@@ -547,21 +608,40 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Start search of stops 'nearby' - relative to device or 'fixed' (depending on settings
-     * values) position.
+     * values) location.
      *
      * @param forTrainsOnly
      */
     @Override
     public void startStopsNearbySearch(boolean forTrainsOnly) {
-        LatLngDetails latLngDetails = SharedPreferencesUtility.getLatLng(this);
-        if (latLngDetails == null) {
-            if (mCurrentGeoPositionFinder == null) {
-                mCurrentGeoPositionFinder = new CurrentGeoPositionFinder(getApplicationContext(), forTrainsOnly);
+        Log.v(TAG, "startStopsNearbySearch - Build.VERSION.SDK_INT: " + Build.VERSION.SDK_INT);
+        boolean showExplainingMsg = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            showExplainingMsg = shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION);
+            Log.v(TAG, "startStopsNearbySearch - showExplainingMsg: " + showExplainingMsg);
+        }
+        if (hasLocationPermission()) {
+            LatLngDetails latLngDetails = SharedPreferencesUtility.getLatLng(this);
+            if (latLngDetails == null) {
+                if (mCurrentGeoPositionFinder == null) {
+                    mCurrentGeoPositionFinder = new CurrentGeoPositionFinder(getApplicationContext(), forTrainsOnly);
+                } else {
+                    mCurrentGeoPositionFinder.connectToGoogleApiClient(forTrainsOnly);
+                }
             } else {
-                mCurrentGeoPositionFinder.connectToGoogleApiClient(forTrainsOnly);
+                getStopsNearbyDetails(latLngDetails, forTrainsOnly);
             }
         } else {
-            getStopsNearbyDetails(latLngDetails, forTrainsOnly);
+            if (showExplainingMsg) {
+                showSnackBar("See menu -> help: permissions", false);
+            }
+            if (!isInPermission) {
+                isInPermission=true;
+
+                ActivityCompat.requestPermissions(this,
+                        new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
+                        REQUEST_PERMS_ACCESS_FINE_LOCATION);
+            }
         }
     }
 
