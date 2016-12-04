@@ -96,8 +96,9 @@ public class MainActivity extends AppCompatActivity implements
     private EventBus eventBus;
     private CurrentGeoPositionFinder mCurrentGeoPositionFinder;
     private int mPrevBackStackEntryCount;
-    private static final String STATE_IN_PERMISSION = "inPermission";
-    private boolean isInPermission = false;
+    private static final String STATE_IN_PERMISSION_CHECKING = "inPermission";
+    private static final String STATE_IN_SEARCH_FOR_STOPS_NEARBY_FOR_TRAINS_ONLY = "for_trains_only";
+    private boolean isInPermissionChecking = false;
 
     private static final int REQUEST_PERMS_READ_EXTERNAL_STORAGE = 1000;
     private static final int REQUEST_PERMS_ACCESS_FINE_LOCATION = 2000;
@@ -230,7 +231,8 @@ public class MainActivity extends AppCompatActivity implements
         }
         if (savedInstanceState != null) {   /* configuration changed */
             printBackStackFragments();
-            if (topFragmentTag.equals(FAVORITE_STOPS_TAG) || topFragmentTag.equals(NEXT_DEPARTURES_TAG)) {
+            if (topFragmentTag.equals(FAVORITE_STOPS_TAG) ||
+                    topFragmentTag.equals(NEXT_DEPARTURES_TAG)) {
                 fab.show();
             } else {
                 fab.hide();
@@ -241,7 +243,8 @@ public class MainActivity extends AppCompatActivity implements
             } else {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
-            isInPermission = savedInstanceState.getBoolean(STATE_IN_PERMISSION, false);
+            isInPermissionChecking = savedInstanceState.getBoolean(STATE_IN_PERMISSION_CHECKING,
+                    false);
         } else {
             if (topFragmentTag == null || !topFragmentTag.equals(INIT_TAG)) {
                 if (SharedPreferencesUtility.isDatabaseLoaded(getApplicationContext())) {
@@ -259,15 +262,15 @@ public class MainActivity extends AppCompatActivity implements
         SharedPreferencesUtility.initSettings(getApplicationContext());
         mProgressBarHandler = new ProgressBarHandler(this);
 
-        if (!hasFilesPermission()) {
-            if (!isInPermission) {
-                isInPermission=true;
-
-                ActivityCompat.requestPermissions(this,
-                        new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
-                        REQUEST_PERMS_READ_EXTERNAL_STORAGE);
-            }
-        }
+//        if (!hasFilesPermission()) {
+//            if (!isInPermissionChecking) {
+//                isInPermissionChecking =true;
+//
+//                ActivityCompat.requestPermissions(this,
+//                        new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
+//                        REQUEST_PERMS_READ_EXTERNAL_STORAGE);
+//            }
+//        }
     }
 
     private void saveAppBarVerticalOffset(int verticalOffset) {
@@ -389,7 +392,8 @@ public class MainActivity extends AppCompatActivity implements
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putBoolean(STATE_IN_PERMISSION, isInPermission);
+        outState.putBoolean(STATE_IN_PERMISSION_CHECKING, isInPermissionChecking);
+        outState.putBoolean(STATE_IN_SEARCH_FOR_STOPS_NEARBY_FOR_TRAINS_ONLY, mSearchForStopsNearbyForTrainsOnly);
     }
 
     @Override
@@ -399,11 +403,6 @@ public class MainActivity extends AppCompatActivity implements
         if (mTwoPane) {
             mFavoriteStopsFragment.showView();
         }
-    }
-
-    private boolean hasFilesPermission() {
-        return(ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE ) == PackageManager.PERMISSION_GRANTED);
     }
 
     private boolean hasLocationPermission() {
@@ -419,21 +418,22 @@ public class MainActivity extends AppCompatActivity implements
     public void onRequestPermissionsResult(int requestCode,
                                            String[] permissions,
                                            int[] grantResults) {
-        isInPermission=false;
+        isInPermissionChecking =false;
 
-        if (requestCode == REQUEST_PERMS_READ_EXTERNAL_STORAGE) {
-            if (hasFilesPermission()) {
-                Log.v(TAG, "onRequestPermissionsResult - READ_EXTERNAL_STORAGE ermission is granted: ");
-                // do nothing
-            }
-            else {
-//                finish(); // denied permission, so we're done
-                Log.v(TAG, "onRequestPermissionsResult - READ_EXTERNAL_STORAGE ermission not granted: ");
-            }
-        } else if (requestCode == REQUEST_PERMS_ACCESS_FINE_LOCATION) {
-            if (hasFilesPermission()) {
+//        if (requestCode == REQUEST_PERMS_READ_EXTERNAL_STORAGE) {
+//            if (hasFilesPermission()) {
+//                Log.v(TAG, "onRequestPermissionsResult - READ_EXTERNAL_STORAGE ermission is granted: ");
+//                // do nothing
+//            }
+//            else {
+////                finish(); // denied permission, so we're done
+//                Log.v(TAG, "onRequestPermissionsResult - READ_EXTERNAL_STORAGE ermission not granted: ");
+//            }
+//        } else
+        if (requestCode == REQUEST_PERMS_ACCESS_FINE_LOCATION) {
+            if (hasLocationPermission()) {
                 Log.v(TAG, "onRequestPermissionsResult - ACCESS_FINE_LOCATION permission is granted: ");
-                // do nothing
+                startStopsNearbySearch(mSearchForStopsNearbyForTrainsOnly);
             }
             else {
 //                finish(); // denied permission, so we're done
@@ -606,6 +606,7 @@ public class MainActivity extends AppCompatActivity implements
         startService(intent);
     }
 
+    private boolean mSearchForStopsNearbyForTrainsOnly;
     /**
      * Start search of stops 'nearby' - relative to device or 'fixed' (depending on settings
      * values) location.
@@ -615,6 +616,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void startStopsNearbySearch(boolean forTrainsOnly) {
         Log.v(TAG, "startStopsNearbySearch - Build.VERSION.SDK_INT: " + Build.VERSION.SDK_INT);
+        mSearchForStopsNearbyForTrainsOnly = forTrainsOnly;
         boolean showExplainingMsg = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             showExplainingMsg = shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION);
@@ -635,8 +637,8 @@ public class MainActivity extends AppCompatActivity implements
             if (showExplainingMsg) {
                 showSnackBar("See menu -> help: permissions", false);
             }
-            if (!isInPermission) {
-                isInPermission=true;
+            if (!isInPermissionChecking) {
+                isInPermissionChecking = true;
 
                 ActivityCompat.requestPermissions(this,
                         new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
@@ -1253,5 +1255,20 @@ public class MainActivity extends AppCompatActivity implements
     private static int getMajorVersion(int glEsVersion) {
         return ((glEsVersion & 0xffff0000) >> 16);
     }
+
+    /**
+     *
+     * From Google docs:
+     * https://developers.google.com/maps/documentation/android-api/config
+     *
+     * If you're targeting version 8.3 or later of the Google Play services SDK,
+     * you no longer need the WRITE_EXTERNAL_STORAGE permission to use the Google Maps Android API.
+     *
+     * @return
+     */
+//    private boolean hasFilesPermission() {
+//        return(ContextCompat.checkSelfPermission(this,
+//                Manifest.permission.READ_EXTERNAL_STORAGE ) == PackageManager.PERMISSION_GRANTED);
+//    }
 
 }

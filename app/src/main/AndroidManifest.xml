@@ -11,7 +11,6 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
@@ -93,14 +92,11 @@
 
 </manifest>
 <!--
+    From Google docs:
+        https://developers.google.com/maps/documentation/android-api/config
 
-            android:theme="@style/SettingsTheme"
+        If you're targeting version 8.3 or later of the Google Play services SDK,
+        you no longer need the WRITE_EXTERNAL_STORAGE permission to use the Google Maps Android API.
 
-        <meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyD5_TYVt8QLfOUA7o_UDrlbE0dS530_e-o"/>
-
-    AIzaSyAp65r76t5HbQlRGKB20bjekip3QU0dsjE
-
-    android:value="AIzaSyAp65r76t5HbQlRGKB20bjekip3QU0dsjE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 -->
