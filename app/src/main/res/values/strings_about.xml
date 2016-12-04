@@ -5,6 +5,7 @@
 
 <resources>
     <string name="init_about"><b>To see information below again, select menu/About.</b>\n\n&about;</string>
+    <string name="about_text">App needs access to the device location to be able to show \'stops nearby\'.\n\n&about;</string>
 </resources>
 
 <!--

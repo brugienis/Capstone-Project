@@ -48,6 +48,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
+import au.com.kbrsolutions.melbournepublictransport.fragments.AboutFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.BaseFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.DisruptionsFragment;
 import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragment;
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements
         StopsFragment.OnStopFragmentInteractionListener,
         StopsNearbyFragment.OnNearbyStopsFragmentInteractionListener {
 
+    private AboutFragment mAboutFragment;
     private InitFragment mInitFragment;
     private FavoriteStopsFragment mFavoriteStopsFragment;
     private StationOnMapFragment mStationOnMapFragment;
@@ -109,11 +111,13 @@ public class MainActivity extends AppCompatActivity implements
     private static final String NEXT_DEPARTURES_TAG = "next_departures_tag";
     private static final String DISRUPTION_TAG = "disruption_tag";
     private static final String NEARBY_TAG = "nearby_tag";
+    private static final String ABOUT_TAG = "about_tag";
     private static final String INIT_TAG = "init_tag";
     private static final String TRANSPORT_MODE_METRO_TRAIN = "metro-train";
 
     public enum FragmentsId {
         DISRUPTIONS,
+        ABOUT,
         FAVORITE_STOPS,
         INIT,
         NEXT_DEPARTURES,
@@ -635,7 +639,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         } else {
             if (showExplainingMsg) {
-                showSnackBar("See menu -> help: permissions", false);
+                showSnackBar(getString(R.string.see_menu_about), false);
             }
             if (!isInPermissionChecking) {
                 isInPermissionChecking = true;
@@ -665,6 +669,28 @@ public class MainActivity extends AppCompatActivity implements
         startService(intent);
     }
 
+
+
+    /**
+     * Show information about this app.
+     */
+    private void showAboutFragment() {
+        if (mAboutFragment == null) {
+            mAboutFragment = new AboutFragment();
+            mAboutFragment.setFragmentId(FragmentsId.ABOUT);
+        }
+        if (!mTwoPane) {
+            mFavoriteStopsFragment.hideView();
+        }
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.secondary_dynamic_fragments_frame, mAboutFragment, ABOUT_TAG)
+                .addToBackStack(ABOUT_TAG)
+                .commit();
+        mAboutFragment.setActionBarTitle(getResources().getString(R.string.title_about));
+        hideProgress();
+    }
+
     /**
      * Show results of the search for disruptions on train network.
      * @param disruptionsDetailsList
@@ -682,7 +708,7 @@ public class MainActivity extends AppCompatActivity implements
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.secondary_dynamic_fragments_frame, mDisruptionsFragment, DISRUPTION_TAG)
-                .addToBackStack(DISRUPTION_TAG)     // it will also show 'Up' button in the action bar
+                .addToBackStack(DISRUPTION_TAG)
                 .commit();
         mDisruptionsFragment.setActionBarTitle(getResources().getString(R.string.title_disruptions));
         hideProgress();
@@ -852,9 +878,10 @@ public class MainActivity extends AppCompatActivity implements
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-//            startActivity(new Intent(this, SettingsActivity.class));
-//            startActivity(new Intent(this, SettingsActivity.class));
+        if (id == R.id.action_about) {
+            showAboutFragment();
+            return true;
+        } else if (id == R.id.action_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 startActivity(intent,
@@ -863,8 +890,9 @@ public class MainActivity extends AppCompatActivity implements
                 startActivity(intent);
             }
             return true;
-            // FIXME: 28/10/2016  - remove action_clear_settings after testings done
-        } else if (id == R.id.action_clear_settings) {
+        }
+        // FIXME: 28/10/2016  - remove action_clear_settings after testings done
+        else if (id == R.id.action_clear_settings) {
             SharedPreferences sharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = sharedPreferences.edit();

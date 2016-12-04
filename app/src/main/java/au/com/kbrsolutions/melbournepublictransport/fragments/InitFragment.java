@@ -22,6 +22,8 @@ import au.com.kbrsolutions.melbournepublictransport.R;
 public class InitFragment extends BaseFragment {
 
     private boolean mIsTargetSet;
+    private ProgressBar mProgressBar;
+    // FIXME: 5/12/2016 - remove below
     private int mTarget;
 
     private OnInitFragmentInteractionListener mListener;
@@ -38,7 +40,6 @@ public class InitFragment extends BaseFragment {
         setRetainInstance(true);
     }
 
-    private ProgressBar mProgressBar;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
