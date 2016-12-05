@@ -81,7 +81,7 @@ public class RemoteMptEndpointUtil {
     private static final String TITLE = "title";
     private static final String DESCRIPTION = "description";
     private static final String RESULT = "result";
-    private static final String DISTANCE = "distanceKm";
+    private static final String DISTANCE = "distance";
     private static final String V2_NEARME_LATITUDE = "/v2/nearme/latitude/";
     private static final String LONGITUDE = "/longitude/";
     private static final String GET = "GET";
@@ -505,9 +505,8 @@ public class RemoteMptEndpointUtil {
             }
             signature.append(Integer.toHexString(intVal));
         }
-        String url = PTV_BASE_URL +
+        return PTV_BASE_URL +
                 uri + (uri.contains(QUESTION_MARK) ? AMPERSAND : QUESTION_MARK) +
                 DEV_ID + DEVELOPER_ID + SIGNATURE + signature.toString().toUpperCase();
-        return url;
     }
 }

@@ -34,12 +34,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     private SettingsFragment mSettingsFragment;
     private CoordinatorLayout mCoordinatorlayout;
-    private Toolbar mToolbar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private AppBarLayout mAppBarLayout;
     private int mVerticalOffset;
     private String mFixedLocationAddress;
-    private LatLng mLatLng;
     private String mStopId;
     private String mStopName;
     private boolean mFixedLocationPreferenceSummaryNotUpdated;
@@ -78,12 +76,14 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        mToolbar.setTitle(getResources().getString(R.string.title_settings));
+        toolbar.setTitle(getResources().getString(R.string.title_settings));
 
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -151,7 +151,10 @@ public class SettingsActivity extends AppCompatActivity {
     private void setAppBarOffset(int offsetPx) {
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams();
         AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
-        behavior.onNestedPreScroll(mCoordinatorlayout, mAppBarLayout, null, 0, offsetPx, new int[]{0, 0});
+        if (behavior != null) {
+            behavior.onNestedPreScroll(mCoordinatorlayout, mAppBarLayout, null, 0, offsetPx,
+                    new int[]{0, 0});
+        }
     }
 
     private void handleRefresh() {
@@ -210,12 +213,12 @@ public class SettingsActivity extends AppCompatActivity {
     private void processPlacePickerData(Intent data) {
         Place place = PlacePicker.getPlace(this, data);
         mFixedLocationAddress = place.getAddress().toString();
-        mLatLng = place.getLatLng();
+        LatLng latLng = place.getLatLng();
 
         // If the provided place doesn't have an address, we'll form a display-friendly
         // string from the latlng values.
         if (TextUtils.isEmpty(mFixedLocationAddress)) {
-            mFixedLocationAddress = String.format("(%.2f, %.2f)", mLatLng.latitude, mLatLng.longitude);
+            mFixedLocationAddress = String.format("(%.2f, %.2f)", latLng.latitude, latLng.longitude);
         }
 
         SharedPreferences sharedPreferences =
@@ -226,12 +229,12 @@ public class SettingsActivity extends AppCompatActivity {
         // Also store the latitude and longitude so that we can use these to get a precise
         // result from our stops nearby search.
         editor.putFloat(getString(R.string.pref_key_location_latitude),
-                (float) mLatLng.latitude);
+                (float) latLng.latitude);
         editor.putFloat(getString(R.string.pref_key_location_longitude),
-                (float) mLatLng.longitude);
+                (float) latLng.longitude);
         editor.apply();
         mFixedLocationPreferenceSummaryNotUpdated = true;
-        Log.v(TAG, "processPlacePickerData - : " + mLatLng.latitude + "/" + mLatLng.longitude);
+        Log.v(TAG, "processPlacePickerData - : " + latLng.latitude + "/" + latLng.longitude);
 
         if (mSettingsFragment != null) {
             Preference locationPreference = mSettingsFragment.findPreference(getString(R.string.pref_key_fixed_location));
@@ -452,9 +455,12 @@ public class SettingsActivity extends AppCompatActivity {
             currFixedLocationLongitude = sp.getFloat(getString(R.string.pref_key_location_longitude), Float.NaN);
             boolean currUseDeviceLocationOn = sp.getBoolean(getString(R.string.pref_key_use_device_location), true);
             if (currUseDeviceLocationOn && !newUseDeviceLocationOn &&
-                    (Float.isNaN(currFixedLocationLatitude) || Float.isNaN(currFixedLocationLongitude) )) {
-                Snackbar.make(getView(), getString(R.string.pref_err_use_device_location),
-                        Snackbar.LENGTH_LONG).show();
+                    (Float.isNaN(currFixedLocationLatitude) ||
+                            Float.isNaN(currFixedLocationLongitude) )) {
+                if (getView() != null) {
+                    Snackbar.make(getView(), getString(R.string.pref_err_use_device_location),
+                            Snackbar.LENGTH_LONG).show();
+                }
                 return false;
             }
             return true;

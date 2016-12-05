@@ -46,6 +46,7 @@ public class FixedLocationEditTextPreference extends EditTextPreference {
     private boolean isGoogleApiAvailable;
     private final Context mContext;
 
+    @SuppressWarnings("FieldCanBeLocal")
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
     public FixedLocationEditTextPreference(Context context, AttributeSet attrs) {

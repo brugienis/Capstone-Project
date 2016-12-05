@@ -31,7 +31,7 @@ public class MptProviderTest {
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
-    Context mContext;
+    private Context mContext;
 
     @Before
     public void setUp() throws Exception {
@@ -486,9 +486,8 @@ public class MptProviderTest {
 
     private static double latitude = 1.0;    //64.7488;
     private static double longitude = 10.0;  //-147.353;
-    private static double increase = 1.0;
 
-    static ContentValues[] createBulkInsertStopDetailsValues(long lineDetailRowId, String favoriteFlag) {
+    private static ContentValues[] createBulkInsertStopDetailsValues(long lineDetailRowId, String favoriteFlag) {
         ContentValues[] returnContentValues = new ContentValues[BULK_INSERT_RECORDS_TO_INSERT];
         /*
 
@@ -508,6 +507,7 @@ public class MptProviderTest {
             stop_detailValues.put(StopDetailEntry.COLUMN_FAVORITE, favoriteFlag);
             returnContentValues[i] = stop_detailValues;
 
+            double increase = 1.0;
             latitude += increase;
             longitude += increase;
         }
@@ -615,7 +615,7 @@ public class MptProviderTest {
 //        }
     }
 
-    public void deleteAllRecordsFromProvider() {
+    private void deleteAllRecordsFromProvider() {
         // Delete all rows from stop_detail
         mContext.getContentResolver().delete(
                 StopDetailEntry.CONTENT_URI,

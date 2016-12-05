@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -91,7 +92,6 @@ public class MainActivity extends AppCompatActivity implements
     private int mVerticalOffset;
 
     private Toolbar mToolbar;
-    private CollapsingToolbarLayout mCollapsingToolbar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private FloatingActionButton fab;
@@ -154,8 +154,7 @@ public class MainActivity extends AppCompatActivity implements
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        mCollapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
+        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
 
         mToolbar.setTitle(getResources().getString(R.string.title_favorite_stops));
 
@@ -190,19 +189,23 @@ public class MainActivity extends AppCompatActivity implements
 //                        printBackStackFragments();
                         int cnt = getSupportFragmentManager().getBackStackEntryCount();
 //                        BaseFragment bf = getTopFragment();
-                        if (cnt > mPrevBackStackEntryCount) {
+//                        if (cnt > mPrevBackStackEntryCount) {
 //                            Log.v(TAG, "onCreate.onBackStackChanged - going forward  - cnt/top: " + cnt + "/" + bf.getFragmentId());
-                        } else {
+//                        } else {
 //                            Log.v(TAG, "onCreate.onBackStackChanged - going backward - cnt/top: " + cnt + "/" + (bf == null ? "null" : bf.getFragmentId()));
-                        }
+//                        }
                         mPrevBackStackEntryCount = cnt;
                         if (!mTwoPane && cnt == 0 || mTwoPane && cnt == 1) {
-                            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                            if (getSupportActionBar() != null) {
+                                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                            }
                             if (mFavoriteStopsFragment != null) {
                                 mFavoriteStopsFragment.setShowOptionsMenuFlg(true);
                             }
                         } else {
-                            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                            if (getSupportActionBar() != null) {
+                                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                            }
                             if (mFavoriteStopsFragment != null) {
                                 mFavoriteStopsFragment.setShowOptionsMenuFlg(false);
                             }
@@ -221,18 +224,14 @@ public class MainActivity extends AppCompatActivity implements
 
         findFragments();
 
-        mCollapsingToolbar.setTitle(getResources().getString(R.string.title_favorite_stops));
+        collapsingToolbar.setTitle(getResources().getString(R.string.title_favorite_stops));
 
         String topFragmentTag = getTopFragmentTag();
 
-        if (findViewById(R.id.primary_dynamic_fragments_frame) != null) {
-            // The detail container view will be present only in the large-screen layouts
-            // (res/layout-sw600dp). If this view is present, then the activity should be
-            // in two-pane mode.
-            mTwoPane = true;
-        } else {
-            mTwoPane = false;
-        }
+        // The detail container view will be present only in the large-screen layouts
+        // (res/layout-sw600dp). If this view is present, then the activity should be
+        // in two-pane mode.
+        mTwoPane = findViewById(R.id.primary_dynamic_fragments_frame) != null;
         if (savedInstanceState != null) {   /* configuration changed */
             printBackStackFragments();
             if (topFragmentTag.equals(FAVORITE_STOPS_TAG) ||
@@ -243,9 +242,13 @@ public class MainActivity extends AppCompatActivity implements
             }
             int cnt = getSupportFragmentManager().getBackStackEntryCount();
             if (!mTwoPane && cnt == 0 || mTwoPane && cnt == 1) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                }
             } else {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                }
             }
             isInPermissionChecking = savedInstanceState.getBoolean(STATE_IN_PERMISSION_CHECKING,
                     false);
@@ -253,7 +256,9 @@ public class MainActivity extends AppCompatActivity implements
             if (topFragmentTag == null || !topFragmentTag.equals(INIT_TAG)) {
                 if (SharedPreferencesUtility.isDatabaseLoaded(getApplicationContext())) {
                     showFavoriteStops();
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                    if (getSupportActionBar() != null) {
+                        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                    }
                     mFavoriteStopsFragment.setShowOptionsMenuFlg(true);
                     if (mTwoPane) {
                         showStopsFragment();
@@ -323,7 +328,10 @@ public class MainActivity extends AppCompatActivity implements
     private void setAppBarOffset(int offsetPx){
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams();
         AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
-        behavior.onNestedPreScroll(mCoordinatorlayout, mAppBarLayout, null, 0, offsetPx, new int[]{0, 0});
+        if (behavior != null) {
+            behavior.onNestedPreScroll(mCoordinatorlayout, mAppBarLayout, null, 0, offsetPx,
+                    new int[]{0, 0});
+        }
     }
 
     private void handleRefresh() {
@@ -420,8 +428,8 @@ public class MainActivity extends AppCompatActivity implements
     // FIXME: 4/12/2016https://developers.google.com/maps/documentation/android-api/config
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions,
-                                           int[] grantResults) {
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         isInPermissionChecking =false;
 
 //        if (requestCode == REQUEST_PERMS_READ_EXTERNAL_STORAGE) {
@@ -1212,6 +1220,7 @@ public class MainActivity extends AppCompatActivity implements
             return (result);
         }
 
+        @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             Bundle args = getArguments();

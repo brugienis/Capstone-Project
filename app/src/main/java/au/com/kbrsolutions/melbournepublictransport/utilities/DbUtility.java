@@ -93,30 +93,32 @@ public class DbUtility {
         int lonIdx;
         double distance;
         Map<Double, StopsNearbyDetails> map = new TreeMap<>();
-        while (cursor.moveToNext()) {
-            stopIdIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_STOP_ID);
-            locationNameIdx = cursor.getColumnIndex(
-                    MptContract.StopDetailEntry.COLUMN_LOCATION_NAME);
-            suburbIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_SUBURB);
-            latIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LATITUDE);
-            lonIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LONGITUDE);
-            distance = Miscellaneous.distanceKm(
-                    latLngDetails.latitude,
-                    latLngDetails.longitude,
-                    cursor.getDouble(latIdx),
-                    cursor.getDouble(lonIdx));
-            map.put(distance, new StopsNearbyDetails(
-                    cursor.getString(locationNameIdx),
-                    null,
-                    cursor.getString(suburbIdx),
-                    StopsNearbyDetails.TRAIN_ROUTE_TYPE,
-                    cursor.getString(stopIdIdx),
-                    cursor.getDouble(latIdx),
-                    cursor.getDouble(lonIdx),
-                    distance
-            ));
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                stopIdIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_STOP_ID);
+                locationNameIdx = cursor.getColumnIndex(
+                        MptContract.StopDetailEntry.COLUMN_LOCATION_NAME);
+                suburbIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_SUBURB);
+                latIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LATITUDE);
+                lonIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LONGITUDE);
+                distance = Miscellaneous.distanceKm(
+                        latLngDetails.latitude,
+                        latLngDetails.longitude,
+                        cursor.getDouble(latIdx),
+                        cursor.getDouble(lonIdx));
+                map.put(distance, new StopsNearbyDetails(
+                        cursor.getString(locationNameIdx),
+                        null,
+                        cursor.getString(suburbIdx),
+                        StopsNearbyDetails.TRAIN_ROUTE_TYPE,
+                        cursor.getString(stopIdIdx),
+                        cursor.getDouble(latIdx),
+                        cursor.getDouble(lonIdx),
+                        distance
+                ));
+            }
+            cursor.close();
         }
-        cursor.close();
         List<StopsNearbyDetails> stopsNearbyDetailsList = new ArrayList<>(map.size());
         StopsNearbyDetails stopsNearbyDetails;
         // In the future move the value below to settings
@@ -179,21 +181,23 @@ public class DbUtility {
         int suburbIdx;
         String locationName;
         String suburb;
-        while (cursor.moveToNext()) {
-            stopIdIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_STOP_ID);
-            locationNameIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LOCATION_NAME);
-            suburbIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_SUBURB);
-            locationName = cursor.getString(locationNameIdx);
-            suburb = cursor.getString(suburbIdx);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                stopIdIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_STOP_ID);
+                locationNameIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LOCATION_NAME);
+                suburbIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_SUBURB);
+                locationName = cursor.getString(locationNameIdx);
+                suburb = cursor.getString(suburbIdx);
 //            Log.v(TAG, cursor.getString(stopIdIdx) + "/" + cursor.getString(locationNameIdx));
-            if (locationName != null && suburb != null) {
-                missingDetailsMap.put(cursor.getString(stopIdIdx), new MissingDetails(
-                        cursor.getString(locationNameIdx),
-                        cursor.getString(suburbIdx)
-                ));
+                if (locationName != null && suburb != null) {
+                    missingDetailsMap.put(cursor.getString(stopIdIdx), new MissingDetails(
+                            cursor.getString(locationNameIdx),
+                            cursor.getString(suburbIdx)
+                    ));
+                }
             }
+            cursor.close();
         }
-        cursor.close();
 
         String stopId;
         StopsNearbyDetails stopsNearbyDetails;
@@ -211,8 +215,6 @@ public class DbUtility {
                         stopsNearbyDetails.longitude,
                         stopsNearbyDetails.distance
                 ));
-            } else {
-
             }
         }
     }

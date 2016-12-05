@@ -85,11 +85,9 @@ public class FavoriteStopsAdapter extends CursorAdapter {
 
     public FavoriteStopsAdapter(
             Context context,
-            Cursor c,
-            int flags,
             FavoriteStopsFragment.OnFavoriteStopsFragmentInteractionListener listener,
             boolean isInSettingsActivityFlag) {
-        super(context, c, flags);
+        super(context, null, 0);
 
         /* if parent is WidgetStopsActivity, the listener is not needed. mListener is static and */
         /* points to MainActivity - do not change it.                                            */

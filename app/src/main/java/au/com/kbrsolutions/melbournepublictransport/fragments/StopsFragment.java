@@ -29,6 +29,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
  * {@link StopsFragment.OnStopFragmentInteractionListener} interface
  * to handle interaction events.
  */
+@SuppressWarnings("ALL")
 public class StopsFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private NestedScrollingListView mListView;
@@ -40,7 +41,6 @@ public class StopsFragment extends BaseFragment implements LoaderManager.LoaderC
     private int mCursorRowCnt;
     private View mCurrentSelectedView;
     private int mCurrentSelectedRow;
-    private int selectableViewsCnt = 2;
     private int selectedViewNo = -1;
     private static final String ASCENDING_SORT_ORDER = " ASC";
     private static final String DOT = ".";
@@ -106,8 +106,7 @@ public class StopsFragment extends BaseFragment implements LoaderManager.LoaderC
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mStopDetailAdapter = new StopsAdapter(getActivity().getApplicationContext(), null, 0,
-                mListener);
+        mStopDetailAdapter = new StopsAdapter(getActivity().getApplicationContext(), mListener);
         mRootView = inflater.inflate(R.layout.fragment_stops, container, false);
 
         mListView = (NestedScrollingListView) mRootView.findViewById(R.id.addStopsListView);
@@ -185,6 +184,7 @@ public class StopsFragment extends BaseFragment implements LoaderManager.LoaderC
     public boolean handleHorizontalDpadKeys(boolean rightKeyPressed) {
         boolean resultOk = false;
         if (mCurrentSelectedView != null) {
+            int selectableViewsCnt = 2;
             if (rightKeyPressed) {
                 selectedViewNo = selectedViewNo ==
                         (selectableViewsCnt - 1) ? 0 : selectedViewNo + 1;

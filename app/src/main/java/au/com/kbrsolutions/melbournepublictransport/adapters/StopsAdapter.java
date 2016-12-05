@@ -66,10 +66,8 @@ public class StopsAdapter extends CursorAdapter {
 
     public StopsAdapter(
             Context context,
-            Cursor c,
-            int flags,
             StopsFragment.OnStopFragmentInteractionListener listener) {
-        super(context, c, flags);
+        super(context, null, 0);
         mListener = listener;
     }
 

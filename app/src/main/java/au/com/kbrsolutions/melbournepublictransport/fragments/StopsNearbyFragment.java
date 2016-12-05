@@ -29,20 +29,18 @@ import au.com.kbrsolutions.melbournepublictransport.utilities.HorizontalDividerI
  * Activities containing this fragment MUST implement the {@link
  * OnNearbyStopsFragmentInteractionListener} interface.
  */
+@SuppressWarnings("ALL")
 public class StopsNearbyFragment extends BaseFragment {
 
     private List<StopsNearbyDetails> mNearbyStopsDetailsList;
-    private StopsNearbyAdapterRv mRecyclerViewAdapter;
     private StopsNearbyAdapter mStopsNearbyAdapter;
     private boolean newInstanceArgsRetrieved;
     private View mRootView;
     private OnNearbyStopsFragmentInteractionListener mListener;
     private NestedScrollingListView mListView;
-    private TextView mEmptyView;
     private int mNextDepartureDetailsCnt;
     private View mCurrentSelectedView;
     private int mCurrentSelectedRow;
-    private final int selectableViewsCnt = 2;
     private int selectedViewNo = -1;
     private static final String ARG_NEARBY_DATA = "arg_nearby_data";
 
@@ -90,9 +88,9 @@ public class StopsNearbyFragment extends BaseFragment {
                 mNearbyStopsDetailsList, mListener);
         mListView = (NestedScrollingListView) mRootView.findViewById(R.id.stopsNearbyList);
         mListView.setAdapter(mStopsNearbyAdapter);
-        mEmptyView = (TextView) mRootView.findViewById(R.id.emptyView);
-        mEmptyView = (TextView) mRootView.findViewById(R.id.emptyView);
-        mEmptyView.setText(getActivity().getResources()
+        TextView emptyView = (TextView) mRootView.findViewById(R.id.emptyView);
+        emptyView = (TextView) mRootView.findViewById(R.id.emptyView);
+        emptyView.setText(getActivity().getResources()
                 .getString(R.string.no_favorite_stops_selected));
 
         mNextDepartureDetailsCnt = mNearbyStopsDetailsList.size();
@@ -155,6 +153,7 @@ public class StopsNearbyFragment extends BaseFragment {
     public boolean handleHorizontalDpadKeys(boolean rightKeyPressed) {
         boolean resultOk = false;
         if (mCurrentSelectedView != null && mCurrentSelectedView.hasFocus()) {
+            int selectableViewsCnt = 2;
             if (rightKeyPressed) {
                 selectedViewNo = selectedViewNo ==
                         (selectableViewsCnt - 1) ? 0 : selectedViewNo + 1;
@@ -212,8 +211,8 @@ public class StopsNearbyFragment extends BaseFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         Drawable divider = getResources().getDrawable(R.drawable.item_divider);
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration(divider));
-        mRecyclerViewAdapter = new StopsNearbyAdapterRv(mNearbyStopsDetailsList, mListener);
-        recyclerView.setAdapter(mRecyclerViewAdapter);
+        StopsNearbyAdapterRv recyclerViewAdapter = new StopsNearbyAdapterRv(mNearbyStopsDetailsList, mListener);
+        recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.requestLayout();
         return mRootView;
     }

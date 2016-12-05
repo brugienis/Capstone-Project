@@ -34,8 +34,6 @@ public class NextDeparturesFragment extends BaseFragment {
     private static final String ARG_NEXT_DEPARTURE_DATA = "next_departure_data";
     private List<NextDepartureDetails> mNextDepartureDetailsList;
     private NestedScrollingListView mListView;
-    private TextView mEmptyView;
-    private NextDeparturesAdapterRv mRecyclerViewAdapter;
     private String mSelectedStopName;
     private StopDetails mSearchStopDetails;
     private TextView selectedStopNameTv;
@@ -95,9 +93,8 @@ public class NextDeparturesFragment extends BaseFragment {
         mNextDeparturesAdapter = new NextDeparturesAdapter(getActivity(), mNextDepartureDetailsList);
         mListView = (NestedScrollingListView) rootView.findViewById(R.id.nextDeparturesList);
         mListView.setAdapter(mNextDeparturesAdapter);
-        mEmptyView = (TextView) rootView.findViewById(R.id.emptyView);
-        mEmptyView = (TextView) rootView.findViewById(R.id.emptyView);
-        mEmptyView.setText(getActivity().getResources()
+        TextView emptyView = (TextView) rootView.findViewById(R.id.emptyView);
+        emptyView.setText(getActivity().getResources()
                 .getString(R.string.no_favorite_stops_selected));
 
         mNextDepartureDetailsCnt = mNextDepartureDetailsList.size();
@@ -218,8 +215,8 @@ public class NextDeparturesFragment extends BaseFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         Drawable divider = getResources().getDrawable(R.drawable.item_divider);
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration(divider));
-        mRecyclerViewAdapter = new NextDeparturesAdapterRv(mNextDepartureDetailsList);
-        recyclerView.setAdapter(mRecyclerViewAdapter);
+        NextDeparturesAdapterRv recyclerViewAdapter = new NextDeparturesAdapterRv(mNextDepartureDetailsList);
+        recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.requestLayout();
         return view;
     }

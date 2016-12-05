@@ -173,8 +173,6 @@ public class FavoriteStopsFragment
                              Bundle savedInstanceState) {
         mFavoriteStopDetailAdapter = new FavoriteStopsAdapter(
                 getActivity().getApplicationContext(),
-                null,
-                0,
                 mListener,
                 mIsInSettingsActivityFlag);
 

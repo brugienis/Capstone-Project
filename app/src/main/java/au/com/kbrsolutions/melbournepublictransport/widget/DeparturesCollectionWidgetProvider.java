@@ -34,12 +34,11 @@ public class DeparturesCollectionWidgetProvider extends AppWidgetProvider {
      */
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        boolean fromBook = false;
-        /* remove the 'if' block below before publishing app on the Google Play */
-        if (fromBook) {
-            onUpdateFromBook(context, appWidgetManager, appWidgetIds);
-            return;
-        }
+//        boolean fromBook = false;
+//        if (fromBook) {
+//            onUpdateFromBook(context, appWidgetManager, appWidgetIds);
+//            return;
+//        }
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int appWidgetId : appWidgetIds) {
             String stopName = SharedPreferencesUtility.getWidgetStopName(context);

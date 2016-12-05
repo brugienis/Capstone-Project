@@ -3,14 +3,13 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              tools:context="au.com.kbrsolutions.melbournepublictransport.fragments.InitFragment">
+              tools:context="au.com.kbrsolutions.melbournepublictransport.fragments.AboutFragment">
 
     <TextView
         android:id="@+id/loadText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/about_text"
-        android:layout_weight="10"
         android:textColor="@android:color/black"
         android:background="@color/deep_orange_50" />
 

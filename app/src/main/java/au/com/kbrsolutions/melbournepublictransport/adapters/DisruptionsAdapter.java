@@ -2,6 +2,7 @@ package au.com.kbrsolutions.melbournepublictransport.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ public class DisruptionsAdapter<T> extends ArrayAdapter<DisruptionsDetails> {
         mValues = items;
     }
 
+    @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;

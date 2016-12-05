@@ -24,6 +24,7 @@ import au.com.kbrsolutions.melbournepublictransport.R;
  * Use the {@link StationOnMapFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+@SuppressWarnings("ALL")
 public class StationOnMapFragment extends BaseFragment implements OnMapReadyCallback {
 
     private static final String ARG_STOP_NAME = "arg_stop_name";
@@ -35,7 +36,6 @@ public class StationOnMapFragment extends BaseFragment implements OnMapReadyCall
     private double mLatitude;
     private double mLongitude;
     private boolean mTwoPainScreen;
-    private MapView mMapView;
     private boolean newInstanceArgsRetrieved;
     private GoogleMap mGoogleMap;
 
@@ -114,10 +114,10 @@ public class StationOnMapFragment extends BaseFragment implements OnMapReadyCall
                              Bundle savedInstanceState) {
         View rootView =  inflater.inflate(R.layout.fragment_station_on_map, container, false);
 
-        mMapView = (MapView) rootView.findViewById(R.id.mapView);
-        mMapView.onCreate(savedInstanceState);
+        MapView mapView = (MapView) rootView.findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
 
-        mMapView.onResume(); // needed to get the map to display immediately
+        mapView.onResume(); // needed to get the map to display immediately
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -125,7 +125,7 @@ public class StationOnMapFragment extends BaseFragment implements OnMapReadyCall
             e.printStackTrace();
         }
 
-        mMapView.getMapAsync(this);
+        mapView.getMapAsync(this);
 
         return rootView;
     }

@@ -29,7 +29,6 @@ public class AboutFragment extends BaseFragment {
                              Bundle savedInstanceState) {
 
         View rootView =  inflater.inflate(R.layout.fragment_about, container, false);
-        rootView.findViewById(R.id.loadProgressBar);
         return rootView;
     }
 }

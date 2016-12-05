@@ -25,11 +25,9 @@ public class WidgetStopsActivity
         extends AppCompatActivity
         implements FavoriteStopsFragment.OnFavoriteStopsFragmentInteractionListener {
 
-    private FavoriteStopsFragment mFavoriteStopsFragment;
     private CoordinatorLayout mCoordinatorlayout;
     ActionBar actionBar;
     private AppBarLayout mAppBarLayout;
-    private Toolbar mToolbar;
     CollapsingToolbarLayout mCollapsingToolbar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private int mVerticalOffset;
@@ -57,16 +55,18 @@ public class WidgetStopsActivity
             }
         });
 
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         mCollapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
 
-        mToolbar.setTitle(getResources().getString(R.string.title_widget_stops));
+        toolbar.setTitle(getResources().getString(R.string.title_widget_stops));
 
-        setSupportActionBar(mToolbar);
+        setSupportActionBar(toolbar);
         actionBar = getSupportActionBar();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -78,16 +78,16 @@ public class WidgetStopsActivity
         );
         ((FloatingActionButton) findViewById(R.id.fab)).hide();
 
-        mFavoriteStopsFragment = (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
-        if (mFavoriteStopsFragment == null) {
-            mFavoriteStopsFragment = new FavoriteStopsFragment();
-            mFavoriteStopsFragment.setFragmentId(FAVORITE_STOPS);
+        FavoriteStopsFragment favoriteStopsFragment = (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
+        if (favoriteStopsFragment == null) {
+            favoriteStopsFragment = new FavoriteStopsFragment();
+            favoriteStopsFragment.setFragmentId(FAVORITE_STOPS);
         }
 //        mFavoriteStopsFragment.setIsInSettingsActivityFlag(true);
-        mFavoriteStopsFragment.setIsInSettingsActivityFlag();
+        favoriteStopsFragment.setIsInSettingsActivityFlag();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.secondary_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
+                .add(R.id.secondary_dynamic_fragments_frame, favoriteStopsFragment, FAVORITE_STOPS_TAG)
                 .commit();
     }
 
@@ -128,9 +128,13 @@ public class WidgetStopsActivity
     }
 
     private void setAppBarOffset(int offsetPx) {
-        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams();
+        CoordinatorLayout.LayoutParams params =
+                (CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams();
         AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
-        behavior.onNestedPreScroll(mCoordinatorlayout, mAppBarLayout, null, 0, offsetPx, new int[]{0, 0});
+        if (behavior != null) {
+            behavior.onNestedPreScroll(mCoordinatorlayout, mAppBarLayout, null, 0, offsetPx,
+                    new int[]{0, 0});
+        }
     }
 
     /**

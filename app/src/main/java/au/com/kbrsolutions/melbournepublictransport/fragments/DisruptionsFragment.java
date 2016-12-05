@@ -31,12 +31,9 @@ import static au.com.kbrsolutions.melbournepublictransport.R.id.disruptionsList;
 public class DisruptionsFragment extends BaseFragment {
 
     private static final String ARG_DISRUPTION_DATA = "disruption_data";
-    private RecyclerView recyclerView;
     private List<DisruptionsDetails> mDisruptionDetailsList;
     private DisruptionsAdapter mDisruptionsAdapter;
     private NestedScrollingListView mListView;
-    private TextView mEmptyView;
-    private DisruptionsAdapterRv mRecyclerViewAdapter;
     private boolean newInstanceArgsRetrieved;
     private int mDisruptionDetailsCnt;
     private View mCurrentSelectedView;
@@ -51,7 +48,7 @@ public class DisruptionsFragment extends BaseFragment {
     public static DisruptionsFragment newInstance(List<DisruptionsDetails> disruptionDetailsList) {
         DisruptionsFragment fragment = new DisruptionsFragment();
         Bundle args = new Bundle();
-        args.putParcelableArrayList(ARG_DISRUPTION_DATA, (ArrayList) disruptionDetailsList);
+        args.putParcelableArrayList(ARG_DISRUPTION_DATA, (ArrayList<DisruptionsDetails>) disruptionDetailsList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,7 +58,7 @@ public class DisruptionsFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null && !newInstanceArgsRetrieved) {
-            mDisruptionDetailsList = (ArrayList)getArguments().getParcelableArrayList(ARG_DISRUPTION_DATA);
+            mDisruptionDetailsList = (ArrayList)(getArguments().getParcelableArrayList(ARG_DISRUPTION_DATA));
             newInstanceArgsRetrieved = true;
         }
         setRetainInstance(true);
@@ -77,10 +74,9 @@ public class DisruptionsFragment extends BaseFragment {
         mDisruptionsAdapter = new DisruptionsAdapter(getActivity(), mDisruptionDetailsList);
         mListView = (NestedScrollingListView) mRootView.findViewById(R.id.disruptionsList);
         mListView.setAdapter(mDisruptionsAdapter);
-        mEmptyView = (TextView) mRootView.findViewById(R.id.emptyView);
-        mEmptyView = (TextView) mRootView.findViewById(R.id.emptyView);
-        mEmptyView.setText(getActivity().getResources()
-                .getString(R.string.no_favorite_stops_selected));
+        TextView emptyView = (TextView) mRootView.findViewById(R.id.emptyView);
+        emptyView.setText(getActivity().getResources()
+                .getString(R.string.no_disruptions));
 
         mDisruptionDetailsCnt = mDisruptionDetailsList.size();
 
@@ -157,7 +153,7 @@ public class DisruptionsFragment extends BaseFragment {
 
         View view = inflater.inflate(R.layout.fragment_disruptions_rv, container, false);
 
-        recyclerView = (RecyclerView) view.findViewById(disruptionsList);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(disruptionsList);
 
 //        recyclerView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 //            @Override
@@ -175,8 +171,8 @@ public class DisruptionsFragment extends BaseFragment {
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(context);
 //        recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setLayoutManager(mLinearLayoutManager);
-        mRecyclerViewAdapter = new DisruptionsAdapterRv(mDisruptionDetailsList);
-        recyclerView.setAdapter(mRecyclerViewAdapter);
+        DisruptionsAdapterRv recyclerViewAdapter = new DisruptionsAdapterRv(mDisruptionDetailsList);
+        recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.requestLayout();
 //        mCursorRowCnt = mDisruptionDetailsList.size();
         return view;

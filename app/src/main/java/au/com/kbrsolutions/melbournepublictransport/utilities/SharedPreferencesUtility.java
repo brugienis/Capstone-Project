@@ -44,9 +44,9 @@ public class SharedPreferencesUtility {
             /* Also store the latitude and longitude so that we can use these to get a precise */
             /* result from our stops nearby search.                                            */
             editor.putFloat(context.getString(R.string.pref_key_location_latitude),
-                    (float) latitude);
+                    latitude);
             editor.putFloat(context.getString(R.string.pref_key_location_longitude),
-                    (float) longitude);
+                    longitude);
 
             /* Store default stopId and locationName : 1071, Flinders Street Station           */
             editor.putString(context.getString(R.string.pref_key_widget_stop_id),
@@ -114,9 +114,8 @@ public class SharedPreferencesUtility {
     public static String getWidgetStopId(Context context) {
         SharedPreferences prefs
                 = PreferenceManager.getDefaultSharedPreferences(context);
-        String stopId = prefs.getString(context.getString(R.string.pref_key_widget_stop_id),
+        return prefs.getString(context.getString(R.string.pref_key_widget_stop_id),
                 context.getString(R.string.pref_default_widget_stop_id));
-        return stopId;
     }
 
     public static int getAppBarVerticalOffset(Context context) {

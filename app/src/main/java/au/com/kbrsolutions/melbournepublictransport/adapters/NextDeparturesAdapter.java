@@ -2,6 +2,7 @@ package au.com.kbrsolutions.melbournepublictransport.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,8 +34,9 @@ public class NextDeparturesAdapter<T> extends ArrayAdapter<NextDepartureDetails>
         mValues = items;
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         View v = convertView;
         ViewHolder holder;
         if (v == null) {
@@ -58,24 +60,22 @@ public class NextDeparturesAdapter<T> extends ArrayAdapter<NextDepartureDetails>
         String departureTime = String.valueOf(nextDepartureDetails.utcDepartureTime);
         String runTypeText = nextDepartureDetails.runType;
 
-        if (nextDepartureDetails != null) {
-            holder.directionName.setText(directionName);
-            holder.runType.setText(runTypeText);
-            holder.departureTimeId.setText(departureTime);
+        holder.directionName.setText(directionName);
+        holder.runType.setText(runTypeText);
+        holder.departureTimeId.setText(departureTime);
 
-            if (nextDepartureDetails.routeType == StopsNearbyDetails.TRAIN_ROUTE_TYPE) {
-                holder.transportImage.setImageResource(R.drawable.ic_stock_train_blue_500);
-                holder.transportImage.setContentDescription(mActivity.getResources().
-                        getString(R.string.content_desc_train_transport_type));
-            } else if (nextDepartureDetails.routeType == StopsNearbyDetails.TRAM_ROUTE_TYPE) {
-                holder.transportImage.setImageResource(R.drawable.ic_stock_tram_amber_500);
-                holder.transportImage.setContentDescription(mActivity.getResources().
-                        getString(R.string.content_desc_tram_transport_type));
-            } else if (nextDepartureDetails.routeType  == StopsNearbyDetails.BUS_ROUTE_TYPE) {
-                holder.transportImage.setImageResource(R.drawable.ic_stock_directions_bus_green_500);
-                holder.transportImage.setContentDescription(mActivity.getResources().
-                        getString(R.string.content_desc_bus_transport_type));
-            }
+        if (nextDepartureDetails.routeType == StopsNearbyDetails.TRAIN_ROUTE_TYPE) {
+            holder.transportImage.setImageResource(R.drawable.ic_stock_train_blue_500);
+            holder.transportImage.setContentDescription(mActivity.getResources().
+                    getString(R.string.content_desc_train_transport_type));
+        } else if (nextDepartureDetails.routeType == StopsNearbyDetails.TRAM_ROUTE_TYPE) {
+            holder.transportImage.setImageResource(R.drawable.ic_stock_tram_amber_500);
+            holder.transportImage.setContentDescription(mActivity.getResources().
+                    getString(R.string.content_desc_tram_transport_type));
+        } else if (nextDepartureDetails.routeType  == StopsNearbyDetails.BUS_ROUTE_TYPE) {
+            holder.transportImage.setImageResource(R.drawable.ic_stock_directions_bus_green_500);
+            holder.transportImage.setContentDescription(mActivity.getResources().
+                    getString(R.string.content_desc_bus_transport_type));
         }
 
         return v;

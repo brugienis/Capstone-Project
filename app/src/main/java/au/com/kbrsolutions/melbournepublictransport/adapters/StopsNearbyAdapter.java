@@ -2,6 +2,7 @@ package au.com.kbrsolutions.melbournepublictransport.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,8 +43,9 @@ public class StopsNearbyAdapter<T> extends ArrayAdapter<StopsNearbyDetails> {
         mListener = listener;
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         View v = convertView;
         final ViewHolder holder;
         if (v == null) {
