@@ -2,8 +2,6 @@ package au.com.kbrsolutions.melbournepublictransport.remote;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import org.greenrobot.eventbus.EventBus;
@@ -23,6 +21,7 @@ import au.com.kbrsolutions.melbournepublictransport.events.MainActivityEvents;
 import au.com.kbrsolutions.melbournepublictransport.events.RequestProcessorServiceRequestEvents;
 import au.com.kbrsolutions.melbournepublictransport.utilities.DatabaseContentLoader;
 import au.com.kbrsolutions.melbournepublictransport.utilities.DbUtility;
+import au.com.kbrsolutions.melbournepublictransport.utilities.Miscellaneous;
 import au.com.kbrsolutions.melbournepublictransport.utilities.SharedPreferencesUtility;
 
 import static au.com.kbrsolutions.melbournepublictransport.utilities.DatabaseContentLoader.testProgressBar;
@@ -76,9 +75,8 @@ public class RequestProcessorService extends IntentService {
             request = extras.getString(REQUEST);
         }
 
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo ni = cm.getActiveNetworkInfo();
-        if (ni == null || !ni.isConnected()) {
+        boolean activeNetwork = Miscellaneous.isNetworkAvailable(getApplicationContext());
+        if (!activeNetwork) {
             sendMessageToMainActivity(new MainActivityEvents.Builder(
                     MainActivityEvents.MainEvents.REMOTE_ACCESS_PROBLEMS)
                         .setMsg(getResources().getString(R.string.no_network_connection))

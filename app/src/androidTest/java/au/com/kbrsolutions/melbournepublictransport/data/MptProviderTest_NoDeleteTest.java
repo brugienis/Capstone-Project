@@ -68,7 +68,7 @@ public class MptProviderTest_NoDeleteTest {
             locationNameIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LOCATION_NAME);
             latIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LATITUDE);
             lonIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LONGITUDE);
-            distance = Miscellaneous.distance(
+            distance = Miscellaneous.distanceKm(
                     currLat,
                     currLon,
                     cursor.getDouble(latIdx),
@@ -81,13 +81,13 @@ public class MptProviderTest_NoDeleteTest {
                     cursor.getDouble(lonIdx),
                     distance
                     ));
-//            Log.v(TAG, "distance/stopId/stopName: " + distance + " - " + cursor.getString(stopIdIdx) + "/" + cursor.getString(locationNameIdx));
+//            Log.v(TAG, "distanceKm/stopId/stopName: " + distanceKm + " - " + cursor.getString(stopIdIdx) + "/" + cursor.getString(locationNameIdx));
         }
         cursor.close();
         NearbyTrainsDetails nearbyTrainsDetails;
         for (Double key : map.keySet()) {
             nearbyTrainsDetails = map.get(key);
-            Log.v(TAG, "distance/stopId/stopName: " +
+            Log.v(TAG, "distanceKm/stopId/stopName: " +
                     nearbyTrainsDetails.distanceMeters + " - " +
                     nearbyTrainsDetails.stopId + "/" +
                     nearbyTrainsDetails.stopName);
@@ -164,7 +164,7 @@ public class MptProviderTest_NoDeleteTest {
             ORDER BY X
             {
    "result":{
-      "distance":5.96205355E-5,
+      "distanceKm":5.96205355E-5,
       "suburb":"Carrum Downs",
       "transport_type":"bus",
       "routeType":2,
@@ -176,7 +176,7 @@ public class MptProviderTest_NoDeleteTest {
    "type":"stop"
 }
 {
-   "distance":0,
+   "distanceKm":0,
    "suburb":"Carrum",
    "transport_type":"train",
    "routeType":0,

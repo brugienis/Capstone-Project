@@ -68,7 +68,7 @@ public class DbUtility {
     /**
      * Find ten train stops that are closest to the passed GEO position.
      *
-     * Result list is sorted by distance.
+     * Result list is sorted by distanceKm.
      *
      * @param latLngDetails
      * @param context
@@ -100,12 +100,11 @@ public class DbUtility {
             suburbIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_SUBURB);
             latIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LATITUDE);
             lonIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LONGITUDE);
-            distance = Miscellaneous.distance(
+            distance = Miscellaneous.distanceKm(
                     latLngDetails.latitude,
                     latLngDetails.longitude,
                     cursor.getDouble(latIdx),
-                    cursor.getDouble(lonIdx),
-                    "K");
+                    cursor.getDouble(lonIdx));
             map.put(distance, new StopsNearbyDetails(
                     cursor.getString(locationNameIdx),
                     null,
