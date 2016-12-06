@@ -63,6 +63,7 @@ public class MptProviderTest_NoDeleteTest {
         int lonIdx;
         double distance;
         Map<Double, NearbyTrainsDetails> map = new TreeMap<>();
+        //noinspection ConstantConditions
         while (cursor.moveToNext()) {
             stopIdIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_STOP_ID);
             locationNameIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LOCATION_NAME);
@@ -149,43 +150,9 @@ public class MptProviderTest_NoDeleteTest {
                 stopIdArray,
                 null
         );
+        //noinspection ConstantConditions
         Log.v(TAG, "cursor count: " + cursor.getCount());
     }
-    /*
-            SELECT stop_id, location_name
-            FROM stop_detail
-            WHERE (stop_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-            AND (stop_detail.favorite = ?)) ORDER BY X
-
-            SELECT stop_id, location_name
-            FROM stop_detail
-            WHERE (stop_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-            AND (stop_detail.favorite = ? OR stop_detail.favorite = ?))
-            ORDER BY X
-            {
-   "result":{
-      "distanceKm":5.96205355E-5,
-      "suburb":"Carrum Downs",
-      "transport_type":"bus",
-      "routeType":2,
-      "stop_id":27751,
-      "location_name":"Mccormicks Rd\/Wedge Rd ",
-      "lat":-38.08783,
-      "lon":145.199127
-   },
-   "type":"stop"
-}
-{
-   "distanceKm":0,
-   "suburb":"Carrum",
-   "transport_type":"train",
-   "routeType":0,
-   "stop_id":1035,
-   "location_name":"Carrum Station",
-   "lat":-38.0748978,
-   "lon":145.122421
-}
-     */
 
     @Test
     public void testExecQueryWithInClause() throws Exception {

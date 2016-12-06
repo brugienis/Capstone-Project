@@ -32,7 +32,7 @@ public class DisruptionsAdapter<T> extends ArrayAdapter<DisruptionsDetails> {
 
     @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         View v = convertView;
         final ViewHolder holder;
         if (v == null) {

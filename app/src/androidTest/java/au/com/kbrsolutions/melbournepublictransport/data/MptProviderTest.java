@@ -104,6 +104,7 @@ public class MptProviderTest {
                 null,
                 null
         );
+        //noinspection ConstantConditions
         assertEquals("Error: Records not deleted from stop_detail table during delete", 0, cursor.getCount());
         cursor.close();
     }
@@ -450,6 +451,7 @@ public class MptProviderTest {
         Cursor stopDetailsCursor = mContext.getContentResolver().query(uri, null, null, null, null);
 
         TestUtilities.TestContentObserver tco = TestUtilities.getTestContentObserver();
+        //noinspection ConstantConditions
         stopDetailsCursor.registerContentObserver(tco);
 
         int count = mContext.getContentResolver().update(
@@ -479,6 +481,7 @@ public class MptProviderTest {
         TestUtilities.validateCursor("testUpdateLocation.  Error validating stop_detail entry update.",
                 cursor, updatedValues);
 
+        //noinspection ConstantConditions
         cursor.close();
     }
     
@@ -560,6 +563,7 @@ public class MptProviderTest {
         );
 
         // we should have as many records in the database as we've inserted
+        //noinspection ConstantConditions
         assertEquals(cursor.getCount(), BULK_INSERT_RECORDS_TO_INSERT);
 
         // and let's make sure they match the ones we created
@@ -631,6 +635,7 @@ public class MptProviderTest {
                 null,
                 null
         );
+        //noinspection ConstantConditions
         assertEquals("Error: Records not deleted from stop_detail table during delete", 0, cursor.getCount());
         cursor.close();
 
@@ -648,6 +653,7 @@ public class MptProviderTest {
                 null,
                 null
         );
+        //noinspection ConstantConditions
         assertEquals("Error: Records not deleted from stop_detail table during delete", 0, cursor.getCount());
         cursor.close();
     }

@@ -137,7 +137,7 @@ public class RequestProcessorService extends IntentService {
 
                         case ACTION_SHOW_NEXT_DEPARTURES:
                             StopDetails stopDetails = extras.getParcelable(STOP_DETAILS);
-                            List<NextDepartureDetails> nextDepartureDetailsList =
+                            @SuppressWarnings("ConstantConditions") List<NextDepartureDetails> nextDepartureDetailsList =
                                     RemoteMptEndpointUtil.getBroadNextDepartures(
                                             stopDetails.routeType,
                                             stopDetails.stopId,

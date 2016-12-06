@@ -295,10 +295,12 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (mFixedLocationPreferenceSummaryNotUpdated) {
+            //noinspection ConstantConditions
             outState.putBoolean(FIXED_LOCATION_PREFERENCE_SUMMARY_NOT_UPDATED, mFixedLocationPreferenceSummaryNotUpdated);
             outState.putString(FIXED_ADDRESS, mFixedLocationAddress);
         }
         if (mWidgetStopPreferenceSummaryNotUpdated) {
+            //noinspection ConstantConditions
             outState.putBoolean(WIDGET_STOP_PREFERENCE_SUMMARY_NOT_UPDATED, mWidgetStopPreferenceSummaryNotUpdated);
             outState.putString(WIDGET_STOP_ID, mStopId);
             outState.putString(WIDGET_STOP_NAME, mStopName);
@@ -423,7 +425,7 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
             String key = preference.getKey();
-            if ((key == getString(R.string.pref_key_use_device_location))) {
+            if ((key.equals(getString(R.string.pref_key_use_device_location)))) {
                 boolean newUseDeviceSwitchValue = (boolean) value;
                 boolean validationOk = validateUseDeviceFixedLocationValue(newUseDeviceSwitchValue);
                 if (validationOk) {
@@ -434,9 +436,9 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                 }
                 return validationOk;
-            } else if ((key == getString(R.string.pref_key_fixed_location))) {
+            } else if ((key.equals(getString(R.string.pref_key_fixed_location)))) {
                 setPreferenceSummary(preference, value);
-            } else if ((key == getString(R.string.pref_key_widget_stop_name))) {
+            } else if ((key.equals(getString(R.string.pref_key_widget_stop_name)))) {
                 setPreferenceSummary(preference, value);
             }
             return true;
