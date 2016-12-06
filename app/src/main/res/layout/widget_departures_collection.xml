@@ -6,7 +6,8 @@
               android:layout_height="match_parent"
               android:orientation="vertical"
               android:layout_margin="@dimen/activity_vertical_margin"
-              android:background="@color/deep_orange_50" >
+              android:background="@color/deep_orange_50"
+              tools:ignore="Overdraw">
 
     <TextView
         android:id="@+id/widgetSelectedStopName"

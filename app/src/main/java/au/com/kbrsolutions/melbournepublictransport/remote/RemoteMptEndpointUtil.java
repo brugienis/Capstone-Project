@@ -221,7 +221,8 @@ public class RemoteMptEndpointUtil {
                 values.put(MptContract.StopDetailEntry.COLUMN_LATITUDE, latitude);
                 values.put(MptContract.StopDetailEntry.COLUMN_LONGITUDE, longitude);
                 values.put(MptContract.StopDetailEntry.COLUMN_FAVORITE,
-                        context.getString(R.string.favorite_stop_false_value));
+//                        context.getString(R.string.favorite_stop_false_value));
+                        MptContract.StopDetailEntry.NON_FAVORITE_FLAG);
                 stopDetailsContentValuesList.add(values);
             }
         } catch (Exception e) {

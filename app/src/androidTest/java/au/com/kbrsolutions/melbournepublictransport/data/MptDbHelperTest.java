@@ -66,27 +66,27 @@ public class MptDbHelperTest {
                 this.mContext).getWritableDatabase();
         Assert.assertEquals("DB should be open", true, db.isOpen());
         // have we created the tables we want?
-        Cursor c = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
+        Cursor cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
 
         Assert.assertTrue("Error: This means that the database has not been created correctly",
-                c.moveToFirst());
+                cursor.moveToFirst());
 
         // verify that the tables have been created
         do {
-            Log.v(TAG, "testCreateDb - name: " + c.getString(0));
-            tableNameHashSet.remove(c.getString(0));
-        } while( c.moveToNext() );
+            Log.v(TAG, "testCreateDb - name: " + cursor.getString(0));
+            tableNameHashSet.remove(cursor.getString(0));
+        } while( cursor.moveToNext() );
 
         // if this fails, it means that your database doesn't contain stop_detail entry
         Assert.assertTrue("Error: Your database was created without the stop_detail table",
                 tableNameHashSet.isEmpty());
 
         // now, do our tables contain the correct columns?
-        c = db.rawQuery("PRAGMA table_info(" + MptContract.StopDetailEntry.TABLE_NAME + ")",
+        cursor = db.rawQuery("PRAGMA table_info(" + MptContract.StopDetailEntry.TABLE_NAME + ")",
                 null);
 
         Assert.assertTrue("Error: This means that we were unable to query the database for table information.",
-                c.moveToFirst());
+                cursor.moveToFirst());
 
         // Build a HashSet of all of the column names we want to look for
         final HashSet<String> stopDetailsColumnHashSet = new HashSet<String>();
@@ -97,11 +97,15 @@ public class MptDbHelperTest {
         stopDetailsColumnHashSet.add(MptContract.StopDetailEntry.COLUMN_LONGITUDE);
         stopDetailsColumnHashSet.add(MptContract.StopDetailEntry.COLUMN_FAVORITE);
 
-        int columnNameIndex = c.getColumnIndex("name");
+        int columnNameIndex = cursor.getColumnIndex("name");
         do {
-            String columnName = c.getString(columnNameIndex);
+            String columnName = cursor.getString(columnNameIndex);
             stopDetailsColumnHashSet.remove(columnName);
-        } while(c.moveToNext());
+        } while(cursor.moveToNext());
+
+        if (cursor != null) {
+            cursor.close();
+        }
 
         // if this fails, it means that your database doesn't contain all of the required stop_detail
         // entry columns

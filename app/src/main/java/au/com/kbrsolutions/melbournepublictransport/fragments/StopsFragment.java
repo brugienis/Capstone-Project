@@ -264,7 +264,7 @@ public class StopsFragment extends BaseFragment implements LoaderManager.LoaderC
         Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
         if (cursor != null) {
             mListener.updateStopDetailRow(cursor.getInt(COL_STOP_DETAILS_ID),
-                    getString(R.string.favorite_stop_true_value));
+                    MptContract.StopDetailEntry.FAVORITE_FLAG);
         }
     }
 

@@ -17,7 +17,6 @@
         add some \'favorite\' stops and go to Settings again. Select \'widget\' stop.
     </string>
     <string name="database_is_empty">Database is empty (select \'menu/reload\' to load it)</string>
-    <string name="no_stops_to_add">There are no stops to add</string>
     <string name="no_departures_detail">No departure details</string>
     <string name="express_train">Express</string>
     <string name="all_stops_train">All stops</string>
@@ -55,16 +54,6 @@
     <string name="pref_key_appbar_vertical_offset" translatable="false">appbar_vertical_offset</string>
     <string name="pref_default_appbar_vertical_offset">9999</string>
 
-    <!-- Key name for storing widget stop id in SharedPreferences [CHAR LIMIT=NONE] -->
-    <!--<string name="pref_key_widget_stop_set_up_instructions">widget_stop_instructions</string>-->
-
-    <!-- Key name for storing widget stop id in SharedPreferences [CHAR LIMIT=NONE] -->
-    <!--<string name="pref_default_widget_stop_set_up_instructions">No instructions available.</string>-->
-
-    <!-- Key name for storing widget stop id in SharedPreferences [CHAR LIMIT=NONE] -->
-    <string name="pref_value_widget_stop_set_up_instructions">The widget stop name is not assigned.
-        \n\nStart the app > open the \'Settings\' menu > touch the icon in the \'Widget stop name\' row > select stop
-    </string>
 
     <!-- Title for the location preference [CHAR LIMIT=30]  -->
     <string name="pref_title_widget_stop_name">Widget stop name</string>
@@ -82,10 +71,6 @@
     <string name="pref_key_location_latitude" translatable="false">loc-latitude</string>
     <string name="pref_key_location_longitude" translatable="false">loc-longitude</string>
 
-    <!-- Strings used when displaying the state of the Location in settings
-    <string name="pref_location_error_description">Invalid Location (<xliff:g id="location_setting">%1$s</xliff:g>)"</string>
-    <string name="pref_location_unknown_description">Validating Location... (<xliff:g id="location_setting">%1$s</xliff:g>)"</string>
--->
     <!-- For Google Places API Attributions -->
     <string name="attribution_text">Powered by Google</string>
 
@@ -115,9 +100,6 @@
 
 
     <!-- Misc -->
-    <string name="favorite_stop_true_value">y</string>
-    <string name="favorite_stop_false_value">n</string>
-    <string name="favorite_stop_any_value">a</string>
 
     <!-- Strings related to content descriptions shared betweeen different layouts -->
     <string name="content_desc_bus_transport_type">Bus</string>

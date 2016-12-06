@@ -432,24 +432,9 @@ public class MainActivity extends AppCompatActivity implements
                                            @NonNull int[] grantResults) {
         isInPermissionChecking =false;
 
-//        if (requestCode == REQUEST_PERMS_READ_EXTERNAL_STORAGE) {
-//            if (hasFilesPermission()) {
-//                Log.v(TAG, "onRequestPermissionsResult - READ_EXTERNAL_STORAGE ermission is granted: ");
-//                // do nothing
-//            }
-//            else {
-////                finish(); // denied permission, so we're done
-//                Log.v(TAG, "onRequestPermissionsResult - READ_EXTERNAL_STORAGE ermission not granted: ");
-//            }
-//        } else
         if (requestCode == REQUEST_PERMS_ACCESS_FINE_LOCATION) {
             if (hasLocationPermission()) {
-                Log.v(TAG, "onRequestPermissionsResult - ACCESS_FINE_LOCATION permission is granted: ");
                 startStopsNearbySearch(mSearchForStopsNearbyForTrainsOnly);
-            }
-            else {
-//                finish(); // denied permission, so we're done
-                Log.v(TAG, "onRequestPermissionsResult - ACCESS_FINE_LOCATION permission not granted: ");
             }
         }
     }
@@ -464,7 +449,6 @@ public class MainActivity extends AppCompatActivity implements
                     fragmentsId != FAVORITE_STOPS &&
                     fragmentsId != NEXT_DEPARTURES
                     ) {
-                showSnackBar("No logic to handle FAB touched in: " + fragmentsId, true);
                 return;
             }
         } else {

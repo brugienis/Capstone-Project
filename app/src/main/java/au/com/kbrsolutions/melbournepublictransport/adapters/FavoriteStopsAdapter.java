@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.fragments.FavoriteStopsFragment;
 
@@ -95,7 +96,7 @@ public class FavoriteStopsAdapter extends CursorAdapter {
             mListener = listener;
         }
         mIsInSettingsActivityFlag = isInSettingsActivityFlag;
-        sFavoriteStopFalseValue = context.getString(R.string.favorite_stop_false_value);
+        sFavoriteStopFalseValue = MptContract.StopDetailEntry.NON_FAVORITE_FLAG;
     }
 
     @Override
