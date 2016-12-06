@@ -112,10 +112,9 @@ public class DatabaseContentLoader {
      * Check if database is empty.
      *
      * @param contentResolver
-     * @param context
      * @return
      */
-    public static boolean isDatabaseEmpty(ContentResolver contentResolver, Context context) {
+    public static boolean isDatabaseEmpty(ContentResolver contentResolver) {
         Cursor lineCursor = contentResolver.query(
                 MptContract.LineDetailEntry.CONTENT_URI,
                 null, // leaving "columns" null just returns all the columns.
@@ -165,6 +164,7 @@ public class DatabaseContentLoader {
      *
      * @param contentResolver
      */
+    @SuppressWarnings("unused")
     private static void printLineDetailContent(ContentResolver contentResolver) {
         Cursor cursor = contentResolver.query(
                 MptContract.LineDetailEntry.CONTENT_URI,
@@ -186,8 +186,8 @@ public class DatabaseContentLoader {
         EventBus.getDefault().post(event);
     }
 
-    @SuppressWarnings("EmptyMethod")
+    @SuppressWarnings({"EmptyMethod", "unused"})
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void onMessageEvent(RequestProcessorServiceRequestEvents event) {
+    public void onMessageEvent(@SuppressWarnings("UnusedParameters") RequestProcessorServiceRequestEvents event) {
     }
 }

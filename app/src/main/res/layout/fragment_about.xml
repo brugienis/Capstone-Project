@@ -15,6 +15,7 @@
         android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
         android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
         android:textColor="@android:color/black"
-        android:background="@color/deep_orange_50" />
+        android:background="@color/deep_orange_50"
+        tools:ignore="PrivateResource"/>
 
 </LinearLayout>

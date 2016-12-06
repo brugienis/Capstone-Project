@@ -1,7 +1,6 @@
 package au.com.kbrsolutions.melbournepublictransport.fragments;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,7 +19,6 @@ import au.com.kbrsolutions.melbournepublictransport.adapters.NextDeparturesAdapt
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.remote.RequestProcessorService;
-import au.com.kbrsolutions.melbournepublictransport.utilities.HorizontalDividerItemDecoration;
 
 /**
  * A fragment representing a list of NextDepartureDetails.
@@ -42,6 +40,7 @@ public class NextDeparturesFragment extends BaseFragment {
     private View mCurrentSelectedView;
     private int mCurrentSelectedRow;
 
+    @SuppressWarnings("unused")
     private static final String TAG = NextDeparturesFragment.class.getSimpleName();
 
     /**
@@ -188,7 +187,7 @@ public class NextDeparturesFragment extends BaseFragment {
      */
 //    @Override
     public View onCreateView_UseWithRececleViewAdapter(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                                                       @SuppressWarnings("UnusedParameters") Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_next_departure_rv, container, false);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.disruptionsList);
@@ -213,8 +212,8 @@ public class NextDeparturesFragment extends BaseFragment {
 
         Context context = recyclerView.getContext();
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        Drawable divider = getResources().getDrawable(R.drawable.item_divider);
-        recyclerView.addItemDecoration(new HorizontalDividerItemDecoration(divider));
+//        Drawable divider = getResources().getDrawable(R.drawable.item_divider);
+//        recyclerView.addItemDecoration(new HorizontalDividerItemDecoration(divider));
         NextDeparturesAdapterRv recyclerViewAdapter = new NextDeparturesAdapterRv(mNextDepartureDetailsList);
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.requestLayout();

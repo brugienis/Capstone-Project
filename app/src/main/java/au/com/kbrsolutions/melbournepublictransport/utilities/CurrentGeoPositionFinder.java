@@ -32,6 +32,7 @@ public class CurrentGeoPositionFinder implements
     private final Context mContext;
     private boolean mTrainOnly;
 
+    @SuppressWarnings("unused")
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
     public CurrentGeoPositionFinder(Context context, boolean trainOnly) {

@@ -1,51 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:orientation="horizontal"
+    android:background="@drawable/touch_selector">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/transportImageId"
+        android:scaleType="center"
+        android:layout_width="@dimen/touchable_size"
+        android:layout_height="@dimen/touchable_size"
+        android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
+        android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
+        android:src="@drawable/ic_stock_train_blue_500"
+        android:contentDescription="@string/content_desc_train_transport_type"
+        tools:ignore="PrivateResource"/>
+
+    <TextView
+        android:id="@+id/locationNameId"
+        android:layout_width="0dp"
+        android:layout_weight="7"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:minHeight="?android:attr/listPreferredItemHeight"
-        android:orientation="horizontal"
-        android:background="@drawable/touch_selector">
+        tools:text="Location name"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@android:color/black" />
 
-        <ImageView
-            android:id="@+id/transportImageId"
-            android:scaleType="center"
-            android:layout_width="@dimen/touchable_size"
-            android:layout_height="@dimen/touchable_size"
-            android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
-            android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
-            android:src="@drawable/ic_stock_train_blue_500"
-            android:contentDescription="@string/content_desc_train_transport_type" />
+    <ImageView
+        android:id="@+id/departuresImageId"
+        android:layout_width="@dimen/touchable_size"
+        android:layout_height="@dimen/touchable_size"
+        android:background="@drawable/touch_selector"
+        android:src="@drawable/ic_stock_forward_10_green_500"
+        android:contentDescription="@string/content_desc_show_departures" />
 
-        <TextView
-            android:id="@+id/locationNameId"
-            android:layout_width="0dp"
-            android:layout_weight="7"
-            android:layout_height="wrap_content"
-            tools:text="Location name"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@android:color/black" />
+    <ImageView
+        android:id="@+id/mapImageId"
+        android:layout_width="@dimen/touchable_size"
+        android:layout_height="@dimen/touchable_size"
+        android:background="@drawable/touch_selector"
+        android:src="@drawable/ic_stock_place_green_500"
+        android:contentDescription="@string/content_desc_show_map" />
 
-        <ImageView
-            android:id="@+id/departuresImageId"
-            android:layout_width="@dimen/touchable_size"
-            android:layout_height="@dimen/touchable_size"
-            android:background="@drawable/touch_selector"
-            android:src="@drawable/ic_stock_forward_10_green_500"
-            android:contentDescription="@string/content_desc_show_departures" />
-
-        <ImageView
-            android:id="@+id/mapImageId"
-            android:layout_width="@dimen/touchable_size"
-            android:layout_height="@dimen/touchable_size"
-            android:background="@drawable/touch_selector"
-            android:src="@drawable/ic_stock_place_green_500"
-            android:contentDescription="@string/content_desc_show_map" />
-
-    </LinearLayout>
-</FrameLayout>
+</LinearLayout>

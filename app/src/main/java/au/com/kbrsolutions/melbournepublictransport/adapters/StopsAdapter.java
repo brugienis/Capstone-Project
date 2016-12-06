@@ -23,6 +23,7 @@ public class StopsAdapter extends CursorAdapter {
 
     private static StopsFragment.OnStopFragmentInteractionListener mListener;
 
+    @SuppressWarnings("unused")
     private static final String TAG = StopsAdapter.class.getSimpleName();
 
     public static class ViewHolder {

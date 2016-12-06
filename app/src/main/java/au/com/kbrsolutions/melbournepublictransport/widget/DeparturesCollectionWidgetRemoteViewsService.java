@@ -24,6 +24,7 @@ import au.com.kbrsolutions.melbournepublictransport.utilities.SharedPreferencesU
  */
 public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsService {
 
+    @SuppressWarnings("unused")
     private final static String TAG = DeparturesCollectionWidgetRemoteViewsService.class.getSimpleName();
 
     @Override

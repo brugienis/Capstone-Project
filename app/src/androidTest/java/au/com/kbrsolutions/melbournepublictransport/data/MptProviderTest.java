@@ -33,6 +33,7 @@ public class MptProviderTest {
 
     private Context mContext;
 
+    @SuppressWarnings("RedundantThrows")
     @Before
     public void setUp() throws Exception {
         mContext = InstrumentationRegistry.getTargetContext();
@@ -47,11 +48,11 @@ public class MptProviderTest {
     @Test
     public void testDelete() throws Exception {
         // insert a row into line_detail table
-        ContentValues lineDetailetailValues = TestUtilities.createFrankstonLineDetailsValues();
+        ContentValues lineDetailValues = TestUtilities.createFrankstonLineDetailsValues();
 
         Uri resultUri = mContext.getContentResolver().insert(
                 LineDetailEntry.CONTENT_URI,
-                lineDetailetailValues
+                lineDetailValues
         );
 
         long lineDetailRowId = ContentUris.parseId(resultUri);
@@ -594,7 +595,7 @@ public class MptProviderTest {
 
         String favoriteFlags = StopDetailEntry.NON_FAVORITE_FLAG;
         ContentValues stopDetailValues = TestUtilities.createFrankstonLineStopDetailsValues(lineDetailRowId, favoriteFlags);
-        TestUtilities.insertFrankstonLineStopDetailsValues(lineDetailRowId, mContext, stopDetailValues);
+        TestUtilities.insertFrankstonLineStopDetailsValues(mContext, stopDetailValues);
 
         // Test the basic content provider query
         Uri uri = StopDetailEntry.buildFavoriteStopsUri(favoriteFlags);

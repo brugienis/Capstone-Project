@@ -12,6 +12,7 @@ import au.com.kbrsolutions.melbournepublictransport.R;
  */
 public class AboutFragment extends BaseFragment {
 
+    @SuppressWarnings("unused")
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
     public AboutFragment() {

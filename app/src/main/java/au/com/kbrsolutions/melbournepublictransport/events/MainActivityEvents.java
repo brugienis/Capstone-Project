@@ -20,7 +20,6 @@ public class MainActivityEvents {
         CURR_LOCATION_DETAILS,
         NEARBY_LOCATION_DETAILS,
         REFRESH_FAVORITE_STOPS_VIEW,
-        DATABASE_STATUS,
         DATABASE_LOAD_PROGRESS
     }
 
@@ -32,7 +31,7 @@ public class MainActivityEvents {
     public final LatLngDetails latLonDetails;
     public final List<StopsNearbyDetails> nearbyStopsDetailsList;
     public final boolean forTrainsStopsNearby;
-    public final boolean databaseEmpty;
+//    public final boolean databaseEmpty;
     public final int databaseLoadProgress;
     public final int databaseLoadTarget;
 
@@ -45,7 +44,7 @@ public class MainActivityEvents {
         this.latLonDetails = builder.latLonDetails;
         this.nearbyStopsDetailsList = builder.nearbyStopsDetailsList;
         this.forTrainsStopsNearby = builder.forTrainsStopsNearby;
-        this.databaseEmpty = builder.databaseEmpty;
+//        this.databaseEmpty = builder.databaseEmpty;
         this.databaseLoadProgress = builder.databaseLoadProgress;
         this.databaseLoadTarget = builder.databaseLoadTarget;
     }
@@ -64,7 +63,7 @@ public class MainActivityEvents {
         private LatLngDetails latLonDetails;
         private List<StopsNearbyDetails> nearbyStopsDetailsList;
         private boolean forTrainsStopsNearby;
-        private boolean databaseEmpty;
+//        private boolean databaseEmpty;
         private int databaseLoadProgress;
         private int databaseLoadTarget;
 
@@ -100,11 +99,6 @@ public class MainActivityEvents {
 
         public Builder setForTrainsStopsNearby(boolean forTrainsStopsNearby) {
             this.forTrainsStopsNearby = forTrainsStopsNearby;
-            return this;
-        }
-
-        public Builder setDatabaseEmpty(boolean databaseLoaded) {
-            this.databaseEmpty = databaseLoaded;
             return this;
         }
 

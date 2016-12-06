@@ -5,11 +5,9 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -26,16 +24,15 @@ public class WidgetStopsActivity
         implements FavoriteStopsFragment.OnFavoriteStopsFragmentInteractionListener {
 
     private CoordinatorLayout mCoordinatorlayout;
-    ActionBar actionBar;
     private AppBarLayout mAppBarLayout;
-    CollapsingToolbarLayout mCollapsingToolbar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private int mVerticalOffset;
 
     public static final String WIDGET_STOP_ID = "widget_stop_id";
-    public static final String WIDGET_LOCATION_NAME = "widget_location_name";
+    public static final String WIDGET_STOP_NAME = "widget_location_name";
     private static final String FAVORITE_STOPS_TAG = "favorite_stops_tag";
 
+    @SuppressWarnings("unused")
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
     @Override
@@ -57,13 +54,9 @@ public class WidgetStopsActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        mCollapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
-
         toolbar.setTitle(getResources().getString(R.string.title_widget_stops));
 
         setSupportActionBar(toolbar);
-        actionBar = getSupportActionBar();
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -107,7 +100,7 @@ public class WidgetStopsActivity
         int verticalOffset = SharedPreferencesUtility.getAppBarVerticalOffset(getApplicationContext());
         if (mVerticalOffset != verticalOffset) {
             mVerticalOffset = verticalOffset;
-            adjustAppBarVertivalOffset(verticalOffset * -1);
+            adjustAppBarVerticalOffset(verticalOffset * -1);
         }
     }
 
@@ -118,7 +111,7 @@ public class WidgetStopsActivity
      *
      * @param verticalOffset
      */
-    private void adjustAppBarVertivalOffset(final int verticalOffset) {
+    private void adjustAppBarVerticalOffset(final int verticalOffset) {
         mAppBarLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -155,7 +148,7 @@ public class WidgetStopsActivity
     public void updateWidgetStopDetails(String stopId, String locationName) {
         Intent intent = new Intent();
         intent.putExtra(WIDGET_STOP_ID, stopId);
-        intent.putExtra(WIDGET_LOCATION_NAME, locationName);
+        intent.putExtra(WIDGET_STOP_NAME, locationName);
         setResult(Activity.RESULT_OK, intent);
         onSupportNavigateUp();
     }
@@ -170,11 +163,11 @@ public class WidgetStopsActivity
         return true;
     }
 
-    public void startNextDeparturesSearch(StopDetails stopDetails) {};
-    public void showStopOnMap(String stopName, LatLngDetails latLonDetails) {};
-    public void startStopsNearbySearch(boolean trainsOnly) {};
-    public void getDisruptionsDetails() {};
-    public void updateStopDetailRow(int id, String favoriteColumnValue) {};
-    public void reloadDatabase() {};
+    public void startNextDeparturesSearch(StopDetails stopDetails) {}
+    public void showStopOnMap(String stopName, LatLngDetails latLonDetails) {}
+    public void startStopsNearbySearch(boolean trainsOnly) {}
+    public void getDisruptionsDetails() {}
+    public void updateStopDetailRow(int id, String favoriteColumnValue) {}
+    public void reloadDatabase() {}
 
 }

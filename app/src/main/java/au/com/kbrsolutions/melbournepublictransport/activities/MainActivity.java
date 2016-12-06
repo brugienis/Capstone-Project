@@ -97,12 +97,11 @@ public class MainActivity extends AppCompatActivity implements
     private FloatingActionButton fab;
     private EventBus eventBus;
     private CurrentGeoPositionFinder mCurrentGeoPositionFinder;
-    private int mPrevBackStackEntryCount;
+//    private int mPrevBackStackEntryCount;
     private static final String STATE_IN_PERMISSION_CHECKING = "inPermission";
     private static final String STATE_IN_SEARCH_FOR_STOPS_NEARBY_FOR_TRAINS_ONLY = "for_trains_only";
     private boolean isInPermissionChecking = false;
 
-    private static final int REQUEST_PERMS_READ_EXTERNAL_STORAGE = 1000;
     private static final int REQUEST_PERMS_ACCESS_FINE_LOCATION = 2000;
     private static final String FAVORITE_STOPS_TAG = "favorite_stops_tag";
     private static final String ERROR_DIALOG_FRAGMENT_TAG = "errorDialog";
@@ -194,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements
 //                        } else {
 //                            Log.v(TAG, "onCreate.onBackStackChanged - going backward - cnt/top: " + cnt + "/" + (bf == null ? "null" : bf.getFragmentId()));
 //                        }
-                        mPrevBackStackEntryCount = cnt;
+//                        mPrevBackStackEntryCount = cnt;
                         if (!mTwoPane && cnt == 0 || mTwoPane && cnt == 1) {
                             if (getSupportActionBar() != null) {
                                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -271,15 +270,6 @@ public class MainActivity extends AppCompatActivity implements
         SharedPreferencesUtility.initSettings(getApplicationContext());
         mProgressBarHandler = new ProgressBarHandler(this);
 
-//        if (!hasFilesPermission()) {
-//            if (!isInPermissionChecking) {
-//                isInPermissionChecking =true;
-//
-//                ActivityCompat.requestPermissions(this,
-//                        new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
-//                        REQUEST_PERMS_READ_EXTERNAL_STORAGE);
-//            }
-//        }
     }
 
     private void saveAppBarVerticalOffset(int verticalOffset) {
@@ -830,7 +820,7 @@ public class MainActivity extends AppCompatActivity implements
      * @param nearbyStopsDetailsList
      * @param forTrainsStopsNearby
      */
-    public void showStopsNearby(
+    private void showStopsNearby(
             List<StopsNearbyDetails> nearbyStopsDetailsList,
             boolean forTrainsStopsNearby) {
 
@@ -902,8 +892,10 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Get messages through Event Bus from Green Robot.
+     *
      * This method will be called when a MainActivityEvents is posted (in the UI thread)
      */
+    @SuppressWarnings("unused")
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MainActivityEvents event) {
         MainActivityEvents.MainEvents requestEvent = event.event;
@@ -932,12 +924,6 @@ public class MainActivity extends AppCompatActivity implements
 
             case NEARBY_LOCATION_DETAILS:
                 showStopsNearby(event.nearbyStopsDetailsList, event.forTrainsStopsNearby);
-                break;
-
-            case DATABASE_STATUS:
-                if (mFavoriteStopsFragment != null) {
-                    mFavoriteStopsFragment.databaseIsEmpty(event.databaseEmpty);
-                }
                 break;
 
             case DATABASE_LOAD_PROGRESS:
@@ -970,14 +956,14 @@ public class MainActivity extends AppCompatActivity implements
      * @param msg
      * @param showIndefinite
      */
-    public void showSnackBar(String msg, boolean showIndefinite) {
+    private void showSnackBar(String msg, boolean showIndefinite) {
         Snackbar
                 .make(mCoordinatorlayout, msg, (showIndefinite ? Snackbar.LENGTH_INDEFINITE : Snackbar.LENGTH_LONG))
                 .setActionTextColor(Color.RED)
                 .show(); // Don’t forget to show!
     }
 
-    public void showSnackBar(int msg, boolean showIndefinite) {
+    private void showSnackBar(int msg, boolean showIndefinite) {
         Snackbar
                 .make(mCoordinatorlayout, msg, (showIndefinite ? Snackbar.LENGTH_INDEFINITE : Snackbar.LENGTH_LONG))
                 .setActionTextColor(Color.RED)
@@ -987,7 +973,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Make progress bar visible
      */
-    public void showProgress() {
+    private void showProgress() {
         mProgressBarHandler.show();
     }
 
@@ -995,7 +981,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Make progress bar invisible
      */
-    public void hideProgress() {
+    private void hideProgress() {
         mProgressBarHandler.hide();
     }
 
@@ -1038,6 +1024,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Use for testing - remove before publishing on Google Play.
      */
+    @SuppressWarnings("unused")
     private void showFragmentsOnBackStackVisibility() {
         BaseFragment topFragment;
         if (mFavoriteStopsFragment != null) {
@@ -1224,7 +1211,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     // FIXME: 25/09/2016 find source of the code below - The Busy ...?
-    protected boolean readyToGo() {
+    private boolean readyToGo() {
         GoogleApiAvailability checker =
                 GoogleApiAvailability.getInstance();
 

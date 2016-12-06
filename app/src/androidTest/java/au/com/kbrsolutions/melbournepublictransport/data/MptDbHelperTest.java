@@ -21,14 +21,15 @@ import java.util.HashSet;
 public class MptDbHelperTest {
 
     // Since we want each test to start with a clean slate
-    void deleteTheDatabase() {
+    private void deleteTheDatabase() {
         mContext.deleteDatabase(MptDbHelper.DATABASE_NAME);
     }
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
-    Context mContext;
+    private Context mContext;
 
+    @SuppressWarnings("RedundantThrows")
     @Before
     public void setUp() throws Exception {
 //        mContext = new RenamingDelegatingContext(InstrumentationRegistry.getTargetContext(), "test_");
@@ -57,7 +58,7 @@ public class MptDbHelperTest {
         // build a HashSet of all of the table names we wish to look for
         // Note that there will be another table in the DB that stores the
         // Android metadata (db version information)
-        final HashSet<String> tableNameHashSet = new HashSet<String>();
+        final HashSet<String> tableNameHashSet = new HashSet<>();
         tableNameHashSet.add(MptContract.StopDetailEntry.TABLE_NAME);
 
 //        mContext.deleteDatabase(MptDbHelper.DATABASE_NAME);
@@ -89,7 +90,7 @@ public class MptDbHelperTest {
                 cursor.moveToFirst());
 
         // Build a HashSet of all of the column names we want to look for
-        final HashSet<String> stopDetailsColumnHashSet = new HashSet<String>();
+        final HashSet<String> stopDetailsColumnHashSet = new HashSet<>();
         stopDetailsColumnHashSet.add(MptContract.StopDetailEntry._ID);
         stopDetailsColumnHashSet.add(MptContract.StopDetailEntry.COLUMN_LINE_KEY);
         stopDetailsColumnHashSet.add(MptContract.StopDetailEntry.COLUMN_LOCATION_NAME);
@@ -103,9 +104,7 @@ public class MptDbHelperTest {
             stopDetailsColumnHashSet.remove(columnName);
         } while(cursor.moveToNext());
 
-        if (cursor != null) {
-            cursor.close();
-        }
+        cursor.close();
 
         // if this fails, it means that your database doesn't contain all of the required stop_detail
         // entry columns
@@ -196,9 +195,4 @@ public class MptDbHelperTest {
         Assert.assertNotEquals("DB should be closed", true, db.isOpen());
     }
 
-//    @Test
-//    public void silyTest() {
-//        Log.v(TAG, "running Unit Test");
-//        Assert.assertTrue("Should be true", false);
-//    }
 }

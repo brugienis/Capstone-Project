@@ -6,6 +6,7 @@ import android.os.Parcelable;
 /**
  * This class keeps 'stops' details.
  */
+@SuppressWarnings("WeakerAccess")
 public class StopDetails implements Parcelable {
     public final int id;
     public final int routeType;

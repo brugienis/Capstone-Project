@@ -95,13 +95,13 @@
     <!-- Content description for the get 'fixed' location button in the location preference -->
     <string name="pref_desc_fixed_location">Touch to select fixed location</string>
 
-    <!-- Content description for the get current widhet stop button in the location preference -->
+    <!-- Content description for the get current widget stop button in the location preference -->
     <string name="pref_desc_current_widget_stop">Show this stop on widget</string>
 
 
     <!-- Misc -->
 
-    <!-- Strings related to content descriptions shared betweeen different layouts -->
+    <!-- Strings related to content descriptions shared between different layouts -->
     <string name="content_desc_bus_transport_type">Bus</string>
     <string name="content_desc_tram_transport_type">Tram</string>
     <string name="content_desc_train_transport_type">Train</string>
@@ -116,10 +116,10 @@
     <string name="get_line_details_exception_text">
         ".getLineDetails - exception: <xliff:g id="exception_text">%1$s</xliff:g>"
     </string>
-    <string name="getstop_details_for_line_exception_text">
+    <string name="get_stop_details_for_line_exception_text">
         ".getStopDetailsForLine - exception: <xliff:g id="exception_text">%1$s</xliff:g>"
         "</string>
-    <string name="getbroad_next_departures_exception_text">
+    <string name="get_broad_next_departures_exception_text">
         ".getBroadNextDepartures - exception: <xliff:g id="exception_text">%1$s</xliff:g>"
     </string>
     <string name="get_disruptions_exception_text">

@@ -51,6 +51,7 @@ public class DbUtility {
      *
      * @param cursor
      */
+    @SuppressWarnings("unused")
     private void printContents(Cursor cursor) {
         int stopIdIdx;
         int locationNameIdx;
@@ -136,7 +137,7 @@ public class DbUtility {
 
     private static final String IN = " IN (";
     private static final String QUESTION_MARK = "?";
-    private static final String RIGHT_PARENTH = ")";
+    private static final String RIGHT_RIGHT_PARENTH = ")";
 
     /**
      * Try to fill in missing values in the 'stops nearby' list:
@@ -162,7 +163,7 @@ public class DbUtility {
         String whereClause = MptContract.StopDetailEntry.COLUMN_STOP_ID +
                 IN +
                 TextUtils.join(",", Collections.nCopies(stopIds.length, QUESTION_MARK))
-                + RIGHT_PARENTH;
+                + RIGHT_RIGHT_PARENTH;
 
         Uri uri = MptContract.StopDetailEntry.buildFavoriteStopsUri(
                 MptContract.StopDetailEntry.ANY_FAVORITE_FLAG);

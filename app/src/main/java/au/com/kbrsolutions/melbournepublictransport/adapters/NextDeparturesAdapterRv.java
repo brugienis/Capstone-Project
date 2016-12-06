@@ -5,15 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
-import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.NextDepartureDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 
 /**
  *
@@ -26,12 +25,8 @@ public class NextDeparturesAdapterRv
         implements ViewTreeObserver.OnGlobalFocusChangeListener {
 
     private final List<NextDepartureDetails> mValues;
-    // FIXME: 20/09/2016 - move strings to values
-    private static final String ALL_STOPS = "All stops";
-    private static final String EXPRESS = "Express";
 
-    AdapterView.OnItemSelectedListener mOnItemSelectedListener;
-
+    @SuppressWarnings("unused")
     private static final String TAG = NextDeparturesAdapterRv.class.getSimpleName();
 
     @Override
@@ -55,11 +50,7 @@ public class NextDeparturesAdapterRv
         NextDepartureDetails nextDepartureDetails = mValues.get(position);
         String directionName = String.valueOf(nextDepartureDetails.directionName);
         String departureTime = String.valueOf(nextDepartureDetails.utcDepartureTime);
-        // FIXME: 20/09/2016 - move strings to values
         String runTypeText = nextDepartureDetails.runType;
-//        String runTypeText = nextDepartureDetails.numSkipped == 0 ?
-//                ALL_STOPS :
-//                EXPRESS;
         holder.directionName.setText(directionName);
         holder.runType.setText(runTypeText);
         holder.departureTimeId.setText(departureTime);
@@ -71,6 +62,7 @@ public class NextDeparturesAdapterRv
         }
     }
 
+    @SuppressWarnings("unused")
     public void swap(List<NextDepartureDetails> nextDepartureDetailsList){
         mValues.clear();
         mValues.addAll(nextDepartureDetailsList);

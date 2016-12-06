@@ -30,6 +30,7 @@ public class Miscellaneous {
      *
      * http://stackoverflow.com/questions/80476/how-can-i-concatenate-two-arrays-in-java
     */
+    @SafeVarargs
     public static <T> T[] concatAll(T[] first, T[]... rest) {
         int totalLength = first.length;
         for (T[] array : rest) {
@@ -45,7 +46,7 @@ public class Miscellaneous {
     }
 
     /**
-     * Calculate in Kilomiters between two GEO positions.
+     * Calculate in Kilometers between two GEO positions.
      *
      * from https://dzone.com/articles/distance-calculation-using-3
      *
@@ -95,6 +96,7 @@ public class Miscellaneous {
      * @param o
      * @return
      */
+    @SuppressWarnings("unused")
     public static String getClassHashCode(Object o) {
         return String.format("0x%08X", o.hashCode());
     }

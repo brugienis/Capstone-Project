@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
  * Indeterminate Progress Bar.
  */
 public class ProgressBarHandler {
-    private ProgressBar mProgressBar;
+    private final ProgressBar mProgressBar;
 
     public ProgressBarHandler(Context context) {
         ViewGroup layout = (ViewGroup) ((Activity) context).

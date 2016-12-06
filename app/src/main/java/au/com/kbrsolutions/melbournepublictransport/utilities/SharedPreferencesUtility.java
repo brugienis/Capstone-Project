@@ -15,6 +15,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
  */
 public class SharedPreferencesUtility {
 
+    @SuppressWarnings("unused")
     private static final String TAG = SharedPreferencesUtility.class.getSimpleName();
 
     /**

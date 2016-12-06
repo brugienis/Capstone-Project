@@ -27,6 +27,7 @@ public class StopsNearbyAdapterRv extends RecyclerView.Adapter<StopsNearbyAdapte
     private final List<StopsNearbyDetails> mValues;
     private final OnNearbyStopsFragmentInteractionListener mListener;
 
+    @SuppressWarnings("unused")
     private static final String TAG = StopsNearbyAdapterRv.class.getSimpleName();
 
     public StopsNearbyAdapterRv(
@@ -63,6 +64,7 @@ public class StopsNearbyAdapterRv extends RecyclerView.Adapter<StopsNearbyAdapte
         holder.nearbyStopsDetails = mValues.get(position);
     }
 
+    @SuppressWarnings("unused")
     public void swap(List<StopsNearbyDetails> nearbyStopsDetails){
         mValues.clear();
         mValues.addAll(nearbyStopsDetails);

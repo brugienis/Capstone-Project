@@ -29,8 +29,9 @@ public class MptProviderTest_NoDeleteTest {
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
-    Context mContext;
+    private Context mContext;
 
+    @SuppressWarnings("RedundantThrows")
     @Before
     public void setUp() throws Exception {
         mContext = InstrumentationRegistry.getTargetContext();

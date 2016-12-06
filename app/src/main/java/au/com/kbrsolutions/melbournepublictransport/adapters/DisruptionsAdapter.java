@@ -23,6 +23,7 @@ public class DisruptionsAdapter<T> extends ArrayAdapter<DisruptionsDetails> {
 
     private final List<DisruptionsDetails> mValues;
 
+    @SuppressWarnings("unused")
     private static final String TAG = DisruptionsAdapterRv.class.getSimpleName();
 
     public DisruptionsAdapter(Activity activity, List<DisruptionsDetails> items) {

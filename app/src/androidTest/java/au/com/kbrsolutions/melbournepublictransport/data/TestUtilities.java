@@ -52,7 +52,7 @@ public class TestUtilities {
 
     private static double latitude = 1.0;    //64.7488;
     private static double longitude = 10.0;  //-147.353;
-    private static double increase = 1.0;
+    private static final double increase = 1.0;
 
     /*
 
@@ -93,8 +93,8 @@ public class TestUtilities {
     // FIXME: 26/09/2016 combine below with the above
     static List<ContentValues> createManyFrankstonLineStopDetailsValues(
             long line_detailRowId,
-            String favoriteFlag,
-            int rowsCnt) {
+            @SuppressWarnings("SameParameterValue") String favoriteFlag,
+            @SuppressWarnings("SameParameterValue") int rowsCnt) {
         List<ContentValues> contentValuesList = new ArrayList<>(rowsCnt);
         int stopId = 101;
         for (int i = 0; i < rowsCnt; i++) {
@@ -126,9 +126,9 @@ public class TestUtilities {
             locationNameIdx = cursor.getColumnIndex(MptContract.StopDetailEntry.COLUMN_LOCATION_NAME);
             Log.v(TAG, cursor.getString(stopIdIdx) + cursor.getString(locationNameIdx));
         }
-    };
+    }
     
-    static long insertFrankstonLineStopDetailsValues(long lineDetailRowId, Context context, ContentValues stoDetailValues) {
+    static void insertFrankstonLineStopDetailsValues(Context context, ContentValues stoDetailValues) {
         // insert our test records into the database
         SQLiteDatabase db = new MptDbHelper(context).getWritableDatabase();
 
@@ -141,8 +141,6 @@ public class TestUtilities {
         Assert.assertTrue("Error: Failure to insert Frankston StopDetails Values", stop_detailRowId != -1);
 
         db.close();
-
-        return stop_detailRowId;
     }
 
     static void validateCursor(String error, Cursor valueCursor, ContentValues expectedValues) {

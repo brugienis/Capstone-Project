@@ -40,7 +40,7 @@ public class RemoteMptEndpointUtil {
 
     private final static int DEVELOPER_ID = 1000796;
 
-    private static final DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm");;
+    private static final DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm");
     private final static String PRIVATE_KEY = "8d3c3f43-4244-11e6-a0ce-06f54b901f07";
     private final static String PTV_BASE_URL = "http://timetableapi.ptv.vic.gov.au";
 
@@ -230,7 +230,7 @@ public class RemoteMptEndpointUtil {
                 e.printStackTrace();
             }
             throw new RuntimeException(TAG + context.getString
-                    (R.string.getstop_details_for_line_exception_text, e));
+                    (R.string.get_stop_details_for_line_exception_text, e));
         }
 
         return stopDetailsContentValuesList;
@@ -297,7 +297,7 @@ public class RemoteMptEndpointUtil {
                 e.printStackTrace();
             }
             throw new RuntimeException(TAG + context.getString
-                    (R.string.getbroad_next_departures_exception_text, e));
+                    (R.string.get_broad_next_departures_exception_text, e));
         }
         return nextDepartureDetailsList;
     }
@@ -425,7 +425,7 @@ public class RemoteMptEndpointUtil {
 
             // Read the input stream into a String
             InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             if (inputStream == null) {
                 // Nothing to do.
                 return null;
@@ -487,7 +487,7 @@ public class RemoteMptEndpointUtil {
     @NonNull
 //    public static String buildTTAPIURL(final String baseURL, final String privateKey, final String uri,
 //                                       final int developerId) throws Exception {
-    public static String buildTTAPIURL(final String uri) throws Exception {
+    private static String buildTTAPIURL(final String uri) throws Exception {
 
         String uriWithDeveloperID = uri + (uri.contains(QUESTION_MARK) ? AMPERSAND : QUESTION_MARK) +
                 DEV_ID + DEVELOPER_ID;
@@ -497,7 +497,7 @@ public class RemoteMptEndpointUtil {
         Mac mac = Mac.getInstance(HMAC_SHA1_ALGORITHM);
         mac.init(signingKey);
         byte[] signatureBytes = mac.doFinal(uriBytes);
-        StringBuffer signature = new StringBuffer(signatureBytes.length * 2);
+        StringBuilder signature = new StringBuilder(signatureBytes.length * 2);
         for (byte signatureByte : signatureBytes)
         {
             int intVal = signatureByte & 0xff;

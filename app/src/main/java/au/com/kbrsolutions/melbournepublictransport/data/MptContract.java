@@ -32,23 +32,12 @@ public class MptContract {
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_LINE_DETAIL).build();
 
-        // CONTENT_TYPE - indicates that the content is a collection of URIs. Used in Provider.getType(...).
-        public static final String CONTENT_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_LINE_DETAIL;
-
-        // CONTENT_TYPE - indicates that the content is an instance of URI. Used in Provider.getType(...).
-        public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_LINE_DETAIL;
-
         // Table name
         public static final String TABLE_NAME = "line_detail";
 
         // column names
         // route_type - Integer. 0 Train, etc.
         public static final String COLUMN_ROUTE_TYPE = "route_type";
-
-        // stop_id - numeric string
-        public static final String COLUMN_STOP_ID = "stop_id";
 
         // line_id - numeric string
         public static final String COLUMN_LINE_ID = "line_id";
@@ -74,10 +63,6 @@ public class MptContract {
         // CONTENT_TYPE - indicates that the content is a collection of URIs. Used in Provider.getType(...).
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_STOP_DETAIL;
-
-        // CONTENT_TYPE - indicates that the content is an instance of URI. Used in Provider.getType(...).
-        public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_STOP_DETAIL;
 
         public static final String ANY_FAVORITE_FLAG = "a";
         public static final String NON_FAVORITE_FLAG = "n";

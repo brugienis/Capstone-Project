@@ -23,6 +23,7 @@ public class DisruptionsAdapterRv extends RecyclerView.Adapter<DisruptionsAdapte
 
     private final List<DisruptionsDetails> mValues;
 
+    @SuppressWarnings("unused")
     private static final String TAG = DisruptionsAdapterRv.class.getSimpleName();
 
     public DisruptionsAdapterRv(List<DisruptionsDetails> items) {
@@ -43,11 +44,11 @@ public class DisruptionsAdapterRv extends RecyclerView.Adapter<DisruptionsAdapte
         holder.description.setText(disruptionsDetails.description);
     }
 
-    public void swap(List<DisruptionsDetails> disruptionsDetailsList){
-        mValues.clear();
-        mValues.addAll(disruptionsDetailsList);
-        notifyDataSetChanged();
-    }
+//    public void swap(List<DisruptionsDetails> disruptionsDetailsList){
+//        mValues.clear();
+//        mValues.addAll(disruptionsDetailsList);
+//        notifyDataSetChanged();
+//    }
 
     @Override
     public int getItemCount() {

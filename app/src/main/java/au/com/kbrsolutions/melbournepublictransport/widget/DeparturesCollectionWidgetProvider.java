@@ -7,7 +7,6 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.TaskStackBuilder;
@@ -25,6 +24,7 @@ import au.com.kbrsolutions.melbournepublictransport.utilities.SharedPreferencesU
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class DeparturesCollectionWidgetProvider extends AppWidgetProvider {
 
+    @SuppressWarnings("unused")
     private final static String TAG = DeparturesCollectionWidgetProvider.class.getSimpleName();
 
     /**
@@ -34,11 +34,6 @@ public class DeparturesCollectionWidgetProvider extends AppWidgetProvider {
      */
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-//        boolean fromBook = false;
-//        if (fromBook) {
-//            onUpdateFromBook(context, appWidgetManager, appWidgetIds);
-//            return;
-//        }
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int appWidgetId : appWidgetIds) {
             String stopName = SharedPreferencesUtility.getWidgetStopName(context);
@@ -85,41 +80,6 @@ public class DeparturesCollectionWidgetProvider extends AppWidgetProvider {
                     new ComponentName(context, getClass()));
             onUpdate(context, appWidgetManager, appWidgetIds);
         }
-    }
-
-    /**
-     *
-     * Remove this method before publishing app on the Google Play
-     *
-     * Initiate Departures Collection widget update.
-     *
-     */
-//        @Override
-    public void onUpdateFromBook(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // Perform this loop procedure for each App Widget that belongs to this provider
-        for (int i=0; i<appWidgetIds.length; i++) {
-            Intent svcIntent=new Intent(context, DeparturesCollectionWidgetRemoteViewsService.class);
-
-            svcIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
-            svcIntent.setData(Uri.parse(svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
-
-            RemoteViews widget=new RemoteViews(context.getPackageName(),
-                    R.layout.widget_departures_collection);
-
-            widget.setTextViewText(R.id.widgetSelectedStopName, "Carrum");
-            widget.setRemoteAdapter(R.id.widget_list, svcIntent);
-
-            Intent clickIntent=new Intent(context, MainActivity.class);
-            PendingIntent clickPI=PendingIntent
-                    .getActivity(context, 0,
-                            clickIntent,
-                            PendingIntent.FLAG_UPDATE_CURRENT);
-
-            widget.setPendingIntentTemplate(R.id.widget_list, clickPI);
-
-            appWidgetManager.updateAppWidget(appWidgetIds[i], widget);
-        }
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     /**

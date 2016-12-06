@@ -5,6 +5,7 @@ import android.os.Parcelable;
 /**
  * This class keeps 'next departures' details.
  */
+@SuppressWarnings("WeakerAccess")
 public class NextDepartureDetails implements Parcelable {
     public final int directionId;
     public final int routeType;

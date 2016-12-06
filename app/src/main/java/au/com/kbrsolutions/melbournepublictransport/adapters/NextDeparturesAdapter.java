@@ -26,6 +26,7 @@ public class NextDeparturesAdapter<T> extends ArrayAdapter<NextDepartureDetails>
     private final List<NextDepartureDetails> mValues;
     private final Activity mActivity;
 
+    @SuppressWarnings("unused")
     private static final String TAG = NextDeparturesAdapterRv.class.getSimpleName();
 
     public NextDeparturesAdapter(Activity activity, List<NextDepartureDetails> items) {

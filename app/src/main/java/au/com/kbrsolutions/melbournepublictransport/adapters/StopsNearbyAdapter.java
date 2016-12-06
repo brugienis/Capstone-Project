@@ -34,6 +34,7 @@ public class StopsNearbyAdapter<T> extends ArrayAdapter<StopsNearbyDetails> {
     private final List<StopsNearbyDetails> mValues;
     private final StopsNearbyFragment.OnNearbyStopsFragmentInteractionListener mListener;
 
+    @SuppressWarnings("unused")
     private static final String TAG = StopsNearbyAdapterRv.class.getSimpleName();
 
     public StopsNearbyAdapter(Activity activity, List<StopsNearbyDetails> items, StopsNearbyFragment.OnNearbyStopsFragmentInteractionListener listener) {

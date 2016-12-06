@@ -6,6 +6,7 @@ import android.os.Parcelable;
 /**
  * This class keeps 'stops nearby' details.
  */
+@SuppressWarnings("CanBeFinal")
 public class StopsNearbyDetails implements Parcelable {
 
     public String stopName;
@@ -40,7 +41,7 @@ public class StopsNearbyDetails implements Parcelable {
         this.distance = distance;
     }
 
-    public StopsNearbyDetails(Parcel input) {
+    private StopsNearbyDetails(Parcel input) {
         stopName = input.readString();
         stopAddress = input.readString();
         suburb = input.readString();

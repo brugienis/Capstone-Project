@@ -43,6 +43,7 @@ public abstract class BaseFragment extends Fragment {
         this.mFragmentsId = fragmentId;
     }
 
+    @SuppressWarnings("SameReturnValue")
     public boolean handleVerticalDpadKeys(boolean upKeyPressed) {
         throw new RuntimeException(TAG + ".handleVerticalDpadKeys(...) method not implemented");
     }

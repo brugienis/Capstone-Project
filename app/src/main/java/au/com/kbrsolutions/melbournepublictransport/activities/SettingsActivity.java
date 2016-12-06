@@ -23,12 +23,15 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.Locale;
+
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.utilities.SharedPreferencesUtility;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static au.com.kbrsolutions.melbournepublictransport.R.id.fab;
-import static au.com.kbrsolutions.melbournepublictransport.activities.WidgetStopsActivity.WIDGET_LOCATION_NAME;
+import static au.com.kbrsolutions.melbournepublictransport.activities.WidgetStopsActivity.WIDGET_STOP_ID;
+import static au.com.kbrsolutions.melbournepublictransport.activities.WidgetStopsActivity.WIDGET_STOP_NAME;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -43,14 +46,14 @@ public class SettingsActivity extends AppCompatActivity {
     private boolean mFixedLocationPreferenceSummaryNotUpdated;
     private boolean mWidgetStopPreferenceSummaryNotUpdated;
 
-    protected static final int PLACE_PICKER_REQUEST = 1000;
-    protected static final int WIDGET_STOP_REQUEST = 2000;
+    static final int PLACE_PICKER_REQUEST = 1000;
+    static final int WIDGET_STOP_REQUEST = 2000;
     public static final String WIDGET_STOP_UPDATED =
             "au.com.kbrsolutions.melbournepublictransport.WIDGET_STOP_UPDATED";
     private static final String SETTINGS_TAG = "favorite_stops_tag";
 
-    private static final String WIDGET_STOP_ID = "widget_stop_id";
-    private static final String WIDGET_STOP_NAME = "widget_stop_name";
+//    private static final String WIDGET_STOP_ID = "widget_stop_id";
+//    private static final String WIDGET_STOP_NAME = "widget_stop_name";
     private static final String FIXED_ADDRESS = "fixed_address";
     private static final String FIXED_LOCATION_PREFERENCE_SUMMARY_NOT_UPDATED =
             "fixed_location_preference_summary_not_updated";
@@ -123,7 +126,7 @@ public class SettingsActivity extends AppCompatActivity {
         int verticalOffset = SharedPreferencesUtility.getAppBarVerticalOffset(getApplicationContext());
         if (mVerticalOffset != verticalOffset) {
             mVerticalOffset = verticalOffset;
-            adjustAppBarVertivalOffset(verticalOffset * -1);
+            adjustAppBarVerticalOffset(verticalOffset * -1);
         }
     }
 
@@ -134,7 +137,7 @@ public class SettingsActivity extends AppCompatActivity {
      *
      * @param verticalOffset
      */
-    private void adjustAppBarVertivalOffset(final int verticalOffset) {
+    private void adjustAppBarVerticalOffset(final int verticalOffset) {
         mAppBarLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -218,7 +221,7 @@ public class SettingsActivity extends AppCompatActivity {
         // If the provided place doesn't have an address, we'll form a display-friendly
         // string from the latlng values.
         if (TextUtils.isEmpty(mFixedLocationAddress)) {
-            mFixedLocationAddress = String.format("(%.2f, %.2f)", latLng.latitude, latLng.longitude);
+            mFixedLocationAddress = String.format(Locale.getDefault(), "(%.2f, %.2f)", latLng.latitude, latLng.longitude);
         }
 
         SharedPreferences sharedPreferences =
@@ -255,8 +258,8 @@ public class SettingsActivity extends AppCompatActivity {
      * @param data
      */
     private void processWidgetStopDetails(Intent data) {
-        mStopId = data.getStringExtra(WIDGET_STOP_ID);
-        mStopName = data.getStringExtra(WIDGET_LOCATION_NAME);
+        mStopId = data.getStringExtra(WidgetStopsActivity.WIDGET_STOP_ID);
+        mStopName = data.getStringExtra(WidgetStopsActivity.WIDGET_STOP_NAME);
         SharedPreferences sharedPreferences =
                 getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -303,7 +306,7 @@ public class SettingsActivity extends AppCompatActivity {
             //noinspection ConstantConditions
             outState.putBoolean(WIDGET_STOP_PREFERENCE_SUMMARY_NOT_UPDATED, mWidgetStopPreferenceSummaryNotUpdated);
             outState.putString(WIDGET_STOP_ID, mStopId);
-            outState.putString(WIDGET_STOP_NAME, mStopName);
+            outState.putString(WidgetStopsActivity.WIDGET_STOP_NAME, mStopName);
         }
     }
 
@@ -349,7 +352,7 @@ public class SettingsActivity extends AppCompatActivity {
         return true;
     }
 
-    public void showSnackBar(int msg, boolean showIndefinite) {
+    private void showSnackBar(int msg, @SuppressWarnings("SameParameterValue") boolean showIndefinite) {
         Snackbar
                 .make(mCoordinatorlayout, msg, (showIndefinite ? Snackbar.LENGTH_INDEFINITE : Snackbar.LENGTH_LONG))
                 .setActionTextColor(Color.RED)
@@ -363,6 +366,7 @@ public class SettingsActivity extends AppCompatActivity {
         private float currFixedLocationLatitude;
         private float currFixedLocationLongitude;
 
+        @SuppressWarnings("unused")
         private final String TAG = ((Object) this).getClass().getSimpleName();
 
         @Override

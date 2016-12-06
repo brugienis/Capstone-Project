@@ -17,7 +17,7 @@ import android.view.View;
  *
  */
 public class HorizontalDividerItemDecoration extends RecyclerView.ItemDecoration {
-    private Drawable divider;
+    private final Drawable divider;
 
     public HorizontalDividerItemDecoration(Drawable divider) {
         this.divider=divider.mutate();

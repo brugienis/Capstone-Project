@@ -39,6 +39,7 @@ public class DisruptionsFragment extends BaseFragment {
     private View mCurrentSelectedView;
     private int mCurrentSelectedRow;
 
+    @SuppressWarnings("unused")
     private static final String TAG = DisruptionsFragment.class.getSimpleName();
 
     public DisruptionsFragment() {
@@ -148,8 +149,8 @@ public class DisruptionsFragment extends BaseFragment {
      * @return
      */
 //    @Override
-    public View onCreateView_UseWithRececleViewAdapter(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView_UseWithRecycleViewAdapter(LayoutInflater inflater, ViewGroup container,
+                                                       @SuppressWarnings("UnusedParameters") Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_disruptions_rv, container, false);
 

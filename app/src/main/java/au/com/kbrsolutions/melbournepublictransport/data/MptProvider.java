@@ -57,6 +57,7 @@ public class MptProvider extends ContentProvider {
                     "." + StopDetailEntry.COLUMN_FAVORITE + " = ?" +
                     ")";
 
+    @SuppressWarnings("unused")
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
     @Override
@@ -276,7 +277,7 @@ public class MptProvider extends ContentProvider {
         Creating the the UriMatcher. This UriMatcher will match each URI to the
         STOPS_DETAILS_WITH_FAVORITE_FLAG integer constants defined above.
     */
-    static UriMatcher buildUriMatcher() {
+    private static UriMatcher buildUriMatcher() {
         // All paths added to the UriMatcher have a corresponding code to return when a match is
         // found.  The code passed into the constructor represents the code to return for the root
         // URI.  It's common to use NO_MATCH as the code for this case.
@@ -286,7 +287,6 @@ public class MptProvider extends ContentProvider {
         // For each type of URI you want to add, create a corresponding code.
         matcher.addURI(authority, MptContract.PATH_LINE_DETAIL, ALL_LINE_DETAIL);
         matcher.addURI(authority, MptContract.PATH_STOP_DETAIL, ALL_STOP_DETAIL);
-//        matcher.addURI(authority, MptContract.StopDetailEntry.MATCHER_KEY_STOPS_DEATILS_WITH_FAVORITE_FLAG, STOPS_DETAILS_WITH_FAVORITE_FLAG);
         return matcher;
     }
 

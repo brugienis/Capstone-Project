@@ -12,13 +12,16 @@ import org.junit.runner.RunWith;
 
 import au.com.kbrsolutions.melbournepublictransport.utilities.SharedPreferencesUtility;
 
+@SuppressWarnings("unused")
 @RunWith(AndroidJUnit4.class)
 public class MiscTests {
 
     private Context mContext;
 
+    @SuppressWarnings("unused")
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
+    @SuppressWarnings("RedundantThrows")
     @Before
     public void setUp() throws Exception {
 //        mContext = new RenamingDelegatingContext(InstrumentationRegistry.getTargetContext(), "test_");

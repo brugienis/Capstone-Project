@@ -28,13 +28,14 @@ public class FavoriteStopsAdapter extends CursorAdapter {
     private static FavoriteStopsFragment.OnFavoriteStopsFragmentInteractionListener mListener;
     private static String sFavoriteStopFalseValue;
 
+    @SuppressWarnings("unused")
     private static final String TAG = FavoriteStopsAdapter.class.getSimpleName();
 
     public static class ViewHolder {
         public final TextView locationNameView;
-        public ImageView mapImageId;
-        public ImageView departuresImageId;
-        public ImageView garbageInfoImage;
+        public final ImageView mapImageId;
+        public final ImageView departuresImageId;
+        public final ImageView garbageInfoImage;
         public StopDetails stopDetails;
 
         public ViewHolder(View view) {

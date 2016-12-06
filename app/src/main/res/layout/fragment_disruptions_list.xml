@@ -26,7 +26,8 @@
             android:paddingBottom="2dp"
             android:id="@+id/disruptionsTitle"
             android:background="@drawable/touch_selector"
-            android:textColor="@android:color/black"/>
+            android:textColor="@android:color/black"
+            tools:ignore="PrivateResource"/>
 
         <TextView
             tools:text="Description"
@@ -40,7 +41,8 @@
             android:id="@+id/disruptionsDescription"
             android:background="@drawable/touch_selector"
             android:textColor="@android:color/black"
-            android:contentDescription="@string/pref_desc_disruptions_more_info"/>
+            android:contentDescription="@string/pref_desc_disruptions_more_info"
+            tools:ignore="PrivateResource"/>
 
     </LinearLayout>
 

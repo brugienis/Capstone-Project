@@ -23,11 +23,10 @@ public class InitFragment extends BaseFragment {
 
     private boolean mIsTargetSet;
     private ProgressBar mProgressBar;
-    // FIXME: 5/12/2016 - remove below
-    private int mTarget;
 
     private OnInitFragmentInteractionListener mListener;
 
+    @SuppressWarnings("unused")
     private final String TAG = ((Object) this).getClass().getSimpleName();
 
     public InitFragment() {
@@ -76,7 +75,7 @@ public class InitFragment extends BaseFragment {
         if (!mIsTargetSet) {
             mIsTargetSet = true;
             mProgressBar.setIndeterminate(false);
-            mProgressBar.setMax(mTarget);
+//            mProgressBar.setMax(mTarget);
         }
         mProgressBar.setIndeterminate(false);
         mProgressBar.setMax(target);

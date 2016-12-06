@@ -27,20 +27,19 @@ import au.com.kbrsolutions.melbournepublictransport.utilities.SharedPreferencesU
 import static au.com.kbrsolutions.melbournepublictransport.utilities.DatabaseContentLoader.testProgressBar;
 
 /**
- * Perform asynch tasks: get data from PTV web site and access internal app database.
+ * Perform async tasks: get data from PTV web site and access internal app database.
  */
 public class RequestProcessorService extends IntentService {
 
     private EventBus eventBus;
     private DbUtility dbUtility;
-    private boolean mTestDatabaseEmpty = true;
 
     private final static boolean REFRESH_TEST = false;
 
     public final static String REQUEST = "request";
 
     public final static String ACTION_LOAD_OR_REFRESH_DATA = "action_refresh_data";
-    public final static String ACTION_GET_DATABASE_STATUS = "action_get_dadabase_status";
+//    private final static String ACTION_GET_DATABASE_STATUS = "action_get_dadabase_status";
     public static final String ACTION_GET_DISRUPTIONS_DETAILS = "get_disruptions_details";
     public final static String ACTION_SHOW_NEXT_DEPARTURES = "show_next_departures";
     public final static String ACTION_GET_STOPS_NEARBY_DETAILS = "get_nearby_details";
@@ -95,30 +94,14 @@ public class RequestProcessorService extends IntentService {
                     LatLngDetails latLonDetails;
                     List<StopsNearbyDetails> stopsNearbyDetailsList;
                     switch (request) {
-                        case ACTION_GET_DATABASE_STATUS:
-                            if (REFRESH_TEST) {
-                                sendMessageToMainActivity(new MainActivityEvents.Builder(
-                                        MainActivityEvents.MainEvents.DATABASE_STATUS)
-                                        .setDatabaseEmpty(mTestDatabaseEmpty)
-                                        .build());
-                            } else {
-                                boolean databaseEmpty = DatabaseContentLoader.
-                                        isDatabaseEmpty(getContentResolver(),
-                                                getApplicationContext());
-                                sendMessageToMainActivity(new MainActivityEvents.Builder(
-                                        MainActivityEvents.MainEvents.DATABASE_STATUS)
-                                        .setDatabaseEmpty(databaseEmpty)
-                                        .build());
-                            }
-                            break;
 
                         case ACTION_LOAD_OR_REFRESH_DATA:
                             if (REFRESH_TEST) {
                                 testProgressBar();
                             } else {
                                 boolean databaseEmpty = DatabaseContentLoader.
-                                        isDatabaseEmpty(getContentResolver(),
-                                                getApplicationContext());
+                                        isDatabaseEmpty(getContentResolver()
+                                        );
 
                                 if (databaseEmpty ||
                                         !extras.getBoolean(REFRESH_DATA_IF_TABLES_EMPTY)) {
@@ -238,13 +221,15 @@ public class RequestProcessorService extends IntentService {
         EventBus.getDefault().post(event);
     }
 
+    @SuppressWarnings({"EmptyMethod", "unused"})
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void onMessageEvent(RequestProcessorServiceRequestEvents event) {
+    public void onMessageEvent(@SuppressWarnings("UnusedParameters") RequestProcessorServiceRequestEvents event) {
     }
 
     // -----------------------------
 
     private static int disruptCnt;
+    @SuppressWarnings("unused")
     private List<DisruptionsDetails> buildSimulatedDisruptionsDetails() {
         List<DisruptionsDetails> buildDisruptionsDetailsList = new ArrayList<>();
         DisruptionsDetails disruptionsDetails = new DisruptionsDetails(
@@ -266,6 +251,7 @@ public class RequestProcessorService extends IntentService {
     }
 
     private static int nextDetCnt;
+    @SuppressWarnings("unused")
     private List<NextDepartureDetails> buildSimulatedDepartureDetails() {
         List<NextDepartureDetails> nextDepartureDetailsList = new ArrayList<>();
         NextDepartureDetails
@@ -294,6 +280,7 @@ public class RequestProcessorService extends IntentService {
     }
 
     private static int nextNearCnt;
+    @SuppressWarnings("unused")
     private List<StopsNearbyDetails> buildSimulatedNearbyDetails() {
         List<StopsNearbyDetails> nextNearbyStopsDetailsList = new ArrayList<>();
         StopsNearbyDetails nearbyStopsDetails = new StopsNearbyDetails(
