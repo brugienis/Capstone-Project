@@ -48,7 +48,6 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
 
             @Override
             public void onDataSetChanged() {
-//                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 String stopId = SharedPreferencesUtility.getWidgetStopId(getApplication());
 
                 final long identityToken = Binder.clearCallingIdentity();
@@ -71,6 +70,7 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
 
 
             /**
+             * Builds and returns the view that should be displeyed at 'position'.
              *
              * @param   position - index of the ListView row that has to be prepared for display
              * @return  RemoteViews
@@ -103,7 +103,7 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
             }
 
             /**
-             * Returns just one view type
+             * Returns just one view type.
              *
              * @return
              */

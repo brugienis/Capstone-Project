@@ -5,11 +5,12 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 
 /**
- * Created by business on 5/09/2016.
+ * 
+ * Utility methods to handle Joda time - http://www.joda.org/joda-time/.
+ * 
  */
 public class JodaDateTimeUtility {
 
-    // FIXME: 6/09/2016 - make sure all date/time are in Melbourne time zone
     public static org.joda.time.DateTime getUtcTime(org.joda.time.DateTime time) {
         return time.toDateTime( org.joda.time.DateTimeZone.UTC );
     }

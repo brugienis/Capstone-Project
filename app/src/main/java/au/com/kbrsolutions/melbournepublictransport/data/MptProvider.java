@@ -112,7 +112,7 @@ public class MptProvider extends ContentProvider {
         return retCursor;
     }
 
-    private Cursor sLineDetailQueryBuilder(Uri uri, String[] projection, String selection,
+    private Cursor sLineDetailQueryBuilder(@SuppressWarnings("UnusedParameters") Uri uri, String[] projection, String selection,
                                            String[] selectionArgs, String sortOrder) {
         return sLineDetailQueryBuilder.query(mOpenHelper.getReadableDatabase(),
                 projection,

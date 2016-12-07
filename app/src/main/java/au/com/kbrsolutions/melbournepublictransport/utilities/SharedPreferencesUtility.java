@@ -11,7 +11,7 @@ import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 
 /**
  *
- * This class allows to access SharedPreferences settings.
+ * This class allows to set and get SharedPreferences settings.
  *
  */
 public class SharedPreferencesUtility {
@@ -20,46 +20,11 @@ public class SharedPreferencesUtility {
     private static final String TAG = SharedPreferencesUtility.class.getSimpleName();
 
     /**
-     *
-     * Set default values - will be applied the first time app starts.
+     * Returns the value of the 'widget' stop name.
      *
      * @param context
      * @return
      */
-//    public static void initSettings(Context context) {
-//        SharedPreferences prefs
-//                = PreferenceManager.getDefaultSharedPreferences(context);
-//
-//        if (Double.isNaN(prefs.getFloat(context.getString(R.string.pref_key_location_latitude),
-//                Float.NaN)) ||
-//                Double.isNaN(prefs.getFloat(context.getString(R.string.pref_key_location_latitude),
-//                        Float.NaN))) {
-//            TypedValue typedValue = new TypedValue();
-//            context.getResources().getValue(R.dimen.default_fixed_location_latitude, typedValue, true);
-//            float latitude = typedValue.getFloat();
-//            context.getResources().getValue(R.dimen.default_fixed_location_longitude, typedValue, true);
-//            float longitude = typedValue.getFloat();
-//            SharedPreferences.Editor editor = prefs.edit();
-//            /* Store default address - Flinders Street, Melbourne.                            */
-//            editor.putString(context.getString(R.string.pref_key_fixed_location),
-//                    context.getString(R.string.pref_default_fixed_location_address));
-//            /* Also store the latitude and longitude so that we can use these to get a precise */
-//            /* result from our stops nearby search.                                            */
-//            editor.putFloat(context.getString(R.string.pref_key_location_latitude),
-//                    latitude);
-//            editor.putFloat(context.getString(R.string.pref_key_location_longitude),
-//                    longitude);
-//
-//            /* Store default stopId and locationName : 1071, Flinders Street Station           */
-//            editor.putString(context.getString(R.string.pref_key_widget_stop_id),
-//                    context.getString(R.string.pref_default_widget_stop_id));
-//            editor.putString(context.getString(R.string.pref_key_widget_stop_name),
-//                    context.getString(R.string.pref_default_widget_stop_name));
-//
-//            editor.apply();
-//        }
-//    }
-
     public static String getWidgetStopName(Context context) {
         SharedPreferences prefs
                 = PreferenceManager.getDefaultSharedPreferences(context);
@@ -113,16 +78,34 @@ public class SharedPreferencesUtility {
         return latLngDetails;
     }
 
+    /**
+     * Returns true if 'release'version setting is true.
+     *
+     * @param context
+     * @return
+     */
     public static boolean isReleaseVersion(Context context) {
         return context.getResources().getBoolean(R.bool.release_version);
     }
 
+    /**
+     * Returns true if local database was loaded with data from PTV.
+     *
+     * @param context
+     * @return
+     */
     public static boolean isDatabaseLoaded(Context context) {
         SharedPreferences prefs
                 = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getBoolean(context.getString(R.string.database_load_status), false);
     }
 
+    /**
+     * Sets the value of the 'database loaded' flag.
+     *
+     * @param context
+     * @param value
+     */
     public static void setDatabaseLoadedFlg(Context context, boolean value) {
         SharedPreferences prefs
                 = PreferenceManager.getDefaultSharedPreferences(context);
@@ -145,6 +128,12 @@ public class SharedPreferencesUtility {
         return prefs.getBoolean(context.getString(R.string.pref_key_use_device_location), true);
     }
 
+    /**
+     * Returns the 'widget' stop Id.
+     *
+     * @param context
+     * @return
+     */
     public static String getWidgetStopId(Context context) {
         SharedPreferences prefs
                 = PreferenceManager.getDefaultSharedPreferences(context);
@@ -152,6 +141,12 @@ public class SharedPreferencesUtility {
                 context.getString(R.string.pref_default_widget_stop_id));
     }
 
+    /**
+     * Returns the value of the AppBar Vertical Offset.
+     *
+     * @param context
+     * @return
+     */
     public static int getAppBarVerticalOffset(Context context) {
         SharedPreferences prefs
                 = PreferenceManager.getDefaultSharedPreferences(context);
@@ -159,6 +154,12 @@ public class SharedPreferencesUtility {
                 Integer.parseInt(context.getString(R.string.pref_default_appbar_vertical_offset)));
     }
 
+    /**
+     * Sets the value of the AppBar Vertical Offset.
+     *
+     * @param context
+     * @param verticalOffset
+     */
     public static void setAppBarVerticalOffset(Context context, int verticalOffset) {
         SharedPreferences prefs
                 = PreferenceManager.getDefaultSharedPreferences(context);

@@ -57,7 +57,8 @@ public class NextDeparturesFragment extends BaseFragment {
         NextDeparturesFragment fragment = new NextDeparturesFragment();
         Bundle args = new Bundle();
         args.putString(ARG_SELECTED_STOP_NAME, stopName);
-        args.putParcelableArrayList(ARG_NEXT_DEPARTURE_DATA, (ArrayList)nextDepartureDetailsList);
+        args.putParcelableArrayList(ARG_NEXT_DEPARTURE_DATA,
+                (ArrayList<NextDepartureDetails>)nextDepartureDetailsList);
         Bundle mBundle = new Bundle();
         mBundle.putParcelable(RequestProcessorService.STOP_DETAILS, stopDetails);
         args.putAll(mBundle);
