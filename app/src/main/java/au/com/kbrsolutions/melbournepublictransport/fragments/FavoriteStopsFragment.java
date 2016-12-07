@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -175,6 +176,7 @@ public class FavoriteStopsFragment
                 getActivity().getApplicationContext(),
                 mListener,
                 mIsInSettingsActivityFlag);
+        Log.v(TAG, "onCreateView - mFavoriteStopDetailAdapter/mListener: " + mFavoriteStopDetailAdapter + "/" + mListener);
 
         // Inflate the layout for this fragment
         mRootView = inflater.inflate(R.layout.fragment_favorite_stops, container, false);
@@ -366,6 +368,7 @@ public class FavoriteStopsFragment
         super.onAttach(context);
         if (context instanceof FavoriteStopsFragment.OnFavoriteStopsFragmentInteractionListener) {
             mListener = (FavoriteStopsFragment.OnFavoriteStopsFragmentInteractionListener) context;
+            Log.v(TAG, "onAttach - : mListener" + mListener);
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -384,11 +387,13 @@ public class FavoriteStopsFragment
             menu.findItem(R.id.action_train_stops_nearby).setVisible(false);
             menu.findItem(R.id.action_stops_nearby).setVisible(false);
             menu.findItem(R.id.action_disruptions).setVisible(false);
+            menu.findItem(R.id.action_about).setVisible(false);
             menu.findItem(R.id.action_reload_database).setVisible(false);
         } else {
             menu.findItem(R.id.action_train_stops_nearby).setVisible(true);
             menu.findItem(R.id.action_stops_nearby).setVisible(true);
             menu.findItem(R.id.action_disruptions).setVisible(true);
+            menu.findItem(R.id.action_about).setVisible(true);
             menu.findItem(R.id.action_reload_database).setVisible(true);
         }
         super.onPrepareOptionsMenu(menu);

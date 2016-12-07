@@ -26,6 +26,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.Locale;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
+import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
 import au.com.kbrsolutions.melbournepublictransport.utilities.SharedPreferencesUtility;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
@@ -176,8 +177,11 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getDefaultSharedPreferences(this);
         boolean useDeviceLocationValue = sharedPreferences.getBoolean(getString(R.string.pref_key_use_device_location),
                 true);
-        float currFixedLocationLatitude = sharedPreferences.getFloat(getString(R.string.pref_key_location_latitude), Float.NaN);
-        float currFixedLocationLongitude = sharedPreferences.getFloat(getString(R.string.pref_key_location_longitude), Float.NaN);
+//        float currFixedLocationLatitude = sharedPreferences.getFloat(getString(R.string.pref_key_location_latitude), Float.NaN);
+//        float currFixedLocationLongitude = sharedPreferences.getFloat(getString(R.string.pref_key_location_longitude), Float.NaN);
+        LatLngDetails fixedLocationLatLng = SharedPreferencesUtility.getFixedLocationLatLng(this);
+        float currFixedLocationLatitude = (float) fixedLocationLatLng.latitude;
+        float currFixedLocationLongitude = (float) fixedLocationLatLng.longitude;
         if (!useDeviceLocationValue && (Float.isNaN(currFixedLocationLatitude) ||
                 Float.isNaN(currFixedLocationLongitude))) {
             SharedPreferences.Editor editor = sharedPreferences.edit();

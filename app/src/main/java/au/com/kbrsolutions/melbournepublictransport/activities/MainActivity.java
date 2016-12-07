@@ -267,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         }
-        SharedPreferencesUtility.initSettings(getApplicationContext());
+//        SharedPreferencesUtility.initSettings(getApplicationContext());
         mProgressBarHandler = new ProgressBarHandler(this);
 
     }
@@ -609,15 +609,15 @@ public class MainActivity extends AppCompatActivity implements
             Log.v(TAG, "startStopsNearbySearch - showExplainingMsg: " + showExplainingMsg);
         }
         if (hasLocationPermission()) {
-            LatLngDetails latLngDetails = SharedPreferencesUtility.getLatLng(this);
-            if (latLngDetails == null) {
+//            LatLngDetails latLngDetails = SharedPreferencesUtility.getFixedLocationLatLng(this);
+            if (SharedPreferencesUtility.useDeviceLocation(this)) {
                 if (mCurrentGeoPositionFinder == null) {
                     mCurrentGeoPositionFinder = new CurrentGeoPositionFinder(getApplicationContext(), forTrainsOnly);
                 } else {
                     mCurrentGeoPositionFinder.connectToGoogleApiClient(forTrainsOnly);
                 }
             } else {
-                getStopsNearbyDetails(latLngDetails, forTrainsOnly);
+                getStopsNearbyDetails(SharedPreferencesUtility.getFixedLocationLatLng(this), forTrainsOnly);
             }
         } else {
             if (showExplainingMsg) {
@@ -651,8 +651,6 @@ public class MainActivity extends AppCompatActivity implements
         startService(intent);
     }
 
-
-
     /**
      * Show information about this app.
      */
@@ -660,6 +658,9 @@ public class MainActivity extends AppCompatActivity implements
         if (mAboutFragment == null) {
             mAboutFragment = new AboutFragment();
             mAboutFragment.setFragmentId(FragmentsId.ABOUT);
+        }
+        if (!mTwoPane) {
+            mFavoriteStopsFragment.hideView();
         }
         if (!mTwoPane) {
             mFavoriteStopsFragment.hideView();

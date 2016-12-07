@@ -22,6 +22,12 @@
         android:title="@string/action_disruptions"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="95"
+        android:title="@string/action_about"
+        app:showAsAction="never"/>
+
     <!-- FIXME  - comment below when testings finished -->
     <item
         android:id="@+id/action_reload_database"

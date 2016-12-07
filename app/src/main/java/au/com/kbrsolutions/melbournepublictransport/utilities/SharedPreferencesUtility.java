@@ -3,6 +3,7 @@ package au.com.kbrsolutions.melbournepublictransport.utilities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.util.TypedValue;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
@@ -25,38 +26,91 @@ public class SharedPreferencesUtility {
      * @param context
      * @return
      */
-    public static void initSettings(Context context) {
+//    public static void initSettings(Context context) {
+//        SharedPreferences prefs
+//                = PreferenceManager.getDefaultSharedPreferences(context);
+//
+//        if (Double.isNaN(prefs.getFloat(context.getString(R.string.pref_key_location_latitude),
+//                Float.NaN)) ||
+//                Double.isNaN(prefs.getFloat(context.getString(R.string.pref_key_location_latitude),
+//                        Float.NaN))) {
+//            TypedValue typedValue = new TypedValue();
+//            context.getResources().getValue(R.dimen.default_fixed_location_latitude, typedValue, true);
+//            float latitude = typedValue.getFloat();
+//            context.getResources().getValue(R.dimen.default_fixed_location_longitude, typedValue, true);
+//            float longitude = typedValue.getFloat();
+//            SharedPreferences.Editor editor = prefs.edit();
+//            /* Store default address - Flinders Street, Melbourne.                            */
+//            editor.putString(context.getString(R.string.pref_key_fixed_location),
+//                    context.getString(R.string.pref_default_fixed_location_address));
+//            /* Also store the latitude and longitude so that we can use these to get a precise */
+//            /* result from our stops nearby search.                                            */
+//            editor.putFloat(context.getString(R.string.pref_key_location_latitude),
+//                    latitude);
+//            editor.putFloat(context.getString(R.string.pref_key_location_longitude),
+//                    longitude);
+//
+//            /* Store default stopId and locationName : 1071, Flinders Street Station           */
+//            editor.putString(context.getString(R.string.pref_key_widget_stop_id),
+//                    context.getString(R.string.pref_default_widget_stop_id));
+//            editor.putString(context.getString(R.string.pref_key_widget_stop_name),
+//                    context.getString(R.string.pref_default_widget_stop_name));
+//
+//            editor.apply();
+//        }
+//    }
+
+    public static String getWidgetStopName(Context context) {
         SharedPreferences prefs
                 = PreferenceManager.getDefaultSharedPreferences(context);
+        String stopName = prefs.getString(context.getString(R.string.pref_key_widget_stop_name), "");
+        if (stopName.length() == 0) {
+            SharedPreferences.Editor editor = prefs.edit();
+            /* Store default stopId and locationName : 1071, Flinders Street Station           */
+            editor.putString(context.getString(R.string.pref_key_widget_stop_id),
+                    context.getString(R.string.pref_default_widget_stop_id));
+            stopName = context.getString(R.string.pref_default_widget_stop_name);
+            editor.putString(context.getString(R.string.pref_key_widget_stop_name),
+                    stopName);
 
-        if (Double.isNaN(prefs.getFloat(context.getString(R.string.pref_key_location_latitude),
-                Float.NaN)) ||
-                Double.isNaN(prefs.getFloat(context.getString(R.string.pref_key_location_latitude),
-                        Float.NaN))) {
+            editor.apply();
+            Log.v(TAG, "getWidgetStopName - default stop set: : + stopName");
+        }
+        return stopName;
+    }
+
+    /**
+     *
+     * Return 'fixed' location position. If it is not assigned, return Flinders station latitude and
+     * longitude.
+     *
+     * @param context
+     * @return
+     */
+    public static LatLngDetails getFixedLocationLatLng(Context context) {
+        LatLngDetails latLngDetails = null;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        float latitude = prefs.getFloat(context.getString(R.string.pref_key_location_latitude), Float.NaN);
+        float longitude = prefs.getFloat(context.getString(R.string.pref_key_location_longitude), Float.NaN);
+        if (Double.isNaN(latitude) || Double.isNaN(longitude)) {
             TypedValue typedValue = new TypedValue();
             context.getResources().getValue(R.dimen.default_fixed_location_latitude, typedValue, true);
-            float latitude = typedValue.getFloat();
+            latitude = typedValue.getFloat();
             context.getResources().getValue(R.dimen.default_fixed_location_longitude, typedValue, true);
-            float longitude = typedValue.getFloat();
+            longitude = typedValue.getFloat();
             SharedPreferences.Editor editor = prefs.edit();
             /* Store default address - Flinders Street, Melbourne.                            */
             editor.putString(context.getString(R.string.pref_key_fixed_location),
                     context.getString(R.string.pref_default_fixed_location_address));
             /* Also store the latitude and longitude so that we can use these to get a precise */
             /* result from our stops nearby search.                                            */
-            editor.putFloat(context.getString(R.string.pref_key_location_latitude),
-                    latitude);
-            editor.putFloat(context.getString(R.string.pref_key_location_longitude),
-                    longitude);
-
-            /* Store default stopId and locationName : 1071, Flinders Street Station           */
-            editor.putString(context.getString(R.string.pref_key_widget_stop_id),
-                    context.getString(R.string.pref_default_widget_stop_id));
-            editor.putString(context.getString(R.string.pref_key_widget_stop_name),
-                    context.getString(R.string.pref_default_widget_stop_name));
-
+            editor.putFloat(context.getString(R.string.pref_key_location_latitude), latitude);
+            editor.putFloat(context.getString(R.string.pref_key_location_longitude), longitude);
             editor.apply();
+            Log.v(TAG, "getFixedLocationLatLng - default fixed location set: :");
         }
+        latLngDetails = new LatLngDetails(latitude, longitude);
+        return latLngDetails;
     }
 
     public static boolean isReleaseVersion(Context context) {
@@ -79,37 +133,16 @@ public class SharedPreferencesUtility {
 
     /**
      *
-     * If 'fixed' location is not assigned, return Flinders station latitude and longitude.
+     * Returns value of the 'use device location' setting.
      *
      * @param context
      * @return
      */
-    public static LatLngDetails getLatLng(Context context) {
+    public static boolean useDeviceLocation(Context context) {
         LatLngDetails latLngDetails = null;
         SharedPreferences prefs
                 = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean useDeviceLocationOn =
-                prefs.getBoolean(context.getString(R.string.pref_key_use_device_location), true);
-        if (!useDeviceLocationOn) {
-            latLngDetails = new LatLngDetails(
-                    prefs.getFloat(context.getString(R.string.pref_key_location_latitude),
-                            Float.NaN),
-                    prefs.getFloat(context.getString(R.string.pref_key_location_longitude),
-                            Float.NaN)
-            );
-        }
-        return latLngDetails;
-    }
-
-    public static String getWidgetStopName(Context context) {
-        SharedPreferences prefs
-                = PreferenceManager.getDefaultSharedPreferences(context);
-        String stopName = prefs.getString(context.getString(R.string.pref_key_widget_stop_name), "");
-        if (stopName.length() == 0) {
-            initSettings(context);
-            stopName = prefs.getString(context.getString(R.string.pref_key_widget_stop_name), "");
-        }
-        return stopName;
+        return prefs.getBoolean(context.getString(R.string.pref_key_use_device_location), true);
     }
 
     public static String getWidgetStopId(Context context) {
