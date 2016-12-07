@@ -174,7 +174,7 @@ public class DbUtility {
                 stopIds,
                 null
         );
-//        Log.v(TAG, "cursor count: " + cursor.getCount());
+
         Map<String, MissingDetails> missingDetailsMap = new HashMap<>();
 
         int stopIdIdx;

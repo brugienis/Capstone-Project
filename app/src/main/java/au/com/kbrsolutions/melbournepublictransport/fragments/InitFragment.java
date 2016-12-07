@@ -75,7 +75,6 @@ public class InitFragment extends BaseFragment {
         if (!mIsTargetSet) {
             mIsTargetSet = true;
             mProgressBar.setIndeterminate(false);
-//            mProgressBar.setMax(mTarget);
         }
         mProgressBar.setIndeterminate(false);
         mProgressBar.setMax(target);

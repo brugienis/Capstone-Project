@@ -71,16 +71,17 @@ public class WidgetStopsActivity
         );
         ((FloatingActionButton) findViewById(R.id.fab)).hide();
 
-        FavoriteStopsFragment favoriteStopsFragment = (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
+        FavoriteStopsFragment favoriteStopsFragment = (FavoriteStopsFragment)
+                getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
         if (favoriteStopsFragment == null) {
             favoriteStopsFragment = new FavoriteStopsFragment();
             favoriteStopsFragment.setFragmentId(FAVORITE_STOPS);
         }
-//        mFavoriteStopsFragment.setIsInSettingsActivityFlag(true);
         favoriteStopsFragment.setIsInSettingsActivityFlag();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.secondary_dynamic_fragments_frame, favoriteStopsFragment, FAVORITE_STOPS_TAG)
+                .add(R.id.secondary_dynamic_fragments_frame, favoriteStopsFragment,
+                        FAVORITE_STOPS_TAG)
                 .commit();
     }
 
@@ -97,7 +98,8 @@ public class WidgetStopsActivity
     @Override
     protected void onResume() {
         super.onResume();
-        int verticalOffset = SharedPreferencesUtility.getAppBarVerticalOffset(getApplicationContext());
+        int verticalOffset = SharedPreferencesUtility.getAppBarVerticalOffset(
+                getApplicationContext());
         if (mVerticalOffset != verticalOffset) {
             mVerticalOffset = verticalOffset;
             adjustAppBarVerticalOffset(verticalOffset * -1);

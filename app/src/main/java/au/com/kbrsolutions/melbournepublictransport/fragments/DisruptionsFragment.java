@@ -49,7 +49,8 @@ public class DisruptionsFragment extends BaseFragment {
     public static DisruptionsFragment newInstance(List<DisruptionsDetails> disruptionDetailsList) {
         DisruptionsFragment fragment = new DisruptionsFragment();
         Bundle args = new Bundle();
-        args.putParcelableArrayList(ARG_DISRUPTION_DATA, (ArrayList<DisruptionsDetails>) disruptionDetailsList);
+        args.putParcelableArrayList(ARG_DISRUPTION_DATA, (ArrayList<DisruptionsDetails>)
+                disruptionDetailsList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,7 +60,8 @@ public class DisruptionsFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null && !newInstanceArgsRetrieved) {
-            mDisruptionDetailsList = (ArrayList)(getArguments().getParcelableArrayList(ARG_DISRUPTION_DATA));
+            mDisruptionDetailsList =
+                    (ArrayList)(getArguments().getParcelableArrayList(ARG_DISRUPTION_DATA));
             newInstanceArgsRetrieved = true;
         }
         setRetainInstance(true);
@@ -106,7 +108,8 @@ public class DisruptionsFragment extends BaseFragment {
         if (view.getTag() != null) {
             mCurrentSelectedView = view;
             mCurrentSelectedRow = position;
-            DisruptionsAdapter.ViewHolder holder = (DisruptionsAdapter.ViewHolder) mCurrentSelectedView.getTag();
+            DisruptionsAdapter.ViewHolder holder = (DisruptionsAdapter.ViewHolder)
+                    mCurrentSelectedView.getTag();
             mListView.clearFocus();
             holder.title.setFocusable(true);
             holder.title.requestFocus();

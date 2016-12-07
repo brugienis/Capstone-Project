@@ -19,7 +19,6 @@ public class ProgressBarHandler {
                 findViewById(android.R.id.content).getRootView();
 
         mProgressBar = new ProgressBar(context, null, android.R.attr.progressBarStyleLarge);
-//        mProgressBar = new ProgressBar(context, null, android.R.attr.progressBarStyleSmallInverse);
         mProgressBar.setIndeterminate(true);
 
         RelativeLayout.LayoutParams params = new

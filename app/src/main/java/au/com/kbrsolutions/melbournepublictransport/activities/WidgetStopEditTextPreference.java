@@ -36,7 +36,8 @@ public class WidgetStopEditTextPreference extends EditTextPreference {
                 R.styleable.WidgetStopEditTextPreference,
                 0, 0);
         try {
-            mMinLength = a.getInteger(R.styleable.WidgetStopEditTextPreference_minLgth, DEFAULT_MINIMUM_WIDGET_STOP_LENGTH);
+            mMinLength = a.getInteger(R.styleable.WidgetStopEditTextPreference_minLgth,
+                    DEFAULT_MINIMUM_WIDGET_STOP_LENGTH);
         } finally {
             a.recycle();
         }
@@ -64,7 +65,8 @@ public class WidgetStopEditTextPreference extends EditTextPreference {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     settingsActivity.startActivityForResult(intent,
                             SettingsActivity.WIDGET_STOP_REQUEST,
-                            ActivityOptions.makeSceneTransitionAnimation(settingsActivity).toBundle());
+                            ActivityOptions.makeSceneTransitionAnimation(
+                                    settingsActivity).toBundle());
                 } else {
                     settingsActivity.startActivityForResult(
                             intent,

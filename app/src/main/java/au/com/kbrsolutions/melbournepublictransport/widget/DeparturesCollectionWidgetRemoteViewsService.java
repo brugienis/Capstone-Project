@@ -77,7 +77,6 @@ public class DeparturesCollectionWidgetRemoteViewsService extends RemoteViewsSer
              */
             @Override
             public RemoteViews getViewAt(int position) {
-//            Log.v(TAG, "getViewAt - position: " + position);
                 if (position == AdapterView.INVALID_POSITION ||
                         mNextDepartureDetails == null || mNextDepartureDetails.size() - 1 < position) {
                     return null;

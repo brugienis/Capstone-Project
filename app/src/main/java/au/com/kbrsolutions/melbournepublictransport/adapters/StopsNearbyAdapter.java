@@ -14,6 +14,7 @@ import java.util.List;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
 import au.com.kbrsolutions.melbournepublictransport.data.LatLngDetails;
+import au.com.kbrsolutions.melbournepublictransport.data.MptContract;
 import au.com.kbrsolutions.melbournepublictransport.data.StopsNearbyDetails;
 import au.com.kbrsolutions.melbournepublictransport.data.StopDetails;
 import au.com.kbrsolutions.melbournepublictransport.fragments.StopsNearbyFragment;
@@ -37,7 +38,10 @@ public class StopsNearbyAdapter<T> extends ArrayAdapter<StopsNearbyDetails> {
     @SuppressWarnings("unused")
     private static final String TAG = StopsNearbyAdapterRv.class.getSimpleName();
 
-    public StopsNearbyAdapter(Activity activity, List<StopsNearbyDetails> items, StopsNearbyFragment.OnNearbyStopsFragmentInteractionListener listener) {
+    public StopsNearbyAdapter(
+            Activity activity,
+            List<StopsNearbyDetails> items,
+            StopsNearbyFragment.OnNearbyStopsFragmentInteractionListener listener) {
         super(activity.getApplicationContext(), -1, items);
         mActivity = activity;
         mValues = items;
@@ -76,7 +80,6 @@ public class StopsNearbyAdapter<T> extends ArrayAdapter<StopsNearbyDetails> {
             holder.departuresImageId.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Log.v(TAG, "ViewHolder - onClick");
                     if (null != mListener) {
                         // Notify the active callbacks interface (the activity, if the
                         // fragment is attached to one) that a departure image was touched.
@@ -87,7 +90,7 @@ public class StopsNearbyAdapter<T> extends ArrayAdapter<StopsNearbyDetails> {
                                 holder.nearbyStopsDetails.stopName,
                                 holder.nearbyStopsDetails.latitude,
                                 holder.nearbyStopsDetails.longitude,
-                                "n"
+                                MptContract.StopDetailEntry.ANY_FAVORITE_FLAG
                         ));
                     }
                 }

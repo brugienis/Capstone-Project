@@ -401,7 +401,6 @@ public class RemoteMptEndpointUtil {
     private static String processRemoteRequest(String uri) throws Exception {
 
         String urlString;
-//            urlString = buildTTAPIURL(PTV_BASE_URL, PRIVATE_KEY, uri, DEVELOPER_ID);
             urlString = buildTTAPIURL(uri);
 
 
@@ -476,17 +475,15 @@ public class RemoteMptEndpointUtil {
     private static final String QUESTION_MARK = "?";
     private static final String AMPERSAND = "&";
     private static final String ZERO = "0";
-    // FIXME: 2/12/2016 - put proper method description
+
     /**
-     * Method to demonstrate building of Timetable API URL
+     * Process PTV request.
      *
      * @return Complete URL with signature
      * @throws Exception
      *
      */
     @NonNull
-//    public static String buildTTAPIURL(final String baseURL, final String privateKey, final String uri,
-//                                       final int developerId) throws Exception {
     private static String buildTTAPIURL(final String uri) throws Exception {
 
         String uriWithDeveloperID = uri + (uri.contains(QUESTION_MARK) ? AMPERSAND : QUESTION_MARK) +

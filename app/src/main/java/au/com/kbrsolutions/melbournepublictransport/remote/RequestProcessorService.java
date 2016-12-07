@@ -39,7 +39,6 @@ public class RequestProcessorService extends IntentService {
     public final static String REQUEST = "request";
 
     public final static String ACTION_LOAD_OR_REFRESH_DATA = "action_refresh_data";
-//    private final static String ACTION_GET_DATABASE_STATUS = "action_get_dadabase_status";
     public static final String ACTION_GET_DISRUPTIONS_DETAILS = "get_disruptions_details";
     public final static String ACTION_SHOW_NEXT_DEPARTURES = "show_next_departures";
     public final static String ACTION_GET_STOPS_NEARBY_DETAILS = "get_nearby_details";

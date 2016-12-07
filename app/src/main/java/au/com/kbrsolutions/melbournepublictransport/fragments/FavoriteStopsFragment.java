@@ -102,7 +102,6 @@ public class FavoriteStopsFragment
         }
     }
 
-
     /**
      *
      * Call invalidateOptionsMenu() to change the available menu options.
@@ -176,7 +175,6 @@ public class FavoriteStopsFragment
                 getActivity().getApplicationContext(),
                 mListener,
                 mIsInSettingsActivityFlag);
-        Log.v(TAG, "onCreateView - mFavoriteStopDetailAdapter/mListener: " + mFavoriteStopDetailAdapter + "/" + mListener);
 
         // Inflate the layout for this fragment
         mRootView = inflater.inflate(R.layout.fragment_favorite_stops, container, false);
@@ -237,7 +235,6 @@ public class FavoriteStopsFragment
     public boolean handleVerticalDpadKeys(boolean upKeyPressed) {
         if (upKeyPressed && mCurrentSelectedRow == 0 ||
                 !upKeyPressed && mCurrentSelectedRow == mCursorRowCnt - 1) {
-//            mCurrentSelectedRow = -1;
         } else {
             mCurrentSelectedView.setFocusable(true);
             mCurrentSelectedView.requestFocus();

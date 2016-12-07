@@ -3,7 +3,6 @@ package au.com.kbrsolutions.melbournepublictransport.data;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract.LineDetailEntry;
 import au.com.kbrsolutions.melbournepublictransport.data.MptContract.StopDetailEntry;
@@ -33,7 +32,6 @@ class MptDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        Log.v(TAG, "onCreate - start");
         /*
         table line_detail has no column named line_name (code 1): , while compiling: INSERT INTO line_detail(routeType,line_name_short,line_name,line_id) VALUES (?,?,?,?)
          */
@@ -73,12 +71,10 @@ class MptDbHelper extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL(CREATE_LINE_DETAIL_TABLE);
         sqLiteDatabase.execSQL(CREATE_STOP_DETAIL_TABLE);
-        Log.v(TAG, "onCreate - end");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        Log.v(TAG, "onUpgrade - start");
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
         // Note that this only fires if you change the version number for your database.

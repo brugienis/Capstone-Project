@@ -26,7 +26,6 @@ import au.com.kbrsolutions.melbournepublictransport.remote.RequestProcessorServi
  * <p/>
  */
 public class NextDeparturesFragment extends BaseFragment {
-//        implements ViewTreeObserver.OnGlobalFocusChangeListener {
 
     private static final String ARG_SELECTED_STOP_NAME = "arg_selected_stop_name";
     private static final String ARG_NEXT_DEPARTURE_DATA = "next_departure_data";
@@ -239,7 +238,5 @@ public class NextDeparturesFragment extends BaseFragment {
         mNextDeparturesAdapter.swap(nextDepartureDetailsList);
         mSearchStopDetails = stopDetails;
     }
-
-//    AdapterView.OnItemSelectedListener mOnItemSelectedListener;
 
 }

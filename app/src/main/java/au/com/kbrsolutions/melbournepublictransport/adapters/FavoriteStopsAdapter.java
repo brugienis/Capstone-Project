@@ -3,7 +3,6 @@ package au.com.kbrsolutions.melbournepublictransport.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +52,8 @@ public class FavoriteStopsAdapter extends CursorAdapter {
                 mapImageId.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        showSelectedStopOnMap(stopDetails.locationName, new LatLngDetails(stopDetails.latitude, stopDetails.longitude));
+                        showSelectedStopOnMap(stopDetails.locationName,
+                                new LatLngDetails(stopDetails.latitude, stopDetails.longitude));
                     }
                 });
 
@@ -79,7 +79,6 @@ public class FavoriteStopsAdapter extends CursorAdapter {
     }
 
     private static void startNextDeparturesSearch(StopDetails stopDetails) {
-        Log.v(TAG, "startNextDeparturesSearch - mListener: " + mListener);
         mListener.startNextDeparturesSearch(stopDetails);
     }
 

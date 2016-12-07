@@ -67,9 +67,6 @@ import static au.com.kbrsolutions.melbournepublictransport.activities.MainActivi
 import static au.com.kbrsolutions.melbournepublictransport.activities.MainActivity.FragmentsId.NEXT_DEPARTURES;
 
 // git push -u origin
-// ^((?!GLHudOverlay).)*$
-// ^((?!OpenGLRenderer).)*$
-// https://material.google.com/style/color.html#color-color-palette
 
 public class MainActivity extends AppCompatActivity implements
         InitFragment.OnInitFragmentInteractionListener,
@@ -97,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements
     private FloatingActionButton fab;
     private EventBus eventBus;
     private CurrentGeoPositionFinder mCurrentGeoPositionFinder;
-//    private int mPrevBackStackEntryCount;
     private static final String STATE_IN_PERMISSION_CHECKING = "inPermission";
     private static final String STATE_IN_SEARCH_FOR_STOPS_NEARBY_FOR_TRAINS_ONLY = "for_trains_only";
     private boolean isInPermissionChecking = false;
@@ -153,7 +149,8 @@ public class MainActivity extends AppCompatActivity implements
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
+        CollapsingToolbarLayout collapsingToolbar =
+                (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
 
         mToolbar.setTitle(getResources().getString(R.string.title_favorite_stops));
 
@@ -184,16 +181,7 @@ public class MainActivity extends AppCompatActivity implements
 
                         showTopViewOnBackStackChanged();
 
-                        // FIXME: 29/11/2016 - remove logcat lines before publishing
-//                        printBackStackFragments();
                         int cnt = getSupportFragmentManager().getBackStackEntryCount();
-//                        BaseFragment bf = getTopFragment();
-//                        if (cnt > mPrevBackStackEntryCount) {
-//                            Log.v(TAG, "onCreate.onBackStackChanged - going forward  - cnt/top: " + cnt + "/" + bf.getFragmentId());
-//                        } else {
-//                            Log.v(TAG, "onCreate.onBackStackChanged - going backward - cnt/top: " + cnt + "/" + (bf == null ? "null" : bf.getFragmentId()));
-//                        }
-//                        mPrevBackStackEntryCount = cnt;
                         if (!mTwoPane && cnt == 0 || mTwoPane && cnt == 1) {
                             if (getSupportActionBar() != null) {
                                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -232,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements
         // in two-pane mode.
         mTwoPane = findViewById(R.id.primary_dynamic_fragments_frame) != null;
         if (savedInstanceState != null) {   /* configuration changed */
-            printBackStackFragments();
+//            printBackStackFragments();
             if (topFragmentTag.equals(FAVORITE_STOPS_TAG) ||
                     topFragmentTag.equals(NEXT_DEPARTURES_TAG)) {
                 fab.show();
@@ -267,7 +255,6 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         }
-//        SharedPreferencesUtility.initSettings(getApplicationContext());
         mProgressBarHandler = new ProgressBarHandler(this);
 
     }
@@ -291,8 +278,8 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        int verticalOffset = SharedPreferencesUtility.getAppBarVerticalOffset(getApplicationContext());
-//        Log.v(TAG, "onResume - mVerticalOffset/verticalOffset: " + mVerticalOffset + "/" + verticalOffset);
+        int verticalOffset =
+                SharedPreferencesUtility.getAppBarVerticalOffset(getApplicationContext());
         if (mVerticalOffset != verticalOffset) {
             mVerticalOffset = verticalOffset;
             adjustAppBarVerticalOffset(verticalOffset * -1);
@@ -316,7 +303,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void setAppBarOffset(int offsetPx){
-        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams();
+        CoordinatorLayout.LayoutParams params =
+                (CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams();
         AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
         if (behavior != null) {
             behavior.onNestedPreScroll(mCoordinatorlayout, mAppBarLayout, null, 0, offsetPx,
@@ -344,7 +332,8 @@ public class MainActivity extends AppCompatActivity implements
                 .addToBackStack(INIT_TAG)
                 .commit();
         Intent intent = new Intent(this, RequestProcessorService.class);
-        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_LOAD_OR_REFRESH_DATA);
+        intent.putExtra(RequestProcessorService.REQUEST,
+                RequestProcessorService.ACTION_LOAD_OR_REFRESH_DATA);
         intent.putExtra(RequestProcessorService.REFRESH_DATA_IF_TABLES_EMPTY, false);
         startService(intent);
     }
@@ -395,7 +384,8 @@ public class MainActivity extends AppCompatActivity implements
         super.onSaveInstanceState(outState);
 
         outState.putBoolean(STATE_IN_PERMISSION_CHECKING, isInPermissionChecking);
-        outState.putBoolean(STATE_IN_SEARCH_FOR_STOPS_NEARBY_FOR_TRAINS_ONLY, mSearchForStopsNearbyForTrainsOnly);
+        outState.putBoolean(STATE_IN_SEARCH_FOR_STOPS_NEARBY_FOR_TRAINS_ONLY,
+                mSearchForStopsNearbyForTrainsOnly);
     }
 
     @Override
@@ -412,10 +402,6 @@ public class MainActivity extends AppCompatActivity implements
                 Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED);
     }
 
-    // FIXME: 4/12/2016 https://developer.android.com/training/permissions/requesting.html
-    // FIXME: 4/12/2016  version 8.3 or later of the Google Play services SDK, you no longer need the
-    // FIXME: 4/12/2016  android.permission.WRITE_EXTERNAL_STORAGE - see below. How do you check the version?
-    // FIXME: 4/12/2016https://developers.google.com/maps/documentation/android-api/config
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
@@ -478,7 +464,7 @@ public class MainActivity extends AppCompatActivity implements
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.secondary_dynamic_fragments_frame, mStopsFragment, STOP_TAG)
-                    .addToBackStack(STOP_TAG)     // it will also show 'Up' button in the action bar
+                    .addToBackStack(STOP_TAG)
                     .commit();
 //        }
         mStopsFragment.setActionBarTitle(getResources().getString(R.string.title_stops));
@@ -556,8 +542,9 @@ public class MainActivity extends AppCompatActivity implements
         hideViewIfRequired();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.secondary_dynamic_fragments_frame, mNextDeparturesFragment, NEXT_DEPARTURES_TAG)
-                .addToBackStack(NEXT_DEPARTURES_TAG)     // it will also show 'Up' button in the action bar
+                .add(R.id.secondary_dynamic_fragments_frame,
+                        mNextDeparturesFragment, NEXT_DEPARTURES_TAG)
+                .addToBackStack(NEXT_DEPARTURES_TAG)
                 .commit();
         mNextDeparturesFragment.setActionBarTitle(getResources().getString(R.string.title_next_departures));
         fab.setImageResource(R.drawable.ic_stock_refresh_white);
@@ -571,7 +558,8 @@ public class MainActivity extends AppCompatActivity implements
         showProgress();
         String trainMode = TRANSPORT_MODE_METRO_TRAIN;
         Intent intent = new Intent(this, RequestProcessorService.class);
-        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_GET_DISRUPTIONS_DETAILS);
+        intent.putExtra(RequestProcessorService.REQUEST,
+                RequestProcessorService.ACTION_GET_DISRUPTIONS_DETAILS);
         intent.putExtra(RequestProcessorService.MODES, trainMode);
         startService(intent);
     }
@@ -586,7 +574,8 @@ public class MainActivity extends AppCompatActivity implements
     public void updateStopDetailRow(int id, String favoriteColumnValue) {
         showProgress();
         Intent intent = new Intent(this, RequestProcessorService.class);
-        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_UPDATE_STOPS_DETAILS);
+        intent.putExtra(RequestProcessorService.REQUEST,
+                RequestProcessorService.ACTION_UPDATE_STOPS_DETAILS);
         intent.putExtra(RequestProcessorService.ROW_ID, id);
         intent.putExtra(RequestProcessorService.FAVORITE_COLUMN_VALUE, favoriteColumnValue);
         startService(intent);
@@ -601,23 +590,23 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void startStopsNearbySearch(boolean forTrainsOnly) {
-        Log.v(TAG, "startStopsNearbySearch - Build.VERSION.SDK_INT: " + Build.VERSION.SDK_INT);
         mSearchForStopsNearbyForTrainsOnly = forTrainsOnly;
         boolean showExplainingMsg = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            showExplainingMsg = shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION);
-            Log.v(TAG, "startStopsNearbySearch - showExplainingMsg: " + showExplainingMsg);
+            showExplainingMsg =
+                    shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION);
         }
         if (hasLocationPermission()) {
-//            LatLngDetails latLngDetails = SharedPreferencesUtility.getFixedLocationLatLng(this);
             if (SharedPreferencesUtility.useDeviceLocation(this)) {
                 if (mCurrentGeoPositionFinder == null) {
-                    mCurrentGeoPositionFinder = new CurrentGeoPositionFinder(getApplicationContext(), forTrainsOnly);
+                    mCurrentGeoPositionFinder = new CurrentGeoPositionFinder(getApplicationContext(),
+                            forTrainsOnly);
                 } else {
                     mCurrentGeoPositionFinder.connectToGoogleApiClient(forTrainsOnly);
                 }
             } else {
-                getStopsNearbyDetails(SharedPreferencesUtility.getFixedLocationLatLng(this), forTrainsOnly);
+                getStopsNearbyDetails(SharedPreferencesUtility.getFixedLocationLatLng(this),
+                        forTrainsOnly);
             }
         } else {
             if (showExplainingMsg) {
@@ -643,9 +632,11 @@ public class MainActivity extends AppCompatActivity implements
         showProgress();
         Intent intent = new Intent(this, RequestProcessorService.class);
         if (forTrainsOnly) {
-            intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_GET_TRAIN_STOPS_NEARBY_DETAILS);
+            intent.putExtra(RequestProcessorService.REQUEST,
+                    RequestProcessorService.ACTION_GET_TRAIN_STOPS_NEARBY_DETAILS);
         } else {
-            intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_GET_STOPS_NEARBY_DETAILS);
+            intent.putExtra(RequestProcessorService.REQUEST,
+                    RequestProcessorService.ACTION_GET_STOPS_NEARBY_DETAILS);
         }
         intent.putExtra(RequestProcessorService.LAT_LON, latLonDetails);
         startService(intent);
@@ -715,7 +706,8 @@ public class MainActivity extends AppCompatActivity implements
     public void startNextDeparturesSearch(StopDetails stopDetails) {
         showProgress();
         Intent intent = new Intent(this, RequestProcessorService.class);
-        intent.putExtra(RequestProcessorService.REQUEST, RequestProcessorService.ACTION_SHOW_NEXT_DEPARTURES);
+        intent.putExtra(RequestProcessorService.REQUEST,
+                RequestProcessorService.ACTION_SHOW_NEXT_DEPARTURES);
         Bundle mBundle = new Bundle();
         mBundle.putParcelable(RequestProcessorService.STOP_DETAILS, stopDetails);
         intent.putExtras(mBundle);
@@ -741,12 +733,14 @@ public class MainActivity extends AppCompatActivity implements
         if (mTwoPane) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.primary_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
+                    .add(R.id.primary_dynamic_fragments_frame, mFavoriteStopsFragment,
+                            FAVORITE_STOPS_TAG)
                     .commit();
         } else {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.secondary_dynamic_fragments_frame, mFavoriteStopsFragment, FAVORITE_STOPS_TAG)
+                    .add(R.id.secondary_dynamic_fragments_frame, mFavoriteStopsFragment,
+                            FAVORITE_STOPS_TAG)
                     .commit();
         }
     }
@@ -760,8 +754,8 @@ public class MainActivity extends AppCompatActivity implements
             mFavoriteStopsFragment.reloadLoader();
             mFavoriteStopsFragment.setFragmentId(FAVORITE_STOPS);
         }
-        printBackStackFragments();
-        StopsFragment stopsFragment = (StopsFragment) getSupportFragmentManager().findFragmentByTag(STOP_TAG);
+        StopsFragment stopsFragment =
+                (StopsFragment) getSupportFragmentManager().findFragmentByTag(STOP_TAG);
         if (!mTwoPane && stopsFragment != null)  {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -808,7 +802,8 @@ public class MainActivity extends AppCompatActivity implements
             }
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.secondary_dynamic_fragments_frame, mStationOnMapFragment, STATION_ON_MAP_TAG)
+                    .add(R.id.secondary_dynamic_fragments_frame, mStationOnMapFragment,
+                            STATION_ON_MAP_TAG)
                     .addToBackStack(STATION_ON_MAP_TAG)
                     .commit();
             mStationOnMapFragment.setActionBarTitle(getResources().getString(R.string.title_stop_on_map));
@@ -959,14 +954,16 @@ public class MainActivity extends AppCompatActivity implements
      */
     private void showSnackBar(String msg, boolean showIndefinite) {
         Snackbar
-                .make(mCoordinatorlayout, msg, (showIndefinite ? Snackbar.LENGTH_INDEFINITE : Snackbar.LENGTH_LONG))
+                .make(mCoordinatorlayout, msg,
+                        (showIndefinite ? Snackbar.LENGTH_INDEFINITE : Snackbar.LENGTH_LONG))
                 .setActionTextColor(Color.RED)
                 .show(); // Don’t forget to show!
     }
 
     private void showSnackBar(int msg, boolean showIndefinite) {
         Snackbar
-                .make(mCoordinatorlayout, msg, (showIndefinite ? Snackbar.LENGTH_INDEFINITE : Snackbar.LENGTH_LONG))
+                .make(mCoordinatorlayout, msg,
+                        (showIndefinite ? Snackbar.LENGTH_INDEFINITE : Snackbar.LENGTH_LONG))
                 .setActionTextColor(Color.RED)
                 .show(); // Don’t forget to show!
     }
@@ -1018,7 +1015,8 @@ public class MainActivity extends AppCompatActivity implements
         for (int i = 0; i < cnt; i++) {
             tag = getSupportFragmentManager().getBackStackEntryAt(i).getName();
             topFragment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
-            Log.v(TAG, "printBackStackFragments - fragment: " + i + " - " + topFragment + "/" + topFragment.getFragmentId());
+//            Log.v(TAG, "printBackStackFragments - fragment: " + i + " - " + topFragment + "/" +
+//                    topFragment.getFragmentId());
         }
     }
 
@@ -1037,7 +1035,8 @@ public class MainActivity extends AppCompatActivity implements
             tag = getSupportFragmentManager().getBackStackEntryAt(i).getName();
             topFragment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
             topFragment.isRootViewVisible();
-//            Log.v(TAG, "showFragmentsOnBackStackVisibility - fragment: " + i + " - " + topFragment + "/" + topFragment.getFragmentId());
+//            Log.v(TAG, "showFragmentsOnBackStackVisibility - fragment: " + i + " - " +
+//              opFragment + "/" + topFragment.getFragmentId());
         }
     }
 
@@ -1075,7 +1074,9 @@ public class MainActivity extends AppCompatActivity implements
      * Restore all fragments that were tracked by the FragmentManager.
      */
     private void findFragments() {
-        BaseFragment topFragment = mFavoriteStopsFragment = (FavoriteStopsFragment) getSupportFragmentManager().findFragmentByTag(FAVORITE_STOPS_TAG);
+        BaseFragment topFragment = mFavoriteStopsFragment =
+                (FavoriteStopsFragment) getSupportFragmentManager().
+                        findFragmentByTag(FAVORITE_STOPS_TAG);
         if (topFragment != null) {
             topFragment.hideView();
         }
@@ -1211,7 +1212,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    // FIXME: 25/09/2016 find source of the code below - The Busy ...?
+    // The source of the code below - The Busy Coder's Guide
     private boolean readyToGo() {
         GoogleApiAvailability checker =
                 GoogleApiAvailability.getInstance();
@@ -1264,20 +1265,5 @@ public class MainActivity extends AppCompatActivity implements
     private static int getMajorVersion(int glEsVersion) {
         return ((glEsVersion & 0xffff0000) >> 16);
     }
-
-    /**
-     *
-     * From Google docs:
-     * https://developers.google.com/maps/documentation/android-api/config
-     *
-     * If you're targeting version 8.3 or later of the Google Play services SDK,
-     * you no longer need the WRITE_EXTERNAL_STORAGE permission to use the Google Maps Android API.
-     *
-     * @return
-     */
-//    private boolean hasFilesPermission() {
-//        return(ContextCompat.checkSelfPermission(this,
-//                Manifest.permission.READ_EXTERNAL_STORAGE ) == PackageManager.PERMISSION_GRANTED);
-//    }
 
 }

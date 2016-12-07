@@ -16,7 +16,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.location.places.Place;
@@ -124,7 +123,8 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        int verticalOffset = SharedPreferencesUtility.getAppBarVerticalOffset(getApplicationContext());
+        int verticalOffset =
+                SharedPreferencesUtility.getAppBarVerticalOffset(getApplicationContext());
         if (mVerticalOffset != verticalOffset) {
             mVerticalOffset = verticalOffset;
             adjustAppBarVerticalOffset(verticalOffset * -1);
@@ -153,7 +153,8 @@ public class SettingsActivity extends AppCompatActivity {
      * @param offsetPx
      */
     private void setAppBarOffset(int offsetPx) {
-        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams();
+        CoordinatorLayout.LayoutParams params =
+                (CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams();
         AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
         if (behavior != null) {
             behavior.onNestedPreScroll(mCoordinatorlayout, mAppBarLayout, null, 0, offsetPx,
@@ -177,8 +178,6 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getDefaultSharedPreferences(this);
         boolean useDeviceLocationValue = sharedPreferences.getBoolean(getString(R.string.pref_key_use_device_location),
                 true);
-//        float currFixedLocationLatitude = sharedPreferences.getFloat(getString(R.string.pref_key_location_latitude), Float.NaN);
-//        float currFixedLocationLongitude = sharedPreferences.getFloat(getString(R.string.pref_key_location_longitude), Float.NaN);
         LatLngDetails fixedLocationLatLng = SharedPreferencesUtility.getFixedLocationLatLng(this);
         float currFixedLocationLatitude = (float) fixedLocationLatLng.latitude;
         float currFixedLocationLongitude = (float) fixedLocationLatLng.longitude;
@@ -225,7 +224,8 @@ public class SettingsActivity extends AppCompatActivity {
         // If the provided place doesn't have an address, we'll form a display-friendly
         // string from the latlng values.
         if (TextUtils.isEmpty(mFixedLocationAddress)) {
-            mFixedLocationAddress = String.format(Locale.getDefault(), "(%.2f, %.2f)", latLng.latitude, latLng.longitude);
+            mFixedLocationAddress = String.format(Locale.getDefault(), "(%.2f, %.2f)",
+                    latLng.latitude, latLng.longitude);
         }
 
         SharedPreferences sharedPreferences =
@@ -241,7 +241,6 @@ public class SettingsActivity extends AppCompatActivity {
                 (float) latLng.longitude);
         editor.apply();
         mFixedLocationPreferenceSummaryNotUpdated = true;
-        Log.v(TAG, "processPlacePickerData - : " + latLng.latitude + "/" + latLng.longitude);
 
         if (mSettingsFragment != null) {
             Preference locationPreference = mSettingsFragment.findPreference(getString(R.string.pref_key_fixed_location));
@@ -303,12 +302,14 @@ public class SettingsActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         if (mFixedLocationPreferenceSummaryNotUpdated) {
             //noinspection ConstantConditions
-            outState.putBoolean(FIXED_LOCATION_PREFERENCE_SUMMARY_NOT_UPDATED, mFixedLocationPreferenceSummaryNotUpdated);
+            outState.putBoolean(FIXED_LOCATION_PREFERENCE_SUMMARY_NOT_UPDATED,
+                    mFixedLocationPreferenceSummaryNotUpdated);
             outState.putString(FIXED_ADDRESS, mFixedLocationAddress);
         }
         if (mWidgetStopPreferenceSummaryNotUpdated) {
             //noinspection ConstantConditions
-            outState.putBoolean(WIDGET_STOP_PREFERENCE_SUMMARY_NOT_UPDATED, mWidgetStopPreferenceSummaryNotUpdated);
+            outState.putBoolean(WIDGET_STOP_PREFERENCE_SUMMARY_NOT_UPDATED,
+                    mWidgetStopPreferenceSummaryNotUpdated);
             outState.putString(WIDGET_STOP_ID, mStopId);
             outState.putString(WidgetStopsActivity.WIDGET_STOP_NAME, mStopName);
         }
@@ -325,19 +326,23 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 //        Log.v(TAG, "onRestoreInstanceState - start");
-        mFixedLocationPreferenceSummaryNotUpdated = savedInstanceState.getBoolean(FIXED_LOCATION_PREFERENCE_SUMMARY_NOT_UPDATED);
+        mFixedLocationPreferenceSummaryNotUpdated =
+                savedInstanceState.getBoolean(FIXED_LOCATION_PREFERENCE_SUMMARY_NOT_UPDATED);
         mFixedLocationAddress = savedInstanceState.getString(FIXED_ADDRESS);
         if (mFixedLocationPreferenceSummaryNotUpdated && mSettingsFragment != null) {
             Preference fixedLocationPreference = mSettingsFragment.findPreference(getString(R.string.pref_key_fixed_location));
             if (fixedLocationPreference != null) {
-                mSettingsFragment.setPreferenceSummary(fixedLocationPreference, mFixedLocationAddress);
+                mSettingsFragment.setPreferenceSummary(fixedLocationPreference,
+                        mFixedLocationAddress);
                 mFixedLocationPreferenceSummaryNotUpdated = false;
             }
         }
-        mWidgetStopPreferenceSummaryNotUpdated = savedInstanceState.getBoolean(WIDGET_STOP_PREFERENCE_SUMMARY_NOT_UPDATED);
+        mWidgetStopPreferenceSummaryNotUpdated =
+                savedInstanceState.getBoolean(WIDGET_STOP_PREFERENCE_SUMMARY_NOT_UPDATED);
         mStopId = savedInstanceState.getString(WIDGET_STOP_ID);
         mStopName = savedInstanceState.getString(WIDGET_STOP_NAME);
-        if (mWidgetStopPreferenceSummaryNotUpdated && mSettingsFragment != null && mStopName != null) {
+        if (mWidgetStopPreferenceSummaryNotUpdated &&
+                mSettingsFragment != null && mStopName != null) {
             Preference widgetStopPreference = mSettingsFragment.findPreference(getString(R.string.pref_key_widget_stop_name));
             if (widgetStopPreference != null) {
                 mSettingsFragment.setPreferenceSummary(widgetStopPreference, mStopName);
@@ -358,7 +363,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void showSnackBar(int msg, @SuppressWarnings("SameParameterValue") boolean showIndefinite) {
         Snackbar
-                .make(mCoordinatorlayout, msg, (showIndefinite ? Snackbar.LENGTH_INDEFINITE : Snackbar.LENGTH_LONG))
+                .make(mCoordinatorlayout, msg, (showIndefinite ?
+                        Snackbar.LENGTH_INDEFINITE : Snackbar.LENGTH_LONG))
                 .setActionTextColor(Color.RED)
                 .show(); // Don’t forget to show!
     }
@@ -400,7 +406,8 @@ public class SettingsActivity extends AppCompatActivity {
             if (preference instanceof SwitchPreference) {
                 String key = preference.getKey();
                 if (key.equals(getString(R.string.pref_key_use_device_location))) {
-                    boolean useDeviceLocationValue = getDefaultSharedPreferences(preference.getContext())
+                    boolean useDeviceLocationValue =
+                            getDefaultSharedPreferences(preference.getContext())
                             .getBoolean(preference.getKey(), true);
                     String summaryText;
                     if (useDeviceLocationValue) {
@@ -438,9 +445,11 @@ public class SettingsActivity extends AppCompatActivity {
                 boolean validationOk = validateUseDeviceFixedLocationValue(newUseDeviceSwitchValue);
                 if (validationOk) {
                     if (newUseDeviceSwitchValue) {
-                        setPreferenceSummary(preference, getString(R.string.pref_summary_use_device_location));
+                        setPreferenceSummary(preference,
+                                getString(R.string.pref_summary_use_device_location));
                     } else {
-                        setPreferenceSummary(preference, getString(R.string.pref_summary_use_fixed_location));
+                        setPreferenceSummary(preference,
+                                getString(R.string.pref_summary_use_fixed_location));
                     }
                 }
                 return validationOk;

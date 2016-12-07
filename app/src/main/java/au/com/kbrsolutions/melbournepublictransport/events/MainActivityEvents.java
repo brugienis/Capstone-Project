@@ -31,7 +31,6 @@ public class MainActivityEvents {
     public final LatLngDetails latLonDetails;
     public final List<StopsNearbyDetails> nearbyStopsDetailsList;
     public final boolean forTrainsStopsNearby;
-//    public final boolean databaseEmpty;
     public final int databaseLoadProgress;
     public final int databaseLoadTarget;
 
@@ -44,7 +43,6 @@ public class MainActivityEvents {
         this.latLonDetails = builder.latLonDetails;
         this.nearbyStopsDetailsList = builder.nearbyStopsDetailsList;
         this.forTrainsStopsNearby = builder.forTrainsStopsNearby;
-//        this.databaseEmpty = builder.databaseEmpty;
         this.databaseLoadProgress = builder.databaseLoadProgress;
         this.databaseLoadTarget = builder.databaseLoadTarget;
     }
@@ -63,7 +61,6 @@ public class MainActivityEvents {
         private LatLngDetails latLonDetails;
         private List<StopsNearbyDetails> nearbyStopsDetailsList;
         private boolean forTrainsStopsNearby;
-//        private boolean databaseEmpty;
         private int databaseLoadProgress;
         private int databaseLoadTarget;
 

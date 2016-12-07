@@ -3,7 +3,6 @@ package au.com.kbrsolutions.melbournepublictransport.utilities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.util.TypedValue;
 
 import au.com.kbrsolutions.melbournepublictransport.R;
@@ -39,7 +38,6 @@ public class SharedPreferencesUtility {
                     stopName);
 
             editor.apply();
-            Log.v(TAG, "getWidgetStopName - default stop set: : + stopName");
         }
         return stopName;
     }
@@ -72,7 +70,6 @@ public class SharedPreferencesUtility {
             editor.putFloat(context.getString(R.string.pref_key_location_latitude), latitude);
             editor.putFloat(context.getString(R.string.pref_key_location_longitude), longitude);
             editor.apply();
-            Log.v(TAG, "getFixedLocationLatLng - default fixed location set: :");
         }
         latLngDetails = new LatLngDetails(latitude, longitude);
         return latLngDetails;

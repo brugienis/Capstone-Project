@@ -35,7 +35,6 @@ public class StopsFragment extends BaseFragment implements LoaderManager.LoaderC
     private NestedScrollingListView mListView;
     private StopsAdapter mStopDetailAdapter;
     private OnStopFragmentInteractionListener mListener;
-//    private static final List<StopDetails> mFolderItemList = new ArrayList<>();
     private TextView mEmptyView;
     private View mRootView;
     private int mCursorRowCnt;
@@ -134,12 +133,6 @@ public class StopsFragment extends BaseFragment implements LoaderManager.LoaderC
         });
 
         mEmptyView = (TextView) mRootView.findViewById(R.id.emptyView);
-        // FIXME: 2/12/2016 remove commented lines
-//        if (mFolderItemList.size() == 0) {
-//            mEmptyView = (TextView) mRootView.findViewById(R.id.emptyView);
-//            mEmptyView.setText(getActivity().getResources()
-//                    .getString(R.string.no_stops_to_add));
-//        }
         return mRootView;
     }
 
@@ -170,7 +163,6 @@ public class StopsFragment extends BaseFragment implements LoaderManager.LoaderC
         }
         return false;
     }
-
 
     /**
      *

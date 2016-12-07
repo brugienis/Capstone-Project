@@ -6,7 +6,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -176,7 +175,7 @@ public class DatabaseContentLoader {
         if (cursor != null) {
             cursor.moveToFirst();
             for ( int i = 0; i < cursor.getCount(); i++, cursor.moveToNext() ) {
-                Log.v(TAG, "printLineDetailContent - lineId/lineName: " + cursor.getString(0) + "/" + cursor.getString(1));
+//                Log.v(TAG, "printLineDetailContent - lineId/lineName: " + cursor.getString(0) + "/" + cursor.getString(1));
             }
             cursor.close();
         }

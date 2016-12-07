@@ -26,7 +26,6 @@ import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -70,8 +69,6 @@ public class FixedLocationEditTextPreference extends EditTextPreference {
         if (resultCode == ConnectionResult.SUCCESS) {
             isGoogleApiAvailable = true;
             // Add the get current location widget to our location preference
-        } else {
-            Log.v(TAG, "FixedLocationEditTextPreference - resultCode: " + resultCode);
         }
         setWidgetLayoutResource(R.layout.pref_fixed_location);
     }

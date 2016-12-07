@@ -110,7 +110,6 @@ public class StopsNearbyFragment extends BaseFragment {
         return mRootView;
     }
 
-
     /**
      * This is called when D-pad navigation keys are used.
      *
@@ -211,7 +210,8 @@ public class StopsNearbyFragment extends BaseFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         Drawable divider = getResources().getDrawable(R.drawable.item_divider);
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration(divider));
-        StopsNearbyAdapterRv recyclerViewAdapter = new StopsNearbyAdapterRv(mNearbyStopsDetailsList, mListener);
+        StopsNearbyAdapterRv recyclerViewAdapter = new StopsNearbyAdapterRv(mNearbyStopsDetailsList,
+                mListener);
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.requestLayout();
         return mRootView;
