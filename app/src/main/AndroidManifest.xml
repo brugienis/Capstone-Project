@@ -46,7 +46,6 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -99,4 +98,11 @@
         you no longer need the WRITE_EXTERNAL_STORAGE permission to use the Google Maps Android API.
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+
+            <intent-filter>
+                <action android:name="au.com.kbrsolutions.melbournepublictransport"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
 -->
